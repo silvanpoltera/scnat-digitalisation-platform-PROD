@@ -757,8 +757,8 @@ const SECTION_CONTENT = {
   vorschlag: VorschlagSection,
 };
 
-export default function PmFramework() {
-  const [activeSection, setActiveSection] = useState("overview");
+export default function PmFramework({ initialSection }) {
+  const [activeSection, setActiveSection] = useState(initialSection || "overview");
   const Content = SECTION_CONTENT[activeSection];
 
   return (

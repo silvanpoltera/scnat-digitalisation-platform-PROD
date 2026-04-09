@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle, ClipboardList, Search, Shield, UserCheck, Package } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -21,7 +22,10 @@ const TABS = [
 ];
 
 export default function Prozesse() {
-  const [activeTab, setActiveTab] = useState("beschaffung");
+  const [searchParams] = useSearchParams();
+  const startTab = searchParams.get('tab') === 'change' ? 'pm' : 'beschaffung';
+  const startSection = searchParams.get('tab') === 'change' ? 'vorschlag' : null;
+  const [activeTab, setActiveTab] = useState(startTab);
   const [activeStep, setActiveStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
@@ -141,7 +145,7 @@ export default function Prozesse() {
           </div>
         )}
 
-        {activeTab === "pm" && <PmFramework />}
+        {activeTab === "pm" && <PmFramework initialSection={startSection} />}
       </motion.div>
     </div>
     </div>

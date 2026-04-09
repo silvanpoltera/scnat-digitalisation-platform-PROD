@@ -415,7 +415,7 @@ export default function Massnahmen() {
             entweder direkt oder über deinen Change Agent. Das Digitalisierungsteam prüft und priorisiert die Vorschläge.
           </p>
           <Link
-            to="/prozesse"
+            to="/prozesse?tab=change"
             className="inline-flex items-center gap-2 px-4 py-2 bg-scnat-teal/10 text-scnat-teal text-xs font-medium rounded-sm hover:bg-scnat-teal/20 transition-colors whitespace-nowrap shrink-0"
           >
             <PlusCircle className="w-3.5 h-3.5" />

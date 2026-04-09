@@ -323,6 +323,63 @@ export default function CpDashboard() {
         </div>
       </div>
 
+      {/* Change-Requests */}
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-heading font-semibold text-txt-primary flex items-center gap-2">
+            <GitPullRequest className="w-4 h-4 text-scnat-teal" /> Change-Vorschläge
+          </h3>
+          <Link to="/cp/changes" className="text-xs text-scnat-red hover:text-scnat-red/80 transition-colors">Verwalten →</Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+          <div className="bg-status-yellow/10 rounded-sm p-2 text-center">
+            <p className="text-base font-heading font-semibold text-status-yellow">{changeStats.eingereicht}</p>
+            <p className="text-[9px] text-txt-tertiary">Eingereicht</p>
+          </div>
+          <div className="bg-status-blue/10 rounded-sm p-2 text-center">
+            <p className="text-base font-heading font-semibold text-status-blue">{changeStats.pruefung}</p>
+            <p className="text-[9px] text-txt-tertiary">In Prüfung</p>
+          </div>
+          <div className="bg-status-green/10 rounded-sm p-2 text-center">
+            <p className="text-base font-heading font-semibold text-status-green">{changeStats.angenommen}</p>
+            <p className="text-[9px] text-txt-tertiary">Angenommen</p>
+          </div>
+          <div className="bg-bg-elevated rounded-sm p-2 text-center">
+            <p className="text-base font-heading font-semibold text-txt-secondary">{changeStats.total}</p>
+            <p className="text-[9px] text-txt-tertiary">Total</p>
+          </div>
+        </div>
+        {changes.length > 0 ? (
+          <div className="space-y-2">
+            <p className="text-[10px] font-mono text-txt-tertiary mb-1">Letzte Vorschläge</p>
+            {changes
+              .sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))
+              .slice(0, 5)
+              .map(c => (
+                <div key={c.id} className="flex items-center gap-3 text-xs py-1.5 border-b border-bd-faint last:border-0">
+                  <span className="text-txt-primary font-medium flex-1 truncate">{c.titel}</span>
+                  <span className="text-txt-tertiary truncate max-w-[80px]">{c.kontakt}</span>
+                  {c.readiness?.widerstand && (
+                    <span className={`text-[10px] font-mono ${
+                      c.readiness.widerstand === 'hoch' ? 'text-scnat-red' :
+                      c.readiness.widerstand === 'mittel' ? 'text-status-yellow' :
+                      'text-status-green'
+                    }`}>{c.readiness.widerstand}</span>
+                  )}
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm ${
+                    c.status === 'eingereicht' ? 'bg-status-yellow/15 text-status-yellow' :
+                    c.status === 'in_pruefung' ? 'bg-status-blue/15 text-status-blue' :
+                    c.status === 'angenommen' ? 'bg-status-green/15 text-status-green' :
+                    'bg-scnat-red/15 text-scnat-red'
+                  }`}>{c.status}</span>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <p className="text-xs text-txt-tertiary">Noch keine Change-Vorschläge eingegangen.</p>
+        )}
+      </div>
+
       {/* Schulungsthemen */}
       <div className="bg-bg-surface border border-bd-faint rounded-sm p-5">
         <div className="flex items-center justify-between mb-4">
