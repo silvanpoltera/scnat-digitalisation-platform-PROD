@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-heading: 'DM Sans', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --bg-base: #0C0E10;
+    --bg-surface: #141618;
+    --bg-elevated: #1C1E22;
+    --border-faint: #23262B;
+    --border-default: #2E3238;
+    --border-strong: #5A616B;
+    --text-primary: #ECEEF1;
+    --text-secondary: #8A8F9B;
+    --text-tertiary: #4E535D;
+    --accent-red: #EA515A;
+    --accent-red-hover: #F06570;
+    --status-green: #2ECC71;
+    --status-yellow: #F39C12;
+    --status-blue: #3498DB;
+
+    --background: 210 14% 6%;
+    --foreground: 218 14% 93%;
+    --card: 210 10% 8%;
+    --card-foreground: 218 14% 93%;
+    --popover: 210 10% 8%;
+    --popover-foreground: 218 14% 93%;
+    --primary: 357 78% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 6% 12%;
+    --secondary-foreground: 218 14% 93%;
+    --muted: 210 6% 12%;
+    --muted-foreground: 218 8% 57%;
+    --accent: 210 6% 15%;
+    --accent-foreground: 218 14% 93%;
+    --destructive: 357 78% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 8% 17%;
+    --input: 210 8% 17%;
+    --ring: 357 78% 62%;
+    --radius: 0.25rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+  code, pre, .font-mono, kbd {
+    font-family: var(--font-mono);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}

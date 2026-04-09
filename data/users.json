@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "name": "Silvan Poltera",
+    "email": "silvan.poltera@scnat.ch",
+    "passwordHash": "$2b$12$i8Zdpk8bMsyDYy2NUhg6P.FioKJdtEJsnxhIRUPO3LdZXleEjOMDe",
+    "role": "admin"
+  },
+  {
+    "id": "u2",
+    "name": "David Jezdimirovic",
+    "email": "david.jezdimirovic@scnat.ch",
+    "passwordHash": "$2b$12$v05cmQ1zZNuNrHlUpxjDE.OiFKOUpAAdOFy5.U5jhN2bnfUojALdi",
+    "role": "user"
+  },
+  {
+    "id": "u3",
+    "name": "Anina Steinlin",
+    "email": "anina.steinlin@scnat.ch",
+    "passwordHash": "$2b$12$v05cmQ1zZNuNrHlUpxjDE.OiFKOUpAAdOFy5.U5jhN2bnfUojALdi",
+    "role": "user"
+  },
+  {
+    "id": "u4",
+    "name": "Arber Aziri",
+    "email": "arber.aziri@scnat.ch",
+    "passwordHash": "$2b$12$v05cmQ1zZNuNrHlUpxjDE.OiFKOUpAAdOFy5.U5jhN2bnfUojALdi",
+    "role": "user"
+  }
+]

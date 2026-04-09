@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "titel": "ChatGPT im Arbeitsalltag",
+    "beschreibung": "Wie nutze ich ChatGPT effektiv für E-Mails, Zusammenfassungen und Recherche?",
+    "typ": "vordefiniert",
+    "likes": [],
+    "erstellt": "2026-04-01T00:00:00Z",
+    "erstelltVon": "admin"
+  },
+  {
+    "id": "t2",
+    "titel": "Datenschutz & revDSG Basics",
+    "beschreibung": "Was müssen Mitarbeitende über das revidierte Datenschutzgesetz wissen?",
+    "typ": "vordefiniert",
+    "likes": [],
+    "erstellt": "2026-04-01T00:00:00Z",
+    "erstelltVon": "admin"
+  },
+  {
+    "id": "t3",
+    "titel": "Digitale Ablagestruktur",
+    "beschreibung": "Best Practices für die Ablagestruktur auf dem SCNAT-Fileserver.",
+    "typ": "vordefiniert",
+    "likes": [],
+    "erstellt": "2026-04-01T00:00:00Z",
+    "erstelltVon": "admin"
+  },
+  {
+    "id": "t4",
+    "titel": "Projektmanagement leicht gemacht",
+    "beschreibung": "Einführung in einfache PM-Methoden für den SCNAT-Alltag.",
+    "typ": "vordefiniert",
+    "likes": [],
+    "erstellt": "2026-04-01T00:00:00Z",
+    "erstelltVon": "admin"
+  }
+]

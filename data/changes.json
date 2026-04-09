@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ch1",
+    "titel": "Einführung digitales Sitzungsprotokoll",
+    "beschreibung": "Die Sitzungsprotokolle sollen neu digital und kollaborativ erstellt werden (z.B. über Notion oder OneNote), anstatt wie bisher als Word-Dokument per E-Mail versendet zu werden.",
+    "readiness": {
+      "betroffen": "Alle Abteilungen, ca. 45 Personen — jede:r, der an regelmässigen Sitzungen teilnimmt.",
+      "aenderung": "Protokoll wird direkt im Tool erstellt und geteilt. Kein Word-Versand mehr.",
+      "widerstand": "mittel",
+      "changeAgent": "David Jezdimirovic",
+      "kommunikation": "Info an Abteilungsleitende 2 Wochen vorher, dann Demo in einer Teamsitzung.",
+      "bedarf": "Kurze Einführung (15 min) pro Abteilung, FAQ-Dokument als Hilfe."
+    },
+    "kontakt": "Anna Meier",
+    "kontaktEmail": "anna.meier@scnat.ch",
+    "zustaendigerAgent": "David Jezdimirovic",
+    "status": "eingereicht",
+    "cluster": "",
+    "massnahmeId": "",
+    "adminNotiz": "",
+    "timestamp": "2026-03-20T14:30:00Z"
+  },
+  {
+    "id": "ch2",
+    "titel": "Automatisierung Spesenabrechnung",
+    "beschreibung": "Die papierbasierte Spesenabrechnung soll durch ein digitales Formular mit automatischer Weiterleitung an die Buchhaltung ersetzt werden.",
+    "readiness": {
+      "betroffen": "Alle Mitarbeitende mit Spesenberechtigung, ca. 30 Personen.",
+      "aenderung": "Papierformular entfällt, digitales Formular mit Beleg-Upload und automatischer Weiterleitung.",
+      "widerstand": "niedrig",
+      "changeAgent": "",
+      "kommunikation": "Ankündigung via Intranet, Kurzanleitung per E-Mail.",
+      "bedarf": "Screencast-Video (3 min), Ansprechperson bei Fragen."
+    },
+    "kontakt": "Anina Steinlin",
+    "kontaktEmail": "anina.steinlin@scnat.ch",
+    "zustaendigerAgent": "",
+    "status": "in_pruefung",
+    "cluster": "Prozesse & Methoden",
+    "massnahmeId": "",
+    "adminNotiz": "Guter Vorschlag, passt zu m04",
+    "timestamp": "2026-04-01T09:15:00Z"
+  }
+]

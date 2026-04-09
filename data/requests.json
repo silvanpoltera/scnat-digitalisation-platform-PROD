@@ -1,0 +1,59 @@
+[
+  {
+    "id": "r1",
+    "name": "Notion",
+    "begruendung": "Für die Dokumentation und das Wissensmanagement im Team. Notion bietet flexible Strukturen und ist kollaborativ nutzbar.",
+    "dringlichkeit": "hoch",
+    "abteilung": "Kommunikation",
+    "userName": "Anna Meier",
+    "userEmail": "anna.meier@scnat.ch",
+    "status": "in Prüfung",
+    "timestamp": "2026-03-15T10:30:00Z"
+  },
+  {
+    "id": "r2",
+    "name": "Miro",
+    "begruendung": "Ergänzung zu Mural für grössere Brainstorming-Sessions und Retrospektiven. Wird von externen Partnern bereits genutzt.",
+    "dringlichkeit": "normal",
+    "abteilung": "Digitalisierung",
+    "userName": "Silvan Poltera",
+    "userEmail": "silvan.poltera@scnat.ch",
+    "userId": "1",
+    "status": "offen",
+    "timestamp": "2026-03-22T14:00:00Z"
+  },
+  {
+    "id": "r3",
+    "name": "Canva Pro",
+    "begruendung": "Schnelle Erstellung von Social-Media-Grafiken und Präsentationen ohne Adobe CC.",
+    "dringlichkeit": "normal",
+    "abteilung": "Kommunikation",
+    "userName": "Lisa Braun",
+    "userEmail": "lisa.braun@scnat.ch",
+    "status": "bewilligt",
+    "timestamp": "2026-02-10T09:00:00Z"
+  },
+  {
+    "id": "r4",
+    "name": "Slack",
+    "begruendung": "Für schnelle interne Kommunikation zwischen den Abteilungen als Ergänzung zu E-Mail.",
+    "dringlichkeit": "dringend",
+    "abteilung": "Wissenschaft",
+    "userName": "Marc Fischer",
+    "userEmail": "marc.fischer@scnat.ch",
+    "status": "abgelehnt",
+    "timestamp": "2026-01-20T11:30:00Z"
+  },
+  {
+    "id": "r5",
+    "name": "Figma",
+    "begruendung": "Für das Design von Webportalen und Mockups. Kollaboratives Design-Tool als Ergänzung zu Adobe XD.",
+    "dringlichkeit": "hoch",
+    "abteilung": "IT-Abteilung",
+    "userName": "David Jezdimirovic",
+    "userEmail": "david.jezdimirovic@scnat.ch",
+    "userId": "u2",
+    "status": "offen",
+    "timestamp": "2026-04-02T08:45:00Z"
+  }
+]

@@ -1,0 +1,163 @@
+{
+  "status": {
+    "konsolidierung_prozent": 92,
+    "geplanter_abschluss": "2026",
+    "laufzeit_jahre": 12,
+    "start_jahr": 2014
+  },
+  "strategische_optionen": {
+    "titel": "Strategische Weichenstellung: Wohin geht die SCNAT DB?",
+    "beschreibung": "Die SCNAT DB steht an einem Wendepunkt. Nach über 10 Jahren Betrieb auf Xojo-Basis stellt sich die grundsätzliche Frage, in welche Richtung die Weiterentwicklung gehen soll. Diese Entscheidung hat weitreichende Auswirkungen auf Budget, Ressourcen, Zeitplanung und die gesamte digitale Infrastruktur der SCNAT.",
+    "status": "offen",
+    "optionen": [
+      {
+        "id": "opt-a",
+        "titel": "Status quo beibehalten & Ressourcen aufstocken",
+        "icon": "shield",
+        "beschreibung": "Die bestehende Technologie (Xojo, eigenes CMS, On-Premise-Server) wird beibehalten. Das Team wird personell verstärkt, um den wachsenden Anforderungen gerecht zu werden.",
+        "vorteile": [
+          "Kein technisches Migrationsrisiko",
+          "Sofort umsetzbar, kein Projektstau",
+          "Bestehendes Know-how wird weiter genutzt",
+          "Kein Unterbruch im laufenden Betrieb"
+        ],
+        "nachteile": [
+          "Xojo-Entwickler:innen sind schwer zu finden",
+          "Technologische Schulden wachsen weiter",
+          "Kein CI/CD, kein Infrastructure as Code möglich",
+          "Langfristig steigende Betriebskosten",
+          "Innovation und Modernisierung bleiben eingeschränkt"
+        ],
+        "aufwand": "Mittel (personell), gering (technisch)",
+        "risiko": "Mittelfristig hoch — Vendor Lock-in und zunehmende Abhängigkeit"
+      },
+      {
+        "id": "opt-b",
+        "titel": "Big Bang — Kompletterneuerung auf einen Schlag",
+        "icon": "zap",
+        "beschreibung": "Die gesamte SCNAT DB wird in einem Grossprojekt auf einen modernen Tech-Stack (z.B. Node.js/Python Backend, React/Next.js Frontend, PostgreSQL, Cloud-Hosting) migriert.",
+        "vorteile": [
+          "Sauberer, einheitlicher Tech-Stack danach",
+          "Alle modernen Standards (CI/CD, Terraform, Container) sofort",
+          "Langfristig deutlich geringere Betriebskosten",
+          "Bessere Talent-Verfügbarkeit am Markt"
+        ],
+        "nachteile": [
+          "Sehr hohes Projektrisiko — Parallelbetrieb nötig",
+          "Hoher initialer Investitionsbedarf",
+          "12+ Jahre gewachsene Logik muss vollständig verstanden und nachgebaut werden",
+          "Lange Projektlaufzeit (12–24 Monate realistisch)",
+          "Betrieb muss während Migration aufrechterhalten werden"
+        ],
+        "aufwand": "Sehr hoch",
+        "risiko": "Hoch — klassisches Grossprojekt-Risiko"
+      },
+      {
+        "id": "opt-c",
+        "titel": "Schrittweise Ablösung — Strangler Fig Pattern",
+        "icon": "git-branch",
+        "beschreibung": "Einzelne Module werden nach und nach durch moderne Komponenten ersetzt. Neue Funktionalität wird mit neuen Technologien gebaut und über APIs an die bestehende DB angebunden. Der Einstieg könnte über das CMS erfolgen — ein abgegrenzter, gut verstandener Bereich.",
+        "vorteile": [
+          "Geringes Risiko pro Schritt — schnelles Feedback",
+          "Sofortige Modernisierung neuer Module (CI/CD, Terraform, Container)",
+          "CMS als idealer erster Kandidat (klar abgegrenzt, hoher Leidensdruck)",
+          "Bestehende DB läuft weiter, kein Parallelbetrieb nötig",
+          "Inkrementelles Lernen — Team baut moderne Kompetenzen auf",
+          "Agiler Ansatz, der zur Digitalisierungsstrategie passt"
+        ],
+        "nachteile": [
+          "Über eine Übergangszeit existieren zwei Welten nebeneinander",
+          "API-Schicht zwischen alt und neu muss sauber gebaut werden",
+          "Längerer Gesamtzeitraum bis zur vollständigen Ablösung",
+          "Priorisierung der Module erfordert sorgfältige Planung"
+        ],
+        "aufwand": "Moderat pro Schritt, verteilt über längeren Zeitraum",
+        "risiko": "Gering bis mittel — kontrollierbar"
+      }
+    ]
+  },
+  "entscheide": [
+    {
+      "id": "e1",
+      "titel": "Xojo-Technologie",
+      "beschreibung": "Langfristige Eignung der Xojo-Plattform prüfen. Alternativen evaluieren oder bestehende Investition weiterentwickeln.",
+      "optionen": ["Xojo weiterführen und modernisieren", "Migration auf alternative Technologie planen", "Externe Evaluation beauftragen"],
+      "verantwortlich": "IT / Geschäftsleitung",
+      "status": "offen"
+    },
+    {
+      "id": "e2",
+      "titel": "CMS-Strategie",
+      "beschreibung": "Bestehendes CMS (eingebaut in SCNAT DB) beibehalten oder Ablösung durch modernes Headless CMS planen.",
+      "optionen": ["CMS weiterentwickeln", "Headless CMS evaluieren (z.B. Contentful, Storyblok)", "Eigenentwicklung modernisieren"],
+      "verantwortlich": "IT / Kommunikation",
+      "status": "offen"
+    },
+    {
+      "id": "e3",
+      "titel": "Datensouveränität – Hosting-Strategie",
+      "beschreibung": "On-Premise-Server langfristig zeitgemäss? Hybrid-Cloud oder vollständige Cloud-Migration prüfen unter Berücksichtigung von revDSG und Datensouveränität.",
+      "optionen": ["On-Prem beibehalten", "Hybrid-Modell (CH-Cloud + On-Prem)", "Schweizer Cloud-Anbieter prüfen (z.B. Infomaniak, exoscale)"],
+      "verantwortlich": "IT / Datenschutzbeauftragte",
+      "status": "offen"
+    },
+    {
+      "id": "e4",
+      "titel": "CI/CD & Deployment-Strategie",
+      "beschreibung": "Aktuell werden Deployments in festen, manuellen Zyklen durchgeführt — ohne Continuous Integration, ohne automatisierte Tests, ohne Rollback-Möglichkeit. Dies verlangsamt die Entwicklung und erhöht das Risiko bei jedem Release.",
+      "optionen": ["Manuellen Rhythmus beibehalten und Dokumentation verbessern", "CI/CD-Pipeline schrittweise einführen (z.B. GitHub Actions)", "Vollständige DevOps-Kultur mit automatisierten Tests, Staging und Prod"],
+      "verantwortlich": "IT / Entwicklung",
+      "status": "offen"
+    },
+    {
+      "id": "e5",
+      "titel": "Infrastructure as Code (Terraform)",
+      "beschreibung": "Vor jedem Deployment werden Server manuell geprüft und konfiguriert — ein fehleranfälliger und zeitintensiver Prozess. Terraform oder ähnliche IaC-Tools könnten die gesamte Infrastruktur versioniert, reproduzierbar und automatisiert verwalten.",
+      "optionen": ["Manuelle Serververwaltung beibehalten", "Terraform für neue Infrastruktur einführen", "Gesamte Infrastruktur mit Terraform/OpenTofu abbilden"],
+      "verantwortlich": "IT / Infrastruktur",
+      "status": "offen"
+    }
+  ],
+  "backlog": [
+    {
+      "id": "b1",
+      "titel": "Automatische Newsletter-Integration",
+      "beschreibung": "Newsletter-Versand direkt aus dem CMS heraus, ohne manuellen Export.",
+      "bereich": "CMS",
+      "seit": "2018",
+      "prioritaet": "hoch",
+      "status": "offen",
+      "notiz": ""
+    },
+    {
+      "id": "b2",
+      "titel": "Mehrsprachige Portalsuche",
+      "beschreibung": "Suchfunktion über alle Portale, die mehrsprachige Inhalte korrekt indexiert.",
+      "bereich": "Portale",
+      "seit": "2019",
+      "prioritaet": "hoch",
+      "status": "offen",
+      "notiz": ""
+    },
+    {
+      "id": "b3",
+      "titel": "API für Mitgliederdaten",
+      "beschreibung": "REST-API für den externen Zugriff auf Mitgliederdaten (read-only, mit Auth).",
+      "bereich": "DB-Frontend",
+      "seit": "2020",
+      "prioritaet": "mittel",
+      "status": "offen",
+      "notiz": ""
+    },
+    {
+      "id": "b4",
+      "titel": "Modernisierung DB-Frontend UI",
+      "beschreibung": "Veraltetes React-Frontend auf aktuelle Bibliotheken bringen.",
+      "bereich": "DB-Frontend",
+      "seit": "2021",
+      "prioritaet": "mittel",
+      "status": "offen",
+      "notiz": ""
+    }
+  ]
+}

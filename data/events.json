@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "titel": "KI-Grundlagen für Einsteiger",
+    "datum": "2026-05-12",
+    "zeit": "09:00–11:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 15,
+    "beschreibung": "Einführung in KI-Konzepte und den Einsatz von ChatGPT im Arbeitsalltag der SCNAT.",
+    "anmeldungen": ["user1", "user2", "user3", "user4"]
+  },
+  {
+    "id": "2",
+    "titel": "Datenschutz & revDSG",
+    "datum": "2026-05-26",
+    "zeit": "14:00–15:30",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 20,
+    "beschreibung": "Was das revidierte Datenschutzgesetz für die tägliche Arbeit bedeutet.",
+    "anmeldungen": ["user1", "user5"]
+  },
+  {
+    "id": "3",
+    "titel": "Prompt Engineering Workshop",
+    "datum": "2026-06-09",
+    "zeit": "10:00–12:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 12,
+    "beschreibung": "Praxisworkshop: bessere Prompts schreiben für ChatGPT und DeepL.",
+    "anmeldungen": ["user2", "user3", "user6", "user7", "user8"]
+  },
+  {
+    "id": "4",
+    "titel": "Digitale Ablagestruktur – Best Practices",
+    "datum": "2026-06-23",
+    "zeit": "13:30–15:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 20,
+    "beschreibung": "Wie organisiere ich meine Dateien auf dem Fileserver? Regeln, Vorlagen und Good Practices für die ganze SCNAT.",
+    "anmeldungen": ["user1", "user4", "user9"]
+  },
+  {
+    "id": "5",
+    "titel": "DeepL Translate & Write – Power-User Workshop",
+    "datum": "2026-07-07",
+    "zeit": "10:00–11:30",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 15,
+    "beschreibung": "Fortgeschrittene Nutzung von DeepL: Glossare anlegen, Formalitätsstufen, Write-Funktion optimal einsetzen.",
+    "anmeldungen": []
+  },
+  {
+    "id": "6",
+    "titel": "Einführung Projektmanagement-Framework",
+    "datum": "2026-07-21",
+    "zeit": "09:00–12:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 15,
+    "beschreibung": "Vorstellung des SCNAT PM-Frameworks: Sprint-Planung, Weekly Check-ins, Reviews und das Sprint Board.",
+    "anmeldungen": ["user2", "user5", "user10"]
+  },
+  {
+    "id": "7",
+    "titel": "KI für Fortgeschrittene – Custom GPTs & Projekte",
+    "datum": "2026-08-11",
+    "zeit": "14:00–16:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 12,
+    "beschreibung": "Eigene GPTs erstellen, Projekte in ChatGPT nutzen, Personalisierung und fortgeschrittene Techniken.",
+    "anmeldungen": []
+  },
+  {
+    "id": "8",
+    "titel": "Mural & digitale Zusammenarbeit",
+    "datum": "2026-08-25",
+    "zeit": "10:00–11:30",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 18,
+    "beschreibung": "Einführung in Mural.co: Templates, Workshops digital moderieren, Zusammenarbeit im Team stärken.",
+    "anmeldungen": ["user3"]
+  },
+  {
+    "id": "9",
+    "titel": "Change Management in der Praxis",
+    "datum": "2026-09-15",
+    "zeit": "09:00–11:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 20,
+    "beschreibung": "Wie begleite ich Veränderungen? Widerstände verstehen, Kommunikation gestalten, Change Agents stärken.",
+    "anmeldungen": []
+  },
+  {
+    "id": "10",
+    "titel": "Daten & Datenschutz – Auffrischung Q4",
+    "datum": "2026-10-05",
+    "zeit": "14:00–15:00",
+    "ort": "Bern, Haus der Akademien",
+    "maxTeilnehmer": 25,
+    "beschreibung": "Quartalsweise Auffrischung zu Datenschutz, Datenmanagement und den SCNAT-internen Regeln.",
+    "anmeldungen": []
+  }
+]

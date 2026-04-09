@@ -1,0 +1,57 @@
+export const newsItems = [
+  {
+    id: "pm-framework-v1",
+    date: "7. April 2026",
+    category: "PM & Umsetzung",
+    categoryColor: "#006482",
+    title: "PM-Framework verabschiedet: Lean-Agile für die SCNAT Digitalisierung",
+    teaser: "Sprint-basiertes Framework für die Umsetzung der Digitalisierungsstrategie ist bereit. 4-Wochen-Sprints, klare Rollen, Steering Committee quartalsweise.",
+    linkTo: "/prozesse",
+    isNew: true,
+  },
+  {
+    id: "portal-launch",
+    date: "April 2026",
+    category: "Portal",
+    categoryColor: "#EA515A",
+    title: "Digitalisierungsportal geht live",
+    teaser: "Dieses interne Portal ist eure zentrale Anlaufstelle für Infos zur Digitalisierung: Systemlandschaft, KI-Rahmen, Beschaffungsprozess und mehr.",
+    isNew: true,
+  },
+  {
+    id: "glossar-launch",
+    date: "September 2025",
+    category: "Grundlagen",
+    categoryColor: "#5A616B",
+    title: "Glossar zur Digitalen Transformation veröffentlicht",
+    teaser: "Gemeinsam mit avega erarbeitet: Ein Glossar klärt zentrale Begriffe und schafft ein gemeinsames Verständnis für Digitalisierung in der SCNAT.",
+    linkTo: "/glossar",
+  },
+  {
+    id: "ki-rahmen",
+    date: "März 2025",
+    category: "KI",
+    categoryColor: "#f18700",
+    title: "KI-Rahmen von der GL verabschiedet",
+    teaser: "Klare Regeln für den Einsatz von KI-Tools. ChatGPT Business Team ab sofort offiziell zugelassen. KI-Spezialisten stehen für Fragen bereit.",
+    linkTo: "/ki-hub",
+  },
+  {
+    id: "umfrage-ergebnis",
+    date: "Juni 2025",
+    category: "Umfrage",
+    categoryColor: "#00836f",
+    title: "Umfrage Digitaler Reifegrad: Resultate veröffentlicht",
+    teaser: "55 Mitarbeitende haben teilgenommen (> 2/3 aller SCNAT-Mitarbeitenden). Klare Erkenntnisse: Fehlende Zeit, Silo-Denken, noch nicht ausgeprägte Fehlerkultur.",
+  },
+  {
+    id: "vision-verabschiedet",
+    date: "Juni 2025",
+    category: "Strategie",
+    categoryColor: "#EA515A",
+    title: "Vision der GL verabschiedet: \"Digitalisierung vereinfacht.\"",
+    teaser: "Nach Diskussion zweier Varianten hat sich die GL für die kürzere, direktere Vision entschieden. Einfach und auf den Punkt.",
+  },
+];
+
+export const newsCategories = ["Alle", "Strategie", "KI", "PM & Umsetzung", "Portal", "Umfrage", "Grundlagen"];
