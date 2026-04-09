@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -8,17 +8,24 @@ import {
 } from 'lucide-react';
 import ScnatLogo from './ScnatLogo';
 
+const SECTION_MAP = {
+  '/cp/antraege': 'antraege',
+  '/cp/changes': 'changes',
+  '/cp/events': 'events',
+  '/cp/themen': 'themen',
+};
+
 const cpNavItems = [
   { label: 'Dashboard', path: '/cp', icon: LayoutDashboard },
   { label: 'Live Infos', path: '/cp/live-infos', icon: Radio },
   { label: 'News', path: '/cp/news', icon: Newspaper },
   { label: 'Content', path: '/cp/content', icon: FileText },
-  { label: 'Events', path: '/cp/events', icon: Calendar },
-  { label: 'Anträge', path: '/cp/antraege', icon: Inbox },
+  { label: 'Events', path: '/cp/events', icon: Calendar, badgeKey: 'events' },
+  { label: 'Anträge', path: '/cp/antraege', icon: Inbox, badgeKey: 'antraege' },
   { label: 'Users', path: '/cp/users', icon: Users },
-  { label: 'Changes', path: '/cp/changes', icon: GitPullRequest },
+  { label: 'Changes', path: '/cp/changes', icon: GitPullRequest, badgeKey: 'changes' },
   { label: 'Massnahmen', path: '/cp/massnahmen', icon: BarChart3 },
-  { label: 'Themen', path: '/cp/themen', icon: MessageSquare },
+  { label: 'Themen', path: '/cp/themen', icon: MessageSquare, badgeKey: 'themen' },
   { label: 'KI', path: '/cp/ki', icon: Brain },
   { label: 'SCNAT DB', path: '/cp/scnat-db', icon: Database },
 ];
@@ -28,14 +35,40 @@ export default function CpLayout() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [badges, setBadges] = useState({});
+
+  const refreshBadges = useCallback(() => {
+    fetch('/api/notifications/admin', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : {})
+      .then(setBadges)
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    refreshBadges();
+    const interval = setInterval(refreshBadges, 30000);
+    return () => clearInterval(interval);
+  }, [refreshBadges]);
 
   useEffect(() => {
     setSidebarOpen(false);
+    const section = SECTION_MAP[location.pathname];
+    if (section && badges[section] > 0) {
+      fetch('/api/notifications/admin/seen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ section }),
+      }).then(() => {
+        setBadges(prev => ({ ...prev, [section]: 0 }));
+      }).catch(() => {});
+    }
   }, [location.pathname]);
+
+  const totalBadges = Object.values(badges).reduce((s, n) => s + (n || 0), 0);
 
   return (
     <div className="min-h-screen bg-bg-base">
-      {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-40 md:hidden"
@@ -63,6 +96,7 @@ export default function CpLayout() {
           {cpNavItems.map(item => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
+            const badgeCount = item.badgeKey ? (badges[item.badgeKey] || 0) : 0;
             return (
               <Link
                 key={item.path}
@@ -70,11 +104,18 @@ export default function CpLayout() {
                 className={`flex items-center gap-2.5 px-2.5 py-1.5 text-sm rounded-sm transition-colors duration-150 ${
                   active
                     ? 'bg-bg-elevated text-txt-primary border border-bd-default'
-                    : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-elevated border border-transparent'
+                    : badgeCount > 0
+                      ? 'text-scnat-red bg-scnat-red/5 border border-scnat-red/15 hover:bg-scnat-red/10'
+                      : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-elevated border border-transparent'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 {item.label}
+                {badgeCount > 0 && (
+                  <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-scnat-red text-white text-[10px] font-bold leading-none">
+                    {badgeCount}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -108,6 +149,11 @@ export default function CpLayout() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-sm font-heading font-semibold text-txt-primary">Control Panel</h1>
+            {totalBadges > 0 && (
+              <span className="text-[10px] font-mono text-scnat-red bg-scnat-red/10 px-2 py-0.5 rounded-sm">
+                {totalBadges} neu
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2 text-xs text-txt-secondary">
             <span className="hidden sm:inline">{user?.name}</span>

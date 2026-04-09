@@ -40,6 +40,7 @@ router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
   const idx = data.findIndex(r => r.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
   data[idx].status = req.body.status;
+  data[idx].statusUpdatedAt = new Date().toISOString();
   if (req.body.antwort !== undefined) data[idx].antwort = req.body.antwort;
   writeJSON(FILE, data);
   res.json(data[idx]);

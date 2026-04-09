@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   Home, Target, Layers, Monitor, Brain, GitBranch,
   Users, HelpCircle, BookOpen, BarChart3, GraduationCap,
-  LogOut, Search, Settings, X, UserCircle,
+  LogOut, Search, Settings, X, UserCircle, Bell,
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import SearchModal from './SearchModal';
@@ -125,20 +125,30 @@ export default function Sidebar({ open, onClose }) {
                 <p className="text-xs text-txt-primary truncate">{user.name}</p>
                 <p className="text-[10px] text-txt-tertiary truncate">{user.email}</p>
               </div>
+              <Link to="/meine-uebersicht" className="relative p-1.5 rounded-sm text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated transition-colors" title="Meine Übersicht">
+                <Bell className="w-4 h-4" />
+                {notifCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-scnat-red text-white text-[9px] font-bold leading-none animate-pulse shadow-sm shadow-scnat-red/40">
+                    {notifCount}
+                  </span>
+                )}
+              </Link>
             </div>
           )}
           <Link
             to="/meine-uebersicht"
             className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-sm transition-colors mb-1 ${
-              location.pathname === '/meine-uebersicht'
-                ? 'bg-bg-elevated text-txt-primary border border-bd-default'
-                : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-elevated border border-transparent'
+              notifCount > 0 && location.pathname !== '/meine-uebersicht'
+                ? 'bg-scnat-red/10 text-scnat-red border border-scnat-red/20 hover:bg-scnat-red/15'
+                : location.pathname === '/meine-uebersicht'
+                  ? 'bg-bg-elevated text-txt-primary border border-bd-default'
+                  : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-elevated border border-transparent'
             }`}
           >
             <UserCircle className="w-3.5 h-3.5" />
             Meine Übersicht
             {notifCount > 0 && (
-              <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-scnat-red text-white text-[10px] font-bold leading-none animate-pulse">
+              <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-scnat-red text-white text-[10px] font-bold leading-none">
                 {notifCount}
               </span>
             )}

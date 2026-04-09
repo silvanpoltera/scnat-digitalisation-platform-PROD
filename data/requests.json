@@ -19,8 +19,10 @@
     "userName": "Silvan Poltera",
     "userEmail": "silvan.poltera@scnat.ch",
     "userId": "1",
-    "status": "offen",
-    "timestamp": "2026-03-22T14:00:00Z"
+    "status": "in Prüfung",
+    "timestamp": "2026-03-22T14:00:00Z",
+    "antwort": "neuer versuch\n",
+    "antwortTimestamp": "2026-04-09T12:07:52.713Z"
   },
   {
     "id": "r3",

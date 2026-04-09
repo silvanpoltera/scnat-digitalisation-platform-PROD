@@ -51,16 +51,18 @@ function ReorderView({ data, onSave }) {
     data.filter(m => m.reihenfolge > 0).sort((a, b) => a.reihenfolge - b.reihenfolge),
     [data]
   );
-  const unordered = useMemo(() =>
-    data.filter(m => !m.reihenfolge || m.reihenfolge <= 0),
-    [data]
-  );
 
   const [items, setItems] = useState(ordered);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { setItems(ordered); setDirty(false); }, [ordered]);
+
+  const itemIds = useMemo(() => new Set(items.map(m => m.id)), [items]);
+  const unordered = useMemo(() =>
+    data.filter(m => !itemIds.has(m.id)),
+    [data, itemIds]
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

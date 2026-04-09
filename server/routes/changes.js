@@ -44,10 +44,14 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   const idx = data.findIndex(c => c.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
+  const oldStatus = data[idx].status;
   const allowed = ['status', 'cluster', 'massnahmeId', 'adminNotiz'];
   allowed.forEach(key => {
     if (req.body[key] !== undefined) data[idx][key] = req.body[key];
   });
+  if (req.body.status && req.body.status !== oldStatus) {
+    data[idx].statusUpdatedAt = new Date().toISOString();
+  }
 
   writeJSON(FILE, data);
   res.json(data[idx]);

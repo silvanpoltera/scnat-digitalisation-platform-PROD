@@ -16,18 +16,26 @@ router.post('/', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Ausgebucht' });
   }
 
+  const regsExisting = readJSON('registrations.json');
+  const normalEmail = email.toLowerCase().trim();
+  const alreadyRegistered = regsExisting.some(r =>
+    r.eventId === eventId && (r.userId === req.user.id || (r.email || '').toLowerCase().trim() === normalEmail)
+  );
+  if (alreadyRegistered) {
+    return res.status(409).json({ error: 'Du bist bereits für dieses Event angemeldet.' });
+  }
+
   const reg = {
     id: generateId(),
     eventId,
     name,
-    email: email.toLowerCase().trim(),
+    email: normalEmail,
     abteilung,
     userId: req.user.id,
     timestamp: new Date().toISOString(),
   };
-  const regs = readJSON('registrations.json');
-  regs.push(reg);
-  writeJSON('registrations.json', regs);
+  regsExisting.push(reg);
+  writeJSON('registrations.json', regsExisting);
 
   if (!event.anmeldungen) event.anmeldungen = [];
   event.anmeldungen.push(reg.id);

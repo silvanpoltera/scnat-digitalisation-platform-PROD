@@ -73,6 +73,21 @@ function RegistrationModal({ event, onClose }) {
   const [abteilung, setAbteilung] = useState('');
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    if (!event) return;
+    fetch('/api/registrations/mine', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(regs => {
+        if (Array.isArray(regs) && regs.some(r => r.eventId === event.id)) {
+          setAlreadyRegistered(true);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setChecking(false));
+  }, [event]);
 
   if (!event) return null;
 
@@ -115,7 +130,15 @@ function RegistrationModal({ event, onClose }) {
             </span>
           </div>
 
-          {success ? (
+          {checking ? (
+            <div className="flex justify-center py-4">
+              <div className="w-5 h-5 border-2 border-scnat-red border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : alreadyRegistered ? (
+            <div className="bg-status-blue/10 border border-status-blue/30 text-status-blue text-sm px-3 py-2.5 rounded-sm">
+              Du bist bereits für dieses Event angemeldet.
+            </div>
+          ) : success ? (
             <div className="bg-status-green/10 border border-status-green/30 text-status-green text-sm px-3 py-2 rounded-sm">Anmeldung erfolgreich!</div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3">
