@@ -1,5 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List } from 'lucide-react';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const PRIO_OPTIONS = ['A', 'B', 'C', 'D'];
 const PRIO_LABEL = { A: 'Quick Win', B: 'Strategisch', C: 'Mittelfristig', D: 'Langfristig' };
@@ -17,16 +20,166 @@ const CLUSTER_OPTIONS = [
   'Strategie & Steuerung', 'Daten & Wissen',
 ];
 
+function SortableItem({ m, index }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 50 : undefined, opacity: isDragging ? 0.5 : 1 };
+
+  return (
+    <div ref={setNodeRef} style={style} className={`flex items-center gap-3 bg-bg-surface border rounded-sm px-4 py-3 ${isDragging ? 'border-scnat-red/40 shadow-lg' : 'border-bd-faint'}`}>
+      <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-txt-tertiary hover:text-txt-secondary p-0.5 touch-none">
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <div className={`w-7 h-7 rounded-sm flex items-center justify-center text-xs font-heading font-bold shrink-0 ${index <= 6 ? 'bg-scnat-red/15 text-scnat-red' : 'bg-bg-elevated text-txt-tertiary'}`}>
+        {index}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+          {m.isNew && <span className="text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">NEU</span>}
+        </div>
+        <h4 className="text-sm text-txt-primary font-medium truncate">{m.titel}</h4>
+        <p className="text-[10px] text-txt-tertiary">{m.cluster}</p>
+      </div>
+      {index === 6 && <div className="text-[9px] font-mono text-scnat-red bg-scnat-red/10 px-2 py-0.5 rounded-sm shrink-0 hidden sm:block">Ende Welle 1</div>}
+      {index === 12 && <div className="text-[9px] font-mono text-txt-tertiary bg-bg-elevated px-2 py-0.5 rounded-sm shrink-0 hidden sm:block">Ende Welle 2</div>}
+    </div>
+  );
+}
+
+function ReorderView({ data, onSave }) {
+  const ordered = useMemo(() =>
+    data.filter(m => m.reihenfolge > 0).sort((a, b) => a.reihenfolge - b.reihenfolge),
+    [data]
+  );
+  const unordered = useMemo(() =>
+    data.filter(m => !m.reihenfolge || m.reihenfolge <= 0),
+    [data]
+  );
+
+  const [items, setItems] = useState(ordered);
+  const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { setItems(ordered); setDirty(false); }, [ordered]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = useCallback((event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setItems(prev => {
+      const oldIdx = prev.findIndex(m => m.id === active.id);
+      const newIdx = prev.findIndex(m => m.id === over.id);
+      return arrayMove(prev, oldIdx, newIdx);
+    });
+    setDirty(true);
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const order = items.map((m, i) => ({ id: m.id, reihenfolge: i + 1 }));
+    await fetch('/api/massnahmen/reorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ order }),
+    });
+    setSaving(false);
+    setDirty(false);
+    onSave();
+  };
+
+  const addToOrder = (m) => {
+    setItems(prev => [...prev, { ...m, reihenfolge: prev.length + 1 }]);
+    setDirty(true);
+  };
+
+  const removeFromOrder = (id) => {
+    setItems(prev => prev.filter(m => m.id !== id));
+    setDirty(true);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-txt-primary font-medium">Drag & Drop Reihenfolge</p>
+            <p className="text-xs text-txt-secondary">Position 1–6 = «Start mit 6» (Erste Welle) · 7–12 = Zweite Welle</p>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={!dirty || saving}
+            className={`flex items-center gap-1.5 text-sm px-4 py-2 rounded-sm transition-colors ${dirty ? 'bg-scnat-red text-white hover:bg-[#F06570]' : 'bg-bg-elevated text-txt-tertiary cursor-not-allowed'}`}
+          >
+            <Save className="w-4 h-4" />
+            {saving ? 'Speichern…' : dirty ? 'Reihenfolge speichern' : 'Gespeichert'}
+          </button>
+        </div>
+      </div>
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={items.map(m => m.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-1.5">
+            {items.length === 0 && (
+              <p className="text-sm text-txt-tertiary text-center py-8">Keine priorisierten Massnahmen. Füge welche hinzu.</p>
+            )}
+            {items.map((m, i) => (
+              <div key={m.id} className="relative group">
+                <SortableItem m={m} index={i + 1} />
+                <button
+                  onClick={() => removeFromOrder(m.id)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-txt-tertiary hover:text-scnat-red p-1 transition-opacity"
+                  title="Aus Reihenfolge entfernen"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+                {i === 5 && <div className="border-t-2 border-dashed border-scnat-red/20 mt-1.5" />}
+              </div>
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {unordered.length > 0 && (
+        <div>
+          <h4 className="text-xs font-mono text-txt-tertiary mb-2">Nicht priorisiert ({unordered.length})</h4>
+          <div className="space-y-1">
+            {unordered.map(m => (
+              <div key={m.id} className="flex items-center gap-3 bg-bg-surface border border-bd-faint rounded-sm px-4 py-2">
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-mono text-txt-tertiary mr-2">{m.id.toUpperCase()}</span>
+                  <span className="text-xs text-txt-secondary">{m.titel}</span>
+                </div>
+                <button
+                  onClick={() => addToOrder(m)}
+                  className="text-[10px] text-scnat-teal hover:text-scnat-teal/80 font-medium px-2 py-1 rounded-sm hover:bg-scnat-teal/10 transition-colors shrink-0"
+                >
+                  + Hinzufügen
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CpMassnahmen() {
   const [data, setData] = useState([]);
   const [editing, setEditing] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [view, setView] = useState('list');
   const [newItem, setNewItem] = useState({
     titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0],
     wirkung: 5, aufwand: 5, prioritaet: 'C', status: 'geplant',
-    tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, notiz: '',
+    tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, isNew: false, reihenfolge: null, notiz: '',
   });
 
   const load = () => {
@@ -49,7 +202,8 @@ export default function CpMassnahmen() {
     total: data.length,
     geplant: data.filter(m => m.status === 'geplant').length,
     aktiv: data.filter(m => m.status === 'in_umsetzung').length,
-    start5: data.filter(m => m.start_empfohlen).length,
+    start6: data.filter(m => m.start_empfohlen).length,
+    neu: data.filter(m => m.isNew).length,
     db: data.filter(m => m.scnat_db).length,
   }), [data]);
 
@@ -73,7 +227,7 @@ export default function CpMassnahmen() {
       body: JSON.stringify({ ...newItem, prioritaet_label: PRIO_LABEL[newItem.prioritaet] || '' }),
     });
     setShowAdd(false);
-    setNewItem({ titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0], wirkung: 5, aufwand: 5, prioritaet: 'C', status: 'geplant', tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, notiz: '' });
+    setNewItem({ titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0], wirkung: 5, aufwand: 5, prioritaet: 'C', status: 'geplant', tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, isNew: false, reihenfolge: null, notiz: '' });
     load();
   };
 
@@ -94,15 +248,31 @@ export default function CpMassnahmen() {
           <div className="flex items-center gap-3 mt-1 text-[10px] font-mono text-txt-tertiary">
             <span>{stats.total} total</span>
             <span className="text-status-green">{stats.aktiv} aktiv</span>
-            <span className="text-status-yellow">{stats.start5} «Start 5»</span>
+            <span className="text-status-yellow">{stats.start6} «Start 6»</span>
+            <span className="text-scnat-teal">{stats.neu} neu</span>
             <span className="text-status-blue">{stats.db} DB</span>
           </div>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 bg-scnat-red text-white text-sm px-3 py-1.5 rounded-sm hover:bg-[#F06570] transition-colors">
-          <Plus className="w-4 h-4" /> Neue Massnahme
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex bg-bg-elevated border border-bd-faint rounded-sm p-0.5">
+            <button onClick={() => setView('list')} className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm transition-colors ${view === 'list' ? 'bg-bg-surface text-txt-primary border border-bd-default' : 'text-txt-secondary border border-transparent'}`}>
+              <List className="w-3.5 h-3.5" /> Liste
+            </button>
+            <button onClick={() => setView('reorder')} className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm transition-colors ${view === 'reorder' ? 'bg-bg-surface text-txt-primary border border-bd-default' : 'text-txt-secondary border border-transparent'}`}>
+              <ArrowUpDown className="w-3.5 h-3.5" /> Reihenfolge
+            </button>
+          </div>
+          {view === 'list' && (
+            <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 bg-scnat-red text-white text-sm px-3 py-1.5 rounded-sm hover:bg-[#F06570] transition-colors">
+              <Plus className="w-4 h-4" /> Neue Massnahme
+            </button>
+          )}
+        </div>
       </div>
 
+      {view === 'reorder' && <ReorderView data={data} onSave={load} />}
+
+      {view === 'list' && <>
       {/* Filters */}
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
@@ -158,7 +328,6 @@ export default function CpMassnahmen() {
         </form>
       )}
 
-      {/* List */}
       <div className="space-y-2">
         {filtered.map(m => {
           const isEditing = editing === m.id;
@@ -175,8 +344,10 @@ export default function CpMassnahmen() {
                       'bg-bg-elevated text-txt-tertiary'
                     }`}>Prio {m.prioritaet}</span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm ${STATUS_COLORS[m.status] || STATUS_COLORS.geplant}`}>{m.status}</span>
+                    {m.isNew && <span className="flex items-center gap-0.5 text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold"><Sparkles className="w-3 h-3" /> NEU</span>}
                     {m.start_empfohlen && <Star className="w-3 h-3 text-status-yellow" />}
                     {m.scnat_db && <Database className="w-3 h-3 text-status-blue" />}
+                    {m.reihenfolge && <span className="text-[10px] font-mono bg-scnat-red/10 text-scnat-red px-1.5 py-0.5 rounded-sm">#{m.reihenfolge}</span>}
                   </div>
                   <h4 className="text-sm text-txt-primary font-medium">{m.titel}</h4>
                   <p className="text-xs text-txt-secondary truncate">{m.beschreibung}</p>
@@ -252,6 +423,14 @@ export default function CpMassnahmen() {
                       <input type="checkbox" checked={m.scnat_portal || false} onChange={e => updateLocal(m.id, 'scnat_portal', e.target.checked)} className="rounded-sm" />
                       SCNAT-Portal
                     </label>
+                    <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+                      <input type="checkbox" checked={m.isNew || false} onChange={e => updateLocal(m.id, 'isNew', e.target.checked)} className="rounded-sm accent-scnat-teal" />
+                      <Sparkles className="w-3 h-3 text-scnat-teal" /> NEU
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-txt-secondary">
+                      Reihenfolge:
+                      <input type="number" min="0" max="99" value={m.reihenfolge || ''} onChange={e => updateLocal(m.id, 'reihenfolge', e.target.value ? parseInt(e.target.value) : null)} className="w-14 bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1 rounded-sm focus:border-scnat-red focus:outline-none" />
+                    </label>
                   </div>
 
                   {/* Tags */}
@@ -284,6 +463,7 @@ export default function CpMassnahmen() {
           );
         })}
       </div>
+      </>}
     </div>
   );
 }

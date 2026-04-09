@@ -16,7 +16,15 @@ router.post('/', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Ausgebucht' });
   }
 
-  const reg = { id: generateId(), eventId, name, email, abteilung, timestamp: new Date().toISOString() };
+  const reg = {
+    id: generateId(),
+    eventId,
+    name,
+    email: email.toLowerCase().trim(),
+    abteilung,
+    userId: req.user.id,
+    timestamp: new Date().toISOString(),
+  };
   const regs = readJSON('registrations.json');
   regs.push(reg);
   writeJSON('registrations.json', regs);
@@ -30,6 +38,21 @@ router.post('/', requireAuth, (req, res) => {
 
 router.get('/', requireAuth, (_req, res) => {
   res.json(readJSON('registrations.json'));
+});
+
+router.get('/mine', requireAuth, (req, res) => {
+  const regs = readJSON('registrations.json');
+  const events = readJSON('events.json');
+  const userEmail = (req.user.email || '').toLowerCase().trim();
+  const userId = req.user.id;
+  const myRegs = regs.filter(r =>
+    r.userId === userId || (r.email || '').toLowerCase().trim() === userEmail
+  );
+  const enriched = myRegs.map(r => {
+    const event = events.find(e => e.id === r.eventId);
+    return { ...r, event: event ? { titel: event.titel, datum: event.datum, zeit: event.zeit, ort: event.ort } : null };
+  });
+  res.json(enriched);
 });
 
 export default router;

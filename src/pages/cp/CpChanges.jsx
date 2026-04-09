@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2, MessageSquare, Send } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'eingereicht', label: 'Eingereicht', color: 'bg-status-yellow/15 text-status-yellow' },
@@ -26,6 +26,8 @@ export default function CpChanges() {
   const [massnahmen, setMassnahmen] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [editData, setEditData] = useState({});
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState('');
 
   const load = () => {
     Promise.all([
@@ -69,6 +71,19 @@ export default function CpChanges() {
 
   const updateEdit = (id, field, value) => {
     setEditData(prev => ({ ...prev, [id]: { ...(prev[id] || {}), [field]: value } }));
+  };
+
+  const handleReply = async (id) => {
+    if (!replyText.trim()) return;
+    await fetch(`/api/changes/${id}/reply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ antwort: replyText }),
+    });
+    setReplyingTo(null);
+    setReplyText('');
+    load();
   };
 
   const getStatusStyle = (status) => STATUS_OPTIONS.find(s => s.value === status)?.color || 'bg-bg-elevated text-txt-secondary';
@@ -227,12 +242,58 @@ export default function CpChanges() {
                             </button>
                           )}
                           <button
+                            onClick={() => { setReplyingTo(replyingTo === c.id ? null : c.id); setReplyText(c.antwort || ''); }}
+                            className="flex items-center gap-1 text-xs text-scnat-teal hover:text-scnat-teal/80 px-3 py-1.5 rounded-sm hover:bg-scnat-teal/10 transition-colors"
+                          >
+                            <MessageSquare className="w-3 h-3" /> Antworten
+                          </button>
+                          <button
                             onClick={() => handleDelete(c.id)}
                             className="flex items-center gap-1 text-xs text-txt-tertiary hover:text-scnat-red px-3 py-1.5 rounded-sm hover:bg-scnat-red/10 transition-colors ml-auto"
                           >
                             <Trash2 className="w-3 h-3" /> Löschen
                           </button>
                         </div>
+
+                        {/* Existing reply */}
+                        {c.antwort && replyingTo !== c.id && (
+                          <div className="mt-3 bg-status-green/5 border border-status-green/20 rounded-sm px-4 py-3">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <MessageSquare className="w-3.5 h-3.5 text-status-green" />
+                              <span className="text-[10px] font-mono text-status-green font-medium">
+                                Antwort{c.antwortTimestamp ? ` · ${new Date(c.antwortTimestamp).toLocaleDateString('de-CH')}` : ''}
+                              </span>
+                            </div>
+                            <p className="text-xs text-txt-primary leading-relaxed">{c.antwort}</p>
+                          </div>
+                        )}
+
+                        {/* Reply form */}
+                        {replyingTo === c.id && (
+                          <div className="mt-3 space-y-2">
+                            <textarea
+                              value={replyText}
+                              onChange={e => setReplyText(e.target.value)}
+                              placeholder="Antwort an den/die Einreichende/n..."
+                              rows={3}
+                              className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none"
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleReply(c.id)}
+                                className="flex items-center gap-1 bg-scnat-teal text-white text-xs px-3 py-1.5 rounded-sm hover:bg-scnat-teal/80 transition-colors"
+                              >
+                                <Send className="w-3 h-3" /> Senden
+                              </button>
+                              <button
+                                onClick={() => setReplyingTo(null)}
+                                className="text-xs text-txt-tertiary hover:text-txt-primary px-3 py-1.5"
+                              >
+                                Abbrechen
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

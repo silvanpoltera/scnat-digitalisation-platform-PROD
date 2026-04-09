@@ -15,6 +15,9 @@ import contentRoutes from './routes/content.js';
 import scnatInfraRoutes from './routes/scnat-infra.js';
 import kiContentRoutes from './routes/ki-content.js';
 import changesRoutes from './routes/changes.js';
+import liveInfosRoutes from './routes/live-infos.js';
+import newsRoutes from './routes/news.js';
+import notificationsRoutes from './routes/notifications.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -35,6 +38,9 @@ app.use('/api/content', contentRoutes);
 app.use('/api/scnat-infra', scnatInfraRoutes);
 app.use('/api/ki-content', kiContentRoutes);
 app.use('/api/changes', changesRoutes);
+app.use('/api/live-infos', liveInfosRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 const server = http.createServer(app);
 server.listen(PORT, () => {

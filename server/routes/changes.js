@@ -9,6 +9,16 @@ router.get('/', requireAuth, (_req, res) => {
   res.json(readJSON(FILE));
 });
 
+router.get('/mine', requireAuth, (req, res) => {
+  const data = readJSON(FILE);
+  const userEmail = (req.user.email || '').toLowerCase().trim();
+  const userId = req.user.id;
+  const mine = data.filter(c =>
+    c.userId === userId || (c.kontaktEmail || '').toLowerCase().trim() === userEmail
+  );
+  res.json(mine);
+});
+
 router.post('/', requireAuth, (req, res) => {
   const data = readJSON(FILE);
   const newItem = {
@@ -18,6 +28,10 @@ router.post('/', requireAuth, (req, res) => {
     cluster: '',
     massnahmeId: '',
     adminNotiz: '',
+    antwort: '',
+    antwortTimestamp: null,
+    userId: req.user.id,
+    userEmail: req.user.email,
     timestamp: new Date().toISOString(),
   };
   data.push(newItem);
@@ -35,6 +49,17 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
     if (req.body[key] !== undefined) data[idx][key] = req.body[key];
   });
 
+  writeJSON(FILE, data);
+  res.json(data[idx]);
+});
+
+router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
+  const data = readJSON(FILE);
+  const idx = data.findIndex(c => c.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
+
+  data[idx].antwort = req.body.antwort || '';
+  data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
   res.json(data[idx]);
 });

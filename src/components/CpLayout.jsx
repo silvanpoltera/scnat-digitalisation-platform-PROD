@@ -4,11 +4,14 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, FileText, Calendar, Inbox, Users,
   BarChart3, MessageSquare, Brain, Database, ArrowLeft, LogOut, Menu, X, GitPullRequest,
+  Radio, Newspaper,
 } from 'lucide-react';
 import ScnatLogo from './ScnatLogo';
 
 const cpNavItems = [
   { label: 'Dashboard', path: '/cp', icon: LayoutDashboard },
+  { label: 'Live Infos', path: '/cp/live-infos', icon: Radio },
+  { label: 'News', path: '/cp/news', icon: Newspaper },
   { label: 'Content', path: '/cp/content', icon: FileText },
   { label: 'Events', path: '/cp/events', icon: Calendar },
   { label: 'Anträge', path: '/cp/antraege', icon: Inbox },

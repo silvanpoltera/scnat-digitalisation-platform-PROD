@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import { Mail, Users, Heart, Brain } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 
-const lead = { name: "Silvan", role: "Verantwortlicher Digitalisierung", area: "Strategische Leitung", initials: "SP" };
+const lead = { name: "Silvan Poltera", role: "Verantwortlicher Digitalisierung", area: "Strategische Leitung", initials: "SP", email: "silvan.poltera@scnat.ch" };
 
 const kiTeam = [
-  { name: "David Jezdimirovic", role: "KI-Spezialist", area: "Künstliche Intelligenz", initials: "DJ" },
-  { name: "Anina Steinlin", role: "KI-Spezialistin", area: "Künstliche Intelligenz", initials: "AS" },
-  { name: "Arber Aziri", role: "KI-Spezialist", area: "Künstliche Intelligenz", initials: "AA" },
+  { name: "David Jezdimirovic", role: "KI-Spezialist", area: "Künstliche Intelligenz", initials: "DJ", email: "david.jezdimirovic@scnat.ch" },
+  { name: "Anina Steinlin", role: "KI-Spezialistin", area: "Künstliche Intelligenz", initials: "AS", email: "anina.steinlin@scnat.ch" },
+  { name: "Arber Aziri", role: "KI-Spezialist", area: "Künstliche Intelligenz", initials: "AA", email: "arber.aziri@scnat.ch" },
 ];
 
 const colors = [
@@ -31,9 +31,9 @@ function PersonCard({ person, colorClass }) {
         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-muted text-muted-foreground">
           {person.area}
         </span>
-        <button className="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-primary">
+        <a href={`mailto:${person.email}`} className="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-primary" title={person.email}>
           <Mail className="w-4 h-4" />
-        </button>
+        </a>
       </div>
     </div>
   );

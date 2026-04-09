@@ -1,0 +1,80 @@
+[
+  {
+    "id": "pm-framework-v1",
+    "datum": "2026-04-07",
+    "category": "PM & Umsetzung",
+    "categoryColor": "#006482",
+    "title": "PM-Framework verabschiedet: Lean-Agile für die SCNAT Digitalisierung",
+    "teaser": "Sprint-basiertes Framework für die Umsetzung der Digitalisierungsstrategie ist bereit. 4-Wochen-Sprints, klare Rollen, Steering Committee quartalsweise.",
+    "linkTo": "/prozesse",
+    "isNew": true,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2026-04-07T00:00:00.000Z"
+  },
+  {
+    "id": "portal-launch",
+    "datum": "2026-04-01",
+    "category": "Portal",
+    "categoryColor": "#EA515A",
+    "title": "Digitalisierungsportal geht live",
+    "teaser": "Dieses interne Portal ist eure zentrale Anlaufstelle für Infos zur Digitalisierung: Systemlandschaft, KI-Rahmen, Beschaffungsprozess und mehr.",
+    "linkTo": null,
+    "isNew": true,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2026-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "glossar-launch",
+    "datum": "2025-09-15",
+    "category": "Grundlagen",
+    "categoryColor": "#5A616B",
+    "title": "Glossar zur Digitalen Transformation veröffentlicht",
+    "teaser": "Gemeinsam mit avega erarbeitet: Ein Glossar klärt zentrale Begriffe und schafft ein gemeinsames Verständnis für Digitalisierung in der SCNAT.",
+    "linkTo": "/glossar",
+    "isNew": false,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2025-09-15T00:00:00.000Z"
+  },
+  {
+    "id": "ki-rahmen",
+    "datum": "2025-03-01",
+    "category": "KI",
+    "categoryColor": "#f18700",
+    "title": "KI-Rahmen von der GL verabschiedet",
+    "teaser": "Klare Regeln für den Einsatz von KI-Tools. ChatGPT Business Team ab sofort offiziell zugelassen. KI-Spezialisten stehen für Fragen bereit.",
+    "linkTo": "/ki-hub",
+    "isNew": false,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2025-03-01T00:00:00.000Z"
+  },
+  {
+    "id": "umfrage-ergebnis",
+    "datum": "2025-06-01",
+    "category": "Umfrage",
+    "categoryColor": "#00836f",
+    "title": "Umfrage Digitaler Reifegrad: Resultate veröffentlicht",
+    "teaser": "55 Mitarbeitende haben teilgenommen (> 2/3 aller SCNAT-Mitarbeitenden). Klare Erkenntnisse: Fehlende Zeit, Silo-Denken, noch nicht ausgeprägte Fehlerkultur.",
+    "linkTo": null,
+    "isNew": false,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2025-06-01T00:00:00.000Z"
+  },
+  {
+    "id": "vision-verabschiedet",
+    "datum": "2025-06-15",
+    "category": "Strategie",
+    "categoryColor": "#EA515A",
+    "title": "Vision der GL verabschiedet: \"Digitalisierung vereinfacht.\"",
+    "teaser": "Nach Diskussion zweier Varianten hat sich die GL für die kürzere, direktere Vision entschieden. Einfach und auf den Punkt.",
+    "linkTo": null,
+    "isNew": false,
+    "aktiv": true,
+    "gueltigBis": null,
+    "erstellt": "2025-06-15T00:00:00.000Z"
+  }
+]

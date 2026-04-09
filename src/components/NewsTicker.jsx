@@ -2,31 +2,42 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Radio } from "lucide-react";
 
-const tickerItems = [
-  { tag: "KI", text: "KI-Rahmen offiziell verabschiedet – alle Mitarbeitenden sind eingeladen, die neuen Richtlinien zu lesen", priority: "high" },
-  { tag: "Neu", text: "Neue Software & Co-Übersicht online – Feedback willkommen!", priority: "normal" },
-  { tag: "Team", text: "Task Force Digitalisierung gegründet – jetzt als Change Agent mitmachen", priority: "normal" },
-  { tag: "Wissen", text: "Neues Glossar online – über 20 Digitalisierungsbegriffe erklärt", priority: "normal" },
-  { tag: "Event", text: "Nächster Digitalisierungs-Workshop: 22. April 2026 – Anmeldung offen", priority: "normal" },
+const FALLBACK_ITEMS = [
+  { tag: "Info", text: "Willkommen auf der Digitalisierungsplattform der SCNAT", priority: "normal" },
 ];
 
 export default function NewsTicker() {
+  const [items, setItems] = useState([]);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (isPaused) return;
+    fetch('/api/live-infos', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => setItems(Array.isArray(d) && d.length > 0 ? d : FALLBACK_ITEMS))
+      .catch(() => setItems(FALLBACK_ITEMS));
+  }, []);
+
+  const tickerItems = items.length > 0 ? items : FALLBACK_ITEMS;
+
+  useEffect(() => {
+    if (isPaused || tickerItems.length <= 1) return;
     intervalRef.current = setInterval(() => {
       setCurrent((prev) => (prev + 1) % tickerItems.length);
     }, 5000);
     return () => clearInterval(intervalRef.current);
-  }, [isPaused]);
+  }, [isPaused, tickerItems.length]);
+
+  useEffect(() => {
+    setCurrent(0);
+  }, [tickerItems.length]);
 
   const goNext = () => setCurrent((prev) => (prev + 1) % tickerItems.length);
   const goPrev = () => setCurrent((prev) => (prev - 1 + tickerItems.length) % tickerItems.length);
 
-  const item = tickerItems[current];
+  const item = tickerItems[current] || tickerItems[0];
+  if (!item) return null;
 
   return (
     <div

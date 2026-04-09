@@ -18,6 +18,10 @@
     "cluster": "",
     "massnahmeId": "",
     "adminNotiz": "",
+    "antwort": "",
+    "antwortTimestamp": null,
+    "userId": null,
+    "userEmail": "anna.meier@scnat.ch",
     "timestamp": "2026-03-20T14:30:00Z"
   },
   {
@@ -39,6 +43,10 @@
     "cluster": "Prozesse & Methoden",
     "massnahmeId": "",
     "adminNotiz": "Guter Vorschlag, passt zu m04",
+    "antwort": "",
+    "antwortTimestamp": null,
+    "userId": "u3",
+    "userEmail": "anina.steinlin@scnat.ch",
     "timestamp": "2026-04-01T09:15:00Z"
   }
 ]

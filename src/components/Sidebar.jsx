@@ -3,12 +3,13 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   Home, Target, Layers, Monitor, Brain, GitBranch,
   Users, HelpCircle, BookOpen, BarChart3, GraduationCap,
-  LogOut, Search, Settings, X,
+  LogOut, Search, Settings, X, UserCircle,
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import SearchModal from './SearchModal';
 import NetworkBackground from './NetworkBackground';
 import ScnatLogo from './ScnatLogo';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const navItems = [
   { label: 'Übersicht', path: '/', icon: Home },
@@ -27,6 +28,7 @@ const navItems = [
 export default function Sidebar({ open, onClose }) {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { count: notifCount } = useNotifications();
   const [searchOpen, setSearchOpen] = useState(false);
 
   const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
@@ -125,6 +127,22 @@ export default function Sidebar({ open, onClose }) {
               </div>
             </div>
           )}
+          <Link
+            to="/meine-uebersicht"
+            className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-xs rounded-sm transition-colors mb-1 ${
+              location.pathname === '/meine-uebersicht'
+                ? 'bg-bg-elevated text-txt-primary border border-bd-default'
+                : 'text-txt-secondary hover:text-txt-primary hover:bg-bg-elevated border border-transparent'
+            }`}
+          >
+            <UserCircle className="w-3.5 h-3.5" />
+            Meine Übersicht
+            {notifCount > 0 && (
+              <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-scnat-red text-white text-[10px] font-bold leading-none animate-pulse">
+                {notifCount}
+              </span>
+            )}
+          </Link>
           {user?.role === 'admin' && (
             <Link
               to="/cp"

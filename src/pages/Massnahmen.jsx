@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle } from 'lucide-react';
+import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
 const CLUSTER_COLORS = {
@@ -30,6 +30,11 @@ function PrioBar({ value, max = 10, color = '#EA515A' }) {
 function StatusBadge({ m }) {
   return (
     <div className="flex items-center gap-1.5">
+      {m.isNew && (
+        <span className="flex items-center gap-0.5 text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">
+          <Sparkles className="w-3 h-3" /> NEU
+        </span>
+      )}
       {m.start_empfohlen && (
         <span className="flex items-center gap-0.5 text-[10px] font-mono bg-status-yellow/15 text-status-yellow px-1.5 py-0.5 rounded-sm">
           <Star className="w-3 h-3" /> Start
@@ -225,104 +230,100 @@ function MatrixView({ items }) {
   );
 }
 
-function StartFiveView({ items }) {
-  const recommended = items.filter(m => m.start_empfohlen);
-  const inProgress = items.filter(m => m.status === 'in_umsetzung');
-  const [showNext, setShowNext] = useState(false);
+function MassnahmenCard({ m, index, variant = 'primary' }) {
+  const isPrimary = variant === 'primary';
+  return (
+    <div className={`bg-bg-surface border rounded-sm p-5 transition-all ${isPrimary ? 'border-bd-faint hover:border-bd-strong' : 'border-bd-faint opacity-80 hover:opacity-100 hover:border-bd-strong'}`}>
+      <div className="flex items-start gap-3 mb-3">
+        <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-sm font-heading font-bold ${isPrimary ? 'bg-scnat-red/15 text-scnat-red' : 'bg-bg-elevated text-txt-tertiary'}`}>{index}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()} · Prio {m.prioritaet}</span>
+            {m.isNew && (
+              <span className="flex items-center gap-0.5 text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">
+                <Sparkles className="w-3 h-3" /> NEU
+              </span>
+            )}
+            {m.status === 'in_umsetzung' && (
+              <span className="flex items-center gap-0.5 text-[10px] font-mono bg-status-green/15 text-status-green px-1.5 py-0.5 rounded-sm">
+                <Activity className="w-3 h-3" /> Aktiv
+              </span>
+            )}
+          </div>
+          <h4 className="text-sm font-heading font-semibold text-txt-primary">{m.titel}</h4>
+        </div>
+      </div>
+      <p className="text-xs text-txt-secondary leading-relaxed mb-3">{m.beschreibung}</p>
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <span className="text-[10px] text-txt-tertiary">Wirkung</span>
+          <PrioBar value={m.wirkung} color="#2ECC71" />
+        </div>
+        <div className="flex-1">
+          <span className="text-[10px] text-txt-tertiary">Aufwand</span>
+          <PrioBar value={m.aufwand} color="#EA515A" />
+        </div>
+      </div>
+      <div className="flex items-center gap-1 mt-3">
+        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: CLUSTER_COLORS[m.cluster] }} />
+        <span className="text-[10px] text-txt-tertiary">{m.cluster}</span>
+      </div>
+    </div>
+  );
+}
 
-  const remaining = items
-    .filter(m => !m.start_empfohlen && m.status !== 'in_umsetzung' && m.prioritaet)
-    .sort((a, b) => (PRIO_ORDER[a.prioritaet] ?? 4) - (PRIO_ORDER[b.prioritaet] ?? 4))
-    .slice(0, 5);
+function StartSixView({ items }) {
+  const firstSix = items
+    .filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 6)
+    .sort((a, b) => a.reihenfolge - b.reihenfolge);
+  const secondSix = items
+    .filter(m => m.reihenfolge >= 7 && m.reihenfolge <= 12)
+    .sort((a, b) => a.reihenfolge - b.reihenfolge);
+  const inProgress = items.filter(m => m.status === 'in_umsetzung' && !m.reihenfolge);
+  const [showNext, setShowNext] = useState(false);
 
   return (
     <div className="space-y-8">
       <div className="bg-bg-surface border border-bd-faint rounded-sm p-5">
         <p className="text-sm text-txt-secondary leading-relaxed">
-          <strong className="text-txt-primary">Warum «Start mit 5»?</strong> — Die Digitalisierung ist kein Wasserfall-Projekt, 
-          sondern ein laufender Prozess. Es ist weder sinnvoll noch möglich, alle 28 Massnahmen gleichzeitig zu starten oder 
+          <strong className="text-txt-primary">Warum «Start mit 6»?</strong> — Die Digitalisierung ist kein Wasserfall-Projekt, 
+          sondern ein laufender Prozess. Es ist weder sinnvoll noch möglich, alle {items.length} Massnahmen gleichzeitig zu starten oder 
           den gesamten Fahrplan auf Jahre hinaus festzulegen. Prioritäten verschieben sich, Ressourcen ändern sich, und neue 
           Erkenntnisse aus der Umsetzung fliessen zurück. Deshalb arbeiten wir <strong className="text-txt-primary">agil</strong>: 
-          Wir starten mit 5 empfohlenen Massnahmen, sammeln Erfahrungen und planen dann die nächste Welle — angepasst an das, 
+          Wir starten mit 6 priorisierten Massnahmen, sammeln Erfahrungen und planen dann die nächste Welle — angepasst an das, 
           was wir gelernt haben.
         </p>
       </div>
 
       <div>
-        <h3 className="text-lg font-heading font-semibold text-txt-primary mb-1">Start mit 5</h3>
-        <p className="text-sm text-txt-secondary mb-6">Empfohlene Massnahmen für den sofortigen Start</p>
+        <h3 className="text-lg font-heading font-semibold text-txt-primary mb-1">Start mit 6</h3>
+        <p className="text-sm text-txt-secondary mb-6">Priorisierte Massnahmen für den sofortigen Start</p>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {recommended.map((m, i) => (
-            <div key={m.id} className="bg-bg-surface border border-bd-faint rounded-sm p-5 hover:border-bd-strong transition-colors">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="w-8 h-8 rounded-sm bg-scnat-red/15 text-scnat-red flex items-center justify-center text-sm font-heading font-bold">{i + 1}</div>
-                <div className="flex-1">
-                  <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()} · Prio {m.prioritaet}</span>
-                  <h4 className="text-sm font-heading font-semibold text-txt-primary">{m.titel}</h4>
-                </div>
-              </div>
-              <p className="text-xs text-txt-secondary leading-relaxed mb-3">{m.beschreibung}</p>
-              <div className="flex items-center gap-3">
-                <div className="flex-1">
-                  <span className="text-[10px] text-txt-tertiary">Wirkung</span>
-                  <PrioBar value={m.wirkung} color="#2ECC71" />
-                </div>
-                <div className="flex-1">
-                  <span className="text-[10px] text-txt-tertiary">Aufwand</span>
-                  <PrioBar value={m.aufwand} color="#EA515A" />
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-3">
-                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: CLUSTER_COLORS[m.cluster] }} />
-                <span className="text-[10px] text-txt-tertiary">{m.cluster}</span>
-              </div>
-            </div>
+          {firstSix.map((m) => (
+            <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="primary" />
           ))}
         </div>
       </div>
 
-      {!showNext && remaining.length > 0 && (
+      {!showNext && secondSix.length > 0 && (
         <div className="text-center">
           <button
             onClick={() => setShowNext(true)}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-bg-surface border border-bd-faint text-txt-secondary text-sm font-medium rounded-sm hover:border-bd-strong hover:text-txt-primary transition-colors"
           >
             <ChevronDown className="w-4 h-4" />
-            Nächste 5 anzeigen
+            Nächste 6 anzeigen
           </button>
         </div>
       )}
 
-      {showNext && remaining.length > 0 && (
+      {showNext && secondSix.length > 0 && (
         <div>
-          <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">Nächste 5 — mögliche Kandidaten</h3>
-          <p className="text-xs text-txt-secondary mb-4">Diese Massnahmen könnten als nächstes angegangen werden — Priorisierung erfolgt iterativ.</p>
+          <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">Nächste 6 — zweite Welle</h3>
+          <p className="text-xs text-txt-secondary mb-4">Diese Massnahmen werden in der nächsten Welle angegangen — Priorisierung erfolgt iterativ.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {remaining.map((m, i) => (
-              <div key={m.id} className="bg-bg-surface border border-bd-faint rounded-sm p-5 opacity-80 hover:opacity-100 hover:border-bd-strong transition-all">
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-sm bg-bg-elevated text-txt-tertiary flex items-center justify-center text-sm font-heading font-bold">{i + 6}</div>
-                  <div className="flex-1">
-                    <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()} · Prio {m.prioritaet}</span>
-                    <h4 className="text-sm font-heading font-semibold text-txt-primary">{m.titel}</h4>
-                  </div>
-                </div>
-                <p className="text-xs text-txt-secondary leading-relaxed mb-3">{m.beschreibung}</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <span className="text-[10px] text-txt-tertiary">Wirkung</span>
-                    <PrioBar value={m.wirkung} color="#2ECC71" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-[10px] text-txt-tertiary">Aufwand</span>
-                    <PrioBar value={m.aufwand} color="#EA515A" />
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 mt-3">
-                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: CLUSTER_COLORS[m.cluster] }} />
-                  <span className="text-[10px] text-txt-tertiary">{m.cluster}</span>
-                </div>
-              </div>
+            {secondSix.map((m) => (
+              <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="secondary" />
             ))}
           </div>
         </div>
@@ -392,14 +393,14 @@ export default function Massnahmen() {
   const views = [
     { id: 'list', label: 'Alle Massnahmen' },
     { id: 'matrix', label: 'Wirkung / Aufwand' },
-    { id: 'start5', label: 'Start mit 5' },
+    { id: 'start6', label: 'Start mit 6' },
   ];
 
   return (
     <div>
       <PageHeader
         title="Massnahmen"
-        subtitle="28 Massnahmen zur Umsetzung der Digitalisierungsstrategie"
+        subtitle={`${data.length || 32} Massnahmen zur Umsetzung der Digitalisierungsstrategie`}
         breadcrumb={[{ label: 'Massnahmen' }]}
         seed={33}
         accentColor="#9B59B6"
@@ -438,7 +439,7 @@ export default function Massnahmen() {
         ))}
       </div>
 
-      {view !== 'start5' && (
+      {view !== 'start6' && (
         <div className="flex items-center gap-3 mb-4 flex-wrap">
           <Filter className="w-4 h-4 text-txt-tertiary" />
           <select
@@ -467,7 +468,7 @@ export default function Massnahmen() {
 
       {view === 'list' && <ListView items={filtered} />}
       {view === 'matrix' && <MatrixView items={filtered} />}
-      {view === 'start5' && <StartFiveView items={data} />}
+      {view === 'start6' && <StartSixView items={data} />}
     </div>
     </div>
   );

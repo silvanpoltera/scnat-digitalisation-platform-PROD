@@ -1,0 +1,7 @@
+[
+  { "id": "li1", "tag": "KI", "text": "KI-Rahmen offiziell verabschiedet – alle Mitarbeitenden sind eingeladen, die neuen Richtlinien zu lesen", "priority": "high", "aktiv": true, "gueltigBis": null, "erstellt": "2026-04-01T00:00:00.000Z" },
+  { "id": "li2", "tag": "Neu", "text": "Neue Software & Co-Übersicht online – Feedback willkommen!", "priority": "normal", "aktiv": true, "gueltigBis": null, "erstellt": "2026-04-02T00:00:00.000Z" },
+  { "id": "li3", "tag": "Team", "text": "Task Force Digitalisierung gegründet – jetzt als Change Agent mitmachen", "priority": "normal", "aktiv": true, "gueltigBis": null, "erstellt": "2026-04-03T00:00:00.000Z" },
+  { "id": "li4", "tag": "Wissen", "text": "Neues Glossar online – über 20 Digitalisierungsbegriffe erklärt", "priority": "normal", "aktiv": true, "gueltigBis": null, "erstellt": "2026-04-04T00:00:00.000Z" },
+  { "id": "li5", "tag": "Event", "text": "Nächster Digitalisierungs-Workshop: 22. April 2026 – Anmeldung offen", "priority": "normal", "aktiv": true, "gueltigBis": "2026-04-22", "erstellt": "2026-04-05T00:00:00.000Z" }
+]

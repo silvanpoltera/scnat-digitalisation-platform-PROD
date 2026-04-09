@@ -26,5 +26,12 @@
     "email": "arber.aziri@scnat.ch",
     "passwordHash": "$2b$12$v05cmQ1zZNuNrHlUpxjDE.OiFKOUpAAdOFy5.U5jhN2bnfUojALdi",
     "role": "user"
+  },
+  {
+    "id": "u5",
+    "name": "Silvan Poltera (Privat)",
+    "email": "silvanpoltera@gmail.com",
+    "passwordHash": "$2b$12$EYWrjYQRCop.QHguPU8WDuPh5da5f9X8acHJ/IfnJNyn.Urt2GYm6",
+    "role": "user"
   }
 ]

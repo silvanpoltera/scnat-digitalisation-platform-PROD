@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import Layout from './components/Layout';
@@ -19,6 +20,7 @@ import Massnahmen from './pages/Massnahmen';
 import Schulungen from './pages/Schulungen';
 import SoftwareAntraege from './pages/SoftwareAntraege';
 import ScnatDb from './pages/ScnatDb';
+import MeineUebersicht from './pages/MeineUebersicht';
 
 import CpDashboard from './pages/cp/CpDashboard';
 import CpContent from './pages/cp/CpContent';
@@ -30,11 +32,14 @@ import CpThemen from './pages/cp/CpThemen';
 import CpKi from './pages/cp/CpKi';
 import CpScnatDb from './pages/cp/CpScnatDb';
 import CpChanges from './pages/cp/CpChanges';
+import CpLiveInfos from './pages/cp/CpLiveInfos';
+import CpNews from './pages/cp/CpNews';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <NotificationProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
 
@@ -48,6 +53,7 @@ function App() {
             <Route path="/schulungen" element={<Schulungen />} />
             <Route path="/software-antraege" element={<SoftwareAntraege />} />
             <Route path="/scnat-db" element={<ScnatDb />} />
+            <Route path="/meine-uebersicht" element={<MeineUebersicht />} />
             <Route path="/prozesse" element={<Prozesse />} />
             <Route path="/team" element={<Team />} />
             <Route path="/faqs" element={<Faqs />} />
@@ -65,9 +71,12 @@ function App() {
             <Route path="/cp/massnahmen" element={<CpMassnahmen />} />
             <Route path="/cp/themen" element={<CpThemen />} />
             <Route path="/cp/ki" element={<CpKi />} />
+            <Route path="/cp/live-infos" element={<CpLiveInfos />} />
+            <Route path="/cp/news" element={<CpNews />} />
             <Route path="/cp/scnat-db" element={<CpScnatDb />} />
           </Route>
         </Routes>
+        </NotificationProvider>
       </AuthProvider>
     </Router>
   );

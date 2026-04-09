@@ -18,6 +18,7 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
     'titel', 'beschreibung', 'cluster', 'status', 'notiz', 'tags',
     'wirkung', 'aufwand', 'prioritaet', 'prioritaet_label',
     'start_empfohlen', 'scnat_db', 'scnat_portal',
+    'isNew', 'reihenfolge',
   ];
   allowed.forEach(key => {
     if (req.body[key] !== undefined) data[idx][key] = req.body[key];
@@ -33,6 +34,19 @@ router.put('/', requireAuth, requireAdmin, (req, res) => {
   data.push(newItem);
   writeJSON(FILE, data);
   res.status(201).json(newItem);
+});
+
+router.post('/reorder', requireAuth, requireAdmin, (req, res) => {
+  const { order } = req.body;
+  if (!Array.isArray(order)) return res.status(400).json({ error: 'order must be an array' });
+
+  const data = readJSON(FILE);
+  order.forEach(({ id, reihenfolge }) => {
+    const item = data.find(m => m.id === id);
+    if (item) item.reihenfolge = reihenfolge;
+  });
+  writeJSON(FILE, data);
+  res.json({ ok: true });
 });
 
 export default router;

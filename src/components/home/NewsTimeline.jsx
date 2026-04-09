@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { newsItems, newsCategories } from "@/lib/data/news";
 
 export default function NewsTimeline() {
+  const [newsItems, setNewsItems] = useState([]);
   const [filter, setFilter] = useState("Alle");
 
+  useEffect(() => {
+    fetch('/api/news', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => setNewsItems(Array.isArray(d) ? d : []))
+      .catch(() => {});
+  }, []);
+
+  const categories = useMemo(() => {
+    const cats = [...new Set(newsItems.map(n => n.category).filter(Boolean))];
+    return ['Alle', ...cats.sort()];
+  }, [newsItems]);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('de-CH', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
   const filtered = filter === "Alle" ? newsItems : newsItems.filter((n) => n.category === filter);
+
+  if (newsItems.length === 0) return null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +36,7 @@ export default function NewsTimeline() {
         <p className="text-muted-foreground mb-5">Meilensteine und Updates zur Digitalisierung.</p>
 
         <div className="flex flex-wrap gap-1.5">
-          {newsCategories.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
@@ -32,9 +52,7 @@ export default function NewsTimeline() {
         </div>
       </div>
 
-      {/* Timeline */}
       <div className="relative">
-        {/* Vertical line */}
         <div className="absolute left-3 sm:left-4 top-2 bottom-2 w-px bg-border" />
 
         <div className="space-y-1">
@@ -47,7 +65,6 @@ export default function NewsTimeline() {
               transition={{ delay: i * 0.06, duration: 0.35 }}
               className="relative pl-9 sm:pl-12 py-4 group"
             >
-              {/* Dot */}
               <div className="absolute left-1.5 sm:left-2.5 top-[22px] z-10">
                 {item.isNew ? (
                   <span className="flex h-3 w-3">
@@ -68,7 +85,6 @@ export default function NewsTimeline() {
                 )}
               </div>
 
-              {/* Content */}
               <div className="flex items-center gap-3 mb-1.5 flex-wrap">
                 <span
                   className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider text-white"
@@ -76,7 +92,7 @@ export default function NewsTimeline() {
                 >
                   {item.category}
                 </span>
-                <span className="text-xs text-muted-foreground">{item.date}</span>
+                <span className="text-xs text-muted-foreground">{formatDate(item.datum)}</span>
                 {item.isNew && (
                   <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-scnat-red/10 text-scnat-red text-[10px] font-bold">
                     <Sparkles className="w-2.5 h-2.5" /> Neu
