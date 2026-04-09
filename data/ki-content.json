@@ -1,4 +1,252 @@
 {
+  "profis": {
+    "intro": "Dieser Bereich geht tiefer: Wie funktioniert KI wirklich? Was passiert unter der Haube? Hier lernst du die Konzepte kennen, die dir helfen, KI nicht nur zu nutzen, sondern zu verstehen — und bessere Entscheidungen zu treffen, wann und wie du sie einsetzt.",
+    "wie_ki_funktioniert": {
+      "titel": "Wie KI funktioniert — Die Grundlagen",
+      "intro": "Moderne KI-Sprachmodelle (LLMs) basieren auf der Transformer-Architektur. Sie wurden nicht programmiert, Regeln zu befolgen — sie haben statistische Muster aus riesigen Textmengen gelernt.",
+      "konzepte": [
+        {
+          "name": "Neuronales Netz",
+          "erklaerung": "Ein mathematisches Modell, inspiriert vom menschlichen Gehirn. Es besteht aus Millionen (oder Milliarden) von «Knoten», die miteinander verbunden sind. Jede Verbindung hat ein «Gewicht», das während des Trainings angepasst wird.",
+          "analogie": "Stell dir ein riesiges Netz aus Lichtschaltern vor. Jeder Schalter beeinflusst andere Schalter. Durch Millionen von Beispielen lernt das Netz, welche Schalter-Kombination welches Ergebnis erzeugt."
+        },
+        {
+          "name": "Transformer-Architektur",
+          "erklaerung": "Die Architektur hinter ChatGPT, Claude, Gemini und fast allen modernen LLMs. Der Kern ist der «Attention-Mechanismus»: Das Modell lernt, welche Wörter in einem Satz füreinander besonders relevant sind. Seit dem Paper «Attention Is All You Need» (2017, Google) die Grundlage der KI-Revolution.",
+          "analogie": "Beim Lesen eines Satzes weisst du instinktiv, dass in «Die Katze, die auf dem Dach sass, sprang herunter» das Wort «sprang» sich auf «Katze» bezieht, nicht auf «Dach». Der Attention-Mechanismus tut genau das — aber mathematisch."
+        },
+        {
+          "name": "Token-Vorhersage",
+          "erklaerung": "LLMs generieren Text, indem sie das wahrscheinlichste nächste Token vorhersagen. Das Modell sieht den bisherigen Text und berechnet eine Wahrscheinlichkeitsverteilung über alle möglichen nächsten Token. Dann wählt es eines aus (mit etwas Zufall, gesteuert durch Temperature).",
+          "analogie": "Wie die Auto-Complete-Funktion auf deinem Smartphone — aber milliardenfach komplexer. Statt nur 3 Vorschläge gibt es Wahrscheinlichkeiten für Zehntausende von möglichen Wörtern."
+        },
+        {
+          "name": "Parameter",
+          "erklaerung": "Die «Gewichte» im neuronalen Netz. GPT-4 hat schätzungsweise über 1 Billion Parameter. Mehr Parameter = mehr Kapazität für Wissen und Nuancen, aber auch teurer und langsamer. Kleinere Modelle (z.B. Llama 8B mit 8 Milliarden Parametern) können für spezifische Aufgaben trotzdem erstaunlich gut sein.",
+          "analogie": "Parameter sind wie die Synapsen im Gehirn. Mehr Synapsen = mehr Verbindungen = differenzierteres Denken. Aber ein Spezialist kann mit weniger Synapsen in seinem Fachgebiet besser sein als ein Generalist."
+        }
+      ]
+    },
+    "training": {
+      "titel": "Wie ein LLM trainiert wird",
+      "intro": "Das Training eines LLMs ist ein mehrstufiger Prozess, der Monate dauert und Millionen kostet. Zu verstehen, wie das funktioniert, hilft einzuordnen, warum KI bestimmte Stärken und Schwächen hat.",
+      "phasen": [
+        {
+          "name": "1. Pre-Training",
+          "beschreibung": "Das Modell liest riesige Textmengen aus dem Internet (Bücher, Wikipedia, Code, Websites, Foren). Es lernt dabei Sprachstrukturen, Fakten und Muster. Kosten: mehrere Millionen Dollar. Dauer: Wochen bis Monate auf tausenden GPUs.",
+          "ergebnis": "Ein «Basis-Modell», das Text vervollständigen kann, aber noch nicht hilfreich antwortet."
+        },
+        {
+          "name": "2. Supervised Fine-Tuning (SFT)",
+          "beschreibung": "Menschen schreiben Tausende von Beispieldialogen: «Wenn der User X fragt, antworte so.» Das Modell lernt, in einem hilfreichen, sicheren Format zu antworten statt einfach Text zu vervollständigen.",
+          "ergebnis": "Ein Modell, das Fragen beantworten und Anweisungen befolgen kann."
+        },
+        {
+          "name": "3. RLHF (Reinforcement Learning from Human Feedback)",
+          "beschreibung": "Menschen bewerten verschiedene Antworten des Modells: «Antwort A ist besser als B.» Daraus wird ein Belohnungsmodell trainiert, und das LLM wird optimiert, um bevorzugte Antworten zu geben. Dies macht Antworten hilfreicher, sicherer und besser formatiert.",
+          "ergebnis": "Das finale Modell, wie es in ChatGPT, Claude etc. eingesetzt wird."
+        },
+        {
+          "name": "4. Post-Training & Safety",
+          "beschreibung": "Zusätzliche Sicherheitsfilter, Red-Team-Tests (Menschen versuchen, das Modell zu schädlichem Output zu bringen) und Guardrails werden implementiert. Regelmässige Updates verbessern Sicherheit und Qualität.",
+          "ergebnis": "Ein produktionsreifes, sicheres Modell."
+        }
+      ],
+      "wichtig": "Das Training hat einen Stichtag (Knowledge Cutoff). GPT-4o wurde z.B. mit Daten bis Anfang 2024 trainiert. Alles danach «kennt» das Modell nicht — es sei denn, es sucht aktiv im Web (Browsing-Feature)."
+    },
+    "rag": {
+      "titel": "RAG — Retrieval Augmented Generation",
+      "intro": "RAG ist eine der wichtigsten Techniken, um KI-Modelle mit aktuellem oder eigenem Wissen zu kombinieren. Anstatt das Modell neu zu trainieren, gibt man ihm relevante Dokumente als Kontext mit.",
+      "wie_es_funktioniert": [
+        { "schritt": "Dokumente aufbereiten", "details": "Eigene Dokumente (PDFs, Websites, Datenbanken) werden in kleine Textabschnitte («Chunks») aufgeteilt und als Vektoren (Embeddings) gespeichert." },
+        { "schritt": "Frage stellen", "details": "Der User stellt eine Frage. Die Frage wird ebenfalls als Vektor dargestellt." },
+        { "schritt": "Relevante Chunks finden", "details": "Das System sucht die Textabschnitte, die der Frage am ähnlichsten sind (Vektor-Ähnlichkeitssuche)." },
+        { "schritt": "Antwort generieren", "details": "Die gefundenen Textabschnitte werden zusammen mit der Frage an das LLM geschickt. Das Modell antwortet basierend auf den bereitgestellten Informationen." }
+      ],
+      "vorteile": [
+        "Kein teures Neu-Training nötig — Wissen wird dynamisch aktualisiert",
+        "Quellenangaben möglich — das Modell kann sagen, woher die Info stammt",
+        "Kein Halluzinationsrisiko für die bereitgestellten Fakten (wenn gut implementiert)",
+        "Funktioniert mit internen, vertraulichen Dokumenten, die nie ins Training eingeflossen sind"
+      ],
+      "scnat_relevanz": "RAG ist genau das, was passiert, wenn du in ChatGPT Dateien hochlädst oder Custom GPTs mit Wissensdateien erstellst. Auch ChatGPTs «Browse the Web» ist eine Form von RAG. Für die SCNAT relevant: Eigene Wissensbasen (Glossare, FAQs, Berichte) könnten als RAG-System aufgebaut werden."
+    },
+    "embeddings": {
+      "titel": "Embeddings & Vektoren — Wie KI Bedeutung versteht",
+      "intro": "Embeddings sind das Herzstück davon, wie KI Sprache «versteht». Ein Embedding ist eine mathematische Darstellung eines Wortes, Satzes oder Dokuments als Zahlenreihe (Vektor) in einem hochdimensionalen Raum.",
+      "erklaerung": "Stell dir vor, jedes Wort wird als Punkt in einem Raum platziert. Wörter mit ähnlicher Bedeutung liegen nahe beieinander. «König» und «Königin» liegen nahe, «König» und «Tomate» weit auseinander. Das Faszinierende: Man kann mit diesen Vektoren rechnen! König − Mann + Frau ≈ Königin.",
+      "anwendungen": [
+        { "name": "Semantische Suche", "beschreibung": "Statt nach exakten Wörtern zu suchen, sucht man nach Bedeutung. «Mitarbeiter kündigen» findet auch «Personalfluktuation» und «Stellenabbau»." },
+        { "name": "Dokumenten-Clustering", "beschreibung": "Automatisch ähnliche Dokumente gruppieren. Z.B. alle Berichte zum Thema Biodiversität zusammenfassen." },
+        { "name": "Empfehlungssysteme", "beschreibung": "«Wer dieses Paper gelesen hat, interessiert sich wahrscheinlich auch für...»" },
+        { "name": "Duplikaterkennung", "beschreibung": "Finden von inhaltlich ähnlichen Texten, auch wenn sie unterschiedlich formuliert sind." }
+      ],
+      "dimensionen": "Ein GPT-4 Embedding hat 1536 Dimensionen — also 1536 Zahlen pro Text. Zum Vergleich: Wir können uns maximal 3 Dimensionen vorstellen. Diese Hochdimensionalität erlaubt es, extrem feine Bedeutungsnuancen zu erfassen."
+    },
+    "fine_tuning": {
+      "titel": "Fine-Tuning vs. Prompting — Wann was?",
+      "intro": "Wenn ein Basis-LLM nicht genau das tut, was man will, gibt es zwei Wege: Besser prompten oder das Modell anpassen (Fine-Tuning). Die richtige Wahl spart Zeit und Geld.",
+      "vergleich": [
+        {
+          "methode": "Prompting / Prompt Engineering",
+          "beschreibung": "Durch geschickte Formulierung der Anweisungen das gewünschte Verhalten erzielen. Inkl. System-Prompts, Few-Shot-Beispiele, Custom Instructions.",
+          "vorteile": ["Sofort einsetzbar, keine technischen Kenntnisse nötig", "Kostenlos (keine Trainingskosten)", "Flexibel anpassbar", "Ideal für 90% der Anwendungsfälle"],
+          "nachteile": ["Begrenzt durch das Kontextfenster", "Kann nicht tiefgreifendes Verhalten ändern", "Konsistenz nicht immer garantiert"]
+        },
+        {
+          "methode": "Fine-Tuning",
+          "beschreibung": "Das Modell wird mit eigenen Trainingsdaten weiter trainiert. Es lernt spezifische Muster, Terminologie oder Verhaltensweisen.",
+          "vorteile": ["Konsistenteres Verhalten für spezifische Aufgaben", "Kann firmeneigene Terminologie und Stile internalisieren", "Kürzere Prompts nötig (spart Token/Kosten pro Anfrage)"],
+          "nachteile": ["Technisches Know-how erforderlich", "Trainingskosten (Zeit + Geld)", "Erfordert qualitativ hochwertige Trainingsdaten", "Muss bei Modell-Updates ggf. wiederholt werden"]
+        },
+        {
+          "methode": "RAG (Retrieval Augmented Generation)",
+          "beschreibung": "Eigene Dokumente werden dynamisch als Kontext bereitgestellt. Das Modell bleibt unverändert, bekommt aber relevantes Wissen mitgeliefert.",
+          "vorteile": ["Kein Training nötig", "Wissen dynamisch aktualisierbar", "Quellenangaben möglich", "Daten bleiben unter eigener Kontrolle"],
+          "nachteile": ["Qualität hängt von der Chunk-Strategie ab", "Kosten für Embedding-Speicherung", "Zusätzliche Infrastruktur nötig"]
+        }
+      ],
+      "empfehlung": "Für die SCNAT: Starte immer mit Prompting. Wenn das nicht reicht, nutze RAG (Custom GPTs mit Wissensdateien). Fine-Tuning ist nur in Ausnahmefällen nötig — z.B. wenn ein Modell konsistent in einem sehr spezifischen SCNAT-Stil schreiben soll."
+    },
+    "agenten": {
+      "titel": "KI-Agenten & Automatisierung",
+      "intro": "KI-Agenten sind die nächste Stufe: Statt nur eine Frage zu beantworten, können sie selbständig mehrstufige Aufgaben erledigen — Werkzeuge benutzen, Entscheidungen treffen und Ergebnisse liefern.",
+      "was_ist_ein_agent": "Ein KI-Agent ist ein LLM, das in einer Schleife arbeitet: Es denkt nach, entscheidet welches Werkzeug es braucht, führt die Aktion aus, evaluiert das Ergebnis und wiederholt — bis die Aufgabe erledigt ist.",
+      "faehigkeiten": [
+        { "name": "Tool Use / Function Calling", "beschreibung": "Das Modell kann externe Werkzeuge aufrufen: Web-Suche, Taschenrechner, Datenbanken, APIs. Es entscheidet selbst, wann welches Tool gebraucht wird." },
+        { "name": "Planung", "beschreibung": "Komplexe Aufgaben werden in Teilschritte zerlegt. Der Agent erstellt einen Plan und arbeitet ihn ab." },
+        { "name": "Reflexion", "beschreibung": "Der Agent prüft seine eigenen Ergebnisse und korrigiert sich bei Fehlern. «Moment, das stimmt nicht — lass mich nochmal nachdenken.»" },
+        { "name": "Gedächtnis", "beschreibung": "Agenten können sich Zwischenergebnisse merken und in späteren Schritten darauf zugreifen." }
+      ],
+      "beispiele": [
+        { "name": "Recherche-Agent", "beschreibung": "Durchsucht systematisch mehrere Quellen, fasst Ergebnisse zusammen und erstellt einen strukturierten Bericht mit Quellenangaben." },
+        { "name": "Coding-Agent", "beschreibung": "Schreibt Code, testet ihn, findet Fehler, korrigiert sie und liefert ein funktionierendes Ergebnis. Beispiel: Cursor AI." },
+        { "name": "Daten-Agent", "beschreibung": "Liest eine CSV-Datei ein, bereinigt die Daten, erstellt Analysen und Grafiken, und exportiert einen Bericht." },
+        { "name": "E-Mail-Agent", "beschreibung": "Liest E-Mails, kategorisiert sie, erstellt Entwürfe für Antworten und schlägt Termine vor." }
+      ],
+      "risiken": [
+        "Autonome Agenten können unbeabsichtigte Aktionen ausführen — daher immer mit «Human in the Loop»",
+        "Kosten: Agenten nutzen viele Token (Denken + Werkzeugnutzung)",
+        "Halluzination in einem Zwischenschritt kann zu komplett falschem Endergebnis führen",
+        "Datenschutz: Welche Daten darf der Agent sehen und wohin senden?"
+      ],
+      "scnat_relevanz": "Für die SCNAT aktuell eher Zukunftsmusik — aber wichtig zu verstehen, wohin die Reise geht. Bereits heute nutzen Coding-Agents (wie Cursor) diese Prinzipien. In Zukunft könnten SCNAT-Agenten z.B. automatisch Publikationslisten aktualisieren, Event-Anmeldungen verarbeiten oder Berichte zusammenstellen."
+    },
+    "multimodal": {
+      "titel": "Multimodalität — Mehr als nur Text",
+      "intro": "Moderne LLMs können nicht nur Text, sondern auch Bilder, Audio und sogar Video verarbeiten und generieren. Man spricht von «multimodalen» Modellen.",
+      "modalitaeten": [
+        {
+          "typ": "Text → Bild",
+          "tool": "DALL·E 3 (in ChatGPT integriert), Midjourney, Stable Diffusion",
+          "erklaerung": "Aus einer Textbeschreibung wird ein Bild generiert. Nutzt ein «Diffusion Model», das schrittweise ein Bild aus Rauschen aufbaut.",
+          "scnat_beispiel": "Infografiken für Medienmitteilungen, Illustrationen für Präsentationen, Social-Media-Bilder"
+        },
+        {
+          "typ": "Bild → Text",
+          "tool": "GPT-4o Vision, Claude Vision, Gemini",
+          "erklaerung": "Das Modell «sieht» ein Bild und kann es beschreiben, analysieren oder Fragen dazu beantworten. Auch OCR (Texterkennung) ist möglich.",
+          "scnat_beispiel": "Gescannte Dokumente digitalisieren, Grafiken aus Papers analysieren, Fotos von Whiteboards auswerten"
+        },
+        {
+          "typ": "Text → Audio / Sprache",
+          "tool": "ChatGPT Voice, ElevenLabs, OpenAI TTS",
+          "erklaerung": "KI kann natürlich klingende Sprache aus Text erzeugen — in verschiedenen Stimmen und Sprachen.",
+          "scnat_beispiel": "Podcasts aus Berichten erstellen, barrierefreie Audio-Versionen von Publikationen"
+        },
+        {
+          "typ": "Audio → Text",
+          "tool": "Whisper (OpenAI), ChatGPT Voice",
+          "erklaerung": "Spracherkennung (Speech-to-Text): Gespräche, Interviews oder Meetings werden automatisch transkribiert.",
+          "scnat_beispiel": "Sitzungen automatisch transkribieren, Interview-Aufnahmen verschriftlichen"
+        },
+        {
+          "typ": "Text → Video",
+          "tool": "Sora (OpenAI), Runway, Pika",
+          "erklaerung": "Noch im Frühstadium: Aus Textbeschreibungen werden kurze Videos generiert. Qualität steigt rapide.",
+          "scnat_beispiel": "Erklärvideos für Wissenschaftskommunikation (Zukunft)"
+        }
+      ]
+    },
+    "ethik": {
+      "titel": "KI-Ethik, Bias & Verantwortung",
+      "intro": "KI ist ein mächtiges Werkzeug — aber nicht neutral. Wer KI einsetzt, muss die ethischen Implikationen verstehen und verantwortungsvoll handeln.",
+      "themen": [
+        {
+          "name": "Bias (Voreingenommenheit)",
+          "erklaerung": "KI-Modelle spiegeln die Vorurteile der Trainingsdaten wider. Wenn die Trainingsdaten hauptsächlich englischsprachig und westlich geprägt sind, kann das Modell bei anderen Kulturen oder Sprachen weniger genau oder fair sein.",
+          "beispiel": "Ein Bildgenerator könnte bei «Wissenschaftler» überproportional männliche, weisse Personen zeigen — weil genau das in den Trainingsdaten dominierte.",
+          "was_tun": "Ergebnisse kritisch prüfen. Bei wichtigen Entscheidungen nicht blind auf KI vertrauen. Diverse Perspektiven einbeziehen."
+        },
+        {
+          "name": "Urheberrecht & geistiges Eigentum",
+          "erklaerung": "LLMs wurden auf urheberrechtlich geschützten Texten trainiert. Die rechtliche Lage ist in vielen Ländern noch ungeklärt. Wer ist der Autor eines KI-generierten Texts?",
+          "beispiel": "Ein KI-generierter Text könnte unbeabsichtigt Passagen aus geschützten Werken reproduzieren.",
+          "was_tun": "KI-generierte Texte immer als Entwurf behandeln und selbst finalisieren. Bei Publikationen transparent machen, ob KI genutzt wurde."
+        },
+        {
+          "name": "Deepfakes & Desinformation",
+          "erklaerung": "Generative KI kann täuschend echte Bilder, Videos und Texte erstellen. Das Potenzial für Desinformation ist enorm.",
+          "beispiel": "Gefälschte wissenschaftliche Papers, manipulierte Fotos von Personen oder Events.",
+          "was_tun": "Quellen prüfen. Content-Authentizitäts-Initiativen (C2PA) unterstützen. Medienkompetenz fördern."
+        },
+        {
+          "name": "Transparenz & Erklärbarkeit",
+          "erklaerung": "LLMs sind «Black Boxes»: Selbst Experten können nicht genau erklären, warum ein Modell eine bestimmte Antwort gibt. Das ist problematisch, wenn KI-Entscheidungen Menschen betreffen.",
+          "beispiel": "Wenn ein KI-System Bewerbungen vorsortiert, können Kandidaten nicht nachvollziehen, warum sie abgelehnt wurden.",
+          "was_tun": "KI nie für endgültige Entscheidungen über Menschen nutzen. Ergebnisse immer durch einen Menschen prüfen lassen."
+        },
+        {
+          "name": "Umweltauswirkungen",
+          "erklaerung": "Training und Betrieb von LLMs verbrauchen enorme Mengen an Energie und Wasser (für Kühlung). GPT-4 Training: geschätzt 50+ GWh Strom, tausende Tonnen CO₂.",
+          "beispiel": "Eine einzelne ChatGPT-Anfrage verbraucht ca. 10x so viel Energie wie eine Google-Suche.",
+          "was_tun": "KI gezielt und effizient nutzen — nicht für triviale Aufgaben. Kleinere Modelle bevorzugen, wenn sie ausreichen."
+        }
+      ],
+      "scnat_relevanz": "Als wissenschaftliche Akademie hat die SCNAT eine besondere Verantwortung: Faktenbasiert, transparent und ethisch handeln. KI-Ergebnisse müssen immer verifiziert werden, und die Nutzung sollte den eigenen Werten entsprechen."
+    },
+    "zukunft": {
+      "titel": "Wohin geht die Reise?",
+      "intro": "KI entwickelt sich rasant weiter. Was heute State-of-the-Art ist, kann in einem Jahr überholt sein. Ein Überblick über die wichtigsten Trends und was sie für Organisationen wie die SCNAT bedeuten.",
+      "trends": [
+        { "name": "Agenten werden Mainstream", "zeitraum": "2025–2026", "beschreibung": "KI-Systeme, die nicht nur antworten, sondern selbständig Aufgaben erledigen: Recherchieren, Buchen, Organisieren. Erste Integrationen in Office-Software und Workflows.", "impact": "Routineaufgaben werden automatisiert. Mitarbeitende werden zu «Supervisoren» von KI-Agenten." },
+        { "name": "Spezialisierte kleine Modelle", "zeitraum": "2025–2027", "beschreibung": "Statt immer grösserer Modelle: Kleinere, effizientere Modelle, die für bestimmte Aufgaben optimiert sind. Laufen auf normalen Computern oder Smartphones.", "impact": "KI wird günstiger und zugänglicher. Datenschutz verbessert sich, da Daten lokal bleiben können." },
+        { "name": "Multimodale Integration", "zeitraum": "2025–2027", "beschreibung": "Modelle, die nahtlos zwischen Text, Bild, Audio und Video wechseln. Natürliche Konversation wird Standard.", "impact": "Sitzungstranskription, automatische Untertitel, Bild-Analyse werden alltägliche Tools." },
+        { "name": "KI-Regulierung (EU AI Act)", "zeitraum": "2025–2026", "beschreibung": "Der EU AI Act tritt schrittweise in Kraft. Klassifizierung von KI-Systemen nach Risikostufen. Transparenzpflichten und Verbote für bestimmte Anwendungen.", "impact": "Organisationen müssen dokumentieren, wie sie KI einsetzen. Compliance wird wichtiger." },
+        { "name": "Wissenschaftliche KI", "zeitraum": "2025–2030", "beschreibung": "KI-Modelle, die speziell für wissenschaftliche Aufgaben trainiert werden: Literaturrecherche, Hypothesengenerierung, Datenanalyse, Peer Review.", "impact": "Die Art, wie Forschung betrieben wird, verändert sich fundamental. Die SCNAT sollte aktiv mitgestalten." }
+      ]
+    },
+    "glossar": {
+      "titel": "KI-Glossar — Die wichtigsten Begriffe",
+      "begriffe": [
+        { "term": "AGI", "def": "Artificial General Intelligence — Eine hypothetische KI, die jede intellektuelle Aufgabe eines Menschen erledigen kann. Existiert noch nicht." },
+        { "term": "Alignment", "def": "Das Problem sicherzustellen, dass KI-Systeme im Einklang mit menschlichen Werten und Absichten handeln." },
+        { "term": "API", "def": "Application Programming Interface — Eine Schnittstelle, über die Programme miteinander kommunizieren. Z.B. die OpenAI API, um ChatGPT in eigene Anwendungen einzubauen." },
+        { "term": "Attention", "def": "Der Kern der Transformer-Architektur. Ein Mechanismus, der bestimmt, wie stark verschiedene Teile des Inputs bei der Verarbeitung gewichtet werden." },
+        { "term": "Benchmark", "def": "Ein standardisierter Test, um die Leistung verschiedener KI-Modelle zu vergleichen. Z.B. MMLU (Allgemeinwissen), HumanEval (Code)." },
+        { "term": "Chain-of-Thought (CoT)", "def": "Eine Technik, bei der das Modell seinen Denkprozess Schritt für Schritt offenlegt. Verbessert die Genauigkeit bei komplexen Aufgaben." },
+        { "term": "Diffusion Model", "def": "Die Technologie hinter Bildgeneratoren wie DALL·E und Stable Diffusion. Funktioniert, indem schrittweise Rauschen aus einem Bild entfernt wird." },
+        { "term": "Embedding", "def": "Eine numerische Repräsentation von Text als Vektor. Ähnliche Texte haben ähnliche Embeddings. Grundlage für semantische Suche und RAG." },
+        { "term": "Fine-Tuning", "def": "Weitertraining eines vortrainierten Modells mit spezifischen Daten, um es für bestimmte Aufgaben zu optimieren." },
+        { "term": "GPU", "def": "Graphics Processing Unit — Grafikkarten, die wegen ihrer parallelen Rechenkapazität ideal für KI-Training und -Inferenz sind. NVIDIA dominiert den Markt." },
+        { "term": "Grounding", "def": "Die Verankerung von KI-Antworten in verifizierbaren Fakten und Quellen. Reduziert Halluzinationen." },
+        { "term": "Halluzination", "def": "Wenn ein KI-Modell falsche Informationen als Fakt präsentiert. Besonders häufig bei Zahlen, Daten, Quellenangaben und Personennamen." },
+        { "term": "Inference", "def": "Der Prozess, bei dem ein trainiertes Modell eine Eingabe verarbeitet und eine Ausgabe generiert. Im Gegensatz zum Training, das einmalig ist." },
+        { "term": "LLM", "def": "Large Language Model — Ein grosses Sprachmodell wie GPT-4, Claude, Gemini oder Llama. Trainiert auf riesigen Textmengen." },
+        { "term": "LoRA", "def": "Low-Rank Adaptation — Eine effiziente Fine-Tuning-Methode, die nur wenige Parameter anpasst statt das gesamte Modell. Günstiger und schneller." },
+        { "term": "MCP", "def": "Model Context Protocol — Ein Standard von Anthropic, der es KI-Modellen ermöglicht, sicher auf externe Tools und Datenquellen zuzugreifen." },
+        { "term": "Open Source", "def": "Modelle, deren Gewichte öffentlich verfügbar sind (z.B. Llama, Mistral). Können lokal betrieben werden. Vs. «Closed Source» (GPT-4, Claude)." },
+        { "term": "Prompt", "def": "Die Eingabe/Anweisung an ein KI-Modell. Die Qualität des Prompts bestimmt massgeblich die Qualität der Antwort." },
+        { "term": "RAG", "def": "Retrieval Augmented Generation — Technik, bei der ein LLM mit externem Wissen angereichert wird, ohne es neu zu trainieren." },
+        { "term": "RLHF", "def": "Reinforcement Learning from Human Feedback — Trainingsmethode, bei der menschliches Feedback die KI verbessert." },
+        { "term": "System Prompt", "def": "Versteckte Anweisungen, die das Verhalten eines KI-Modells steuern. Der User sieht sie nicht, aber das Modell befolgt sie." },
+        { "term": "Temperature", "def": "Parameter, der die Zufälligkeit/Kreativität der Antworten steuert. 0 = deterministisch, 1+ = kreativ/variabel." },
+        { "term": "Token", "def": "Kleinste Verarbeitungseinheit eines LLM. Ca. ¾ eines Wortes. Modelle haben ein maximales Token-Limit (Kontextfenster)." },
+        { "term": "Transformer", "def": "Die neuronale Netzwerk-Architektur, auf der alle modernen LLMs basieren. Eingeführt 2017 im Paper «Attention Is All You Need»." },
+        { "term": "Zero-Shot", "def": "Wenn ein Modell eine Aufgabe löst, ohne dafür spezifische Beispiele gesehen zu haben. Vs. Few-Shot (mit Beispielen)." }
+      ]
+    }
+  },
   "cot_szenarien": [
     {
       "id": "reise",
@@ -57,8 +305,25 @@
     ]
   },
   "chatgpt": {
+    "grundlagen": {
+      "titel": "Was ist ChatGPT?",
+      "intro": "ChatGPT ist ein KI-Sprachmodell von OpenAI, das auf riesigen Textmengen trainiert wurde. Es versteht natürliche Sprache und kann Texte schreiben, Fragen beantworten, zusammenfassen, übersetzen und vieles mehr. Wichtig: ChatGPT «weiss» nichts — es berechnet Wahrscheinlichkeiten für das nächste Wort.",
+      "konzepte": [
+        { "begriff": "LLM (Large Language Model)", "erklaerung": "Ein grosses Sprachmodell, trainiert auf Milliarden von Texten. Es erkennt Muster in Sprache und generiert darauf basierend Antworten." },
+        { "begriff": "Token", "erklaerung": "Die kleinste Einheit, die ChatGPT verarbeitet. Ein Token ist ca. ¾ eines Wortes. 'Zusammenfassung' = 3–4 Token. Jedes Gespräch hat ein Token-Limit (Kontextfenster)." },
+        { "begriff": "Kontextfenster", "erklaerung": "Die maximale Textmenge, die ChatGPT gleichzeitig «sehen» kann. GPT-4o: ca. 128'000 Token (~300 Seiten). Je länger das Gespräch, desto mehr «vergisst» das Modell vom Anfang." },
+        { "begriff": "Halluzination", "erklaerung": "Wenn ChatGPT etwas erfindet, das plausibel klingt, aber falsch ist. Besonders bei Fakten, Zahlen und Quellenangaben. Deshalb: Ergebnisse immer prüfen!" },
+        { "begriff": "Temperature", "erklaerung": "Steuert die «Kreativität» der Antworten. Niedrig = präziser, wiederholbar. Hoch = kreativer, variabler. In ChatGPT nicht direkt einstellbar, aber über den Prompt beeinflussbar." }
+      ],
+      "versionen": [
+        { "name": "Free", "preis": "Kostenlos", "features": ["GPT-4o mini", "Begrenzte Nachrichten pro Tag", "Kein Zugriff auf erweiterte Funktionen", "Ideal zum Ausprobieren"] },
+        { "name": "Plus", "preis": "~20 USD/Monat", "features": ["GPT-4o, o3, o4-mini", "Mehr Nachrichten, schnellere Antworten", "DALL·E (Bildgenerierung)", "Erweiterte Datenanalyse", "Custom GPTs erstellen & nutzen", "Projekte-Funktion"] },
+        { "name": "Team", "preis": "~25 USD/Person/Monat", "features": ["Alles aus Plus", "Gemeinsamer Workspace für Custom GPTs", "Admin-Konsole für Benutzerverwaltung", "Daten werden NICHT zum Training verwendet", "Höhere Nutzungslimits", "Empfohlen für die SCNAT"] }
+      ]
+    },
     "prompts": {
       "titel": "Bessere Prompts schreiben",
+      "intro": "Die Qualität der Antwort hängt direkt von der Qualität des Prompts ab. Ein guter Prompt enthält: Kontext (wer bist du?), Aufgabe (was soll gemacht werden?), Format (wie soll das Ergebnis aussehen?) und Constraints (was soll vermieden werden?).",
       "schlecht_gut": [
         {
           "schlecht": "Fasse das zusammen.",
@@ -69,44 +334,218 @@
           "schlecht": "Schreibe eine E-Mail.",
           "gut": "Schreibe eine professionelle E-Mail an Prof. Müller (Uni Bern). Thema: Einladung als Keynote-Speaker an die SCNAT-Jahrestagung am 15. November 2026. Ton: höflich-akademisch, max. 150 Wörter.",
           "warum": "Spezifisch: Empfänger, Anlass, Datum, Ton, Längenbegrenzung."
+        },
+        {
+          "schlecht": "Übersetze das ins Französische.",
+          "gut": "Übersetze den folgenden Text ins Französische. Zielgruppe: akademisches Fachpublikum. Behalte Fachbegriffe bei und verwende die in der Romandie übliche Terminologie. Markiere Stellen, bei denen du unsicher bist.",
+          "warum": "Sprachvariante, Fachkontext und Unsicherheits-Marker erhöhen die Qualität."
+        },
+        {
+          "schlecht": "Mach mir eine Tabelle.",
+          "gut": "Erstelle eine Vergleichstabelle (Markdown) mit den Spalten: Tool-Name, Kosten pro Monat, Hauptfunktion, SCNAT-Eignung (1-5). Vergleiche: DeepL, ChatGPT, Copilot, Gemini. Sortiere nach Eignung absteigend.",
+          "warum": "Klare Struktur, konkrete Spalten, Bewertungsskala und Sortierung definiert."
         }
       ],
+      "techniken": [
+        { "name": "Rolle zuweisen", "beispiel": "Du bist ein erfahrener Wissenschaftskommunikator, der komplexe Forschung für Laien verständlich erklärt.", "erklaerung": "Durch eine Rollenzuweisung steuert man Ton, Fachtiefe und Perspektive der Antwort." },
+        { "name": "Schritt für Schritt", "beispiel": "Denke Schritt für Schritt nach und erkläre deinen Denkprozess, bevor du das Ergebnis lieferst.", "erklaerung": "Fördert genauere Antworten bei komplexen Aufgaben (Chain-of-Thought Prompting)." },
+        { "name": "Beispiele geben (Few-Shot)", "beispiel": "Hier sind 2 Beispiele für gute Zusammenfassungen: [Beispiel 1]... [Beispiel 2]... Erstelle jetzt eine ähnliche Zusammenfassung für:", "erklaerung": "Durch Beispiele versteht ChatGPT genau, welchen Stil und welches Format man erwartet." },
+        { "name": "Negativ-Constraints", "beispiel": "Verwende KEINE Aufzählungszeichen. Schreibe KEINEN Einleitungssatz. Komme direkt zur Sache.", "erklaerung": "Explizit sagen, was man NICHT will, hilft oft mehr als nur zu sagen, was man will." },
+        { "name": "Iterativ verfeinern", "beispiel": "Gut, aber mach es kürzer. → Jetzt formeller. → Ersetze 'man' durch 'wir'. → Perfekt, formatiere es als E-Mail.", "erklaerung": "ChatGPT wird besser, wenn man in mehreren Schritten verfeinert statt alles auf einmal zu verlangen." }
+      ],
       "scnat_usecases": [
-        "Event-Einladungen formulieren",
-        "Protokolle zusammenfassen",
-        "Übersetzungen DE→FR→EN prüfen",
-        "Projektskizzen strukturieren",
-        "FAQ-Texte für Websites generieren"
+        "Event-Einladungen formulieren (DE/FR/EN)",
+        "Sitzungsprotokolle zusammenfassen und Pendenzen extrahieren",
+        "Übersetzungen DE→FR→EN prüfen und verbessern",
+        "Projektskizzen und Konzeptpapiere strukturieren",
+        "FAQ-Texte für Websites generieren",
+        "Stelleninserate formulieren und optimieren",
+        "Wissenschaftliche Abstracts vereinfachen für Medienmitteilungen",
+        "Tabellen und Daten analysieren (Excel/CSV hochladen)",
+        "Präsentationsfolien inhaltlich vorbereiten",
+        "Social-Media-Beiträge für wissenschaftliche Themen formulieren"
       ]
     },
     "personalisierung": {
       "titel": "ChatGPT personalisieren",
-      "punkte": [
-        "Custom Instructions: Sprache, Tonalität, Organisation",
-        "Memory: ChatGPT erinnert sich an vorherige Gespräche",
-        "Beispiel: 'Ich arbeite bei der SCNAT. Antworte immer auf Deutsch. Verwende Sie-Form.'"
+      "intro": "ChatGPT kann an die eigenen Bedürfnisse angepasst werden. So muss man nicht bei jedem Gespräch wieder von vorne erklären, wer man ist und was man braucht.",
+      "custom_instructions": {
+        "titel": "Custom Instructions",
+        "beschreibung": "Unter Einstellungen → Personalisierung können zwei Felder ausgefüllt werden, die ChatGPT bei JEDEM Gespräch berücksichtigt.",
+        "felder": [
+          {
+            "name": "Über dich",
+            "beschreibung": "Wer bist du? Was machst du? In welchem Kontext arbeitest du?",
+            "beispiel": "Ich arbeite bei der SCNAT (Akademie der Naturwissenschaften Schweiz) in Bern. Mein Team koordiniert wissenschaftliche Kommissionen und organisiert Events. Wir kommunizieren auf Deutsch, Französisch und Englisch."
+          },
+          {
+            "name": "Antwort-Präferenzen",
+            "beschreibung": "Wie soll ChatGPT antworten? Welcher Ton, welches Format?",
+            "beispiel": "Antworte auf Deutsch, verwende Sie-Form. Bevorzuge kurze, prägnante Antworten. Verwende Markdown-Formatierung. Bei Unsicherheit: sage es explizit statt zu raten."
+          }
+        ]
+      },
+      "memory": {
+        "titel": "Memory-Funktion",
+        "beschreibung": "ChatGPT kann sich Dinge merken, die in Gesprächen erwähnt wurden. Die Memory ist standardmässig aktiviert und kann unter Einstellungen verwaltet werden.",
+        "punkte": [
+          "ChatGPT merkt sich automatisch wichtige Infos aus Gesprächen (z.B. «Ich schreibe immer in Du-Form»)",
+          "Gespeicherte Erinnerungen einsehen: Einstellungen → Personalisierung → Memory verwalten",
+          "Einzelne Erinnerungen löschen oder die gesamte Memory zurücksetzen",
+          "In einem Chat «Vergiss, dass...» sagen, um eine bestimmte Erinnerung zu entfernen",
+          "Memory funktioniert NICHT über verschiedene Custom GPTs hinweg — nur im Haupt-ChatGPT"
+        ]
+      },
+      "datenschutz": {
+        "titel": "Datenschutz-Einstellungen",
+        "punkte": [
+          "Unter Einstellungen → Datenkontrollen kann festgelegt werden, ob Gespräche zum Training verwendet werden dürfen",
+          "Im Team-Plan (empfohlen): Daten werden grundsätzlich NICHT zum Training verwendet",
+          "Temporäre Chats: Ein Modus, bei dem Gespräche nicht gespeichert und nicht zum Training genutzt werden",
+          "Chat-Verlauf kann komplett deaktiviert werden (dann geht aber auch die History verloren)"
+        ]
+      },
+      "tipps": [
+        "Custom Instructions einmal sorgfältig ausfüllen spart bei jedem Gespräch Zeit",
+        "Regelmässig die Memory prüfen — manchmal merkt sich ChatGPT falsche oder veraltete Informationen",
+        "Für sensible Themen: Temporären Chat verwenden (kein Dropdown oben links → Temporärer Chat)",
+        "Im Team: Gemeinsam Custom Instructions definieren, damit alle ähnliche Ergebnisse erhalten"
       ]
     },
     "projekte": {
       "titel": "Projekte in ChatGPT",
-      "punkte": [
-        "Projektkontext bleibt über Gespräche erhalten",
-        "Dokumente hochladen als Wissensbasis",
-        "Ideal für wiederkehrende Aufgaben: z.B. 'Jahrestagung 2026' als Projekt"
+      "intro": "Projekte sind ein mächtiges Feature für wiederkehrende Aufgaben. Ein Projekt ist wie ein dedizierter Arbeitsbereich mit eigenem Kontext, eigenen Dateien und eigenen Anweisungen.",
+      "was": "Ein Projekt bündelt mehrere Chats unter einem Thema. Alle Chats innerhalb eines Projekts teilen sich die gleichen Projektanweisungen und hochgeladenen Dateien. So muss man nicht bei jedem neuen Chat wieder den Kontext erklären.",
+      "schritte": [
+        { "schritt": "Projekt erstellen", "details": "In der linken Seitenleiste auf «+ Neues Projekt» klicken. Einen aussagekräftigen Namen vergeben (z.B. «Jahrestagung 2026»)." },
+        { "schritt": "Anweisungen definieren", "details": "Im Projekt unter «Anweisungen bearbeiten» den Kontext festlegen. Z.B.: «Dieses Projekt betrifft die SCNAT-Jahrestagung am 15. November 2026 in Bern. 200 Teilnehmende, Budget 50k CHF. Antworten sollen konkret und handlungsorientiert sein.»" },
+        { "schritt": "Dateien hochladen", "details": "Relevante Dokumente als Wissensbasis hochladen: Budgetpläne, Teilnehmerlisten, Vorjahres-Programme, Venue-Infos. ChatGPT durchsucht diese bei jeder Frage automatisch." },
+        { "schritt": "Chats starten", "details": "Innerhalb des Projekts neue Chats für spezifische Aufgaben starten: «Einladungstext», «Programmplanung», «Budget-Check». Alle haben automatisch den Projektkontext." }
+      ],
+      "beispiele": [
+        { "name": "Jahrestagung 2026", "beschreibung": "Alle Aufgaben rund um die Veranstaltung: Einladungen, Programm, Logistik, Nachbereitung", "dateien": "Budget.xlsx, Programm_2025.pdf, Teilnehmerliste.csv, Venue-Info.pdf" },
+        { "name": "Newsletter-Redaktion", "beschreibung": "Monatlicher Newsletter: Artikelsammlung, Übersetzungen, Korrekturen", "dateien": "Stilrichtlinien.pdf, Newsletter-Archiv, Glossar.xlsx" },
+        { "name": "Kommissions-Support", "beschreibung": "Wiederkehrende Aufgaben für eine wissenschaftliche Kommission", "dateien": "Mandat.pdf, Mitgliederliste, Protokolle der letzten 3 Sitzungen" },
+        { "name": "Übersetzungsprojekt", "beschreibung": "Grössere Übersetzungsaufgabe mit konsistenter Terminologie", "dateien": "Glossar_DE_FR_EN.xlsx, Quelltexte, Stilrichtlinien" }
+      ],
+      "tipps": [
+        "Projektanweisungen konkret halten: Namen, Daten, Rollen, Constraints definieren",
+        "Dateien aktuell halten — veraltete Dokumente führen zu falschen Antworten",
+        "Nicht zu viele Dateien hochladen — Qualität vor Quantität. Max. 10–15 relevante Dokumente",
+        "Für jede grössere Aufgabe einen eigenen Chat innerhalb des Projekts starten",
+        "Projekte regelmässig aufräumen: Abgeschlossene Chats archivieren"
       ]
     },
     "gpts": {
-      "titel": "Custom GPTs",
-      "punkte": [
-        "Vorgefertigte Anweisungen + Wissensdateien",
-        "Beispiel: 'SCNAT-Übersetzer' mit Glossar und Stilrichtlinien",
-        "Können im Team geteilt werden (Business-Plan)"
+      "titel": "Custom GPTs erstellen & nutzen",
+      "intro": "Custom GPTs sind spezialisierte ChatGPT-Versionen mit vordefinierten Anweisungen, Wissensdateien und optionalen Aktionen. Sie sind ideal, wenn mehrere Personen die gleiche spezialisierte KI-Unterstützung brauchen.",
+      "was": "Ein Custom GPT ist wie ein vorkonfigurierter Assistent: Man definiert einmal, was er können soll, gibt ihm Wissen mit, und alle im Team können ihn danach einfach nutzen — ohne jedes Mal den Kontext erklären zu müssen.",
+      "erstellen": [
+        { "schritt": "GPT Builder öffnen", "details": "Unter «Entdecken» → «GPT erstellen» oder direkt chat.openai.com/create. Der GPT Builder führt interaktiv durch die Konfiguration." },
+        { "schritt": "Name & Beschreibung", "details": "Einen klaren Namen wählen (z.B. «SCNAT-Übersetzer») und beschreiben, was der GPT macht. Wird im GPT-Verzeichnis angezeigt." },
+        { "schritt": "Anweisungen definieren", "details": "Der Kern: Detaillierte System-Anweisungen, die das Verhalten steuern. Z.B.: «Du bist ein Übersetzer für die SCNAT. Übersetze immer DE→FR und DE→EN. Verwende die akademische Terminologie aus dem beigefügten Glossar. Markiere unsichere Stellen mit [?].»" },
+        { "schritt": "Wissensdateien hochladen", "details": "Dokumente, die der GPT als Referenz verwendet: Glossare, Stilrichtlinien, FAQ-Dokumente, Templates. Max. 20 Dateien, jeweils bis 512 MB." },
+        { "schritt": "Fähigkeiten aktivieren", "details": "Web-Browsing (aktuelle Infos suchen), DALL·E (Bilder generieren), Code Interpreter (Daten analysieren, Dateien verarbeiten). Je nach Anwendungsfall aktivieren." },
+        { "schritt": "Testen & Teilen", "details": "Im Preview testen, dann über Link oder im Team-Workspace teilen. Im Team-Plan können GPTs für alle Mitglieder sichtbar gemacht werden." }
+      ],
+      "beispiele_gpts": [
+        { "name": "SCNAT-Übersetzer", "zweck": "Übersetzungen DE↔FR↔EN mit SCNAT-Terminologie", "anweisungen": "Akademischer Ton, Glossar als Referenz, unsichere Stellen markieren", "dateien": "Glossar, Stilrichtlinien" },
+        { "name": "Protokoll-Assistent", "zweck": "Sitzungsprotokolle aus Notizen erstellen", "anweisungen": "Strukturiert nach: Anwesende, Traktanden, Beschlüsse, Pendenzen. Formeller Ton.", "dateien": "Protokoll-Template, letzte 3 Protokolle als Referenz" },
+        { "name": "Event-Helfer", "zweck": "Unterstützung bei der Event-Organisation", "anweisungen": "Kennt SCNAT-Events, kann Einladungen, Programme, Ablaufpläne erstellen", "dateien": "Event-Checkliste, Vorjahres-Programme, Venue-Infos" },
+        { "name": "FAQ-Generator", "zweck": "FAQ-Texte für SCNAT-Websites generieren und pflegen", "anweisungen": "Verständliche Sprache, max. 100 Wörter pro Antwort, mit Links zu weiterführenden Infos", "dateien": "Bestehende FAQs, Jahresbericht, Organisationsstruktur" },
+        { "name": "Daten-Analyst", "zweck": "Mitgliederdaten, Event-Statistiken, Budgets auswerten", "anweisungen": "Erstelle Zusammenfassungen, Trends, Grafiken. Erkläre Ergebnisse verständlich.", "dateien": "Keine permanenten — Dateien werden je Gespräch hochgeladen" }
+      ],
+      "teilen": "Custom GPTs können auf verschiedene Arten geteilt werden: (1) Privat — nur für dich. (2) Per Link — jeder mit dem Link kann ihn nutzen. (3) Im Team-Workspace — alle Team-Mitglieder sehen ihn automatisch. (4) Öffentlich im GPT Store — für alle ChatGPT-Nutzer sichtbar. Für die SCNAT empfehlen wir: Im Team-Workspace teilen.",
+      "tipps": [
+        "Anweisungen so präzise wie möglich: Was soll der GPT tun? Was NICHT? In welchem Ton?",
+        "Conversation Starters definieren — vorgefertigte Fragen/Aufgaben, die Nutzer mit einem Klick starten können",
+        "Wissensdateien regelmässig aktualisieren, wenn sich Inhalte ändern",
+        "Nicht alles in einen GPT packen — lieber spezialisierte GPTs für verschiedene Aufgaben",
+        "Im Team testen lassen und Feedback einholen, bevor man den GPT breit ausrollt"
+      ]
+    },
+    "dateien": {
+      "titel": "Dateien & Bilder nutzen",
+      "intro": "ChatGPT kann Dateien lesen, analysieren und verarbeiten. Das macht es zu einem mächtigen Werkzeug für die tägliche Arbeit mit Dokumenten und Daten.",
+      "formate": [
+        { "typ": "PDF", "beschreibung": "Papers, Berichte, Präsentationen — ChatGPT extrahiert Text und beantwortet Fragen zum Inhalt" },
+        { "typ": "Word/DOCX", "beschreibung": "Texte bearbeiten, zusammenfassen, in andere Formate umwandeln" },
+        { "typ": "Excel/CSV", "beschreibung": "Daten analysieren, Tabellen erstellen, Trends erkennen, Grafiken generieren" },
+        { "typ": "Bilder (PNG, JPG)", "beschreibung": "Bilder beschreiben, Text aus Screenshots extrahieren (OCR), Grafiken analysieren" },
+        { "typ": "PowerPoint", "beschreibung": "Folieninhalte extrahieren, Zusammenfassungen erstellen, Redesign-Vorschläge" },
+        { "typ": "Code-Dateien", "beschreibung": "Python, JavaScript etc. — Code erklären, debuggen, optimieren" }
+      ],
+      "anwendungen": [
+        { "aufgabe": "Paper zusammenfassen", "beschreibung": "PDF hochladen → «Fasse die Kernaussagen in 5 Bullet Points zusammen»" },
+        { "aufgabe": "Daten analysieren", "beschreibung": "Excel hochladen → «Welche Trends siehst du? Erstelle ein Diagramm der Top-10.»" },
+        { "aufgabe": "Bild analysieren", "beschreibung": "Screenshot hochladen → «Was zeigt dieses Diagramm? Extrahiere die Zahlen.»" },
+        { "aufgabe": "Dokument übersetzen", "beschreibung": "Word-Datei hochladen → «Übersetze ins Französische, behalte die Formatierung bei.»" },
+        { "aufgabe": "Mehrere Dateien vergleichen", "beschreibung": "2 PDFs hochladen → «Vergleiche die beiden Berichte. Was hat sich geändert?»" }
+      ],
+      "tipps": [
+        "Dateien einzeln hochladen und Fragen gezielt stellen — nicht alles auf einmal",
+        "Bei langen Dokumenten: Erst fragen «Worum geht es in diesem Dokument?», dann gezielt vertiefen",
+        "Für Datenanalyse: Saubere Spaltennamen in Excel/CSV helfen ChatGPT enorm",
+        "Ergebnisse von Datenanalysen immer stichprobenartig prüfen",
+        "Achtung: Keine vertraulichen oder personenbezogenen Daten hochladen (ausser im Team-Plan)"
+      ]
+    },
+    "canvas": {
+      "titel": "Canvas — Gemeinsam Texte bearbeiten",
+      "intro": "Canvas ist ein neuer Modus in ChatGPT, bei dem Text (oder Code) in einem Side-Panel angezeigt wird. Man kann direkt im Text markieren und Änderungen anfordern — wie ein kollaboratives Dokument.",
+      "funktionen": [
+        { "name": "Text markieren & ändern", "beschreibung": "Einen Abschnitt markieren und spezifische Anweisungen geben: «Mach diesen Absatz kürzer» oder «Formeller bitte»." },
+        { "name": "Länge anpassen", "beschreibung": "Per Slider den gesamten Text kürzer oder länger machen lassen." },
+        { "name": "Leseniveau ändern", "beschreibung": "Von «Kindergarten» bis «Doktorarbeit» — ChatGPT passt Komplexität und Vokabular an." },
+        { "name": "Emojis hinzufügen", "beschreibung": "Für Social-Media-Texte oder informelle Kommunikation automatisch passende Emojis einfügen." },
+        { "name": "Endversion übernehmen", "beschreibung": "Den fertigen Text direkt kopieren — sauber formatiert und bereit zur Verwendung." }
+      ],
+      "wann_nutzen": [
+        "Längere Texte iterativ bearbeiten (E-Mails, Berichte, Medienmitteilungen)",
+        "Texte für verschiedene Zielgruppen anpassen (akademisch → allgemeinverständlich)",
+        "Code-Reviews und Code-Refactoring",
+        "Gemeinsam an einem Konzeptpapier arbeiten",
+        "Blog-Posts oder Website-Texte verfeinern"
+      ]
+    },
+    "modelle": {
+      "titel": "Das richtige Modell wählen",
+      "intro": "In ChatGPT Plus/Team kann man zwischen verschiedenen Modellen wechseln. Jedes hat seine Stärken — das Wichtigste ist, das richtige Modell für die jeweilige Aufgabe zu wählen.",
+      "optionen": [
+        { "name": "GPT-4o", "beschreibung": "Der Standard-Allrounder. Schnell, vielseitig, gut für die meisten Aufgaben.", "ideal_fuer": ["E-Mails & Texte schreiben", "Zusammenfassungen", "Übersetzungen", "Kreative Aufgaben", "Alltagsfragen"], "nicht_fuer": ["Komplexe mehrstufige Berechnungen", "Aufgaben, die tiefes Nachdenken erfordern"] },
+        { "name": "GPT-4o mini", "beschreibung": "Kleiner, schneller, günstiger. Für einfache Aufgaben ausreichend.", "ideal_fuer": ["Schnelle Fragen", "Einfache Textgenerierung", "Routineaufgaben"], "nicht_fuer": ["Nuancierte Analysen", "Lange oder komplexe Dokumente"] },
+        { "name": "o3 / o4-mini (Reasoning)", "beschreibung": "Denkt vor dem Antworten nach (Chain-of-Thought). Besser bei Logik, Mathematik und komplexen Analysen.", "ideal_fuer": ["Budgetberechnungen", "Strategische Analysen mit Abwägungen", "Komplexe Recherche-Aufgaben", "Fehlersuche in Daten oder Code"], "nicht_fuer": ["Einfache Textaufgaben (unnötig langsam)", "Kreatives Schreiben"] }
+      ]
+    },
+    "shortcuts": {
+      "titel": "Tipps & Tastenkürzel",
+      "kategorien": [
+        {
+          "name": "Nützliche Tastenkürzel",
+          "items": [
+            { "kuerzel": "⌘/Ctrl + Shift + ;", "aktion": "Letzte Antwort kopieren" },
+            { "kuerzel": "⌘/Ctrl + /", "aktion": "Tastenkürzel-Übersicht anzeigen" },
+            { "kuerzel": "⌘/Ctrl + Shift + O", "aktion": "Sidebar ein-/ausblenden" },
+            { "kuerzel": "Shift + Enter", "aktion": "Neue Zeile im Eingabefeld (statt Senden)" }
+          ]
+        },
+        {
+          "name": "Power-User Tipps",
+          "items": [
+            { "tipp": "Antwort regenerieren", "details": "Nicht zufrieden? Auf das Regenerate-Symbol klicken für eine neue Variante." },
+            { "tipp": "Antwort bearbeiten", "details": "Auf den eigenen Prompt klicken → Bearbeiten → Erneut senden. So kann man Prompts iterativ verbessern." },
+            { "tipp": "Gespräch benennen", "details": "Chat-Titel anklicken und umbenennen. Hilft beim Wiederfinden wichtiger Gespräche." },
+            { "tipp": "Chats teilen", "details": "Über das Share-Symbol einen öffentlichen Link erstellen — nützlich für Team-Abstimmungen." },
+            { "tipp": "@ für GPTs im Chat", "details": "In jedem Chat @GPT-Name tippen, um einen Custom GPT direkt in einem normalen Chat zu verwenden." },
+            { "tipp": "Suche im Verlauf", "details": "Die Suchfunktion in der Sidebar durchsucht alle vergangenen Chats — ideal um alte Ergebnisse wiederzufinden." }
+          ]
+        }
       ]
     }
   },
   "sicherheit": {
-    "rail_guards": {
-      "titel": "Rail Guards — Eingebaute Schutzmechanismen",
+    "guardrails": {
+      "titel": "Guardrails — Eingebaute Schutzmechanismen",
       "inhalt": "KI-Modelle haben eingebaute Schutzmechanismen ('Guardrails'), die verhindern, dass sie schädliche, illegale oder unethische Inhalte generieren. Diese Filter sind mehrschichtig: Training-basiert (RLHF), Echtzeit-Filterung und Nachbearbeitung.",
       "beispiele": [
         "Das Modell lehnt Anfragen zu Waffenherstellung ab",

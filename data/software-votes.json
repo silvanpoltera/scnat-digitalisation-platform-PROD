@@ -1,23 +1,128 @@
 [
-  {"id":"sv1","softwareId":"chatgpt","userId":"1","type":"up"},
-  {"id":"sv2","softwareId":"chatgpt","userId":"user2","type":"up"},
-  {"id":"sv3","softwareId":"chatgpt","userId":"user3","type":"up"},
-  {"id":"sv4","softwareId":"chatgpt","userId":"user4","type":"in_use"},
-  {"id":"sv5","softwareId":"chatgpt","userId":"user5","type":"in_use"},
-  {"id":"sv6","softwareId":"deepl","userId":"1","type":"up"},
-  {"id":"sv7","softwareId":"deepl","userId":"user2","type":"up"},
-  {"id":"sv8","softwareId":"deepl","userId":"user6","type":"in_use"},
-  {"id":"sv9","softwareId":"zoom","userId":"1","type":"up"},
-  {"id":"sv10","softwareId":"zoom","userId":"user3","type":"down"},
-  {"id":"sv11","softwareId":"zoom","userId":"user4","type":"in_use"},
-  {"id":"sv12","softwareId":"m365","userId":"1","type":"up"},
-  {"id":"sv13","softwareId":"m365","userId":"user2","type":"in_use"},
-  {"id":"sv14","softwareId":"m365","userId":"user5","type":"down"},
-  {"id":"sv15","softwareId":"mural","userId":"1","type":"up"},
-  {"id":"sv16","softwareId":"mural","userId":"user3","type":"interest"},
-  {"id":"sv17","softwareId":"daylite","userId":"user2","type":"down"},
-  {"id":"sv18","softwareId":"daylite","userId":"user4","type":"down"},
-  {"id":"sv19","softwareId":"abacus","userId":"user6","type":"down"},
-  {"id":"sv20","softwareId":"adobe-cc","userId":"1","type":"up"},
-  {"id":"sv21","softwareId":"adobe-cc","userId":"user3","type":"interest"}
+  {
+    "id": "sv1",
+    "softwareId": "chatgpt",
+    "userId": "1",
+    "type": "up"
+  },
+  {
+    "id": "sv2",
+    "softwareId": "chatgpt",
+    "userId": "user2",
+    "type": "up"
+  },
+  {
+    "id": "sv3",
+    "softwareId": "chatgpt",
+    "userId": "user3",
+    "type": "up"
+  },
+  {
+    "id": "sv4",
+    "softwareId": "chatgpt",
+    "userId": "user4",
+    "type": "in_use"
+  },
+  {
+    "id": "sv5",
+    "softwareId": "chatgpt",
+    "userId": "user5",
+    "type": "in_use"
+  },
+  {
+    "id": "sv7",
+    "softwareId": "deepl",
+    "userId": "user2",
+    "type": "up"
+  },
+  {
+    "id": "sv8",
+    "softwareId": "deepl",
+    "userId": "user6",
+    "type": "in_use"
+  },
+  {
+    "id": "sv9",
+    "softwareId": "zoom",
+    "userId": "1",
+    "type": "up"
+  },
+  {
+    "id": "sv10",
+    "softwareId": "zoom",
+    "userId": "user3",
+    "type": "down"
+  },
+  {
+    "id": "sv11",
+    "softwareId": "zoom",
+    "userId": "user4",
+    "type": "in_use"
+  },
+  {
+    "id": "sv12",
+    "softwareId": "m365",
+    "userId": "1",
+    "type": "up"
+  },
+  {
+    "id": "sv13",
+    "softwareId": "m365",
+    "userId": "user2",
+    "type": "in_use"
+  },
+  {
+    "id": "sv14",
+    "softwareId": "m365",
+    "userId": "user5",
+    "type": "down"
+  },
+  {
+    "id": "sv15",
+    "softwareId": "mural",
+    "userId": "1",
+    "type": "up"
+  },
+  {
+    "id": "sv16",
+    "softwareId": "mural",
+    "userId": "user3",
+    "type": "interest"
+  },
+  {
+    "id": "sv17",
+    "softwareId": "daylite",
+    "userId": "user2",
+    "type": "down"
+  },
+  {
+    "id": "sv18",
+    "softwareId": "daylite",
+    "userId": "user4",
+    "type": "down"
+  },
+  {
+    "id": "sv19",
+    "softwareId": "abacus",
+    "userId": "user6",
+    "type": "down"
+  },
+  {
+    "id": "sv20",
+    "softwareId": "adobe-cc",
+    "userId": "1",
+    "type": "up"
+  },
+  {
+    "id": "sv21",
+    "softwareId": "adobe-cc",
+    "userId": "user3",
+    "type": "interest"
+  },
+  {
+    "softwareId": "deepl",
+    "userId": "1",
+    "type": "up",
+    "timestamp": "2026-04-09T09:49:26.881Z"
+  }
 ]
