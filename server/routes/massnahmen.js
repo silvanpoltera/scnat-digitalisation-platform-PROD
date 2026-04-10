@@ -11,7 +11,9 @@ router.get('/', requireAuth, (_req, res) => {
 
 router.put('/', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
-  const newItem = { id: generateId(), ...req.body, status: req.body.status || 'geplant' };
+  const { titel, beschreibung, cluster, status, tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal } = req.body;
+  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
+  const newItem = { id: generateId(), titel, beschreibung, cluster, status: status || 'geplant', tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal };
   data.push(newItem);
   writeJSON(FILE, data);
   res.status(201).json(newItem);

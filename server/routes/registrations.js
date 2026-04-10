@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId } from '../utils.js';
-import { requireAuth } from '../auth.js';
+import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 
@@ -44,7 +44,7 @@ router.post('/', requireAuth, (req, res) => {
   res.status(201).json(reg);
 });
 
-router.get('/', requireAuth, (_req, res) => {
+router.get('/', requireAuth, requireAdmin, (_req, res) => {
   res.json(readJSON('registrations.json'));
 });
 

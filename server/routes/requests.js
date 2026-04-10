@@ -10,14 +10,20 @@ router.get('/', requireAuth, (_req, res) => {
 });
 
 router.post('/', requireAuth, (req, res) => {
+  const { titel, beschreibung, typ, kontakt, kontaktEmail } = req.body;
+  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = readJSON(FILE);
   const newItem = {
     id: generateId(),
-    ...req.body,
+    titel,
+    beschreibung: beschreibung || '',
+    typ: typ || 'allgemein',
+    kontakt: kontakt || req.user.name,
+    kontaktEmail: kontaktEmail || req.user.email,
     status: 'offen',
     userId: req.user.id,
-    userName: req.body.kontakt || req.user.name,
-    userEmail: req.body.kontaktEmail || req.user.email,
+    userName: kontakt || req.user.name,
+    userEmail: kontaktEmail || req.user.email,
     timestamp: new Date().toISOString(),
   };
   data.push(newItem);
@@ -36,12 +42,14 @@ router.get('/mine', requireAuth, (req, res) => {
 });
 
 router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
+  const { status, antwort } = req.body;
+  if (!status) return res.status(400).json({ error: 'Status erforderlich' });
   const data = readJSON(FILE);
   const idx = data.findIndex(r => r.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx].status = req.body.status;
+  data[idx].status = status;
   data[idx].statusUpdatedAt = new Date().toISOString();
-  if (req.body.antwort !== undefined) data[idx].antwort = req.body.antwort;
+  if (antwort !== undefined) data[idx].antwort = antwort;
   writeJSON(FILE, data);
   res.json(data[idx]);
 });

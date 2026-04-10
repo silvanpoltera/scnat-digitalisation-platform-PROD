@@ -5,8 +5,13 @@ import { requireAuth } from '../auth.js';
 const router = Router();
 const FILE = 'software-votes.json';
 
-router.get('/', requireAuth, (_req, res) => {
-  res.json(readJSON(FILE));
+router.get('/', requireAuth, (req, res) => {
+  const votes = readJSON(FILE);
+  const safe = votes.map(({ userId, ...v }) => ({
+    ...v,
+    isOwn: userId === req.user.id,
+  }));
+  res.json(safe);
 });
 
 router.get('/ranking', requireAuth, (_req, res) => {
@@ -51,6 +56,7 @@ router.post('/', requireAuth, (req, res) => {
 
 router.delete('/', requireAuth, (req, res) => {
   const { softwareId } = req.body;
+  if (!softwareId) return res.status(400).json({ error: 'softwareId erforderlich' });
   let data = readJSON(FILE);
   data = data.filter(v => !(v.softwareId === softwareId && v.userId === req.user.id));
   writeJSON(FILE, data);

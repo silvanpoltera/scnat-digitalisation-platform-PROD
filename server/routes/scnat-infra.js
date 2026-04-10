@@ -32,8 +32,10 @@ router.post('/entscheide/:id', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.put('/backlog', requireAuth, requireAdmin, (req, res) => {
+  const { titel, beschreibung, kategorie, prioritaet } = req.body;
+  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = getData();
-  const newItem = { id: generateId(), ...req.body, status: req.body.status || 'offen' };
+  const newItem = { id: generateId(), titel, beschreibung, kategorie, prioritaet, status: 'offen' };
   data.backlog.push(newItem);
   writeJSON(FILE, data);
   res.status(201).json(newItem);

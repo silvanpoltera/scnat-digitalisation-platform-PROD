@@ -10,8 +10,10 @@ router.get('/', requireAuth, (_req, res) => {
 });
 
 router.put('/', requireAuth, requireAdmin, (req, res) => {
+  const { titel, datum, zeit, ort, beschreibung, maxTeilnehmer, kategorie } = req.body;
+  if (!titel || !datum) return res.status(400).json({ error: 'Titel und Datum erforderlich' });
   const data = readJSON(FILE);
-  const newItem = { id: generateId(), ...req.body, anmeldungen: [] };
+  const newItem = { id: generateId(), titel, datum, zeit, ort, beschreibung, maxTeilnehmer, kategorie, anmeldungen: [] };
   data.push(newItem);
   writeJSON(FILE, data);
   res.status(201).json(newItem);
