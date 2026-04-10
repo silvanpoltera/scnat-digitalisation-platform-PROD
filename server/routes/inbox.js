@@ -76,6 +76,10 @@ router.post('/:id/read', requireAuth, (req, res) => {
   const msg = messages.find(m => m.id === req.params.id);
   if (!msg) return res.status(404).json({ error: 'Nachricht nicht gefunden' });
 
+  if (!resolveTargetUserIds(msg).includes(userId)) {
+    return res.status(403).json({ error: 'Kein Zugriff auf diese Nachricht' });
+  }
+
   if (!msg.readBy) msg.readBy = [];
   if (!msg.readBy.includes(userId)) {
     msg.readBy.push(userId);
@@ -188,7 +192,7 @@ router.get('/groups', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/groups', requireAuth, requireAdmin, (req, res) => {
-  const { name, userIds } = req.body;
+  const { name, userIds } = sanitize(req.body);
   if (!name || !userIds?.length) return res.status(400).json({ error: 'name and userIds required' });
 
   const groups = getGroups();
@@ -208,7 +212,7 @@ router.put('/groups/:id', requireAuth, requireAdmin, (req, res) => {
   const idx = groups.findIndex(g => g.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Gruppe nicht gefunden' });
 
-  const { name, userIds } = req.body;
+  const { name, userIds } = sanitize(req.body);
   if (name) groups[idx].name = name;
   if (userIds) groups[idx].userIds = userIds;
   writeJSON(GROUPS_FILE, groups);

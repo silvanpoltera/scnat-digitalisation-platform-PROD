@@ -53,8 +53,8 @@ router.delete('/:id', requireAuth, (req, res) => {
   const item = data.find(t => t.id === req.params.id);
   if (!item) return res.status(404).json({ error: 'Nicht gefunden' });
   if (item.typ === 'vordefiniert') return res.status(400).json({ error: 'Vordefinierte Themen nicht löschbar' });
-  if ((item.likes?.length || 0) > 0 && item.erstelltVon !== req.user.id && req.user.role !== 'admin') {
-    return res.status(400).json({ error: 'Nur löschbar bei 0 Likes oder als Ersteller/Admin' });
+  if (item.erstelltVon !== req.user.id && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Nur als Ersteller oder Admin löschbar' });
   }
 
   const filtered = data.filter(t => t.id !== req.params.id);

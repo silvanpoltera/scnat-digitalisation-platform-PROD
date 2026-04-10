@@ -42,7 +42,7 @@ router.get('/mine', requireAuth, (req, res) => {
 });
 
 router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
-  const { status, antwort } = req.body;
+  const { status, antwort } = sanitize(req.body);
   if (!status) return res.status(400).json({ error: 'Status erforderlich' });
   const data = readJSON(FILE);
   const idx = data.findIndex(r => r.id === req.params.id);
@@ -58,7 +58,8 @@ router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
   const idx = data.findIndex(r => r.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx].antwort = req.body.antwort;
+  const { antwort } = sanitize(req.body);
+  data[idx].antwort = antwort;
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
   res.json(data[idx]);

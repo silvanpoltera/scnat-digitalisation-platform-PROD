@@ -52,9 +52,10 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
   const oldStatus = data[idx].status;
+  const clean = sanitize(req.body);
   const allowed = ['status', 'cluster', 'massnahmeId', 'adminNotiz'];
   allowed.forEach(key => {
-    if (req.body[key] !== undefined) data[idx][key] = req.body[key];
+    if (clean[key] !== undefined) data[idx][key] = clean[key];
   });
   if (req.body.status && req.body.status !== oldStatus) {
     data[idx].statusUpdatedAt = new Date().toISOString();
@@ -69,7 +70,8 @@ router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
   const idx = data.findIndex(c => c.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
-  data[idx].antwort = req.body.antwort || '';
+  const { antwort } = sanitize(req.body);
+  data[idx].antwort = antwort || '';
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
   res.json(data[idx]);
