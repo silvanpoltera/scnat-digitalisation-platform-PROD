@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, LayoutGrid, List, BarChart3 } from 'lucide-react';
+import { Search, LayoutGrid, List, BarChart3, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { categories, systems } from '../lib/data/systems';
 import SystemCard from '../components/systemlandschaft/SystemCard';
@@ -265,6 +266,20 @@ export default function Systemlandschaft() {
       )}
 
       {view === 'ranking' && <RankingView onSelectSoftware={handleSelectForDrawer} />}
+
+      {/* CTA: Software nicht gefunden */}
+      <div className="mt-12 mb-4 border border-bd-faint bg-bg-surface rounded-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-heading font-semibold text-txt-primary mb-1">Deine Software ist nicht dabei?</p>
+          <p className="text-xs text-txt-secondary">Reiche einen Antrag ein und wir prüfen die Beschaffung für dich.</p>
+        </div>
+        <Link
+          to="/prozesse"
+          className="flex items-center gap-2 bg-scnat-red text-white text-sm px-4 py-2.5 rounded-sm hover:bg-[#F06570] active:bg-[#d4464e] transition-colors whitespace-nowrap w-full sm:w-auto justify-center"
+        >
+          Software beantragen <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
 
       <SystemDetailModal system={selectedSystem} open={!!selectedSystem} onClose={() => setSelectedSystem(null)} />
       {drawerSoftware && <SoftwareDrawer software={drawerSoftware} onClose={() => setDrawerSoftware(null)} />}
