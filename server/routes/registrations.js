@@ -63,4 +63,60 @@ router.get('/mine', requireAuth, (req, res) => {
   res.json(enriched);
 });
 
+router.delete('/:id', requireAuth, requireAdmin, (req, res) => {
+  const regs = readJSON('registrations.json');
+  const reg = regs.find(r => r.id === req.params.id);
+  if (!reg) return res.status(404).json({ error: 'Anmeldung nicht gefunden' });
+
+  const events = readJSON('events.json');
+  const event = events.find(e => e.id === reg.eventId);
+  if (event && event.anmeldungen) {
+    event.anmeldungen = event.anmeldungen.filter(id => id !== reg.id);
+    writeJSON('events.json', events);
+  }
+
+  const updated = regs.filter(r => r.id !== req.params.id);
+  writeJSON('registrations.json', updated);
+  res.json({ ok: true });
+});
+
+router.post('/admin', requireAuth, requireAdmin, (req, res) => {
+  const { eventId, userId } = req.body;
+  if (!eventId || !userId) return res.status(400).json({ error: 'eventId und userId erforderlich' });
+
+  const events = readJSON('events.json');
+  const event = events.find(e => e.id === eventId);
+  if (!event) return res.status(404).json({ error: 'Event nicht gefunden' });
+
+  const users = readJSON('users.json');
+  const user = users.find(u => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User nicht gefunden' });
+
+  const regs = readJSON('registrations.json');
+  const alreadyRegistered = regs.some(r => r.eventId === eventId && r.userId === userId);
+  if (alreadyRegistered) return res.status(409).json({ error: 'User ist bereits angemeldet' });
+
+  if (event.anmeldungen && event.anmeldungen.length >= event.maxTeilnehmer) {
+    return res.status(400).json({ error: 'Event ist ausgebucht' });
+  }
+
+  const reg = {
+    id: generateId(),
+    eventId,
+    name: user.name,
+    email: user.email.toLowerCase().trim(),
+    userId,
+    timestamp: new Date().toISOString(),
+    addedByAdmin: true,
+  };
+  regs.push(reg);
+  writeJSON('registrations.json', regs);
+
+  if (!event.anmeldungen) event.anmeldungen = [];
+  event.anmeldungen.push(reg.id);
+  writeJSON('events.json', events);
+
+  res.status(201).json(reg);
+});
+
 export default router;
