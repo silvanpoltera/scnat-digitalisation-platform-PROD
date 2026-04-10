@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 
 router.post('/', requireAuth, (req, res) => {
-  const { eventId, name, email, abteilung } = req.body;
+  const { eventId, name, email, abteilung } = sanitize(req.body);
   if (!eventId || !name || !email) return res.status(400).json({ error: 'Felder fehlen' });
 
   const events = readJSON('events.json');

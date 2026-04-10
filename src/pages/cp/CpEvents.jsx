@@ -74,7 +74,7 @@ export default function CpEvents() {
   const upcoming = events.filter(e => e.datum >= now).sort((a, b) => a.datum.localeCompare(b.datum));
   const past = events.filter(e => e.datum < now).sort((a, b) => b.datum.localeCompare(a.datum));
 
-  const inputCls = "bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none w-full";
+  const inputCls = "bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2.5 rounded-sm focus:border-scnat-red focus:outline-none w-full";
 
   const getAvailableUsers = (eventId) => {
     const eventRegs = regs.filter(r => r.eventId === eventId);
@@ -95,90 +95,98 @@ export default function CpEvents() {
 
     return (
       <div key={ev.id} className={`bg-bg-surface border border-bd-faint rounded-sm overflow-hidden ${isPast ? 'opacity-60' : ''}`}>
-        <div className="px-3 py-2.5 sm:px-4 sm:py-3">
-          {/* Top row: Title + badges */}
+        {/* Card header — tap to expand on mobile */}
+        <button
+          type="button"
+          onClick={() => setExpandedEvent(isExpanded ? null : ev.id)}
+          className="w-full text-left px-3 py-3 sm:px-4 sm:py-3 active:bg-bg-elevated/40 transition-colors"
+        >
           <div className="flex items-start justify-between gap-2 mb-1.5">
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <h4 className="text-sm font-medium text-txt-primary truncate">{ev.titel}</h4>
-              {!isPast && pct > 80 && <span className="text-[9px] font-mono bg-scnat-red/15 text-scnat-red px-1.5 py-0.5 rounded-sm shrink-0">Fast voll</span>}
+              {!isPast && pct > 80 && <span className="text-[9px] font-mono bg-scnat-red/15 text-scnat-red px-1.5 py-0.5 rounded-sm shrink-0">Voll</span>}
             </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <button onClick={() => setExpandedEvent(isExpanded ? null : ev.id)} className="text-txt-tertiary hover:text-txt-primary p-1">
-                <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-              </button>
-              <button onClick={() => handleDelete(ev.id)} className="text-txt-tertiary hover:text-scnat-red p-1"><Trash2 className="w-4 h-4" /></button>
-            </div>
+            <ChevronDown className={`w-4 h-4 text-txt-tertiary shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
 
-          {/* Meta row: date/time/location - wrapping on mobile */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-txt-secondary mb-2">
             <span className="flex items-center gap-1"><Calendar className="w-3 h-3 shrink-0" />{ev.datum}</span>
             {ev.zeit && <span className="flex items-center gap-1"><Clock className="w-3 h-3 shrink-0" />{ev.zeit}</span>}
-            {ev.ort && <span className="flex items-center gap-1"><MapPin className="w-3 h-3 shrink-0" />{ev.ort}</span>}
+            {ev.ort && <span className="flex items-center gap-1 truncate"><MapPin className="w-3 h-3 shrink-0" />{ev.ort}</span>}
           </div>
 
-          {/* Capacity bar */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-1.5 bg-bg-elevated rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: pct > 80 ? 'var(--accent-red)' : pct > 50 ? 'var(--status-yellow)' : 'var(--status-green)' }} />
             </div>
             <span className="text-xs font-mono text-txt-tertiary shrink-0">{regsCount}/{ev.maxTeilnehmer}</span>
           </div>
-        </div>
+        </button>
 
-        {/* Expanded details */}
+        {/* Expanded: registrations + actions */}
         {isExpanded && (
           <div className="border-t border-bd-faint px-3 py-3 sm:px-4 bg-bg-elevated/30">
             {ev.beschreibung && <p className="text-xs text-txt-secondary mb-3">{ev.beschreibung}</p>}
 
-            <div className="flex items-center justify-between mb-2">
+            {/* Action bar */}
+            <div className="flex items-center justify-between mb-3 gap-2">
               <p className="text-[10px] font-mono text-txt-tertiary flex items-center gap-1">
                 <Users className="w-3 h-3" />
                 Anmeldungen ({evRegs.length})
               </p>
-              {!isPast && (
+              <div className="flex items-center gap-2">
+                {!isPast && (
+                  <button
+                    onClick={() => { setAddingUserTo(isAddingUser ? null : ev.id); setUserSearch(''); }}
+                    className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm transition-colors ${isAddingUser ? 'bg-scnat-teal/15 text-scnat-teal' : 'text-scnat-teal hover:bg-scnat-teal/10'}`}
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Hinzufügen</span>
+                  </button>
+                )}
                 <button
-                  onClick={() => { setAddingUserTo(isAddingUser ? null : ev.id); setUserSearch(''); }}
-                  className="flex items-center gap-1 text-[11px] text-scnat-teal hover:text-scnat-teal/80 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); handleDelete(ev.id); }}
+                  className="flex items-center gap-1.5 text-xs text-txt-tertiary hover:text-scnat-red px-2.5 py-1.5 rounded-sm hover:bg-scnat-red/10 transition-colors"
                 >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Person hinzufügen</span>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Löschen</span>
                 </button>
-              )}
+              </div>
             </div>
 
             {/* Add user panel */}
             {isAddingUser && (
-              <div className="mb-3 bg-bg-surface border border-bd-faint rounded-sm p-2.5">
+              <div className="mb-3 bg-bg-surface border border-bd-faint rounded-sm p-3">
                 <div className="relative mb-2">
-                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-txt-tertiary" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-txt-tertiary" />
                   <input
                     value={userSearch}
                     onChange={e => setUserSearch(e.target.value)}
-                    placeholder="User suchen…"
+                    placeholder="Name oder E-Mail suchen…"
                     autoFocus
-                    className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs pl-8 pr-8 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                    className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm pl-9 pr-9 py-2.5 rounded-sm focus:border-scnat-red focus:outline-none"
                   />
                   {userSearch && (
-                    <button onClick={() => setUserSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-txt-tertiary hover:text-txt-primary">
-                      <X className="w-3.5 h-3.5" />
+                    <button onClick={() => setUserSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-txt-tertiary hover:text-txt-primary p-0.5">
+                      <X className="w-4 h-4" />
                     </button>
                   )}
                 </div>
-                <div className="max-h-36 overflow-y-auto space-y-0.5">
+                <div className="max-h-48 overflow-y-auto -mx-1">
                   {getAvailableUsers(ev.id).length > 0 ? (
                     getAvailableUsers(ev.id).slice(0, 20).map(u => (
                       <button
                         key={u.id}
                         onClick={() => handleAddUser(ev.id, u.id)}
-                        className="w-full flex items-center gap-2 text-left text-xs px-2.5 py-1.5 rounded-sm hover:bg-bg-elevated transition-colors"
+                        className="w-full flex items-center gap-2 text-left text-sm px-3 py-2.5 rounded-sm hover:bg-bg-elevated active:bg-bg-elevated transition-colors"
                       >
+                        <UserPlus className="w-3.5 h-3.5 text-scnat-teal shrink-0" />
                         <span className="text-txt-primary font-medium truncate">{u.name}</span>
-                        <span className="text-txt-tertiary truncate ml-auto text-[11px]">{u.email}</span>
+                        <span className="text-txt-tertiary text-xs truncate ml-auto">{u.email}</span>
                       </button>
                     ))
                   ) : (
-                    <p className="text-xs text-txt-tertiary italic px-2 py-1">
+                    <p className="text-sm text-txt-tertiary italic px-3 py-2">
                       {userSearch ? 'Keine passenden User gefunden' : 'Alle User sind bereits angemeldet'}
                     </p>
                   )}
@@ -190,29 +198,29 @@ export default function CpEvents() {
             {evRegs.length > 0 ? (
               <div className="space-y-1">
                 {evRegs.map(r => (
-                  <div key={r.id} className="flex items-center gap-2 text-xs bg-bg-surface rounded-sm px-2.5 py-1.5 sm:px-3">
+                  <div key={r.id} className="flex items-center gap-2 bg-bg-surface rounded-sm px-3 py-2.5">
                     <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-3">
-                        <span className="text-txt-primary font-medium truncate">{r.name}</span>
-                        <span className="text-txt-tertiary text-[11px] truncate">{r.email}</span>
-                      </div>
+                      <p className="text-sm text-txt-primary font-medium truncate">{r.name}</p>
+                      <p className="text-xs text-txt-tertiary truncate">
+                        {r.email}
+                        {r.abteilung && <span className="ml-2 text-txt-tertiary/60">· {r.abteilung}</span>}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {r.abteilung && <span className="hidden sm:inline text-[10px] font-mono bg-bg-elevated text-txt-tertiary px-1.5 py-0.5 rounded-sm">{r.abteilung}</span>}
-                      {r.addedByAdmin && <span className="hidden sm:inline text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1 py-0.5 rounded-sm">Admin</span>}
+                    <div className="flex items-center gap-2 shrink-0">
+                      {r.addedByAdmin && <span className="text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm">Admin</span>}
                       <button
                         onClick={() => handleRemoveRegistration(r.id)}
                         title="Anmeldung entfernen"
-                        className="text-txt-tertiary hover:text-scnat-red p-0.5 transition-colors"
+                        className="text-txt-tertiary hover:text-scnat-red p-1.5 -mr-1 rounded-sm hover:bg-scnat-red/10 transition-colors"
                       >
-                        <UserMinus className="w-3.5 h-3.5" />
+                        <UserMinus className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-txt-tertiary italic">Noch keine Anmeldungen</p>
+              <p className="text-sm text-txt-tertiary italic py-2">Noch keine Anmeldungen</p>
             )}
           </div>
         )}
@@ -223,12 +231,12 @@ export default function CpEvents() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h2 className="text-xl font-heading font-semibold text-txt-primary">Events verwalten</h2>
           <p className="text-xs text-txt-secondary mt-0.5">{events.length} Events · {stats.totalRegs} Anmeldungen · {stats.fillRate}% Auslastung</p>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 bg-scnat-red text-white text-sm px-3 py-1.5 rounded-sm hover:bg-[#F06570] transition-colors self-start sm:self-auto">
+        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center justify-center gap-1.5 bg-scnat-red text-white text-sm px-4 py-2.5 rounded-sm hover:bg-[#F06570] active:bg-[#d4464e] transition-colors w-full sm:w-auto">
           <Plus className="w-4 h-4" /> Neues Event
         </button>
       </div>
@@ -265,9 +273,9 @@ export default function CpEvents() {
             <input value={form.maxTeilnehmer} onChange={e => setForm({ ...form, maxTeilnehmer: e.target.value })} type="number" min="1" placeholder="Max. Teilnehmer" className={inputCls} />
             <textarea value={form.beschreibung} onChange={e => setForm({ ...form, beschreibung: e.target.value })} placeholder="Beschreibung" rows={2} className={`sm:col-span-2 resize-none ${inputCls}`} />
           </div>
-          <div className="flex gap-2 mt-3">
-            <button type="submit" className="bg-scnat-red text-white text-sm px-4 py-2 rounded-sm hover:bg-[#F06570] transition-colors">Erstellen</button>
-            <button type="button" onClick={() => setShowAdd(false)} className="text-sm text-txt-secondary px-4 py-2 rounded-sm hover:bg-bg-elevated transition-colors">Abbrechen</button>
+          <div className="flex gap-2 mt-4">
+            <button type="submit" className="flex-1 sm:flex-none bg-scnat-red text-white text-sm px-5 py-2.5 rounded-sm hover:bg-[#F06570] active:bg-[#d4464e] transition-colors">Erstellen</button>
+            <button type="button" onClick={() => setShowAdd(false)} className="flex-1 sm:flex-none text-sm text-txt-secondary px-5 py-2.5 rounded-sm hover:bg-bg-elevated transition-colors">Abbrechen</button>
           </div>
         </form>
       )}
