@@ -119,7 +119,7 @@ function RegistrationModal({ event, onClose }) {
         </div>
         <div className="p-5">
           <h4 className="text-sm font-medium text-txt-primary mb-1">{event.titel}</h4>
-          <div className="flex items-center gap-3 text-xs text-txt-secondary mb-4">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-txt-secondary mb-4">
             <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{event.datum} · {event.zeit}</span>
             <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{event.ort}</span>
           </div>

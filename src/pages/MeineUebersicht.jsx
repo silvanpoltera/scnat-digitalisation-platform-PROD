@@ -341,7 +341,7 @@ export default function MeineUebersicht() {
                         <span className="text-[10px] font-mono bg-status-green/15 text-status-green px-1.5 py-0.5 rounded-sm shrink-0">Angemeldet</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-txt-secondary">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-txt-secondary">
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{ev.datum}</span>
                       {ev.zeit && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{ev.zeit}</span>}
                       {ev.ort && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{ev.ort}</span>}

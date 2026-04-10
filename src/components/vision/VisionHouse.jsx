@@ -88,10 +88,11 @@ export default function VisionHouse({ selected, onSelect, compact = false }) {
       </motion.div>
 
       {/* Pillars */}
-      <div className={`grid grid-cols-5 ${compact ? "gap-1" : "gap-1.5"} mt-1`}>
+      <div className={`grid grid-cols-2 sm:grid-cols-5 ${compact ? "gap-1" : "gap-1.5"} mt-1`}>
         {pillars.map((pillar, i) => {
           const isActive = active === pillar.id;
           const Icon = pillar.icon;
+          const isLast = i === pillars.length - 1;
           return (
             <motion.button
               key={pillar.id}
@@ -101,7 +102,9 @@ export default function VisionHouse({ selected, onSelect, compact = false }) {
               onClick={() => setActive(isActive ? null : pillar.id)}
               whileHover={{ scale: 1.02 }}
               className={`relative flex flex-col items-center justify-center text-center border transition-all duration-200 rounded-sm ${
-                compact ? "py-5 px-1" : "py-7 sm:py-10 px-1.5"
+                compact ? "py-5 px-1" : "py-5 sm:py-10 px-1.5"
+              } ${
+                isLast ? "col-span-2 sm:col-span-1" : ""
               } ${
                 isActive
                   ? "border-transparent shadow-lg ring-2 z-10"
@@ -113,7 +116,7 @@ export default function VisionHouse({ selected, onSelect, compact = false }) {
               }}
             >
               <Icon className={`text-white mb-1.5 ${compact ? "w-4 h-4" : "w-5 h-5"}`} />
-              <span className={`text-white font-semibold leading-tight ${compact ? "text-[9px]" : "text-[10px] sm:text-xs"}`}>
+              <span className={`text-white font-semibold leading-tight ${compact ? "text-[9px]" : "text-xs"}`}>
                 {pillar.title}
               </span>
               {isActive && (
