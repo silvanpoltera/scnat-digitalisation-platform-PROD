@@ -64,9 +64,10 @@ const globalLimiter = rateLimit({
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60_000,
-  max: 8,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS',
   message: { error: 'Zu viele Login-Versuche — bitte 15 Minuten warten.' },
 });
 
