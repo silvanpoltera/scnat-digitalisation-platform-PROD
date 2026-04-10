@@ -108,11 +108,7 @@ npm run preview
 
 ### Standard-Login
 
-| Feld     | Wert                          |
-|----------|-------------------------------|
-| E-Mail   | `silvan.poltera@scnat.ch`     |
-| Passwort | `scnat2026!`                  |
-| Rolle    | `admin`                       |
+Beim ersten Start existiert ein Admin-Account. Zugangsdaten stehen in der `.env`-Datei bzw. werden beim Setup vergeben. **Niemals Passwörter in Dokumentation oder Quellcode hinterlegen.**
 
 ---
 
@@ -275,7 +271,7 @@ Der Express-Server (`server/index.js`) verwendet ESM-Module und läuft auf Port 
 ```
 1. POST /api/auth/login  → { email, password }
 2. Server prüft bcrypt-Hash
-3. JWT wird signiert (7 Tage gültig)
+3. JWT wird signiert (24 Stunden gültig)
 4. Token wird als httpOnly Cookie gesetzt
 5. Frontend liest User via GET /api/auth/me
 ```
@@ -291,7 +287,7 @@ Der Express-Server (`server/index.js`) verwendet ESM-Module und läuft auf Port 
 
 | Funktion              | Beschreibung                                          |
 |-----------------------|-------------------------------------------------------|
-| `signToken(payload)`  | Signiert ein JWT mit 7-Tage-Ablauf                    |
+| `signToken(payload)`  | Signiert ein JWT mit 24-Stunden-Ablauf                |
 | `verifyToken(token)`  | Verifiziert ein JWT, gibt Payload oder `null` zurück  |
 | `hashPassword(pw)`    | Hasht ein Passwort mit bcrypt (12 Runden)             |
 | `comparePassword(pw, hash)` | Vergleicht Passwort mit Hash                   |
@@ -558,12 +554,15 @@ Alle Endpunkte sind unter `/api` erreichbar. Auth-geschützte Routen erfordern e
 
 Optionale Konfiguration via `.env`-Datei im Projektroot:
 
-| Variable      | Default                                  | Beschreibung                  |
-|---------------|------------------------------------------|-------------------------------|
-| `PORT`        | `3001`                                   | Express-Server-Port           |
-| `JWT_SECRET`  | `scnat-digi-platform-secret-key-2026`    | Secret für JWT-Signierung     |
+| Variable        | Default                   | Beschreibung                  |
+|-----------------|---------------------------|-------------------------------|
+| `PORT`          | `3001`                    | Express-Server-Port           |
+| `JWT_SECRET`    | —                         | Secret für JWT-Signierung (mind. 32 Zeichen, **zwingend** in `.env` setzen) |
+| `CORS_ORIGIN`   | `http://localhost:5173`   | Erlaubte Origins (kommasepariert) |
+| `COOKIE_SECURE` | `false`                   | Auf `true` setzen für HTTPS   |
+| `NODE_ENV`      | —                         | `production` für Produktionsbetrieb |
 
-Für Produktion **muss** `JWT_SECRET` auf einen sicheren, zufälligen Wert gesetzt werden.
+**Wichtig:** `JWT_SECRET` wird beim Start geprüft — der Server startet nicht ohne ein Secret mit mind. 32 Zeichen.
 
 ---
 
@@ -585,20 +584,44 @@ Für den Produktionsbetrieb wird empfohlen:
 2. **Backend:** Express-Server mit `pm2` oder als systemd-Service betreiben
 3. **Reverse Proxy:** Nginx leitet `/api/*`-Anfragen an den Express-Server weiter
 
-Beispiel Nginx-Konfiguration:
+Beispiel Nginx-Konfiguration (HTTPS):
 
 ```nginx
 server {
     listen 80;
     server_name portal.scnat.ch;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name portal.scnat.ch;
+
+    ssl_certificate     /etc/letsencrypt/live/portal.scnat.ch/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/portal.scnat.ch/privkey.pem;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;" always;
 
     root /var/www/scnat-portal/dist;
     index index.html;
 
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
     location /api/ {
         proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
     }
 
     location / {
@@ -609,11 +632,14 @@ server {
 
 ### Sicherheitshinweise
 
-- `JWT_SECRET` in Produktion zwingend ändern
-- `data/users.json` enthält Passwort-Hashes — nicht öffentlich zugänglich machen
-- httpOnly Cookies schützen vor XSS-Token-Diebstahl
-- Für HTTPS: `secure: true` in der Cookie-Konfiguration (`server/routes/auth.js`) setzen
-- CORS-Origin auf die tatsächliche Domain anpassen (`server/index.js`)
+- `JWT_SECRET` in `.env` setzen (mind. 32 Zeichen, Server startet sonst nicht)
+- `data/` ist via `.gitignore` vom Repo ausgeschlossen — enthält Passwort-Hashes und PII
+- httpOnly + SameSite=Strict Cookies schützen vor XSS-Token-Diebstahl und CSRF
+- Für HTTPS: `COOKIE_SECURE=true` in `.env` setzen
+- `CORS_ORIGIN` auf die tatsächliche Domain setzen
+- JWT-Token läuft nach 24 Stunden ab
+- Alle User-Inputs werden serverseitig sanitized (HTML-Tags entfernt)
+- API-Server bindet in Production nur auf `127.0.0.1` (nicht öffentlich erreichbar ohne Reverse Proxy)
 
 ---
 

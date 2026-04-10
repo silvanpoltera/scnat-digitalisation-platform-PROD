@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -11,7 +11,7 @@ router.get('/', requireAuth, (_req, res) => {
 
 router.put('/', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
-  const { titel, beschreibung, cluster, status, tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal } = req.body;
+  const { titel, beschreibung, cluster, status, tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal } = sanitize(req.body);
   if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
   const newItem = { id: generateId(), titel, beschreibung, cluster, status: status || 'geplant', tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal };
   data.push(newItem);
@@ -50,8 +50,9 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
     'start_empfohlen', 'scnat_db', 'scnat_portal',
     'isNew', 'reihenfolge',
   ];
+  const safe = sanitize(req.body);
   allowed.forEach(key => {
-    if (req.body[key] !== undefined) data[idx][key] = req.body[key];
+    if (safe[key] !== undefined) data[idx][key] = safe[key];
   });
 
   writeJSON(FILE, data);

@@ -7,7 +7,7 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
   process.exit(1);
 }
 
-const JWT_EXPIRY = '7d';
+const JWT_EXPIRY = '24h';
 
 export function signToken(payload) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY });

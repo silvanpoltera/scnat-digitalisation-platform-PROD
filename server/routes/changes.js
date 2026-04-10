@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const FILE = 'changes.json';
 
-router.get('/', requireAuth, (_req, res) => {
+router.get('/', requireAuth, requireAdmin, (_req, res) => {
   res.json(readJSON(FILE));
 });
 
@@ -20,10 +20,17 @@ router.get('/mine', requireAuth, (req, res) => {
 });
 
 router.post('/', requireAuth, (req, res) => {
+  const { titel, beschreibung, typ, system, kontakt, kontaktEmail } = sanitize(req.body);
+  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = readJSON(FILE);
   const newItem = {
     id: generateId(),
-    ...req.body,
+    titel: titel || '',
+    beschreibung: beschreibung || '',
+    typ: typ || 'allgemein',
+    system: system || '',
+    kontakt: kontakt || req.user.name,
+    kontaktEmail: kontaktEmail || req.user.email,
     status: 'eingereicht',
     cluster: '',
     massnahmeId: '',

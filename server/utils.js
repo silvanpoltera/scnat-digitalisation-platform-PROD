@@ -19,3 +19,35 @@ export function writeJSON(filename, data) {
 export function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
+
+/**
+ * Pick only allowed keys from an object — prevents prototype pollution
+ * and mass-assignment of unexpected fields.
+ */
+export function pick(source, allowedKeys) {
+  const result = Object.create(null);
+  for (const key of allowedKeys) {
+    if (source[key] !== undefined) result[key] = source[key];
+  }
+  return result;
+}
+
+const HTML_TAG_RE = /<[^>]*>/g;
+
+/**
+ * Strip HTML tags from a string value. Applied recursively to object
+ * values so stored user input cannot contain executable markup.
+ */
+export function sanitize(value) {
+  if (typeof value === 'string') return value.replace(HTML_TAG_RE, '');
+  if (Array.isArray(value)) return value.map(sanitize);
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+      out[k] = sanitize(v);
+    }
+    return out;
+  }
+  return value;
+}

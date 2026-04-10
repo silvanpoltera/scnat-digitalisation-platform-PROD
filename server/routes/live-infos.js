@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -25,13 +25,14 @@ router.get('/all', requireAuth, requireAdmin, (_req, res) => {
 
 router.post('/', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
+  const safe = sanitize(req.body);
   const item = {
     id: generateId(),
-    tag: req.body.tag || '',
-    text: req.body.text || '',
-    priority: req.body.priority || 'normal',
-    aktiv: req.body.aktiv !== false,
-    gueltigBis: req.body.gueltigBis || null,
+    tag: safe.tag || '',
+    text: safe.text || '',
+    priority: safe.priority || 'normal',
+    aktiv: safe.aktiv !== false,
+    gueltigBis: safe.gueltigBis || null,
     erstellt: new Date().toISOString(),
   };
   data.push(item);
@@ -45,8 +46,9 @@ router.put('/:id', requireAuth, requireAdmin, (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
   const allowed = ['tag', 'text', 'priority', 'aktiv', 'gueltigBis'];
+  const safe = sanitize(req.body);
   allowed.forEach(k => {
-    if (req.body[k] !== undefined) data[idx][k] = req.body[k];
+    if (safe[k] !== undefined) data[idx][k] = safe[k];
   });
   writeJSON(FILE, data);
   res.json(data[idx]);

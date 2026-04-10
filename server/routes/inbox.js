@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -136,7 +136,7 @@ router.get('/admin/all', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/admin', requireAuth, requireAdmin, (req, res) => {
-  const { title, message, priority, targetType, targetUserIds, targetGroupId, targetEventId } = req.body;
+  const { title, message, priority, targetType, targetUserIds, targetGroupId, targetEventId } = sanitize(req.body);
   if (!title || !message || !targetType) {
     return res.status(400).json({ error: 'title, message, targetType required' });
   }

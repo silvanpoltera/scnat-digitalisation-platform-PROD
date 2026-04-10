@@ -76,11 +76,7 @@ app.use('/api/auth/login', loginLimiter);
 
 // ── Health check ────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
-  res.json({
-    status: 'ok',
-    uptime: Math.floor(process.uptime()),
-    timestamp: new Date().toISOString(),
-  });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // ── Routes ──────────────────────────────────────────────────────────
@@ -114,7 +110,8 @@ app.use((err, _req, res, _next) => {
   const status = err.status || 500;
   if (isProd) {
     console.error(`[ERROR] ${err.message}`);
-    res.status(status).json({ error: status === 500 ? 'Interner Serverfehler' : err.message });
+    const safeMessages = { 400: 'Ungültige Anfrage', 401: 'Nicht authentifiziert', 403: 'Zugriff verweigert', 404: 'Nicht gefunden' };
+    res.status(status).json({ error: safeMessages[status] || 'Interner Serverfehler' });
   } else {
     console.error(err);
     res.status(status).json({ error: err.message, stack: err.stack });
@@ -123,6 +120,7 @@ app.use((err, _req, res, _next) => {
 
 // ── Start ───────────────────────────────────────────────────────────
 const server = http.createServer(app);
-server.listen(PORT, () => {
-  console.log(`SCNAT API server running on port ${PORT} [${isProd ? 'production' : 'development'}]`);
+const HOST = isProd ? '127.0.0.1' : '0.0.0.0';
+server.listen(PORT, HOST, () => {
+  console.log(`SCNAT API server running on ${HOST}:${PORT} [${isProd ? 'production' : 'development'}]`);
 });

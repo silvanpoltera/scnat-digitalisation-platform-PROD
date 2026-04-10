@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -32,18 +32,19 @@ router.get('/categories', requireAuth, (_req, res) => {
 
 router.post('/', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
+  const safe = sanitize(req.body);
   const item = {
     id: generateId(),
-    datum: req.body.datum || new Date().toISOString().split('T')[0],
-    category: req.body.category || '',
-    categoryColor: req.body.categoryColor || '#5A616B',
-    title: req.body.title || '',
-    teaser: req.body.teaser || '',
-    detail: req.body.detail || '',
-    linkTo: req.body.linkTo || null,
-    isNew: req.body.isNew || false,
-    aktiv: req.body.aktiv !== false,
-    gueltigBis: req.body.gueltigBis || null,
+    datum: safe.datum || new Date().toISOString().split('T')[0],
+    category: safe.category || '',
+    categoryColor: safe.categoryColor || '#5A616B',
+    title: safe.title || '',
+    teaser: safe.teaser || '',
+    detail: safe.detail || '',
+    linkTo: safe.linkTo || null,
+    isNew: safe.isNew || false,
+    aktiv: safe.aktiv !== false,
+    gueltigBis: safe.gueltigBis || null,
     erstellt: new Date().toISOString(),
   };
   data.push(item);
@@ -57,8 +58,9 @@ router.put('/:id', requireAuth, requireAdmin, (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
   const allowed = ['datum', 'category', 'categoryColor', 'title', 'teaser', 'detail', 'linkTo', 'isNew', 'aktiv', 'gueltigBis'];
+  const safe = sanitize(req.body);
   allowed.forEach(k => {
-    if (req.body[k] !== undefined) data[idx][k] = req.body[k];
+    if (safe[k] !== undefined) data[idx][k] = safe[k];
   });
   writeJSON(FILE, data);
   res.json(data[idx]);

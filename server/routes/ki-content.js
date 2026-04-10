@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON } from '../utils.js';
+import { readJSON, writeJSON, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -11,7 +11,10 @@ router.get('/', requireAuth, (_req, res) => {
 });
 
 router.post('/', requireAuth, requireAdmin, (req, res) => {
-  writeJSON(FILE, req.body);
+  if (typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Body muss ein Objekt sein' });
+  }
+  writeJSON(FILE, sanitize(req.body));
   res.json({ ok: true });
 });
 

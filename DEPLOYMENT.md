@@ -121,10 +121,10 @@ module.exports = {
     autorestart: true,
     watch: false,
     max_memory_restart: '512M',
+    env_file: '.env',
     env: {
       NODE_ENV: 'production',
       PORT: 3001,
-      JWT_SECRET: 'HIER_EIN_SICHERES_GEHEIMNIS_SETZEN',
     },
   }],
 };
@@ -207,12 +207,12 @@ sudo certbot --nginx -d digitalisierung.scnat.ch
 
 | Massnahme | Details |
 |-----------|---------|
-| **JWT_SECRET** | Eigenes, langes Geheimnis setzen (mind. 64 Zeichen). Aktuell hardcoded — als Umgebungsvariable auslagern. |
+| **JWT_SECRET** | Eigenes, langes Geheimnis setzen (mind. 64 Zeichen). Wird aus `.env` / Umgebungsvariable gelesen. |
 | **HTTPS only** | Kein HTTP-Traffic erlauben, alles auf HTTPS umleiten (Nginx-Config oben). |
 | **Cookie-Flags** | `secure: true` setzen in `server/routes/auth.js` (aktuell `false` für Dev). `sameSite: 'strict'`. |
 | **CORS einschränken** | `origin` in `server/index.js` auf die echte Domain setzen statt `localhost:5173`. |
-| **Rate Limiting** | `express-rate-limit` installieren — z.B. max 10 Login-Versuche/Minute. |
-| **Admin-Passwort** | Starkes Passwort für den Admin-Account setzen (nicht das Dev-Passwort behalten). |
+| **Rate Limiting** | Bereits integriert: 120 Req/Min global, 20 Login-Versuche/15 Min. Bei Bedarf anpassen. |
+| **Admin-Passwort** | Starkes Passwort für den Admin-Account setzen (mind. 12 Zeichen, Sonderzeichen). |
 | **SSH-Zugang** | Nur per SSH-Key, Passwort-Login deaktivieren. Root-Login deaktivieren. |
 | **Fail2Ban** | Schützt SSH und Nginx vor Brute-Force. |
 
@@ -220,7 +220,7 @@ sudo certbot --nginx -d digitalisierung.scnat.ch
 
 | Massnahme | Details |
 |-----------|---------|
-| **Helmet.js** | `npm install helmet` — setzt automatisch Sicherheits-Header im Express-Backend. |
+| **Helmet.js** | Bereits integriert. CSP wird in Production automatisch aktiviert. |
 | **Content Security Policy** | Via Nginx oder Helmet konfigurieren. |
 | **Regelmässige Updates** | `sudo apt update && sudo apt upgrade` monatlich, Node.js-Updates per nvm. |
 | **Audit** | `npm audit` regelmässig ausführen und Vulnerabilities fixen. |
@@ -301,7 +301,7 @@ Im Backend einen einfachen Health-Check ergänzen:
 
 ```javascript
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 ```
 
@@ -385,16 +385,29 @@ Falls Docker bevorzugt wird:
 
 ```dockerfile
 # Dockerfile
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package*.json package-lock.json ./
+RUN npm ci
 COPY . .
-RUN npm run build
+RUN npm run build && npm prune --omit=dev
+
+FROM node:20-alpine
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+WORKDIR /app
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/server ./server
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/data ./data
+RUN chown -R appuser:appgroup /app
+USER appuser
 
 EXPOSE 3001
 ENV NODE_ENV=production
+
+HEALTHCHECK --interval=30s --timeout=5s CMD wget -qO- http://localhost:3001/api/health || exit 1
 
 CMD ["node", "server/index.js"]
 ```
@@ -404,14 +417,31 @@ CMD ["node", "server/index.js"]
 services:
   app:
     build: .
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
     volumes:
-      - ./data:/app/data          # Daten persistent halten
+      - ./data:/app/data
     environment:
       - NODE_ENV=production
       - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - COOKIE_SECURE=true
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - internal
 
   nginx:
     image: nginx:alpine
@@ -419,12 +449,18 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./dist:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
 ```
 
 ---
@@ -437,7 +473,7 @@ services:
 - [ ] JWT_SECRET als sichere Umgebungsvariable gesetzt
 - [ ] Cookie `secure: true` und `sameSite: 'strict'`
 - [ ] CORS auf die echte Domain eingeschränkt
-- [ ] Admin-Passwort geändert (nicht das Dev-Passwort `scnat2026!`)
+- [ ] Admin-Passwort geändert (starkes Passwort, mind. 12 Zeichen)
 - [ ] Firewall aktiv (nur SSH + HTTPS offen)
 - [ ] SSH nur per Key, kein Passwort-Login
 - [ ] Fail2Ban installiert und konfiguriert

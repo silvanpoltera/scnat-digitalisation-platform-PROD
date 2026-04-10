@@ -8,7 +8,7 @@ const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.COOKIE_SECURE === 'true',
   sameSite: 'strict',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 24 * 60 * 60 * 1000,
   path: '/',
 };
 

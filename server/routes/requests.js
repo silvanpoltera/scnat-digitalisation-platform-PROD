@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const FILE = 'requests.json';
 
-router.get('/', requireAuth, (_req, res) => {
+router.get('/', requireAuth, requireAdmin, (_req, res) => {
   res.json(readJSON(FILE));
 });
 
 router.post('/', requireAuth, (req, res) => {
-  const { titel, beschreibung, typ, kontakt, kontaktEmail } = req.body;
+  const { titel, beschreibung, typ, kontakt, kontaktEmail } = sanitize(req.body);
   if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = readJSON(FILE);
   const newItem = {

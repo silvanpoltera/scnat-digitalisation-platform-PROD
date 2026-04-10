@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, pick, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -15,18 +15,24 @@ router.get('/', requireAuth, (_req, res) => {
   res.json(getData());
 });
 
+const STATUS_KEYS = ['konsolidierung', 'migration', 'timeline', 'phase', 'fortschritt', 'notiz'];
+
 router.post('/status', requireAuth, requireAdmin, (req, res) => {
   const data = getData();
-  Object.assign(data.status, req.body);
+  const updates = pick(sanitize(req.body), STATUS_KEYS);
+  Object.assign(data.status, updates);
   writeJSON(FILE, data);
   res.json(data);
 });
+
+const ENTSCHEID_KEYS = ['titel', 'beschreibung', 'status', 'prioritaet', 'notiz', 'deadline', 'entscheidung'];
 
 router.post('/entscheide/:id', requireAuth, requireAdmin, (req, res) => {
   const data = getData();
   const idx = data.entscheide.findIndex(e => e.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  Object.assign(data.entscheide[idx], req.body);
+  const updates = pick(sanitize(req.body), ENTSCHEID_KEYS);
+  Object.assign(data.entscheide[idx], updates);
   writeJSON(FILE, data);
   res.json(data.entscheide[idx]);
 });
@@ -41,11 +47,14 @@ router.put('/backlog', requireAuth, requireAdmin, (req, res) => {
   res.status(201).json(newItem);
 });
 
+const BACKLOG_KEYS = ['titel', 'beschreibung', 'kategorie', 'prioritaet', 'status'];
+
 router.post('/backlog/:id', requireAuth, requireAdmin, (req, res) => {
   const data = getData();
   const idx = data.backlog.findIndex(b => b.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  Object.assign(data.backlog[idx], req.body);
+  const updates = pick(sanitize(req.body), BACKLOG_KEYS);
+  Object.assign(data.backlog[idx], updates);
   writeJSON(FILE, data);
   res.json(data.backlog[idx]);
 });

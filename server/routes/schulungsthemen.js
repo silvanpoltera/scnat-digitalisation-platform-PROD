@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -16,7 +16,7 @@ router.get('/', requireAuth, (_req, res) => {
 });
 
 router.post('/', requireAuth, (req, res) => {
-  const { titel, beschreibung } = req.body;
+  const { titel, beschreibung } = sanitize(req.body);
   if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
 
   const data = readJSON(FILE);
