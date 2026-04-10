@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche - SCNAT</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="recherche.css">
+    <script>
+    (function(){
+      function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
+      sync();
+      try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+    })();
+    </script>
+</head>
+<body>
+    <!-- Sticky Top Navigation -->
+    <nav class="sticky-nav">
+        <button class="burger-menu" id="burger-menu" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links">
+            <a href="index.html#einleitung" class="nav-link">Einleitung</a>
+            <a href="index.html#sicherheit" class="nav-link">Sicherheit</a>
+            <a href="index.html#betrieb" class="nav-link">Betrieb</a>
+            <a href="index.html#publishing" class="nav-link">Publishing</a>
+            <a href="index.html#governance" class="nav-link">Governance</a>
+        </div>
+        <a href="recherche.html" class="nav-research-icon" title="Recherche öffnen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+        </a>
+        <a href="process.html" class="nav-process-icon" title="Process öffnen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2 L12 6 M12 18 L12 22"></path>
+                <path d="M4.93 4.93 L7.76 7.76 M16.24 16.24 L19.07 19.07"></path>
+                <path d="M2 12 L6 12 M18 12 L22 12"></path>
+                <path d="M4.93 19.07 L7.76 16.24 M16.24 7.76 L19.07 4.93"></path>
+            </svg>
+        </a>
+    </nav>
+
+    <!-- Main Title -->
+    <header class="main-title">
+        <h1>Das SCNAT - Durch Evolution zu noch mehr digitaler Souveränität</h1>
+    </header>
+
+    <!-- Recherche Content -->
+    <main class="recherche-container">
+        <!-- Carousel Section -->
+        <section class="carousel-section">
+            <div class="carousel-wrapper">
+                <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Vorherige Karte">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                
+                <div class="carousel" id="carousel">
+                    <!-- Cards werden dynamisch eingefügt -->
+                </div>
+                
+                <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Nächste Karte">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="carousel-indicators" id="carousel-indicators">
+                <!-- Indicators werden dynamisch eingefügt -->
+            </div>
+        </section>
+
+        <!-- SWOT Button -->
+        <div class="swot-button-container">
+            <button class="swot-button" id="swot-button">
+                <span>SWOT</span>
+            </button>
+        </div>
+
+        <!-- SWOT Section -->
+        <section class="swot-section" id="swot-section">
+            <div class="swot-grid">
+                <div class="swot-quadrant swot-strengths">
+                    <h3>Stärken</h3>
+                    <ul id="swot-strengths">
+                        <!-- Wird dynamisch eingefügt -->
+                    </ul>
+                </div>
+                <div class="swot-quadrant swot-weaknesses">
+                    <h3>Schwächen</h3>
+                    <ul id="swot-weaknesses">
+                        <!-- Wird dynamisch eingefügt -->
+                    </ul>
+                </div>
+                <div class="swot-quadrant swot-opportunities">
+                    <h3>Chancen</h3>
+                    <ul id="swot-opportunities">
+                        <!-- Wird dynamisch eingefügt -->
+                    </ul>
+                </div>
+                <div class="swot-quadrant swot-threats">
+                    <h3>Risiken</h3>
+                    <ul id="swot-threats">
+                        <!-- Wird dynamisch eingefügt -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Background Video -->
+    <video class="background-video" autoplay muted loop playsinline>
+        <source src="background video.mp4" type="video/mp4">
+    </video>
+
+    <!-- Recherche Content Data -->
+    <script src="content-recherche.js"></script>
+    <!-- Test Script to verify data loading -->
+    <script>
+        // Test if data is loaded
+        window.addEventListener('load', function() {
+            console.log('Page loaded, checking rechercheData...');
+            if (typeof rechercheData !== 'undefined') {
+                console.log('✓ rechercheData gefunden:', rechercheData);
+                console.log('✓ Cards:', rechercheData.cards ? rechercheData.cards.length : 'nicht verfügbar');
+                console.log('✓ SWOT:', rechercheData.swot ? 'verfügbar' : 'nicht verfügbar');
+            } else {
+                console.error('✗ rechercheData NICHT gefunden!');
+            }
+        });
+    </script>
+    <!-- Recherche Script -->
+    <script src="recherche.js"></script>
+</body>
+</html>
+

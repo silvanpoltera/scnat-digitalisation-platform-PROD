@@ -1,7 +1,12 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'scnat-digi-platform-secret-key-2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('FATAL: JWT_SECRET is missing or too short (min 32 chars). Set it in .env');
+  process.exit(1);
+}
+
 const JWT_EXPIRY = '7d';
 
 export function signToken(payload) {

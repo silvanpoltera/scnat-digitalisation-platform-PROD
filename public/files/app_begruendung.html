@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Die Analyse – Was sagen die Zahlen? SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function(){
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
+  sync();
+  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-base:      #0C0E10;
+    --bg-surface:   #141618;
+    --bg-elevated:  #1C1E22;
+    --bg-subtle:    #222529;
+    --border-faint: #1E2124;
+    --border-def:   #2A2D34;
+    --border-strong:#5A616B;
+    --red:          #EA515A;
+    --red-dim:      rgba(234,81,90,0.10);
+    --anthrazit:    #5A616B;
+    --text-primary: #ECEEF1;
+    --text-sec:     #8A8F9B;
+    --text-ter:     #4E535D;
+    --success:      #3DAA75;
+    --warning:      #D4882A;
+    --info:         #4A90D9;
+    --cluster-1:    rgba(234,81,90,0.70);
+    --cluster-2:    rgba(90,97,107,0.90);
+    --cluster-3:    rgba(74,144,217,0.80);
+    --cluster-4:    rgba(61,170,117,0.80);
+    --cluster-5:    rgba(212,136,42,0.80);
+    --cluster-6:    rgba(124,92,191,0.80);
+  }
+
+  .theme-bright {
+    --bg-base:      #F2F3F5;
+    --bg-surface:   #FFFFFF;
+    --bg-elevated:  #F8F9FA;
+    --bg-subtle:    #EEF0F2;
+    --border-faint: #E2E4E8;
+    --border-def:   #CDD1D6;
+    --border-strong:#5A616B;
+    --red-dim:      rgba(234,81,90,0.08);
+    --text-primary: #1A1D21;
+    --text-sec:     #5A616B;
+    --text-ter:     #8A8F9B;
+    --success:      #1B8A4A;
+    --warning:      #B27308;
+    --info:         #2471A3;
+  }
+
+  html { background: var(--bg-base); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; }
+
+  body { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+  /* HEADER */
+  .header { margin-bottom: 4rem; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--red); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 1rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.1; color: var(--text-primary); margin-bottom: 1.2rem; }
+  h1 span { color: var(--red); }
+  .lead { font-size: 1.05rem; color: var(--text-sec); max-width: 600px; line-height: 1.75; }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border-faint); margin: 3rem 0; }
+
+  /* SECTION LABEL */
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--text-ter); margin-bottom: 1.2rem; }
+
+  /* HEADLINE ROW */
+  .headline-stat { font-size: clamp(3.5rem, 10vw, 6rem); font-weight: 700; line-height: 1; color: var(--text-primary); }
+  .headline-stat .unit { font-size: 2rem; color: var(--text-sec); font-weight: 400; margin-left: .3rem; }
+
+  /* BIG THREE STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border-faint); border: 1px solid var(--border-faint); border-radius: 6px; overflow: hidden; margin-bottom: 3rem; }
+  .stat-cell { background: var(--bg-surface); padding: 2rem 1.5rem; }
+  .stat-number { font-size: 3rem; font-weight: 700; line-height: 1; margin-bottom: .4rem; }
+  .stat-label { font-size: .85rem; color: var(--text-sec); line-height: 1.5; }
+  .stat-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-ter); margin-top: .4rem; }
+
+  /* CATEGORY BREAKDOWN */
+  .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
+  .cat-card { background: var(--bg-surface); border: 1px solid var(--border-def); border-radius: 4px; padding: 1.5rem; position: relative; overflow: hidden; }
+  .cat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .cat-card.transparenz::before { background: var(--info); }
+  .cat-card.wissen::before { background: var(--success); }
+  .cat-card.prozess::before { background: var(--warning); }
+  .cat-card.plattform::before { background: var(--red); }
+  .cat-pct { font-size: 2.4rem; font-weight: 700; line-height: 1; margin-bottom: .25rem; }
+  .cat-pct.transparenz { color: var(--info); }
+  .cat-pct.wissen { color: var(--success); }
+  .cat-pct.prozess { color: var(--warning); }
+  .cat-pct.plattform { color: var(--red); }
+  .cat-title { font-weight: 500; font-size: .95rem; margin-bottom: .3rem; }
+  .cat-desc { font-size: .82rem; color: var(--text-sec); line-height: 1.5; margin-bottom: 1rem; }
+  .cat-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-ter); }
+
+  /* MEASURE TAGS */
+  .measure-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: .75rem; }
+  .tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 7px; border: 1px solid var(--border-def); border-radius: 2px; color: var(--text-sec); }
+  .tag.red { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+  /* PROGRESS BARS */
+  .bar-group { margin-bottom: 2.5rem; }
+  .bar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: .6rem; }
+  .bar-label { font-size: .82rem; color: var(--text-sec); width: 240px; flex-shrink: 0; line-height: 1.4; }
+  .bar-label .hl { color: var(--text-primary); font-weight: 500; }
+  .bar-track { flex: 1; height: 6px; background: var(--bg-subtle); border-radius: 1px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 1px; }
+  .bar-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-sec); width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* ARGUMENT CARDS */
+  .arg-grid { display: grid; gap: 1rem; margin-bottom: 3rem; }
+  .arg-card { background: var(--bg-surface); border: 1px solid var(--border-def); border-radius: 4px; padding: 1.5rem; display: grid; grid-template-columns: auto 1fr; gap: 1.2rem; align-items: start; }
+  .arg-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-ter); padding-top: 2px; }
+  .arg-title { font-weight: 600; font-size: .95rem; margin-bottom: .4rem; color: var(--text-primary); }
+  .arg-text { font-size: .85rem; color: var(--text-sec); line-height: 1.65; }
+  .arg-measures { margin-top: .75rem; }
+
+  /* PROCESS TABLE */
+  .proc-table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; font-size: .83rem; }
+  .proc-table th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text-ter); padding: .6rem 1rem; border-bottom: 1px solid var(--border-faint); }
+  .proc-table td { padding: .8rem 1rem; border-bottom: 1px solid var(--border-faint); color: var(--text-sec); vertical-align: top; }
+  .proc-table td:first-child { color: var(--text-primary); font-weight: 500; }
+  .proc-table tr:hover td { background: var(--bg-elevated); }
+  .badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 6px; border-radius: 2px; white-space: nowrap; }
+  .badge-a { background: rgba(234,81,90,.15); color: var(--red); border: 1px solid rgba(234,81,90,.3); }
+  .badge-b { background: rgba(74,144,217,.1); color: var(--info); border: 1px solid rgba(74,144,217,.3); }
+  .badge-c { background: rgba(212,136,42,.1); color: var(--warning); border: 1px solid rgba(212,136,42,.3); }
+
+  /* APP FEATURE MAPPING */
+  .mapping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 3rem; }
+  .mapping-card { background: var(--bg-surface); border: 1px solid var(--border-def); border-radius: 4px; padding: 1.25rem; }
+  .mapping-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .75rem; }
+  .mapping-icon { font-size: 1rem; }
+  .mapping-title { font-weight: 600; font-size: .9rem; }
+  .mapping-feature { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--red); margin-bottom: .4rem; }
+  .mapping-list { font-size: .8rem; color: var(--text-sec); line-height: 1.7; }
+  .mapping-list li { list-style: none; padding-left: .8rem; position: relative; }
+  .mapping-list li::before { content: '→'; position: absolute; left: 0; color: var(--text-ter); }
+
+  /* CONCLUSION */
+  .conclusion { background: var(--red-dim); border: 1px solid rgba(234,81,90,.25); border-radius: 4px; padding: 2rem; }
+  .conclusion h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: .75rem; color: var(--text-primary); }
+  .conclusion p { font-size: .88rem; color: var(--text-sec); line-height: 1.7; }
+  .conclusion strong { color: var(--text-primary); }
+
+  /* DONUT VISUAL */
+  .visual-row { display: flex; align-items: center; gap: 3rem; margin-bottom: 3rem; }
+  .donut-wrap { position: relative; flex-shrink: 0; }
+  .donut-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .donut-big { font-size: 2rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+  .donut-small { font-size: .7rem; color: var(--text-sec); font-family: 'JetBrains Mono', monospace; }
+  .legend { display: flex; flex-direction: column; gap: .6rem; }
+  .legend-item { display: flex; align-items: center; gap: .6rem; font-size: .82rem; color: var(--text-sec); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .cat-grid, .mapping-grid { grid-template-columns: 1fr; }
+    .visual-row { flex-direction: column; gap: 1.5rem; }
+    .bar-label { width: 160px; font-size: .75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">SCNAT Digitalisierung · Interne Analyse</div>
+  <h1>Die Analyse –<br><span>Was sagen die Zahlen?</span></h1>
+  <p class="lead">28 Massnahmen, ein Massnahmenplan. Wir haben jeden einzelnen Punkt analysiert – und die Zahlen sprechen eine deutliche Sprache.</p>
+</div>
+
+<div class="section-label">Das Wichtigste in Zahlen</div>
+<div class="stats-grid">
+  <div class="stat-cell">
+    <div class="stat-number" style="color:var(--red)">86%</div>
+    <div class="stat-label">aller Massnahmen setzen voraus, dass Informationen aktiv geteilt, zugänglich gemacht und laufend aktuell gehalten werden – heute gibt es dafür keine gemeinsame Lösung.</div>
+    <div class="stat-sub">24 von 28 Massnahmen</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number" style="color:var(--info)">39%</div>
+    <div class="stat-label">der Massnahmen zielen darauf ab, Mitarbeitende zu befähigen – Wissen aufzubauen, Kompetenzen zu stärken, Unsicherheiten abzubauen. Das braucht Kontinuität, nicht Einmalanlässe.</div>
+    <div class="stat-sub">11 von 28 Massnahmen</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number" style="color:var(--success)">25%</div>
+    <div class="stat-label">der Massnahmen fordern, dass Prozesse nicht nur definiert – sondern für alle nachvollziehbar und jederzeit abrufbar sind. Das geht weit über eine geteilte Ablage hinaus.</div>
+    <div class="stat-sub">7 von 28 Massnahmen</div>
+  </div>
+</div>
+
+<hr>
+
+<div style="background:var(--bg-surface);border:1px solid var(--border-def);border-left:3px solid var(--red);border-radius:4px;padding:2rem 2rem 2rem 1.75rem;margin-bottom:3rem;">
+  <div class="section-label" style="margin-bottom:.75rem;">Statement</div>
+  <p style="font-size:1.05rem;line-height:1.8;color:var(--text-primary);font-weight:500;margin-bottom:.75rem;">
+    Eine zentrale digitale Plattform ist wohl die beste Voraussetzung, um diesen Massnahmenplan sauber, nachhaltig und für alle sichtbar in Angriff zu nehmen.
+  </p>
+  <p style="font-size:.88rem;color:var(--text-sec);line-height:1.75;">
+    Nicht als Selbstzweck – sondern weil 86% der Massnahmen genau das einfordern: einen Ort für Kommunikation, Schulung und Prozess-Transparenz. Was heute verteilt über E-Mails, Ordner und Einzelinitiativen läuft, braucht eine gemeinsame Heimat. Die Plattform ist nicht das Ziel der Digitalisierung. Sie ist die Voraussetzung dafür, dass die Umsetzung nicht wieder im Sand verläuft.
+  </p>
+</div>
+
+<hr>
+
+<div class="section-label">Analyse nach Kategorie</div>
+
+<div class="visual-row">
+  <div class="donut-wrap">
+    <svg width="180" height="180" viewBox="0 0 180 180">
+      <!-- Hintergrundring -->
+      <circle cx="90" cy="90" r="70" fill="none" stroke="#1C1E22" stroke-width="22"/>
+      <!-- Wissensvermittlung 39% → 172px, Start 12 Uhr, offset=440 (=C-0) -->
+      <circle cx="90" cy="90" r="70" fill="none" stroke="#3DAA75" stroke-width="22"
+        stroke-dasharray="172 268" stroke-dashoffset="440"
+        transform="rotate(-90 90 90)" stroke-linecap="butt"/>
+      <!-- Transparenz 29% → 128px, Start nach 172, offset=440-172=268 -->
+      <circle cx="90" cy="90" r="70" fill="none" stroke="#4A90D9" stroke-width="22"
+        stroke-dasharray="128 312" stroke-dashoffset="268"
+        transform="rotate(-90 90 90)" stroke-linecap="butt"/>
+      <!-- Prozesse 25% → 110px, Start nach 300, offset=440-300=140 -->
+      <circle cx="90" cy="90" r="70" fill="none" stroke="#D4882A" stroke-width="22"
+        stroke-dasharray="110 330" stroke-dashoffset="140"
+        transform="rotate(-90 90 90)" stroke-linecap="butt"/>
+      <!-- Strategisch 7% → 30px, Start nach 410, offset=440-410=30 -->
+      <circle cx="90" cy="90" r="70" fill="none" stroke="#2A2D34" stroke-width="22"
+        stroke-dasharray="30 410" stroke-dashoffset="30"
+        transform="rotate(-90 90 90)" stroke-linecap="butt"/>
+    </svg>
+    <div class="donut-label">
+      <div class="donut-big">28</div>
+      <div class="donut-small">Massnahmen</div>
+    </div>
+  </div>
+  <div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> Wissensvermittlung & Schulung — 39% (11 Massnahmen)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--info)"></div> Transparenz & Kommunikation — 29% (8 Massnahmen)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div> Prozessoptimierung & Zentralisierung — 25% (7 Massnahmen)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--border-def)"></div> Rein strategisch / Konzeptarbeit — 7% (2 Massnahmen)</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-ter);margin-top:1.2rem;font-family:'JetBrains Mono',monospace;">Kategorien überlappen bewusst.<br>Basis: 28 Massnahmen, Mehrfachzuordnung möglich.</p>
+  </div>
+</div>
+
+<div class="cat-grid">
+  <div class="cat-card transparenz">
+    <div class="cat-pct transparenz">29%</div>
+    <div class="cat-title">Transparenz & Kommunikation</div>
+    <div class="cat-desc">Massnahmen, die explizit fordern, dass Informationen zentral zugänglich gemacht und regelmässig kommuniziert werden.</div>
+    <div class="cat-count">8 Massnahmen · Prio-Schnitt: A/B</div>
+    <div class="measure-tags">
+      <span class="tag red">Kommunikation Digitale Transformation</span>
+      <span class="tag">Übersicht digitale Tools</span>
+      <span class="tag">Ressourcenerklärung</span>
+      <span class="tag">Digitaler Reifegrad messen</span>
+      <span class="tag">Kundengruppen definieren</span>
+      <span class="tag">Angebot Digitale Kompetenzen</span>
+      <span class="tag">Kundenzufriedenheit messen</span>
+      <span class="tag">Datenschutz schulen</span>
+    </div>
+  </div>
+
+  <div class="cat-card wissen">
+    <div class="cat-pct wissen">39%</div>
+    <div class="cat-title">Wissensvermittlung & Schulung</div>
+    <div class="cat-desc">Massnahmen, die Schulungsinfrastruktur, Kompetenzaufbau und niederschwellige Angebote für Mitarbeitende voraussetzen.</div>
+    <div class="cat-count">11 Massnahmen · Prio-Schnitt: A/B/C</div>
+    <div class="measure-tags">
+      <span class="tag red">KI Lernpfad</span>
+      <span class="tag">Vorlage Ablagestruktur inkl. Schulung</span>
+      <span class="tag">Projektmanagement inkl. Schulung</span>
+      <span class="tag">Verankerung Digitale Transformation</span>
+      <span class="tag">Digitales Mindset fördern</span>
+      <span class="tag">Angebot Digitale Kompetenzen</span>
+      <span class="tag">Def. Digitale Kompetenzen</span>
+      <span class="tag">Def. Digitales Mindset</span>
+      <span class="tag">Digitale Zusammenarbeit befähigen</span>
+      <span class="tag">Einführung agile Methoden</span>
+      <span class="tag">Datenschutz schulen</span>
+    </div>
+  </div>
+
+  <div class="cat-card prozess">
+    <div class="cat-pct prozess">25%</div>
+    <div class="cat-title">Prozessoptimierung & Zentralisierung</div>
+    <div class="cat-desc">Massnahmen, die verlangen, dass Prozesse dokumentiert, kommuniziert und zentral abrufbar gemacht werden.</div>
+    <div class="cat-count">7 Massnahmen · Prio-Schnitt: A/B/C</div>
+    <div class="measure-tags">
+      <span class="tag red">Prozessdigitalisierung</span>
+      <span class="tag">Beschaffungsprozess definieren</span>
+      <span class="tag">Data Governance</span>
+      <span class="tag">Business Analyse Standards</span>
+      <span class="tag">Dokumentation Top-Prozesse</span>
+      <span class="tag">Identifikation Top-Prozesse</span>
+      <span class="tag red">Digital Board &amp; Umsetzungsprozess</span>
+    </div>
+  </div>
+
+  <div class="cat-card plattform">
+    <div class="cat-pct plattform">86%</div>
+    <div class="cat-title">Direkt durch die Plattform unterstützt</div>
+    <div class="cat-desc">Massnahmen, die ohne zentrale digitale Plattform nicht nachhaltig kommuniziert, verfolgt oder umgesetzt werden können.</div>
+    <div class="cat-count">24 von 28 Massnahmen</div>
+    <div class="measure-tags">
+      <span class="tag">Nur 4 Massnahmen sind reine Konzeptarbeit ohne direkten Plattform-Bezug</span>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-label">Die Massnahmen die nach Transparenz &amp; zentralen Prozessen schreien</div>
+
+<div class="bar-group">
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Kommunikation Digitale Transformation</span><br>Zentraler Update-Kanal, Ansprechperson, Kommunikationsplan</div>
+    <div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--info)"></div></div>
+    <div class="bar-val" style="color:var(--info)">8.5</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Übersicht digitale Tools</span><br>Welche Tools gibt es? Wofür? Alle müssen es wissen.</div>
+    <div class="bar-track"><div class="bar-fill" style="width:81%;background:var(--info)"></div></div>
+    <div class="bar-val" style="color:var(--info)">8.1</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Ressourcenerklärung Digitale Transformation</span><br>Digitalisierung muss in die Ressourcenplanung aller Bereiche</div>
+    <div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--info)"></div></div>
+    <div class="bar-val" style="color:var(--info)">8.0</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Dokumentation Top-Prozesse</span><br>Prozesse einheitlich darstellen, zentral ablegen, zugänglich machen</div>
+    <div class="bar-track"><div class="bar-fill" style="width:66%;background:var(--warning)"></div></div>
+    <div class="bar-val" style="color:var(--warning)">6.6</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Angebot Digitale Kompetenzen</span><br>Schulungsangebote kommunizieren, Ansprechperson sichtbar machen</div>
+    <div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--success)"></div></div>
+    <div class="bar-val" style="color:var(--success)">6.5</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Kundenzufriedenheit messen</span><br>Regelmässiger Feedback-Loop braucht eine zentrale Stelle</div>
+    <div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--info)"></div></div>
+    <div class="bar-val" style="color:var(--info)">6.3</div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label"><span class="hl">Datenschutz schulen</span><br>Regelmässige Schulung + Onboarding braucht fixe Infrastruktur</div>
+    <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--border-strong)"></div></div>
+    <div class="bar-val">—</div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-label">Drei Argumente für deinen Boss</div>
+
+<div class="arg-grid">
+  <div class="arg-card">
+    <div class="arg-num">01</div>
+    <div>
+      <div class="arg-title">Ohne Plattform existiert die Strategie nur auf Papier</div>
+      <div class="arg-text">Der Massnahmenplan enthält 3 direkte Kommunikationsmassnahmen (Prio A mit Wirkung 8.0–8.5) – darunter die Top-Massnahme "Kommunikation Digitale Transformation". Deren einziger Zweck ist es, den Mitarbeitenden regelmässig zu zeigen, was passiert. Das funktioniert nicht per E-Mail und nicht per Excel. Es braucht einen Ort, auf den jeder jederzeit zugreifen kann.</div>
+      <div class="measure-tags">
+        <span class="tag red">Wirkung 8.5 · Prio A</span>
+        <span class="tag">Kommunikation Digitale Transformation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arg-card">
+    <div class="arg-num">02</div>
+    <div>
+      <div class="arg-title">39% der Massnahmen sind Schulungsmassnahmen – Schulungen brauchen Infrastruktur</div>
+      <div class="arg-text">11 von 28 Massnahmen setzen voraus, dass Mitarbeitende Schulungen finden, sich anmelden und Inhalte abrufen können. Heute gibt es keinen zentralen Ort dafür. Jede Schulung wird ad-hoc organisiert, jede Anmeldung per Mail. Das ist keine Skalierung – das ist Einzelfallarbeit. Die Plattform löst das mit Schulungskalender, Anmeldefunktion und KI-Schulungsmodul in einem.</div>
+      <div class="measure-tags">
+        <span class="tag red">11 Massnahmen betroffen</span>
+        <span class="tag">KI Lernpfad · Wirkung 8.8</span>
+        <span class="tag">Digitales Mindset · Vorlage Ablage · PM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arg-card">
+    <div class="arg-num">03</div>
+    <div>
+      <div class="arg-title">Prozesse müssen nicht nur definiert – sie müssen sichtbar gemacht werden</div>
+      <div class="arg-text">7 Massnahmen fordern explizit, dass Prozesse dokumentiert, kommuniziert und zugänglich sind. "Dokumentation Top-Prozesse" (Aufwand 10 = sehr einfach, Wirkung 6.6) verlangt genau das: einen zentralen Ort, wo Prozesse einheitlich dargestellt werden. Gleiches gilt für Beschaffungsprozesse, Business-Analyse-Standards und das Digital Board. Ohne Plattform landen all diese Outputs in SharePoint-Ordnern, die niemand findet.</div>
+      <div class="measure-tags">
+        <span class="tag red">7 Prozess-Massnahmen</span>
+        <span class="tag">Dokumentation Top-Prozesse · Aufwand 10/10</span>
+        <span class="tag">Digital Board – bereits in Umsetzung</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="section-label">Welche App-Funktion löst welche Massnahme</div>
+
+<div class="mapping-grid">
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">📋</span>
+      <div class="mapping-title">Massnahmen-Board</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: /massnahmen</div>
+    <ul class="mapping-list">
+      <li>Digital Board & Umsetzungsprozess (in Umsetzung)</li>
+      <li>Identifikation & Dokumentation Top-Prozesse</li>
+      <li>KI-Strategie verfolgen</li>
+      <li>Digitaler Reifegrad: Ergebnisse kommunizieren</li>
+    </ul>
+  </div>
+
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">🎓</span>
+      <div class="mapping-title">Schulungskalender + Anmeldung</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: /schulungen</div>
+    <ul class="mapping-list">
+      <li>KI Lernpfad (Wirkung 8.8)</li>
+      <li>Vorlage Ablagestruktur inkl. Schulung</li>
+      <li>Projektmanagement inkl. Schulung</li>
+      <li>Digitales Mindset, Datenschutz schulen</li>
+    </ul>
+  </div>
+
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">🖥️</span>
+      <div class="mapping-title">Systemlandschaft & Tools-Übersicht</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: /systemlandschaft</div>
+    <ul class="mapping-list">
+      <li>Übersicht digitale Tools (Wirkung 8.1)</li>
+      <li>Lead Applikationslandschaft</li>
+      <li>Beschaffungsprozess: erlaubte Software</li>
+      <li>Benutzer-Feedback & Ranking</li>
+    </ul>
+  </div>
+
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">🤖</span>
+      <div class="mapping-title">KI-Schulungsbereich</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: /ki</div>
+    <ul class="mapping-list">
+      <li>KI Lernpfad: ChatGPT, Prompting, Sicherheit</li>
+      <li>KI-Strategie: Grundlagenwissen für alle</li>
+      <li>Digitales Mindset fördern</li>
+      <li>Angebot Digitale Kompetenzen</li>
+    </ul>
+  </div>
+
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">📢</span>
+      <div class="mapping-title">Kommunikation & Transparenz</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: Dashboard + Content</div>
+    <ul class="mapping-list">
+      <li>Kommunikation Digitale Transformation</li>
+      <li>Ressourcenerklärung: Sichtbarkeit für alle</li>
+      <li>Kundenzufriedenheit messen</li>
+      <li>Ansprechperson Digitale Kompetenzen</li>
+    </ul>
+  </div>
+
+  <div class="mapping-card">
+    <div class="mapping-header">
+      <span class="mapping-icon">💻</span>
+      <div class="mapping-title">Softwareanträge & Beschaffung</div>
+    </div>
+    <div class="mapping-feature">→ App-Modul: /software</div>
+    <ul class="mapping-list">
+      <li>Beschaffungsprozess definieren</li>
+      <li>Business Analyse Standards: strukturierte Anfragen</li>
+      <li>Lead Applikationslandschaft: klare Zuständigkeit</li>
+    </ul>
+  </div>
+</div>
+
+<div class="conclusion">
+  <h3>Fazit</h3>
+  <p>
+    <strong>86% der Massnahmen setzen eine zentrale Plattform voraus.</strong> Das ist kein Zufall – es ist die logische Konsequenz einer Digitalisierungsstrategie, die auf Befähigung, Transparenz und Prozess-Kommunikation setzt. <strong>39% der Massnahmen sind Schulungsmassnahmen</strong>, die heute keine Infrastruktur haben. <strong>25% verlangen, dass Prozesse zentral zugänglich sind</strong> – was aktuell nirgends der Fall ist. Die App ist nicht das Ziel der Digitalisierung. Sie ist die Voraussetzung dafür, dass die Massnahmen überhaupt nachhaltig umgesetzt, kommuniziert und verfolgt werden können. <strong>Ohne sie bleibt der Plan ein Dokument.</strong>
+  </p>
+</div>
+
+<div style="margin-top:3rem;background:var(--bg-surface);border:1px solid var(--border-def);border-radius:4px;padding:2rem;">
+  <div class="section-label" style="margin-bottom:.75rem;">Und das Beste zum Schluss</div>
+  <p style="font-size:1.05rem;font-weight:500;color:var(--text-primary);line-height:1.75;margin-bottom:1rem;">
+    Die Plattform existiert bereits – vollumfänglich, voll funktionsfähig, produktionsreif.
+  </p>
+  <p style="font-size:.88rem;color:var(--text-sec);line-height:1.8;margin-bottom:1rem;">
+    Es geht nicht darum, etwas zu bauen. Es geht nur noch darum, es zugänglich zu machen. Wird die Plattform als integraler Bestandteil der bestehenden SCNAT-Serverinfrastruktur betrieben, beläuft sich der Aufwand für die IT auf schätzungsweise <strong style="color:var(--text-primary);">2–4 Stunden</strong> – einmalig, einmalig.
+  </p>
+  <p style="font-size:.88rem;color:var(--text-sec);line-height:1.8;">
+    Sollte eine davon unabhängige Infrastruktur bevorzugt werden, lässt sich die Plattform in unter zwei Stunden auf einem modernen Kubernetes-Cluster deployen – mit vollem Betrieb, voller Kontrolle und den höchsten Sicherheitsstandards. Mit entsprechenden laufenden Kosten, die jedoch im Rahmen bleiben.
+  </p>
+</div>
+
+</body>
+</html>

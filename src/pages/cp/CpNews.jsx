@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Check, X, Newspaper, Clock, AlertTriangle, Sparkles, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, Newspaper, Clock, AlertTriangle, Sparkles, ExternalLink, FileText } from 'lucide-react';
 
 const PRESET_COLORS = [
   { value: '#EA515A', label: 'Rot' },
@@ -16,6 +16,7 @@ const emptyForm = {
   categoryColor: '#5A616B',
   title: '',
   teaser: '',
+  detail: '',
   linkTo: '',
   isNew: false,
   aktiv: true,
@@ -42,7 +43,7 @@ export default function CpNews() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ ...form, linkTo: form.linkTo || null, gueltigBis: form.gueltigBis || null }),
+      body: JSON.stringify({ ...form, detail: form.detail || '', linkTo: form.linkTo || null, gueltigBis: form.gueltigBis || null }),
     });
     setForm({ ...emptyForm });
     setShowAdd(false);
@@ -63,6 +64,7 @@ export default function CpNews() {
       categoryColor: item.categoryColor || '#5A616B',
       title: item.title || '',
       teaser: item.teaser || '',
+      detail: item.detail || '',
       linkTo: item.linkTo || '',
       isNew: item.isNew || false,
       aktiv: item.aktiv,
@@ -75,7 +77,7 @@ export default function CpNews() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ ...editForm, linkTo: editForm.linkTo || null, gueltigBis: editForm.gueltigBis || null }),
+      body: JSON.stringify({ ...editForm, detail: editForm.detail || '', linkTo: editForm.linkTo || null, gueltigBis: editForm.gueltigBis || null }),
     });
     setEditingId(null);
     load();
@@ -94,6 +96,13 @@ export default function CpNews() {
         <input type="date" value={f.datum} onChange={e => setF({ ...f, datum: e.target.value })} required className={inputCls} />
       </div>
       <textarea value={f.teaser} onChange={e => setF({ ...f, teaser: e.target.value })} placeholder="Teaser / Beschreibung" rows={2} required className={`w-full ${inputCls}`} />
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[10px] text-txt-tertiary uppercase tracking-wider">Detail-Inhalt (optional)</span>
+          <span className="text-[10px] text-txt-tertiary">— wird bei «Mehr lesen» angezeigt</span>
+        </div>
+        <textarea value={f.detail} onChange={e => setF({ ...f, detail: e.target.value })} placeholder="Ausführlicher Inhalt, der beim Aufklappen angezeigt wird…" rows={4} className={`w-full ${inputCls}`} />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <input value={f.category} onChange={e => setF({ ...f, category: e.target.value })} placeholder="Kategorie (z.B. KI, Strategie)" required className={inputCls} />
         <div>
@@ -220,9 +229,17 @@ export default function CpNews() {
                         <ExternalLink className="w-3 h-3" /> {item.linkTo}
                       </span>
                     )}
+                    {item.detail && (
+                      <span className="flex items-center gap-0.5 text-[10px] text-status-green">
+                        <FileText className="w-3 h-3" /> Detail
+                      </span>
+                    )}
                   </div>
                   <h4 className="text-sm font-heading font-semibold text-txt-primary mb-0.5">{item.title}</h4>
                   <p className="text-xs text-txt-secondary leading-relaxed">{item.teaser}</p>
+                  {item.detail && (
+                    <p className="text-[10px] text-txt-tertiary leading-relaxed mt-1 line-clamp-2 italic">{item.detail}</p>
+                  )}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => startEdit(item)} className="p-1.5 text-txt-tertiary hover:text-txt-primary rounded-sm hover:bg-bg-elevated"><Edit2 className="w-3.5 h-3.5" /></button>

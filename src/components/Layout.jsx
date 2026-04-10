@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
 import NewsTicker from './NewsTicker';
 import Footer from './Footer';
@@ -8,10 +8,22 @@ import ScnatLogo from './ScnatLogo';
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    return localStorage.getItem('sidebar-collapsed') === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', String(collapsed));
+  }, [collapsed]);
 
   return (
     <div className="min-h-screen bg-bg-base">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(c => !c)}
+      />
 
       {/* Mobile top bar */}
       <div className="sticky top-0 z-30 md:hidden bg-bg-surface border-b border-bd-faint">
@@ -26,7 +38,7 @@ export default function Layout() {
         </div>
       </div>
 
-      <div className="md:ml-56 flex flex-col min-h-screen">
+      <div className={`${collapsed ? 'md:ml-14' : 'md:ml-56'} flex flex-col min-h-screen transition-[margin] duration-200 ease-in-out`}>
         <div className="hidden md:block">
           <NewsTicker />
         </div>

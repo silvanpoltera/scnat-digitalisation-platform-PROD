@@ -1,0 +1,600 @@
+/* Recherche Page Styles */
+
+.recherche-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Carousel Section */
+.carousel-section {
+    margin-bottom: 3rem;
+}
+
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start; /* Desktop: Align to top to allow different card heights */
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.carousel {
+    display: flex;
+    gap: 2rem;
+    overflow: hidden;
+    width: 100%;
+    max-width: 1000px;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start; /* Desktop: Cards align to top, allowing different heights */
+}
+
+.carousel-card {
+    flex: 0 0 100%;
+    min-width: 0;
+    background: var(--overlay-bg);
+    border: 2px solid rgba(234, 81, 90, 0.2);
+    border-radius: 12px;
+    padding: 2.5rem;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    height: auto;
+    min-height: auto;
+}
+
+.carousel-card.active {
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 40px rgba(234, 81, 90, 0.2);
+    transform: scale(1.02);
+}
+
+.carousel-card h3 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.carousel-card .card-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+.carousel-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.carousel-card li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--overlay-border);
+}
+
+.carousel-card li:last-child {
+    border-bottom: none;
+}
+
+/* Default: Show arrow for regular items */
+.carousel-card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Only show arrow for items that explicitly need it (none by default) */
+
+.carousel-card li.nested-item {
+    padding-left: 1.5rem; /* Same alignment as other items */
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    opacity: 0.9;
+}
+
+.carousel-card li.nested-item::before {
+    display: none;
+}
+
+.carousel-card li.arrow-item {
+    padding-left: 0; /* No padding since we don't want CSS arrow */
+    color: var(--accent-color); /* Make arrow text yellow */
+}
+
+.carousel-card li.arrow-item::before {
+    display: none; /* Don't show CSS arrow, use the → from content */
+}
+
+.carousel-card li.inline-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem; /* Minimal gap between comma-separated items */
+    padding-left: 1.5rem;
+}
+
+.carousel-card li.inline-item::before {
+    display: none; /* No CSS arrow for inline items */
+}
+
+.carousel-card li.inline-item span {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* Accordion Styles */
+.carousel-card li.accordion-header,
+.carousel-card h3.accordion-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.carousel-card li.accordion-header:hover,
+.carousel-card h3.accordion-header:hover {
+    color: var(--accent-color);
+}
+
+.carousel-card li.accordion-header .accordion-icon,
+.carousel-card h3.accordion-header .accordion-icon {
+    transition: transform 0.3s ease;
+    color: var(--accent-color);
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+}
+
+.carousel-card h3.accordion-header {
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--accent-color);
+}
+
+.carousel-card li.accordion-item {
+    display: none;
+    padding-left: 1.5rem; /* Same alignment for all dashes */
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.carousel-card.accordion-server-list-expanded li.accordion-item[data-accordion="server-list"],
+.carousel-card.accordion-web-security-expanded li.accordion-item[data-accordion="web-security"],
+.carousel-card.accordion-mdm-expanded li.accordion-item[data-accordion="mdm"] {
+    display: block;
+}
+
+/* Styles for content within accordion items */
+.carousel-card li.accordion-item .item-heading,
+.carousel-card li.accordion-item .inline-item,
+.carousel-card li.accordion-item .arrow-item,
+.carousel-card li.accordion-item .nested-item {
+    display: block;
+    padding-left: 0;
+}
+
+.carousel-card li.accordion-item .arrow-item {
+    color: var(--accent-color);
+}
+
+.carousel-card li.accordion-item .inline-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem; /* Minimal gap between comma-separated items */
+}
+
+/* Server list item styles - ensure consistent alignment */
+.carousel-card li.accordion-item .server-item-dash,
+.carousel-card li.accordion-item .server-item-inline,
+.carousel-card li.accordion-item .server-item-arrow {
+    display: block;
+    padding-left: 0;
+    position: relative;
+    line-height: 1.5;
+}
+
+.carousel-card li.accordion-item .server-item-arrow {
+    color: var(--accent-color); /* Yellow arrow */
+}
+
+/* Server items without arrows - hide the CSS arrow */
+.carousel-card li.accordion-item .server-item-no-arrow {
+    position: relative;
+}
+
+.carousel-card li.accordion-item .server-item-no-arrow::before {
+    display: none; /* No CSS arrow for server items - only text arrow for De facto */
+}
+
+.carousel-card li.accordion-item .server-item-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem; /* Minimal gap for comma-separated server items */
+}
+
+.carousel-card li.accordion-item .server-item-inline span {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+    /* Mobile: Stack inline items vertically if needed */
+    @media (max-width: 768px) {
+        .carousel-card li.inline-item {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .carousel-card li.inline-item span {
+            white-space: normal;
+        }
+    }
+
+.carousel-card li.item-heading {
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(234, 81, 90, 0.2);
+}
+
+.carousel-card li.item-heading:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.carousel-card li.item-heading::before {
+    display: none;
+}
+
+/* Expand/Collapse Button */
+.carousel-card-expand-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 36px;
+    height: 36px;
+    background: rgba(234, 81, 90, 0.1);
+    border: 2px solid rgba(234, 81, 90, 0.3);
+    border-radius: 50%;
+    display: none; /* Hidden on desktop */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--accent-color);
+    z-index: 10;
+}
+
+.carousel-card-expand-btn:hover {
+    background: rgba(234, 81, 90, 0.2);
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.carousel-card-expand-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.carousel-card.expanded .carousel-card-expand-btn svg {
+    transform: rotate(180deg);
+}
+
+.carousel-card-content {
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    /* Desktop: No height restriction, content flows naturally */
+    overflow: visible;
+    max-height: none;
+}
+
+.carousel-btn {
+    background: rgba(234, 81, 90, 0.1);
+    border: 2px solid rgba(234, 81, 90, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.carousel-btn:hover {
+    background: rgba(234, 81, 90, 0.2);
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.carousel-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--overlay-bg);
+    border: 2px solid rgba(234, 81, 90, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicator.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: scale(1.2);
+}
+
+/* SWOT Button */
+.swot-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+}
+
+.swot-button {
+    background: rgba(234, 81, 90, 0.1);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 1rem 3rem;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.swot-button:hover {
+    background: rgba(234, 81, 90, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(234, 81, 90, 0.3);
+}
+
+/* SWOT Section */
+.swot-section {
+    display: none;
+    margin-top: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.swot-section.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.swot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.swot-quadrant {
+    background: var(--overlay-bg);
+    border: 2px solid rgba(234, 81, 90, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    min-height: 300px;
+    transition: all 0.3s ease;
+}
+
+.swot-quadrant:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 40px rgba(234, 81, 90, 0.15);
+}
+
+.swot-quadrant h3 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.swot-strengths {
+    border-top: 4px solid #4ade80;
+}
+
+.swot-strengths h3 {
+    color: #4ade80;
+}
+
+.swot-weaknesses {
+    border-top: 4px solid #f87171;
+}
+
+.swot-weaknesses h3 {
+    color: #f87171;
+}
+
+.swot-opportunities {
+    border-top: 4px solid #60a5fa;
+}
+
+.swot-opportunities h3 {
+    color: #60a5fa;
+}
+
+.swot-threats {
+    border-top: 4px solid #fbbf24;
+}
+
+.swot-threats h3 {
+    color: #fbbf24;
+}
+
+.swot-quadrant ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swot-quadrant li {
+    padding: 0.75rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border-bottom: 1px solid var(--overlay-border);
+}
+
+.swot-quadrant li:last-child {
+    border-bottom: none;
+}
+
+.swot-quadrant li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Research Icon in Content Panel */
+.research-icon {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 32px;
+    height: 32px;
+    background: rgba(234, 81, 90, 0.1);
+    border: 1px solid rgba(234, 81, 90, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.research-icon:hover {
+    background: rgba(234, 81, 90, 0.2);
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.research-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Mobile Styles for Recherche */
+@media (max-width: 768px) {
+    /* Smooth scrolling for entire page */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .recherche-container {
+        padding: 2rem 1.25rem;
+    }
+
+    .carousel-wrapper {
+        gap: 1rem;
+        align-items: center; /* Mobile: Center align for fixed height cards */
+    }
+
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .carousel-card {
+        padding: 1.5rem;
+        /* Mobile: Fixed height, expandable */
+        height: 280px;
+        min-height: 280px;
+        overflow: hidden;
+    }
+
+    .carousel-card.expanded {
+        height: auto;
+        min-height: 280px;
+    }
+
+    .carousel-card-expand-btn {
+        display: flex; /* Show on mobile */
+    }
+
+    .carousel-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .carousel-card .card-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .carousel-card-content {
+        max-height: 180px;
+        overflow: hidden; /* Only on mobile */
+    }
+
+    .carousel-card.expanded .carousel-card-content {
+        max-height: 2000px; /* Large enough for content */
+        overflow: visible;
+    }
+
+    .swot-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .swot-quadrant {
+        min-height: auto;
+        padding: 1.5rem;
+    }
+
+    .swot-button {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+    }
+}
+

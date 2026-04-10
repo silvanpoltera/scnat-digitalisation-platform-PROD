@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mnszf6tus112hs",
+    "title": "test",
+    "message": "wazza up",
+    "priority": "normal",
+    "targetType": "users",
+    "targetUserIds": [
+      "u5"
+    ],
+    "createdAt": "2026-04-10T14:09:12.018Z",
+    "createdBy": "1",
+    "createdByName": "Silvan Poltera",
+    "readBy": [
+      "u5"
+    ]
+  }
+]

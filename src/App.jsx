@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -34,9 +35,13 @@ import CpScnatDb from './pages/cp/CpScnatDb';
 import CpChanges from './pages/cp/CpChanges';
 import CpLiveInfos from './pages/cp/CpLiveInfos';
 import CpNews from './pages/cp/CpNews';
+import CpAdminStuff from './pages/cp/CpAdminStuff';
+import CpAdminStuffView from './pages/cp/CpAdminStuffView';
+import CpInbox from './pages/cp/CpInbox';
 
 function App() {
   return (
+    <ThemeProvider>
     <Router>
       <AuthProvider>
         <NotificationProvider>
@@ -73,12 +78,16 @@ function App() {
             <Route path="/cp/ki" element={<CpKi />} />
             <Route path="/cp/live-infos" element={<CpLiveInfos />} />
             <Route path="/cp/news" element={<CpNews />} />
+            <Route path="/cp/nachrichten" element={<CpInbox />} />
             <Route path="/cp/scnat-db" element={<CpScnatDb />} />
+            <Route path="/cp/admin-stuff" element={<CpAdminStuff />} />
+            <Route path="/cp/admin-stuff/:page" element={<CpAdminStuffView />} />
           </Route>
         </Routes>
         </NotificationProvider>
       </AuthProvider>
     </Router>
+    </ThemeProvider>
   );
 }
 

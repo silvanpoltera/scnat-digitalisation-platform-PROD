@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { readJSON, writeJSON } from '../utils.js';
-import { requireAuth } from '../auth.js';
+import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const SEEN_FILE = 'notifications-seen.json';
@@ -46,9 +46,7 @@ router.post('/seen', requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
-router.get('/admin', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Kein Admin' });
-
+router.get('/admin', requireAuth, requireAdmin, (req, res) => {
   const seenMap = getSeenMap();
   const adminKey = `admin:${req.user.id}`;
   const seen = seenMap[adminKey] || {};
@@ -69,9 +67,7 @@ router.get('/admin', requireAuth, (req, res) => {
   res.json(counts);
 });
 
-router.post('/admin/seen', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Kein Admin' });
-
+router.post('/admin/seen', requireAuth, requireAdmin, (req, res) => {
   const { section } = req.body;
   if (!section) return res.status(400).json({ error: 'section required' });
 

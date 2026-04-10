@@ -130,7 +130,7 @@ export default function CpEvents() {
                       <div className="text-right">
                         <div className="flex items-center gap-1.5">
                           <div className="w-16 h-1.5 bg-bg-elevated rounded-full overflow-hidden">
-                            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? '#EA515A' : pct > 50 ? '#F39C12' : '#2ECC71' }} />
+                            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? 'var(--accent-red)' : pct > 50 ? 'var(--status-yellow)' : 'var(--status-green)' }} />
                           </div>
                           <span className="text-xs font-mono text-txt-tertiary">{regsCount}/{ev.maxTeilnehmer}</span>
                         </div>

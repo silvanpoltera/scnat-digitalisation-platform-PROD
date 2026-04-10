@@ -48,14 +48,14 @@ export default function RadarChart({ radar = {} }) {
           key={lvl}
           points={hex.map(p => `${p.x},${p.y}`).join(' ')}
           fill="none"
-          stroke="#2E3238"
+          style={{ stroke: 'var(--border-default)' }}
           strokeWidth={lvl === LEVELS - 1 ? 1 : 0.5}
         />
       ))}
 
       {DIMENSIONS.map((_, i) => {
         const end = polarToCart(step * i, R);
-        return <line key={i} x1={CX} y1={CY} x2={end.x} y2={end.y} stroke="#23262B" strokeWidth={0.5} />;
+        return <line key={i} x1={CX} y1={CY} x2={end.x} y2={end.y} style={{ stroke: 'var(--border-faint)' }} strokeWidth={0.5} />;
       })}
 
       <polygon
@@ -82,7 +82,7 @@ export default function RadarChart({ radar = {} }) {
             y={pos.y}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#8A8F9B"
+            style={{ fill: 'var(--text-secondary)' }}
             fontSize="10"
             fontFamily="DM Sans"
           >

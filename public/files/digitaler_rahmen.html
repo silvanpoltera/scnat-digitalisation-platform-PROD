@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Der grosse Rahmen – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function(){
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
+  sync();
+  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.10);
+  --red-mid:rgba(234,81,90,0.25);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+  --purple:#7C5CBF;
+}
+.theme-bright{
+  --bg:#F2F3F5;
+  --surface:#FFFFFF;
+  --elevated:#F8F9FA;
+  --subtle:#EEF0F2;
+  --b-faint:#E2E4E8;
+  --b-def:#CDD1D6;
+  --b-strong:#5A616B;
+  --red-dim:rgba(234,81,90,0.08);
+  --red-mid:rgba(234,81,90,0.18);
+  --text:#1A1D21;
+  --text2:#5A616B;
+  --text3:#8A8F9B;
+  --ok:#1B8A4A;
+  --warn:#B27308;
+  --info:#2471A3;
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+body{min-height:100vh}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:3rem 2rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(234,81,90,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--b-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--b-faint) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 75%);
+  pointer-events:none;
+}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:700;line-height:1.05;margin-bottom:1.5rem;max-width:800px}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:540px;line-height:1.8;margin-bottom:3rem}
+.scroll-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer}
+.scroll-hint .arrow{width:1px;height:40px;background:linear-gradient(var(--b-def),transparent);margin:0 auto}
+
+/* ── SECTION ── */
+.section{max-width:1000px;margin:0 auto;padding:6rem 2rem}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);margin-bottom:1.2rem}
+.section-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:1rem}
+.section-lead{font-size:.95rem;color:var(--text2);line-height:1.8;max-width:620px;margin-bottom:3rem}
+hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
+
+/* ── 3D LAYER STACK ── */
+.stack-scene{
+  perspective:900px;
+  margin:0 auto 4rem;
+  max-width:700px;
+  cursor:grab;
+  user-select:none;
+}
+.stack-scene:active{cursor:grabbing}
+.stack{
+  transform-style:preserve-3d;
+  transform:rotateX(22deg) rotateY(-12deg);
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+  position:relative;
+  height:320px;
+}
+.stack-layer{
+  position:absolute;
+  left:0;right:0;
+  height:70px;
+  border-radius:6px;
+  border:1px solid;
+  display:flex;align-items:center;
+  padding:0 1.5rem;
+  gap:1rem;
+  transition:all .4s cubic-bezier(.22,1,.36,1);
+  cursor:pointer;
+  backdrop-filter:blur(2px);
+}
+.stack-layer:hover{filter:brightness(1.15)}
+.stack-layer.l1{bottom:0;   background:rgba(90,97,107,.15); border-color:rgba(90,97,107,.4);  transform:translateZ(0px)}
+.stack-layer.l2{bottom:60px; background:rgba(74,144,217,.08);border-color:rgba(74,144,217,.35);transform:translateZ(16px)}
+.stack-layer.l3{bottom:120px;background:rgba(212,136,42,.08);border-color:rgba(212,136,42,.35);transform:translateZ(32px)}
+.stack-layer.l4{bottom:180px;background:rgba(124,92,191,.08);border-color:rgba(124,92,191,.35);transform:translateZ(48px)}
+.stack-layer.l5{bottom:240px;background:rgba(234,81,90,.10); border-color:rgba(234,81,90,.4);  transform:translateZ(64px)}
+.layer-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.layer-title{font-weight:600;font-size:.9rem;flex:1}
+.layer-tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:2px;border:1px solid;opacity:.7}
+.layer-tag.risk{border-color:var(--red);color:var(--red)}
+.layer-tag.medium{border-color:var(--warn);color:var(--warn)}
+.layer-tag.low{border-color:var(--ok);color:var(--ok)}
+.stack-hint{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:3rem}
+
+/* ── PROBLEM CARDS ── */
+.problems{display:grid;gap:1px;background:var(--b-faint);border:1px solid var(--b-faint);border-radius:6px;overflow:hidden;margin-bottom:1rem}
+.problem-item{background:var(--surface);cursor:pointer;transition:background .2s}
+.problem-item:hover{background:var(--elevated)}
+.problem-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.2rem;padding:1.25rem 1.5rem}
+.problem-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);min-width:24px}
+.problem-title-wrap{}
+.problem-title{font-weight:600;font-size:.95rem;margin-bottom:.2rem}
+.problem-subtitle{font-size:.78rem;color:var(--text2)}
+.problem-badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.badge-critical{background:rgba(234,81,90,.12);color:var(--red);border:1px solid rgba(234,81,90,.3)}
+.badge-high{background:rgba(212,136,42,.10);color:var(--warn);border:1px solid rgba(212,136,42,.3)}
+.badge-medium{background:rgba(74,144,217,.10);color:var(--info);border:1px solid rgba(74,144,217,.3)}
+.problem-chevron{font-size:.7rem;color:var(--text3);transition:transform .3s;margin-left:.5rem}
+.problem-item.open .problem-chevron{transform:rotate(90deg)}
+.problem-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .45s cubic-bezier(.22,1,.36,1),padding .3s;
+  padding:0 1.5rem;
+}
+.problem-item.open .problem-body{max-height:400px;padding:0 1.5rem 1.5rem}
+.problem-content{padding-top:1rem;border-top:1px solid var(--b-faint)}
+.problem-text{font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1rem}
+.problem-impacts{display:flex;flex-wrap:wrap;gap:6px}
+.impact-tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border:1px solid var(--b-def);border-radius:2px;color:var(--text2)}
+
+/* ── RADAR / TENSION ── */
+.tension-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem}
+.tension-card{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden}
+.tension-vs{display:flex;align-items:stretch;gap:0;margin-top:.75rem}
+.tension-side{flex:1;padding:.75rem;font-size:.8rem;line-height:1.6}
+.tension-side.left{background:rgba(234,81,90,.06);border:1px solid rgba(234,81,90,.2);border-radius:3px 0 0 3px;color:var(--text2)}
+.tension-side.right{background:rgba(61,170,117,.06);border:1px solid rgba(61,170,117,.2);border-radius:0 3px 3px 0;color:var(--text2)}
+.tension-side .side-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.tension-side.left .side-label{color:var(--red)}
+.tension-side.right .side-label{color:var(--ok)}
+.vs-divider{width:1px;background:var(--b-def);position:relative;display:flex;align-items:center;justify-content:center}
+.vs-divider::after{content:'vs';position:absolute;background:var(--elevated);padding:3px 2px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);writing-mode:vertical-rl}
+.tension-title{font-weight:600;font-size:.9rem;margin-bottom:.25rem}
+.tension-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.5rem}
+
+/* ── STRATEGY BRIDGE ── */
+.bridge{background:var(--surface);border:1px solid var(--b-def);border-radius:6px;padding:2.5rem;margin-bottom:3rem;position:relative;overflow:hidden}
+.bridge::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--purple),var(--info))}
+.bridge-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1.5rem;align-items:center;margin-top:2rem}
+.bridge-col{text-align:center}
+.bridge-col-title{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:1rem}
+.bridge-items{display:flex;flex-direction:column;gap:.5rem}
+.bridge-item{font-size:.8rem;padding:.5rem .75rem;border-radius:3px;line-height:1.4}
+.bridge-item.problem{background:rgba(234,81,90,.08);border:1px solid rgba(234,81,90,.2);color:var(--text2)}
+.bridge-item.strategy{background:rgba(74,144,217,.08);border:1px solid rgba(74,144,217,.2);color:var(--text2)}
+.bridge-arrow{text-align:center;color:var(--text3);font-size:1.5rem;line-height:1}
+.bridge-gap{background:rgba(212,136,42,.06);border:1px solid rgba(212,136,42,.25);border-radius:4px;padding:1rem;text-align:center;margin-top:2rem}
+.bridge-gap-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--warn);margin-bottom:.4rem}
+.bridge-gap-text{font-size:.82rem;color:var(--text2);line-height:1.65}
+
+/* ── RISK METER ── */
+.risks{display:flex;flex-direction:column;gap:.6rem;margin-bottom:3rem}
+.risk-row{display:grid;grid-template-columns:200px 1fr 80px;gap:1rem;align-items:center}
+.risk-label{font-size:.82rem;color:var(--text2)}
+.risk-track{height:6px;background:var(--b-def);border-radius:1px;overflow:hidden;position:relative}
+.risk-fill{height:100%;border-radius:1px;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.risk-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);text-align:right}
+
+/* ── CONCLUSION ── */
+.final{background:var(--red-dim);border:1px solid rgba(234,81,90,.2);border-radius:4px;padding:2rem;margin-bottom:2rem}
+.final h3{font-size:1rem;font-weight:600;margin-bottom:.75rem}
+.final p{font-size:.85rem;color:var(--text2);line-height:1.8}
+.final strong{color:var(--text)}
+
+/* ── FLOATING NAV ── */
+.floatnav{
+  position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:.5rem;z-index:100;
+}
+.nav-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--b-strong);
+  cursor:pointer;transition:all .2s;border:none;padding:0;
+}
+.nav-dot.active{background:var(--red);transform:scale(1.4)}
+.nav-dot:hover{background:var(--text2)}
+
+@media(max-width:640px){
+  .tension-grid{grid-template-columns:1fr}
+  .bridge-grid{grid-template-columns:1fr;gap:.75rem}
+  .bridge-arrow{transform:rotate(90deg)}
+  .risk-row{grid-template-columns:140px 1fr 50px}
+  .risk-label{font-size:.75rem}
+  .floatnav{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- FLOATING NAV -->
+<nav class="floatnav" aria-label="Seitennavigation">
+  <button class="nav-dot active" onclick="scrollTo('hero')" title="Intro"></button>
+  <button class="nav-dot" onclick="scrollTo('ebenen')" title="Ebenen"></button>
+  <button class="nav-dot" onclick="scrollTo('probleme')" title="Grundprobleme"></button>
+  <button class="nav-dot" onclick="scrollTo('spannungen')" title="Spannungsfelder"></button>
+  <button class="nav-dot" onclick="scrollTo('strategie')" title="Strategie"></button>
+  <button class="nav-dot" onclick="scrollTo('risiken')" title="Risiken"></button>
+  <button class="nav-dot" onclick="scrollTo('fazit')" title="Fazit"></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-eyebrow">SCNAT Digitalisierung · Gesamtbild</div>
+  <h1>Der grosse<br><em>Rahmen</em></h1>
+  <p class="hero-sub">Die Digitalisierungsstrategie ist ein wichtiger Schritt. Aber sie ist eingebettet in einen Kontext, den sie nur teilweise adressiert – und der langfristig über ihren Erfolg entscheidet.</p>
+  <div class="scroll-hint" onclick="document.getElementById('ebenen').scrollIntoView({behavior:'smooth'})">
+    <span>Erkunden</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- EBENEN: 3D STACK -->
+<section class="section" id="ebenen">
+  <div class="section-label">Wo stehen wir?</div>
+  <div class="section-title">Eine Organisation auf mehreren Ebenen</div>
+  <p class="section-lead">Digitalisierung ist kein einzelnes Projekt. Sie passiert auf verschiedenen Schichten – von der physischen Infrastruktur bis zur Unternehmenskultur. Jede Ebene beeinflusst die nächste.</p>
+
+  <div class="stack-scene" id="stackScene">
+    <div class="stack" id="stack3d">
+      <div class="stack-layer l1" onclick="openLayer(this,'Infrastruktur & Betrieb','On-premise Server, eigene Mailserver, Xojo-Datenbankinfrastruktur. Das Fundament – und der grösste blinde Fleck.')">
+        <div class="layer-dot" style="background:#5A616B"></div>
+        <div class="layer-title">Infrastruktur & Betrieb</div>
+        <span class="layer-tag medium">Kritische Basis</span>
+      </div>
+      <div class="stack-layer l2" onclick="openLayer(this,'Applikationen & Systeme','Xojo DB, eigenes CMS, React-Frontends. Historisch gewachsen, kaum dokumentiert, hohes Klumpenrisiko.')">
+        <div class="layer-dot" style="background:#4A90D9"></div>
+        <div class="layer-title">Applikationen & Systeme</div>
+        <span class="layer-tag risk">Hohes Risiko</span>
+      </div>
+      <div class="stack-layer l3" onclick="openLayer(this,'Prozesse & Arbeitsweisen','Manuelle Abläufe, keine Automatisierung, kein CI/CD. Wissen konzentriert auf einzelne Personen.')">
+        <div class="layer-dot" style="background:#D4882A"></div>
+        <div class="layer-title">Prozesse & Arbeitsweisen</div>
+        <span class="layer-tag risk">Handlungsbedarf</span>
+      </div>
+      <div class="stack-layer l4" onclick="openLayer(this,'Kompetenzen & Kultur','Digitales Mindset, KI-Kompetenz, Veränderungsbereitschaft. Hier setzt die Digitalisierungsstrategie an.')">
+        <div class="layer-dot" style="background:#7C5CBF"></div>
+        <div class="layer-title">Kompetenzen & Kultur</div>
+        <span class="layer-tag medium">In Entwicklung</span>
+      </div>
+      <div class="stack-layer l5" onclick="openLayer(this,'Strategie & Steuerung','Digitalisierungsstrategie, KI-Strategie, Governance. Das Dach – aber das Fundament trägt noch nicht.')">
+        <div class="layer-dot" style="background:#EA515A"></div>
+        <div class="layer-title">Strategie & Steuerung</div>
+        <span class="layer-tag low">Vorhanden</span>
+      </div>
+    </div>
+  </div>
+  <p class="stack-hint">↔ Ziehen zum Drehen &nbsp;·&nbsp; Ebene anklicken für Details</p>
+
+  <!-- Layer tooltip -->
+  <div id="layerTooltip" style="display:none;background:var(--elevated);border:1px solid var(--b-def);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;transition:all .3s">
+    <div id="layerTitle" style="font-weight:600;margin-bottom:.4rem"></div>
+    <div id="layerText" style="font-size:.85rem;color:var(--text2);line-height:1.65"></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- GRUNDPROBLEME: ACCORDION -->
+<section class="section" id="probleme">
+  <div class="section-label">Wo der Schuh drückt</div>
+  <div class="section-title">Grundlegende strukturelle Herausforderungen</div>
+  <p class="section-lead">Bevor die Digitalisierungsstrategie ihre volle Wirkung entfalten kann, braucht es ein ehrliches Bild der Ausgangslage. Diese Punkte sind nicht Kritik – sie sind Realität.</p>
+
+  <div class="problems">
+
+    <div class="problem-item" onclick="toggleProblem(this)">
+      <div class="problem-header">
+        <div class="problem-num">01</div>
+        <div class="problem-title-wrap">
+          <div class="problem-title">Infrastruktur: Souveränität als Prinzip, Modernisierung als Aufgabe</div>
+          <div class="problem-subtitle">On-premise Server · Datensouveränität · Hosting-Strategie</div>
+        </div>
+        <span class="problem-badge badge-high">Strategisch</span>
+        <span class="problem-chevron">▶</span>
+      </div>
+      <div class="problem-body">
+        <div class="problem-content">
+          <p class="problem-text">Die SCNAT betreibt ihre Kerninfrastruktur vollständig on-premise. Der Grundsatz der Datensouveränität ist legitim und schützenswert. Die Frage ist jedoch, ob die aktuelle Umsetzung noch dem Stand der Zeit entspricht – und ob Souveränität und Modernität zwingend im Widerspruch stehen. Schweizer Cloud-Anbieter mit DSGVO-Konformität und physischer Datenhaltung in der Schweiz ermöglichen heute beides. Ein ehrlicher Vergleich dieser Optionen steht aus.</p>
+          <div class="problem-impacts">
+            <span class="impact-tag">Wartungsaufwand</span>
+            <span class="impact-tag">Skalierbarkeit</span>
+            <span class="impact-tag">Ausfallsicherheit</span>
+            <span class="impact-tag">Revisions- & DSG-Konformität</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="problem-item" onclick="toggleProblem(this)">
+      <div class="problem-header">
+        <div class="problem-num">02</div>
+        <div class="problem-title-wrap">
+          <div class="problem-title">Eigene Mailserver: Kontrolle mit Verantwortung</div>
+          <div class="problem-subtitle">E-Mail-Infrastruktur · Sicherheit · Externe Einbindungen</div>
+        </div>
+        <span class="problem-badge badge-high">Technisch</span>
+        <span class="problem-chevron">▶</span>
+      </div>
+      <div class="problem-body">
+        <div class="problem-content">
+          <p class="problem-text">Eigene Mailserver geben Kontrolle – erfordern aber auch laufende Sicherheitspflege, Zertifikatsmanagement, Spam-Reputation und technische Expertise. Gleichzeitig werden moderne Zusammenarbeits- und Integrationsmöglichkeiten durch proprietäre Mailinfrastruktur erschwert. Nicht jede externe Anbindung, jeder Webhook oder jede API-Integration lässt sich problemlos mit selbstverwalteten Systemen realisieren. Die Frage ist nicht ob eigene Mailserver grundsätzlich falsch sind – sondern ob der Betriebsaufwand heute noch im Verhältnis zum Nutzen steht.</p>
+          <div class="problem-impacts">
+            <span class="impact-tag">Sicherheitsrisiko</span>
+            <span class="impact-tag">Integrationshürden</span>
+            <span class="impact-tag">IT-Ressourcenbindung</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="problem-item" onclick="toggleProblem(this)">
+      <div class="problem-header">
+        <div class="problem-num">03</div>
+        <div class="problem-title-wrap">
+          <div class="problem-title">SCNAT DB & CMS: Ein Kernstück mit langer Geschichte</div>
+          <div class="problem-subtitle">Xojo · Proprietäres CMS · Technologieentscheid · 12 Jahre Konsolidierung</div>
+        </div>
+        <span class="problem-badge badge-critical">Kritisch</span>
+        <span class="problem-chevron">▶</span>
+      </div>
+      <div class="problem-body">
+        <div class="problem-content">
+          <p class="problem-text">Die SCNAT-Datenbank – ein zentrales System für Stamm-, Mitglieder- und CMS-Daten – wurde über 12 Jahre aufgebaut und konsolidiert statt der geplanten 2. Die gewählte Technologie (Xojo) ist funktional, aber nicht weit verbreitet, schwer austauschbar und an einen kleinen Kreis von Spezialisten gebunden. Das eingebaute CMS erfüllt Grundanforderungen, bietet aber weder die Benutzerfreundlichkeit noch die Erweiterbarkeit moderner Systeme. Diese Situation ist kein Versagen – sie ist das Ergebnis von Entscheidungen unter anderen Rahmenbedingungen. Die Frage für die Zukunft: weiterentwickeln oder ablösen? Dieser Entscheid ist unumgänglich.</p>
+          <div class="problem-impacts">
+            <span class="impact-tag">Technologisches Klumpenrisiko</span>
+            <span class="impact-tag">Nutzererfahrung</span>
+            <span class="impact-tag">Langfristige Wartbarkeit</span>
+            <span class="impact-tag">Abhängigkeit von Spezialwissen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="problem-item" onclick="toggleProblem(this)">
+      <div class="problem-header">
+        <div class="problem-num">04</div>
+        <div class="problem-title-wrap">
+          <div class="problem-title">Betrieb: Manuell, ungepflegt, personenabhängig</div>
+          <div class="problem-subtitle">Keine Automatisierung · Kein CI/CD · Veraltete Versionen · Wissenskonzentration</div>
+        </div>
+        <span class="problem-badge badge-critical">Kritisch</span>
+        <span class="problem-chevron">▶</span>
+      </div>
+      <div class="problem-body">
+        <div class="problem-content">
+          <p class="problem-text">Der laufende Betrieb der digitalen Systeme erfolgt weitgehend manuell – ohne Automatisierung, ohne Deployment-Pipelines (CI/CD) und mit Softwareversionen, die teilweise weit hinter dem aktuellen Stand zurückliegen. Das bedeutet erhöhtes Sicherheitsrisiko, hohen Wartungsaufwand und eine gefährliche Konzentration von Wissen auf einzelne Personen. Fällt eine dieser Personen aus, ist kritisches Systemwissen möglicherweise nicht mehr zugänglich. Dieses Klumpenrisiko ist eines der greifbarsten und dringlichsten strukturellen Probleme.</p>
+          <div class="problem-impacts">
+            <span class="impact-tag">Sicherheitslücken</span>
+            <span class="impact-tag">Klumpenrisiko Wissen</span>
+            <span class="impact-tag">Keine Skalierung möglich</span>
+            <span class="impact-tag">Hoher manueller Aufwand</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- SPANNUNGSFELDER -->
+<section class="section" id="spannungen">
+  <div class="section-label">Wo Entscheide anstehen</div>
+  <div class="section-title">Vier offene Spannungsfelder</div>
+  <p class="section-lead">Es geht nicht darum, wer Recht hat. Es geht darum, diese Spannungen anzuerkennen – und bewusst zu entscheiden statt sie zu ignorieren.</p>
+
+  <div class="tension-grid">
+    <div class="tension-card">
+      <div class="tension-label">Spannungsfeld 01</div>
+      <div class="tension-title">Datensouveränität</div>
+      <div class="tension-vs">
+        <div class="tension-side left">
+          <div class="side-label">Heute</div>
+          Vollständige Kontrolle, eigene Server, alles inhouse – aber mit zunehmendem Wartungsaufwand und Sicherheitsrisiken.
+        </div>
+        <div class="vs-divider"></div>
+        <div class="tension-side right">
+          <div class="side-label">Möglich</div>
+          Schweizer Cloud-Anbieter mit DSG-Konformität, Skalierbarkeit und professionellem Sicherheitsmanagement.
+        </div>
+      </div>
+    </div>
+
+    <div class="tension-card">
+      <div class="tension-label">Spannungsfeld 02</div>
+      <div class="tension-title">Mailinfrastruktur</div>
+      <div class="tension-vs">
+        <div class="tension-side left">
+          <div class="side-label">Heute</div>
+          Eigene Mailserver, volle Kontrolle, aber hoher Betriebsaufwand und Integrationshürden.
+        </div>
+        <div class="vs-divider"></div>
+        <div class="tension-side right">
+          <div class="side-label">Möglich</div>
+          Managed Mail mit Schweizer Hosting, reduzierter IT-Last und besserer Anbindung an moderne Tools.
+        </div>
+      </div>
+    </div>
+
+    <div class="tension-card">
+      <div class="tension-label">Spannungsfeld 03</div>
+      <div class="tension-title">Kernsystem Xojo & CMS</div>
+      <div class="tension-vs">
+        <div class="tension-side left">
+          <div class="side-label">Heute</div>
+          Bewährtes System mit tiefer Integration – aber hohe Abhängigkeit, limitierte Erweiterbarkeit, Spezialwissen.
+        </div>
+        <div class="vs-divider"></div>
+        <div class="tension-side right">
+          <div class="side-label">Zukunft</div>
+          Ablösung oder Modernisierung mit breiter unterstützten Technologien, die mehr Personen betreuen können.
+        </div>
+      </div>
+    </div>
+
+    <div class="tension-card">
+      <div class="tension-label">Spannungsfeld 04</div>
+      <div class="tension-title">Betriebsmodell</div>
+      <div class="tension-vs">
+        <div class="tension-side left">
+          <div class="side-label">Heute</div>
+          Manuell, personenabhängig, ohne Automatisierung – vertraut, aber fragil und kaum skalierbar.
+        </div>
+        <div class="vs-divider"></div>
+        <div class="tension-side right">
+          <div class="side-label">Möglich</div>
+          CI/CD, automatisierte Updates, dokumentierte Prozesse – weniger Abhängigkeit, mehr Resilienz.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- STRATEGIE BRIDGE -->
+<section class="section" id="strategie">
+  <div class="section-label">Die Brücke</div>
+  <div class="section-title">Strategie und Struktur – wo sie sich begegnen</div>
+  <p class="section-lead">Die Digitalisierungsstrategie ist richtig und wichtig. Aber sie baut auf einem Fundament, das noch nicht vollständig trägt. Die Strategie adressiert die oberen Schichten – die unteren brauchen ebenfalls Aufmerksamkeit.</p>
+
+  <div class="bridge">
+    <div class="bridge-grid">
+      <div class="bridge-col">
+        <div class="bridge-col-title">Strukturelle Probleme</div>
+        <div class="bridge-items">
+          <div class="bridge-item problem">Veraltete Infrastruktur</div>
+          <div class="bridge-item problem">Xojo / proprietäres CMS</div>
+          <div class="bridge-item problem">Manueller Betrieb</div>
+          <div class="bridge-item problem">Klumpenrisiko Wissen</div>
+        </div>
+      </div>
+      <div class="bridge-arrow">⟷</div>
+      <div class="bridge-col">
+        <div class="bridge-col-title">Digitalisierungsstrategie</div>
+        <div class="bridge-items">
+          <div class="bridge-item strategy">KI-Lernpfad & Schulungen</div>
+          <div class="bridge-item strategy">Kommunikation & Transparenz</div>
+          <div class="bridge-item strategy">Prozessdigitalisierung</div>
+          <div class="bridge-item strategy">Digitale Kultur & Mindset</div>
+        </div>
+      </div>
+    </div>
+    <div class="bridge-gap">
+      <div class="bridge-gap-label">Die Lücke</div>
+      <p class="bridge-gap-text">Die Strategie adressiert Kultur, Wissen und Prozesse – aber nur bedingt die strukturellen Grundlagen, auf denen all dies langfristig aufbauen muss. Werden diese nicht parallel angegangen, riskiert die Strategie, auf wackeligem Fundament zu stehen. Das ist kein Widerspruch zur Strategie – es ist eine Ergänzung, die ihren Erfolg sichert.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- RISIKOMESSUNG -->
+<section class="section" id="risiken">
+  <div class="section-label">Einordnung</div>
+  <div class="section-title">Wo liegen die grössten Risiken?</div>
+  <p class="section-lead">Eine ehrliche Einschätzung – nicht als Alarm, sondern als Grundlage für bewusste Priorisierung.</p>
+
+  <div class="risks" id="riskBars">
+    <div class="risk-row">
+      <div class="risk-label">Klumpenrisiko Spezialwissen</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--red)" data-target="92"></div></div>
+      <div class="risk-val">Sehr hoch</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Technologische Obsoleszenz</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--red)" data-target="80"></div></div>
+      <div class="risk-val">Hoch</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Sicherheit Mailinfrastruktur</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--warn)" data-target="65"></div></div>
+      <div class="risk-val">Mittel-hoch</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Fehlende Automatisierung</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--warn)" data-target="72"></div></div>
+      <div class="risk-val">Hoch</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Strategie ohne Infrastruktur-Basis</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--warn)" data-target="60"></div></div>
+      <div class="risk-val">Mittel</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Akzeptanz bei Mitarbeitenden</div>
+      <div class="risk-track"><div class="risk-fill" style="width:0%;background:var(--info)" data-target="40"></div></div>
+      <div class="risk-val">Handhabbar</div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- FAZIT -->
+<section class="section" id="fazit">
+  <div class="section-label">Einordnung & Ausblick</div>
+  <div class="section-title">Was das bedeutet</div>
+
+  <div class="final" style="margin-bottom:1rem">
+    <h3>Die Digitalisierungsstrategie ist der richtige nächste Schritt.</h3>
+    <p>Sie adressiert, was am dringlichsten sichtbar ist: Kultur, Kompetenz, Kommunikation. Sie bringt Bewegung in eine Organisation, die Bewegung braucht. Das ist wertvoll und notwendig – und es ist der richtige Ausgangspunkt.</p>
+  </div>
+
+  <div class="final" style="border-color:rgba(212,136,42,.2);background:rgba(212,136,42,.05)">
+    <h3 style="color:var(--warn)">Aber der langfristige Erfolg hängt an mehr.</h3>
+    <p>Die strukturellen Fragen – Infrastruktur, Xojo, Mailserver, Betriebsmodell – werden früher oder später auf den Tisch kommen. Die Strategie gibt die Möglichkeit, diese Entscheide geordnet, informiert und ohne Krisendruck anzugehen. <strong>Jetzt ist der richtige Moment dafür – nicht als Ablenkung von der Strategie, sondern als Teil davon.</strong></p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:1.75rem;margin-top:1rem">
+    <div class="section-label" style="margin-bottom:.6rem">Der Weg</div>
+    <p style="font-size:.88rem;color:var(--text2);line-height:1.85">
+      Strategie-Massnahmen <strong style="color:var(--text)">jetzt starten</strong> – parallel dazu die strukturellen Entscheide (Infrastruktur, Technologie, Betrieb) bewusst und mit klarem Mandat auf die Agenda setzen. Nicht als separates Projekt, das wartet. Sondern als die Grundlage, die den Unterschied zwischen einem guten Vorhaben und einer nachhaltigen Transformation ausmacht.
+    </p>
+  </div>
+</section>
+
+<script>
+// ── 3D DRAG ──
+const scene = document.getElementById('stackScene');
+const stack = document.getElementById('stack3d');
+let dragging=false,startX=0,startY=0,rotX=22,rotY=-12;
+
+scene.addEventListener('mousedown',e=>{dragging=true;startX=e.clientX;startY=e.clientY;e.preventDefault()});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  rotY=-12+dx*0.35; rotX=22-dy*0.25;
+  rotX=Math.max(-15,Math.min(45,rotX));
+  rotY=Math.max(-60,Math.min(60,rotY));
+  stack.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+});
+window.addEventListener('mouseup',()=>dragging=false);
+
+// Touch support
+scene.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY},{passive:true});
+scene.addEventListener('touchmove',e=>{
+  const dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;
+  rotY=-12+dx*0.35;rotX=22-dy*0.25;
+  rotX=Math.max(-15,Math.min(45,rotX));
+  rotY=Math.max(-60,Math.min(60,rotY));
+  stack.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+},{passive:true});
+
+// ── LAYER TOOLTIP ──
+function openLayer(el,title,text){
+  const tooltip=document.getElementById('layerTooltip');
+  const t=document.getElementById('layerTitle');
+  const tx=document.getElementById('layerText');
+  if(t.textContent===title&&tooltip.style.display!=='none'){
+    tooltip.style.display='none';return;
+  }
+  t.textContent=title;tx.textContent=text;
+  tooltip.style.display='block';
+  tooltip.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── ACCORDION ──
+function toggleProblem(el){
+  const wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.problem-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)el.classList.add('open');
+}
+
+// ── RISK BARS ANIMATE ON SCROLL ──
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.querySelectorAll('.risk-fill').forEach(bar=>{
+        bar.style.width=bar.dataset.target+'%';
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:.3});
+observer.observe(document.getElementById('riskBars'));
+
+// ── NAV DOTS ──
+function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+const sections=['hero','ebenen','probleme','spannungen','strategie','risiken','fazit'];
+const dots=document.querySelectorAll('.nav-dot');
+const secObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx=sections.indexOf(e.target.id);
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+  });
+},{threshold:.4});
+sections.forEach(id=>{const el=document.getElementById(id);if(el)secObserver.observe(el)});
+</script>
+</body>
+</html>

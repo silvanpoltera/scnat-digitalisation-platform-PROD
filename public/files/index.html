@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCNAT - Durch Evolution zu noch mehr digitaler Souveränität</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+    (function(){
+      function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
+      sync();
+      try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+    })();
+    </script>
+</head>
+<body>
+    <!-- Sticky Top Navigation -->
+    <nav class="sticky-nav">
+        <button class="burger-menu" id="burger-menu" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links">
+            <a href="#einleitung" class="nav-link" data-section="einleitung">Einleitung</a>
+            <a href="#sicherheit" class="nav-link" data-section="sicherheit">Sicherheit</a>
+            <a href="#betrieb" class="nav-link" data-section="betrieb">Betrieb</a>
+            <a href="#publishing" class="nav-link" data-section="publishing">Publishing</a>
+            <a href="#governance" class="nav-link" data-section="governance">Governance</a>
+        </div>
+        <a href="recherche.html" class="nav-research-icon" title="Recherche öffnen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+        </a>
+        <a href="process.html" class="nav-process-icon" title="Process öffnen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2 L12 6 M12 18 L12 22"></path>
+                <path d="M4.93 4.93 L7.76 7.76 M16.24 16.24 L19.07 19.07"></path>
+                <path d="M2 12 L6 12 M18 12 L22 12"></path>
+                <path d="M4.93 19.07 L7.76 16.24 M16.24 7.76 L19.07 4.93"></path>
+            </svg>
+        </a>
+    </nav>
+
+    <!-- Main Title -->
+    <header class="main-title">
+        <h1>SCNAT - Durch Evolution zu noch mehr digitaler Souveränität</h1>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+        <!-- Left: Tabs -->
+        <div class="tabs-wrapper">
+            <div class="tabs-container">
+                <label class="tab" for="tab-einleitung">Einleitung</label>
+                <label class="tab" for="tab-sicherheit">Sicherheit</label>
+                <label class="tab" for="tab-betrieb">Betrieb</label>
+                <label class="tab" for="tab-publishing">Publishing</label>
+                <label class="tab" for="tab-governance">Governance</label>
+            </div>
+        </div>
+
+        <!-- Center: Cube -->
+        <div class="cube-section">
+            <div class="perspective">
+                <!-- Radio Inputs -->
+                <input type="radio" name="tabs" id="tab-einleitung" checked>
+                <input type="radio" name="tabs" id="tab-sicherheit">
+                <input type="radio" name="tabs" id="tab-betrieb">
+                <input type="radio" name="tabs" id="tab-publishing">
+                <input type="radio" name="tabs" id="tab-governance">
+
+                <!-- 3D Cube -->
+                <div class="cube">
+                    <div class="wall front sicherheit-content">
+                        <h2>Sicherheit</h2>
+                        <p class="teaser">Gezielt abdichten statt umbauen.</p>
+                    </div>
+                    <div class="wall back publishing-content">
+                        <h2>Publishing</h2>
+                        <p class="teaser">Vom Inselstaat zum Festland.</p>
+                    </div>
+                    <div class="wall left governance-content">
+                        <h2>Governance</h2>
+                        <p class="teaser">Ordnung statt Sucharbeit.</p>
+                    </div>
+                    <div class="wall right betrieb-content">
+                        <h2>Betrieb</h2>
+                        <p class="teaser">Monolith in Bausteine schneiden.</p>
+                    </div>
+                    <div class="wall top einleitung-content">
+                        <h2>Einleitung</h2>
+                        <p class="teaser">Starke Basis, gezielt weitergedacht.</p>
+                    </div>
+                    <div class="wall bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Content Area -->
+        <div class="content-section" id="content-section">
+            <!-- Content wird dynamisch eingefügt -->
+        </div>
+    </main>
+
+    <!-- Background Video -->
+    <video class="background-video" autoplay muted loop playsinline>
+        <source src="background video.mp4" type="video/mp4">
+    </video>
+
+    <!-- Content Data -->
+    <script src="content.js"></script>
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>

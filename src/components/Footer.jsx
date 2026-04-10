@@ -6,8 +6,8 @@ export default function Footer() {
   return (
     <footer className="bg-bg-surface border-t border-bd-faint">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
+        <div className="flex flex-wrap gap-8">
+          <div className="min-w-[180px] flex-1">
             <div className="mb-3">
               <ScnatLogo size={24} subtitle="Akademie der Naturwissenschaften Schweiz" />
             </div>
@@ -18,7 +18,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div>
+          <div className="min-w-[140px]">
             <h4 className="font-heading font-semibold text-txt-primary text-sm mb-3">Navigation</h4>
             <div className="flex flex-col gap-1.5">
               {[
@@ -35,7 +35,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
+          <div className="min-w-[140px]">
             <h4 className="font-heading font-semibold text-txt-primary text-sm mb-3">Ressourcen</h4>
             <div className="flex flex-col gap-1.5">
               {[

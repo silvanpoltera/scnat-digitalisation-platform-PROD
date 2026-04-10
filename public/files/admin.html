@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Stuff – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.08);
+  --red-mid:rgba(234,81,90,0.20);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+/* ── TOP NAV ── */
+.topnav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(12,14,16,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--b-faint);
+  padding:0 2rem;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+.topnav-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;
+  padding-right:2rem;border-right:1px solid var(--b-faint);
+  margin-right:2rem;white-space:nowrap;
+}
+.topnav-links{display:flex;gap:0;flex:1}
+.topnav-link{
+  font-size:.82rem;color:var(--text2);
+  text-decoration:none;padding:.4rem 1rem;
+  border-radius:3px;transition:all .15s;
+  white-space:nowrap;
+}
+.topnav-link:hover{color:var(--text);background:var(--elevated)}
+.topnav-link.active{
+  color:var(--red);
+  background:var(--red-dim);
+}
+.topnav-badge{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  background:var(--red-dim);border:1px solid var(--red-mid);
+  color:var(--red);padding:2px 6px;border-radius:2px;
+  margin-left:1.5rem;white-space:nowrap;
+}
+
+/* ── HERO ── */
+.hero{
+  padding:5rem 2rem 3rem;
+  max-width:1000px;margin:0 auto;
+  position:relative;
+}
+.hero::after{
+  content:'';
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%, rgba(234,81,90,0.04) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.grid-bg{
+  position:fixed;inset:0;
+  background-image:linear-gradient(var(--b-faint) 1px,transparent 1px),linear-gradient(90deg,var(--b-faint) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 0%,transparent 70%);
+  pointer-events:none;z-index:0;opacity:.5;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--red);text-transform:uppercase;letter-spacing:.14em;
+  margin-bottom:1rem;position:relative;z-index:1;
+}
+.hero h1{
+  font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;
+  line-height:1.05;margin-bottom:1rem;
+  position:relative;z-index:1;
+}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-sub{
+  font-size:.95rem;color:var(--text2);
+  line-height:1.8;max-width:560px;
+  position:relative;z-index:1;
+}
+
+/* ── CARDS GRID ── */
+.cards{
+  max-width:1000px;margin:3rem auto 0;
+  padding:0 2rem 6rem;
+  display:grid;gap:1px;
+  background:var(--b-faint);
+  border:1px solid var(--b-faint);
+  border-radius:8px;overflow:hidden;
+  position:relative;z-index:1;
+}
+
+/* ── CARD ── */
+.card{
+  background:var(--surface);
+  display:grid;grid-template-columns:1fr auto;
+  align-items:stretch;
+  min-height:300px;
+  position:relative;
+  overflow:hidden;
+  transition:background .2s;
+}
+.card:hover{background:var(--elevated)}
+.card::before{
+  content:'';
+  position:absolute;top:0;bottom:0;left:0;width:3px;
+  background:var(--b-def);
+  transition:background .3s;
+}
+.card:hover::before{background:var(--red)}
+
+.card-body{
+  padding:2.5rem 2.5rem 2.5rem 3rem;
+  display:flex;flex-direction:column;
+}
+.card-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text3);letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.card-title{
+  font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;
+  line-height:1.1;margin-bottom:.6rem;
+}
+.card-title em{font-style:normal;color:var(--red)}
+.card-sub{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text3);letter-spacing:.08em;margin-bottom:1.25rem;
+}
+.card-desc{
+  font-size:.88rem;color:var(--text2);line-height:1.8;
+  max-width:460px;flex:1;
+}
+.card-action{
+  margin-top:2rem;display:flex;align-items:center;gap:.75rem;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;
+  padding:.55rem 1.1rem;border-radius:3px;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.btn-primary{
+  background:var(--red);color:#fff;
+}
+.btn-primary:hover{background:#f06570}
+.btn-ghost{
+  background:transparent;border:1px solid var(--b-def);
+  color:var(--text2);
+}
+.btn-ghost:hover{border-color:var(--b-strong);color:var(--text)}
+.btn-arrow{font-size:1rem;line-height:1;transition:transform .2s}
+.btn:hover .btn-arrow{transform:translateX(3px)}
+
+/* ── VISUAL PANELS ── */
+.card-visual{
+  width:380px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;
+  border-left:1px solid var(--b-faint);
+  position:relative;
+}
+
+/* FRAME visual: stacked layers mini */
+.mini-layers{
+  display:flex;flex-direction:column;gap:8px;width:100%;max-width:260px;
+  perspective:600px;
+}
+.mini-layer{
+  height:40px;border-radius:3px;border:1px solid;
+  display:flex;align-items:center;padding:0 1rem;gap:.6rem;
+  font-size:.75rem;font-weight:500;
+  transition:all .4s;
+  animation:layerFloat 6s ease-in-out infinite;
+}
+.mini-layer:nth-child(1){border-color:rgba(90,97,107,.5);background:rgba(90,97,107,.1);color:var(--text2);animation-delay:0s}
+.mini-layer:nth-child(2){border-color:rgba(74,144,217,.4);background:rgba(74,144,217,.07);color:var(--text2);animation-delay:.2s}
+.mini-layer:nth-child(3){border-color:rgba(212,136,42,.4);background:rgba(212,136,42,.07);color:var(--text2);animation-delay:.4s}
+.mini-layer:nth-child(4){border-color:rgba(124,92,191,.4);background:rgba(124,92,191,.07);color:var(--text2);animation-delay:.6s}
+.mini-layer:nth-child(5){border-color:rgba(234,81,90,.5);background:rgba(234,81,90,.1);color:var(--red);animation-delay:.8s}
+.mini-dot{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+@keyframes layerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* REASON visual: stat circles */
+.stat-circles{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;max-width:240px;
+}
+.stat-circle{
+  background:var(--elevated);border:1px solid var(--b-def);
+  border-radius:4px;padding:1.25rem 1rem;text-align:center;
+  transition:border-color .3s;
+}
+.stat-circle:hover{border-color:var(--red)}
+.stat-circle-num{font-size:1.8rem;font-weight:700;line-height:1;margin-bottom:.2rem}
+.stat-circle-label{font-size:.68rem;color:var(--text2);line-height:1.4;font-family:'JetBrains Mono',monospace}
+
+/* CUBE VISUAL */
+.cube-wrap{
+  perspective:700px;
+  width:180px;height:180px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:grab;
+}
+.cube-wrap:active{cursor:grabbing}
+.cube3d{
+  width:140px;height:140px;
+  position:relative;
+  transform-style:preserve-3d;
+  transform:rotateX(-20deg) rotateY(25deg);
+  animation:cubeRotate 18s linear infinite;
+  transition:animation-play-state .3s;
+}
+.cube-wrap:hover .cube3d{animation-play-state:paused}
+@keyframes cubeRotate{
+  0%{transform:rotateX(-20deg) rotateY(0deg)}
+  100%{transform:rotateX(-20deg) rotateY(360deg)}
+}
+.cube-face{
+  position:absolute;
+  width:140px;height:140px;
+  background:rgba(234,81,90,0.06);
+  border:1px solid rgba(234,81,90,0.35);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:.75rem;text-align:center;
+  backface-visibility:hidden;
+}
+.cube-face.front {transform:translateZ(70px)}
+.cube-face.back  {transform:rotateY(180deg) translateZ(70px)}
+.cube-face.right {transform:rotateY(90deg)  translateZ(70px)}
+.cube-face.left  {transform:rotateY(-90deg) translateZ(70px)}
+.cube-face.top   {transform:rotateX(90deg)  translateZ(70px)}
+.cube-face.bot   {transform:rotateX(-90deg) translateZ(70px);background:rgba(0,0,0,.2)}
+.cube-face-title{font-size:.65rem;font-weight:600;color:var(--red);margin-bottom:.25rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+.cube-face-sub  {font-size:.58rem;color:var(--text2);line-height:1.4}
+
+/* ── SECTION BREAK ── */
+.section-break{
+  max-width:1000px;margin:0 auto;
+  padding:2rem 2rem 0;
+  position:relative;z-index:1;
+}
+.section-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--text3);
+}
+
+@media(max-width:768px){
+  .card{grid-template-columns:1fr}
+  .card-visual{width:100%;border-left:none;border-top:1px solid var(--b-faint);min-height:200px}
+  .topnav-badge{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">SCNAT · Digitalisierung</div>
+  <div class="topnav-links">
+    <a href="#" class="topnav-link">Übersicht</a>
+    <a href="#" class="topnav-link">Massnahmen</a>
+    <a href="#" class="topnav-link">KI</a>
+    <a href="#" class="topnav-link">Schulungen</a>
+    <a href="#" class="topnav-link active">Admin Stuff</a>
+  </div>
+  <span class="topnav-badge">Admin · Silvan</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Admin · Interne Unterlagen</div>
+  <h1>Admin<br><em>Stuff</em></h1>
+  <p class="hero-sub">Drei Dokumente. Das grosse Bild, die Begründung, das Detail. Alles was gebraucht wird um den Weg nach vorne zu erklären – intern wie extern.</p>
+</div>
+
+<!-- CARDS -->
+<div class="cards">
+
+  <!-- CARD 1: THE FRAME -->
+  <div class="card">
+    <div class="card-body">
+      <div class="card-num">01 · Strategische Einordnung</div>
+      <div class="card-title">The <em>Frame</em></div>
+      <div class="card-sub">Der digitale Rahmen · Gesamtbild</div>
+      <p class="card-desc">
+        Die Digitalisierungsstrategie ist eingebettet in einen Kontext, den sie nur teilweise adressiert – und der langfristig über ihren Erfolg entscheidet. Infrastruktur, Betriebsmodell, technologische Schulden, offene Entscheide. Politisch korrekt, aber klar und vollständig aufgezeigt.
+      </p>
+      <div class="card-action">
+        <a href="digitaler_rahmen.html" class="btn btn-primary">
+          Öffnen <span class="btn-arrow">→</span>
+        </a>
+        <a href="digitaler_rahmen.html#probleme" class="btn btn-ghost">
+          Direkt zu den Problemen
+        </a>
+      </div>
+    </div>
+    <div class="card-visual">
+      <div class="mini-layers">
+        <div class="mini-layer">
+          <div class="mini-dot" style="background:#EA515A"></div>
+          Strategie & Steuerung
+        </div>
+        <div class="mini-layer">
+          <div class="mini-dot" style="background:#7C5CBF"></div>
+          Kompetenzen & Kultur
+        </div>
+        <div class="mini-layer">
+          <div class="mini-dot" style="background:#D4882A"></div>
+          Prozesse & Arbeitsweisen
+        </div>
+        <div class="mini-layer">
+          <div class="mini-dot" style="background:#4A90D9"></div>
+          Applikationen & Systeme
+        </div>
+        <div class="mini-layer">
+          <div class="mini-dot" style="background:#5A616B"></div>
+          Infrastruktur & Betrieb
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: THE REASON WHY -->
+  <div class="card">
+    <div class="card-body">
+      <div class="card-num">02 · Analyse & Begründung</div>
+      <div class="card-title">The <em>Reason</em> Why</div>
+      <div class="card-sub">Was die Zahlen sagen · Pitch-Unterlage</div>
+      <p class="card-desc">
+        28 Massnahmen analysiert. 86% setzen voraus, dass Informationen aktiv geteilt und zugänglich gemacht werden – heute gibt es dafür keine gemeinsame Lösung. 39% sind Schulungsmassnahmen ohne Infrastruktur. Die Zahlen sprechen – subtil, aber unmissverständlich.
+      </p>
+      <div class="card-action">
+        <a href="app_begruendung.html" class="btn btn-primary">
+          Öffnen <span class="btn-arrow">→</span>
+        </a>
+        <a href="app_begruendung.html#statement" class="btn btn-ghost">
+          Zum Statement
+        </a>
+      </div>
+    </div>
+    <div class="card-visual">
+      <div class="stat-circles">
+        <div class="stat-circle">
+          <div class="stat-circle-num" style="color:var(--red)">86%</div>
+          <div class="stat-circle-label">Gemeinsame<br>Lösung nötig</div>
+        </div>
+        <div class="stat-circle">
+          <div class="stat-circle-num" style="color:var(--info)">39%</div>
+          <div class="stat-circle-label">Schulungs-<br>massnahmen</div>
+        </div>
+        <div class="stat-circle">
+          <div class="stat-circle-num" style="color:var(--ok)">25%</div>
+          <div class="stat-circle-label">Prozess-<br>transparenz</div>
+        </div>
+        <div class="stat-circle">
+          <div class="stat-circle-num" style="color:var(--warn)">28</div>
+          <div class="stat-circle-label">Massnahmen<br>total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3: THE DETAILS -->
+  <div class="card">
+    <div class="card-body">
+      <div class="card-num">03 · Technische Details</div>
+      <div class="card-title">The <em>Details</em></div>
+      <div class="card-sub">SCNAT Infrastruktur · Souveränität · Betrieb · Publishing</div>
+      <p class="card-desc">
+        Die technische Tiefe: Sicherheit, Betrieb, Publishing-Infrastruktur, Governance. Fünf Themenblöcke mit Analysen, Handlungsempfehlungen und konkreten nächsten Schritten. Interaktiv, navigierbar, vollständig.
+      </p>
+      <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.4rem">
+        <div style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border:1px solid var(--b-def);border-radius:2px;color:var(--text3)">Front</span>
+          Sicherheit – Gezielt abdichten statt umbauen
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border:1px solid var(--b-def);border-radius:2px;color:var(--text3)">Oben</span>
+          Einleitung – Starke Basis, gezielt weitergedacht
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border:1px solid var(--b-def);border-radius:2px;color:var(--text3)">Rechts</span>
+          Betrieb – Monolith in Bausteine schneiden
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border:1px solid var(--b-def);border-radius:2px;color:var(--text3)">Hinten</span>
+          Publishing – Vom Inselstaat zum Festland
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border:1px solid var(--b-def);border-radius:2px;color:var(--text3)">Links</span>
+          Governance – Ordnung statt Sucharbeit
+        </div>
+      </div>
+      <div class="card-action">
+        <a href="index.html" class="btn btn-primary">
+          Öffnen <span class="btn-arrow">→</span>
+        </a>
+        <a href="recherche.html" class="btn btn-ghost">
+          Recherche
+        </a>
+        <a href="process.html" class="btn btn-ghost">
+          Process
+        </a>
+      </div>
+    </div>
+
+    <!-- 3D CUBE PREVIEW -->
+    <div class="card-visual">
+      <div style="text-align:center">
+        <div class="cube-wrap" id="cubeWrap" title="Hover zum Pausieren">
+          <div class="cube3d" id="adminCube">
+            <div class="cube-face front">
+              <div class="cube-face-title">Sicherheit</div>
+              <div class="cube-face-sub">Gezielt abdichten statt umbauen</div>
+            </div>
+            <div class="cube-face back">
+              <div class="cube-face-title">Publishing</div>
+              <div class="cube-face-sub">Vom Inselstaat zum Festland</div>
+            </div>
+            <div class="cube-face right">
+              <div class="cube-face-title">Betrieb</div>
+              <div class="cube-face-sub">Monolith in Bausteine schneiden</div>
+            </div>
+            <div class="cube-face left">
+              <div class="cube-face-title">Governance</div>
+              <div class="cube-face-sub">Ordnung statt Sucharbeit</div>
+            </div>
+            <div class="cube-face top">
+              <div class="cube-face-title">Einleitung</div>
+              <div class="cube-face-sub">Starke Basis, gezielt weitergedacht</div>
+            </div>
+            <div class="cube-face bot"></div>
+          </div>
+        </div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-top:.75rem">Hover · 5 Themenblöcke</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Drag to rotate cube -->
+<script>
+const cubeWrap = document.getElementById('cubeWrap');
+const cube = document.getElementById('adminCube');
+let dragging=false,lastX=0,lastY=0,rotX=-20,rotY=25;
+let autoAnim=true;
+
+cubeWrap.addEventListener('mouseenter',()=>{autoAnim=false;cube.style.animation='none'});
+cubeWrap.addEventListener('mouseleave',()=>{
+  autoAnim=true;
+  cube.style.animation=`cubeRotate 18s linear infinite`;
+  cube.style.animationDelay=`-${(rotY%360)/360*18}s`;
+});
+cubeWrap.addEventListener('mousedown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;e.preventDefault()});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const dx=e.clientX-lastX,dy=e.clientY-lastY;
+  rotY+=dx*0.6;rotX-=dy*0.6;
+  rotX=Math.max(-50,Math.min(50,rotX));
+  cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  lastX=e.clientX;lastY=e.clientY;
+});
+window.addEventListener('mouseup',()=>dragging=false);
+
+// Touch
+cubeWrap.addEventListener('touchstart',e=>{lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;autoAnim=false;cube.style.animation='none'},{passive:true});
+cubeWrap.addEventListener('touchmove',e=>{
+  const dx=e.touches[0].clientX-lastX,dy=e.touches[0].clientY-lastY;
+  rotY+=dx*0.6;rotX-=dy*0.6;
+  rotX=Math.max(-50,Math.min(50,rotX));
+  cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+},{passive:true});
+</script>
+</body>
+</html>

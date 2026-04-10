@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { ChevronLeft, ChevronRight, MapPin, Clock, Users, X, ThumbsUp, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Clock, Users, X, ThumbsUp, Plus, Trash2, TrendingUp } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
 function CalendarView({ events, onSelect }) {
@@ -27,7 +27,7 @@ function CalendarView({ events, onSelect }) {
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="bg-bg-surface border border-bd-faint rounded-sm">
+    <div className="bg-bg-surface border border-bd-faint rounded-sm flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-3 border-b border-bd-faint">
         <button onClick={() => setMonth(new Date(year, mo - 1))} className="p-1 text-txt-tertiary hover:text-txt-primary"><ChevronLeft className="w-4 h-4" /></button>
         <span className="text-sm font-heading font-medium text-txt-primary">{monthStr}</span>
@@ -36,7 +36,7 @@ function CalendarView({ events, onSelect }) {
       <div className="grid grid-cols-7 text-center text-[10px] text-txt-tertiary font-mono py-2 border-b border-bd-faint">
         {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(d => <div key={d}>{d}</div>)}
       </div>
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 flex-1">
         {Array.from({ length: weeks * 7 }, (_, i) => {
           const day = i - startOffset + 1;
           const valid = day >= 1 && day <= daysInMonth;
@@ -45,9 +45,9 @@ function CalendarView({ events, onSelect }) {
           const isToday = dateStr === today;
 
           return (
-            <div
+              <div
               key={i}
-              className={`min-h-[48px] p-1 border-b border-r border-bd-faint ${valid ? 'cursor-pointer hover:bg-bg-elevated' : ''}`}
+              className={`min-h-[32px] p-1 border-b border-r border-bd-faint ${valid ? 'cursor-pointer hover:bg-bg-elevated' : ''}`}
               onClick={() => dayEvents.length > 0 && onSelect(dayEvents[0])}
             >
               {valid && (
@@ -273,65 +273,148 @@ export default function Schulungen() {
         accentColor="#2ECC71"
       />
 
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
 
-      <div className="mb-8">
-        <p className="text-sm text-txt-secondary leading-relaxed max-w-3xl">
-          Digitale Kompetenzen sind ein zentraler Baustein der Transformation. Die SCNAT bietet regelmässig 
-          Schulungen zu digitalen Tools, KI-Grundlagen und Arbeitsmethoden an. Alle Mitarbeitenden sind 
-          eingeladen, sich anzumelden und aktiv einzubringen — sei es als Teilnehmende oder mit eigenen 
-          Themenwünschen. Die Schulungen finden in kleinen Gruppen statt, um Raum für Fragen und Austausch zu bieten.
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
+        <p className="text-sm text-txt-secondary leading-relaxed max-w-2xl">
+          Die SCNAT bietet regelmässig Schulungen zu digitalen Tools, KI-Grundlagen und Arbeitsmethoden an. 
+          Alle Mitarbeitenden sind eingeladen, sich anzumelden und aktiv Themenwünsche einzubringen.
         </p>
-      </div>
-
-      <div className="flex items-center gap-1 mb-6 bg-bg-surface border border-bd-faint rounded-sm p-1 w-full sm:w-fit">
-        {[{ id: 'kalender', label: 'Kalender' }, { id: 'themen', label: 'Themen wünschen' }].map(v => (
-          <button
-            key={v.id}
-            onClick={() => setTab(v.id)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-sm transition-colors ${
-              tab === v.id ? 'bg-bg-elevated text-txt-primary border border-bd-default' : 'text-txt-secondary hover:text-txt-primary border border-transparent'
-            }`}
-          >
-            {v.label}
-          </button>
-        ))}
+        <div className="flex items-center gap-1 bg-bg-surface border border-bd-faint rounded-sm p-1 shrink-0">
+          {[{ id: 'kalender', label: 'Kalender' }, { id: 'themen', label: 'Themen wünschen' }].map(v => (
+            <button
+              key={v.id}
+              onClick={() => setTab(v.id)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-sm transition-colors ${
+                tab === v.id ? 'bg-bg-elevated text-txt-primary border border-bd-default' : 'text-txt-secondary hover:text-txt-primary border border-transparent'
+              }`}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {tab === 'kalender' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <CalendarView events={events} onSelect={setSelectedEvent} />
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-heading font-medium text-txt-primary">Nächste Events</h3>
-            {events
-              .filter(e => e.datum >= new Date().toISOString().split('T')[0])
-              .sort((a, b) => a.datum.localeCompare(b.datum))
-              .map(e => {
-                const spots = e.maxTeilnehmer - (e.anmeldungen?.length || 0);
-                return (
-                  <div
-                    key={e.id}
-                    onClick={() => setSelectedEvent(e)}
-                    className="bg-bg-surface border border-bd-faint rounded-sm p-3 cursor-pointer hover:border-bd-strong transition-colors"
-                  >
-                    <h4 className="text-sm text-txt-primary font-medium">{e.titel}</h4>
-                    <div className="flex items-center gap-3 text-xs text-txt-secondary mt-1">
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{e.datum}</span>
-                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{e.ort}</span>
+        <div className="space-y-5">
+          <div className="flex flex-col lg:flex-row lg:items-stretch gap-4">
+            <div className="flex-1 min-w-0 flex flex-col">
+              <CalendarView events={events} onSelect={setSelectedEvent} />
+            </div>
+
+            {(() => {
+              const popularEvent = events
+                .filter(e => e.datum >= new Date().toISOString().split('T')[0])
+                .sort((a, b) => (b.anmeldungen?.length || 0) - (a.anmeldungen?.length || 0))[0];
+              if (!popularEvent) return null;
+              const dateObj = new Date(popularEvent.datum + 'T00:00:00');
+              const dayNum = dateObj.getDate();
+              const monthShort = dateObj.toLocaleDateString('de-CH', { month: 'short' });
+              const spots = popularEvent.maxTeilnehmer - (popularEvent.anmeldungen?.length || 0);
+              const fillPct = Math.round(((popularEvent.anmeldungen?.length || 0) / popularEvent.maxTeilnehmer) * 100);
+              return (
+                <div className="hidden lg:flex lg:w-72 xl:w-80 flex-col">
+                  <div className="bg-bg-surface border border-bd-faint rounded-sm flex flex-col h-full">
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-bd-faint">
+                      <TrendingUp className="w-4 h-4 text-scnat-red" />
+                      <span className="text-sm font-heading font-medium text-txt-primary">Beliebt</span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs mt-1.5">
-                      <Users className="w-3 h-3 text-txt-tertiary" />
-                      <span className={spots <= 3 ? 'text-status-yellow' : 'text-txt-secondary'}>
-                        {e.anmeldungen?.length || 0}/{e.maxTeilnehmer} Plätze
-                      </span>
+                    <div className="p-4 flex flex-col flex-1">
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="flex flex-col items-center justify-center bg-scnat-red/10 text-scnat-red rounded-sm px-3 py-2 shrink-0">
+                          <span className="text-2xl font-bold leading-none">{dayNum}</span>
+                          <span className="text-[10px] font-mono uppercase leading-tight mt-0.5">{monthShort}</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-sm text-txt-primary font-semibold leading-snug">{popularEvent.titel}</h4>
+                          <div className="flex items-center gap-1.5 text-[11px] text-txt-secondary mt-1">
+                            <MapPin className="w-3 h-3 shrink-0" />
+                            <span>{popularEvent.ort}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[11px] text-txt-secondary mt-0.5">
+                            <Clock className="w-3 h-3 shrink-0" />
+                            <span>{popularEvent.datum} · {popularEvent.zeit}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-txt-secondary leading-relaxed mb-4 line-clamp-3">{popularEvent.beschreibung}</p>
+
+                      <div className="mt-auto space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-txt-secondary flex items-center gap-1"><Users className="w-3.5 h-3.5" /> Anmeldungen</span>
+                          <span className="font-mono text-txt-primary">{popularEvent.anmeldungen?.length || 0}/{popularEvent.maxTeilnehmer}</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-bg-elevated rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-scnat-red rounded-full transition-all"
+                            style={{ width: `${fillPct}%` }}
+                          />
+                        </div>
+                        {spots <= 5 && spots > 0 && (
+                          <p className="text-[10px] text-status-yellow font-medium">Nur noch {spots} {spots === 1 ? 'Platz' : 'Plätze'} frei</p>
+                        )}
+                        {spots === 0 && (
+                          <p className="text-[10px] text-scnat-red font-medium">Ausgebucht</p>
+                        )}
+                        <button
+                          onClick={() => setSelectedEvent(popularEvent)}
+                          className="w-full mt-2 bg-scnat-red text-white text-xs font-medium py-2 rounded-sm hover:bg-[#F06570] transition-colors"
+                        >
+                          Jetzt anmelden
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-xs text-txt-tertiary mt-1.5 line-clamp-2">{e.beschreibung}</p>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })()}
           </div>
+
+          {(() => {
+            const upcoming = events
+              .filter(e => e.datum >= new Date().toISOString().split('T')[0])
+              .sort((a, b) => a.datum.localeCompare(b.datum));
+            if (!upcoming.length) return null;
+            return (
+              <div>
+                <h3 className="text-sm font-heading font-medium text-txt-primary mb-3">Nächste Events</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {upcoming.map(e => {
+                    const spots = e.maxTeilnehmer - (e.anmeldungen?.length || 0);
+                    const dateObj = new Date(e.datum + 'T00:00:00');
+                    const dayNum = dateObj.getDate();
+                    const monthShort = dateObj.toLocaleDateString('de-CH', { month: 'short' });
+                    return (
+                      <div
+                        key={e.id}
+                        onClick={() => setSelectedEvent(e)}
+                        className="bg-bg-surface border border-bd-faint rounded-sm p-3 cursor-pointer hover:border-bd-strong transition-colors flex gap-3"
+                      >
+                        <div className="flex flex-col items-center justify-center bg-scnat-red/10 text-scnat-red rounded-sm px-2.5 py-1.5 shrink-0">
+                          <span className="text-lg font-bold leading-none">{dayNum}</span>
+                          <span className="text-[10px] font-mono uppercase leading-tight mt-0.5">{monthShort}</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-sm text-txt-primary font-medium truncate">{e.titel}</h4>
+                          <div className="flex items-center gap-2 text-[11px] text-txt-secondary mt-0.5">
+                            <span className="flex items-center gap-0.5"><MapPin className="w-3 h-3" />{e.ort}</span>
+                            <span className="flex items-center gap-0.5">
+                              <Users className="w-3 h-3" />
+                              <span className={spots <= 3 ? 'text-status-yellow' : ''}>
+                                {e.anmeldungen?.length || 0}/{e.maxTeilnehmer}
+                              </span>
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-txt-tertiary mt-1 line-clamp-1">{e.beschreibung}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 

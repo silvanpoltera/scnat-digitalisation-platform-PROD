@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ChevronDown, ChevronUp, Sparkles, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function NewsTimeline() {
   const [newsItems, setNewsItems] = useState([]);
   const [filter, setFilter] = useState("Alle");
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     fetch('/api/news', { credentials: 'include' })
@@ -105,13 +106,48 @@ export default function NewsTimeline() {
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed mb-2">{item.teaser}</p>
 
-              {item.linkTo && (
-                <Link
-                  to={item.linkTo}
-                  className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-scnat-darkred transition-colors"
-                >
-                  Mehr lesen <ArrowRight className="w-3 h-3" />
-                </Link>
+              {(item.detail || item.linkTo) && (
+                <div>
+                  <button
+                    onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-scnat-darkred transition-colors"
+                  >
+                    {expandedId === item.id ? (
+                      <>Weniger anzeigen <ChevronUp className="w-3 h-3" /></>
+                    ) : (
+                      <>Mehr lesen <ArrowRight className="w-3 h-3" /></>
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {expandedId === item.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 pt-3 border-t border-border">
+                          {item.detail && (
+                            <div className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line mb-3">
+                              {item.detail}
+                            </div>
+                          )}
+                          {item.linkTo && (
+                            <Link
+                              to={item.linkTo}
+                              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-scnat-darkred transition-colors bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-sm"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              Zur Seite
+                            </Link>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               )}
             </motion.article>
           ))}

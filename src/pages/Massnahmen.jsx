@@ -4,9 +4,9 @@ import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDow
 import PageHeader from '../components/PageHeader';
 
 const CLUSTER_COLORS = {
-  'Digitale Kultur & Befähigung': '#3498DB',
-  'Infrastruktur & Beschaffung': '#2ECC71',
-  'Kommunikation & Transparenz': '#F39C12',
+  'Digitale Kultur & Befähigung': 'var(--status-blue)',
+  'Infrastruktur & Beschaffung': 'var(--status-green)',
+  'Kommunikation & Transparenz': 'var(--status-yellow)',
   'Prozesse & Methoden': '#9B59B6',
   'Strategie & Steuerung': '#EA515A',
   'Daten & Wissen': '#1ABC9C',
@@ -106,9 +106,9 @@ function ListView({ items }) {
                     </div>
                     <div className="w-full sm:w-32 sm:shrink-0 space-y-1">
                       <div className="text-[10px] text-txt-tertiary">Wirkung</div>
-                      <PrioBar value={m.wirkung} color="#2ECC71" />
+                      <PrioBar value={m.wirkung} color="var(--status-green)" />
                       <div className="text-[10px] text-txt-tertiary mt-1">Aufwand</div>
-                      <PrioBar value={m.aufwand} color="#EA515A" />
+                      <PrioBar value={m.aufwand} color="var(--accent-red)" />
                     </div>
                   </div>
                   <StatusBadge m={m} />
@@ -140,24 +140,24 @@ function MatrixView({ items }) {
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 bg-bg-surface border border-bd-faint rounded-sm p-2 sm:p-4 overflow-x-auto">
           <svg viewBox={`0 0 ${W + pad * 2} ${H + pad * 2}`} className="w-full min-w-[400px]" style={{ overflow: 'visible' }}>
-            <rect x={pad} y={pad} width={W / 2} height={H / 2} fill="#2ECC71" fillOpacity="0.04" />
-            <rect x={pad + W / 2} y={pad} width={W / 2} height={H / 2} fill="#F39C12" fillOpacity="0.04" />
-            <rect x={pad} y={pad + H / 2} width={W / 2} height={H / 2} fill="#3498DB" fillOpacity="0.04" />
+            <rect x={pad} y={pad} width={W / 2} height={H / 2} style={{ fill: 'var(--status-green)' }} fillOpacity="0.04" />
+            <rect x={pad + W / 2} y={pad} width={W / 2} height={H / 2} style={{ fill: 'var(--status-yellow)' }} fillOpacity="0.04" />
+            <rect x={pad} y={pad + H / 2} width={W / 2} height={H / 2} style={{ fill: 'var(--status-blue)' }} fillOpacity="0.04" />
             <rect x={pad + W / 2} y={pad + H / 2} width={W / 2} height={H / 2} fill="#EA515A" fillOpacity="0.04" />
 
-            <line x1={pad} y1={pad + H / 2} x2={W + pad} y2={pad + H / 2} stroke="#2E3238" strokeDasharray="4,4" />
-            <line x1={pad + W / 2} y1={pad} x2={pad + W / 2} y2={H + pad} stroke="#2E3238" strokeDasharray="4,4" />
+            <line x1={pad} y1={pad + H / 2} x2={W + pad} y2={pad + H / 2} style={{ stroke: 'var(--border-default)' }} strokeDasharray="4,4" />
+            <line x1={pad + W / 2} y1={pad} x2={pad + W / 2} y2={H + pad} style={{ stroke: 'var(--border-default)' }} strokeDasharray="4,4" />
 
-            <line x1={pad} y1={pad} x2={pad} y2={H + pad} stroke="#2E3238" />
-            <line x1={pad} y1={H + pad} x2={W + pad} y2={H + pad} stroke="#2E3238" />
+            <line x1={pad} y1={pad} x2={pad} y2={H + pad} style={{ stroke: 'var(--border-default)' }} />
+            <line x1={pad} y1={H + pad} x2={W + pad} y2={H + pad} style={{ stroke: 'var(--border-default)' }} />
 
-            <text x={pad + W / 2} y={H + pad + 35} textAnchor="middle" fill="#8A8F9B" fontSize="11" fontFamily="DM Sans">Aufwand →</text>
-            <text transform={`rotate(-90) translate(${-(pad + H / 2)},${pad - 30})`} textAnchor="middle" fill="#8A8F9B" fontSize="11" fontFamily="DM Sans">Wirkung →</text>
+            <text x={pad + W / 2} y={H + pad + 35} textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="11" fontFamily="DM Sans">Aufwand →</text>
+            <text transform={`rotate(-90) translate(${-(pad + H / 2)},${pad - 30})`} textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="11" fontFamily="DM Sans">Wirkung →</text>
 
-            <text x={pad + W * 0.25} y={pad + H * 0.25} textAnchor="middle" fill="#4E535D" fontSize="10" fontFamily="DM Sans">Quick Win</text>
-            <text x={pad + W * 0.75} y={pad + H * 0.25} textAnchor="middle" fill="#4E535D" fontSize="10" fontFamily="DM Sans">Strategisch</text>
-            <text x={pad + W * 0.25} y={pad + H * 0.75} textAnchor="middle" fill="#4E535D" fontSize="10" fontFamily="DM Sans">Nice to have</text>
-            <text x={pad + W * 0.75} y={pad + H * 0.75} textAnchor="middle" fill="#4E535D" fontSize="10" fontFamily="DM Sans">Vermeiden</text>
+            <text x={pad + W * 0.25} y={pad + H * 0.25} textAnchor="middle" style={{ fill: 'var(--text-tertiary)' }} fontSize="10" fontFamily="DM Sans">Quick Win</text>
+            <text x={pad + W * 0.75} y={pad + H * 0.25} textAnchor="middle" style={{ fill: 'var(--text-tertiary)' }} fontSize="10" fontFamily="DM Sans">Strategisch</text>
+            <text x={pad + W * 0.25} y={pad + H * 0.75} textAnchor="middle" style={{ fill: 'var(--text-tertiary)' }} fontSize="10" fontFamily="DM Sans">Nice to have</text>
+            <text x={pad + W * 0.75} y={pad + H * 0.75} textAnchor="middle" style={{ fill: 'var(--text-tertiary)' }} fontSize="10" fontFamily="DM Sans">Vermeiden</text>
 
             {rated.map(m => {
               const x = pad + (m.aufwand / 10) * W;
@@ -169,7 +169,7 @@ function MatrixView({ items }) {
               const tooltipY = y - 30 < pad ? y + 10 : y - 30;
               return (
                 <g key={m.id} onMouseEnter={() => setHover(m.id)} onMouseLeave={() => setHover(null)} onClick={() => setSelected(selected === m.id ? null : m.id)} style={{ cursor: 'pointer' }}>
-                  <circle cx={x} cy={y} r={isHover || isSelected ? 8 : 5} fill={color} fillOpacity={isHover || isSelected ? 1 : 0.8} stroke={isSelected ? '#ECEEF1' : isHover ? '#ECEEF1' : 'none'} strokeWidth={2} />
+                  <circle cx={x} cy={y} r={isHover || isSelected ? 8 : 5} fill={color} fillOpacity={isHover || isSelected ? 1 : 0.8} stroke={isSelected || isHover ? 'var(--text-primary)' : 'none'} strokeWidth={2} />
                   {isHover && !isSelected && (
                     <foreignObject x={tooltipX} y={tooltipY} width="200" height="60" style={{ overflow: 'visible', pointerEvents: 'none' }}>
                       <div xmlns="http://www.w3.org/1999/xhtml" className="bg-bg-elevated border border-bd-default rounded-sm px-2 py-1.5 text-xs shadow-lg">
@@ -219,9 +219,9 @@ function MatrixView({ items }) {
             </div>
             <div className="w-full sm:w-28 sm:shrink-0 space-y-1">
               <div className="text-[10px] text-txt-tertiary">Wirkung</div>
-              <PrioBar value={selectedItem.wirkung} color="#2ECC71" />
+              <PrioBar value={selectedItem.wirkung} color="var(--status-green)" />
               <div className="text-[10px] text-txt-tertiary mt-1">Aufwand</div>
-              <PrioBar value={selectedItem.aufwand} color="#EA515A" />
+              <PrioBar value={selectedItem.aufwand} color="var(--accent-red)" />
             </div>
           </div>
         </div>
@@ -257,11 +257,11 @@ function MassnahmenCard({ m, index, variant = 'primary' }) {
       <div className="flex items-center gap-3">
         <div className="flex-1">
           <span className="text-[10px] text-txt-tertiary">Wirkung</span>
-          <PrioBar value={m.wirkung} color="#2ECC71" />
+          <PrioBar value={m.wirkung} color="var(--status-green)" />
         </div>
         <div className="flex-1">
           <span className="text-[10px] text-txt-tertiary">Aufwand</span>
-          <PrioBar value={m.aufwand} color="#EA515A" />
+          <PrioBar value={m.aufwand} color="var(--accent-red)" />
         </div>
       </div>
       <div className="flex items-center gap-1 mt-3">

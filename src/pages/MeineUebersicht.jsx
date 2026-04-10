@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, AlertTriangle, Mail, Megaphone, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import PageHeader from '../components/PageHeader';
@@ -45,10 +45,12 @@ const CHANGE_STATUS_ICONS = {
 
 export default function MeineUebersicht() {
   const { user } = useAuth();
-  const { markSeen } = useNotifications();
+  const { markSeen, refresh: refreshNotifications } = useNotifications();
   const [requests, setRequests] = useState([]);
   const [events, setEvents] = useState([]);
   const [changes, setChanges] = useState([]);
+  const [inboxMessages, setInboxMessages] = useState([]);
+  const [expandedInbox, setExpandedInbox] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,15 +64,29 @@ export default function MeineUebersicht() {
       safeFetch('/api/requests/mine'),
       safeFetch('/api/registrations/mine'),
       safeFetch('/api/changes/mine'),
-    ]).then(([reqs, evts, chgs]) => {
+      safeFetch('/api/inbox/mine'),
+    ]).then(([reqs, evts, chgs, msgs]) => {
       setRequests(reqs);
       setEvents(evts);
       setChanges(chgs);
+      setInboxMessages(msgs);
       setLoading(false);
     });
 
     markSeen();
   }, [markSeen]);
+
+  const markInboxRead = async (id) => {
+    await fetch(`/api/inbox/${id}/read`, { method: 'POST', credentials: 'include' }).catch(() => {});
+    setInboxMessages(prev => prev.map(m => m.id === id ? { ...m, read: true } : m));
+    refreshNotifications();
+  };
+
+  const markAllInboxRead = async () => {
+    await fetch('/api/inbox/read-all', { method: 'POST', credentials: 'include' }).catch(() => {});
+    setInboxMessages(prev => prev.map(m => ({ ...m, read: true })));
+    refreshNotifications();
+  };
 
   if (loading) {
     return (
@@ -80,7 +96,8 @@ export default function MeineUebersicht() {
     );
   }
 
-  const hasContent = requests.length > 0 || events.length > 0 || changes.length > 0;
+  const hasContent = requests.length > 0 || events.length > 0 || changes.length > 0 || inboxMessages.length > 0;
+  const unreadInbox = inboxMessages.filter(m => !m.read).length;
 
   return (
     <div>
@@ -111,6 +128,79 @@ export default function MeineUebersicht() {
               <Link to="/schulungen" className="inline-flex items-center gap-2 px-4 py-2 bg-bg-surface border border-bd-faint text-txt-secondary text-sm font-medium rounded-sm hover:border-bd-strong hover:text-txt-primary transition-colors">
                 <Calendar className="w-4 h-4" /> Events
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Inbox Messages */}
+        {inboxMessages.length > 0 && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-heading font-semibold text-txt-primary flex items-center gap-2">
+                <Megaphone className="w-5 h-5 text-scnat-red" /> Nachrichten
+                {unreadInbox > 0 && (
+                  <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-scnat-red text-white text-[10px] font-bold">
+                    {unreadInbox}
+                  </span>
+                )}
+              </h2>
+              {unreadInbox > 0 && (
+                <button
+                  onClick={markAllInboxRead}
+                  className="text-xs text-scnat-red hover:text-scnat-red/80 transition-colors flex items-center gap-1"
+                >
+                  <CheckCircle className="w-3.5 h-3.5" /> Alle als gelesen markieren
+                </button>
+              )}
+            </div>
+            <div className="space-y-2">
+              {inboxMessages.map(msg => (
+                <div
+                  key={msg.id}
+                  className={`bg-bg-surface border rounded-sm overflow-hidden transition-colors ${
+                    msg.read ? 'border-bd-faint' : 'border-scnat-red/30 bg-scnat-red/[0.02]'
+                  }`}
+                >
+                  <button
+                    onClick={() => {
+                      setExpandedInbox(expandedInbox === msg.id ? null : msg.id);
+                      if (!msg.read) markInboxRead(msg.id);
+                    }}
+                    className="w-full flex items-center gap-3 p-4 text-left hover:bg-bg-elevated/50 transition-colors"
+                  >
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${
+                      !msg.read
+                        ? msg.priority === 'important' ? 'bg-scnat-red animate-pulse' : 'bg-scnat-teal'
+                        : 'bg-transparent'
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className={`text-sm font-heading ${msg.read ? 'font-medium text-txt-secondary' : 'font-semibold text-txt-primary'}`}>
+                          {msg.title}
+                        </h4>
+                        {msg.priority === 'important' && (
+                          <span className="text-[9px] font-bold uppercase bg-scnat-red/10 text-scnat-red px-1.5 py-0.5 rounded-sm">
+                            Wichtig
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 mt-0.5 text-[10px] text-txt-tertiary">
+                        <span>Von {msg.createdByName}</span>
+                        <span>{new Date(msg.createdAt).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                      </div>
+                    </div>
+                    {expandedInbox === msg.id
+                      ? <ChevronUp className="w-4 h-4 text-txt-tertiary shrink-0" />
+                      : <ChevronDown className="w-4 h-4 text-txt-tertiary shrink-0" />
+                    }
+                  </button>
+                  {expandedInbox === msg.id && (
+                    <div className="px-4 pb-4 pt-1 border-t border-bd-faint">
+                      <p className="text-sm text-txt-secondary leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}

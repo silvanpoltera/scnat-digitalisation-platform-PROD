@@ -100,7 +100,7 @@ function RankingView({ onSelectSoftware }) {
                     className="h-full rounded-full"
                     style={{
                       width: s.satisfaction != null ? `${s.satisfaction}%` : '0%',
-                      backgroundColor: s.satisfaction >= 70 ? '#2ECC71' : s.satisfaction >= 40 ? '#F39C12' : '#EA515A',
+                      backgroundColor: s.satisfaction >= 70 ? 'var(--status-green)' : s.satisfaction >= 40 ? 'var(--status-yellow)' : 'var(--accent-red)',
                     }}
                   />
                 </div>

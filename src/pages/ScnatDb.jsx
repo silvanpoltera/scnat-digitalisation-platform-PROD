@@ -7,55 +7,55 @@ function ArchitekturDiagramm({ status }) {
     <div className="bg-bg-surface border border-bd-faint rounded-sm p-4 sm:p-6 overflow-x-auto">
       <h3 className="text-sm font-heading font-semibold text-txt-primary mb-4">Architektur-Übersicht</h3>
       <svg viewBox="0 0 800 400" className="w-full min-w-[600px]">
-        <rect x="300" y="30" width="200" height="60" rx="4" fill="#141618" stroke="#EA515A" strokeWidth="2" />
-        <text x="400" y="55" textAnchor="middle" fill="#ECEEF1" fontSize="14" fontFamily="DM Sans" fontWeight="600">SCNAT DB</text>
-        <text x="400" y="75" textAnchor="middle" fill="#8A8F9B" fontSize="10" fontFamily="JetBrains Mono">Xojo · seit {status?.start_jahr || '2014'}</text>
+        <rect x="300" y="30" width="200" height="60" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--accent-red)' }} strokeWidth="2" />
+        <text x="400" y="55" textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="14" fontFamily="DM Sans" fontWeight="600">SCNAT DB</text>
+        <text x="400" y="75" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="10" fontFamily="JetBrains Mono">Xojo · seit {status?.start_jahr || '2014'}</text>
 
-        <rect x="50" y="150" width="150" height="50" rx="4" fill="#141618" stroke="#2E3238" strokeWidth="1" />
-        <text x="125" y="172" textAnchor="middle" fill="#ECEEF1" fontSize="11" fontFamily="DM Sans">DB-Frontend</text>
-        <text x="125" y="188" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">React · intern</text>
+        <rect x="50" y="150" width="150" height="50" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--border-default)' }} strokeWidth="1" />
+        <text x="125" y="172" textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="11" fontFamily="DM Sans">DB-Frontend</text>
+        <text x="125" y="188" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">React · intern</text>
 
-        <rect x="250" y="150" width="150" height="50" rx="4" fill="#141618" stroke="#2E3238" strokeWidth="1" />
-        <text x="325" y="172" textAnchor="middle" fill="#ECEEF1" fontSize="11" fontFamily="DM Sans">CMS / API</text>
-        <text x="325" y="188" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">REST · JSON</text>
+        <rect x="250" y="150" width="150" height="50" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--border-default)' }} strokeWidth="1" />
+        <text x="325" y="172" textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="11" fontFamily="DM Sans">CMS / API</text>
+        <text x="325" y="188" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">REST · JSON</text>
 
-        <rect x="450" y="150" width="150" height="50" rx="4" fill="#141618" stroke="#2E3238" strokeWidth="1" />
-        <text x="525" y="172" textAnchor="middle" fill="#ECEEF1" fontSize="11" fontFamily="DM Sans">Auth / Session</text>
-        <text x="525" y="188" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">JWT · Berechtigungen</text>
+        <rect x="450" y="150" width="150" height="50" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--border-default)' }} strokeWidth="1" />
+        <text x="525" y="172" textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="11" fontFamily="DM Sans">Auth / Session</text>
+        <text x="525" y="188" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">JWT · Berechtigungen</text>
 
-        <rect x="625" y="150" width="150" height="50" rx="4" fill="#141618" stroke="#2E3238" strokeWidth="1" />
-        <text x="700" y="172" textAnchor="middle" fill="#ECEEF1" fontSize="11" fontFamily="DM Sans">File Storage</text>
-        <text x="700" y="188" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">On-Premise</text>
+        <rect x="625" y="150" width="150" height="50" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--border-default)' }} strokeWidth="1" />
+        <text x="700" y="172" textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="11" fontFamily="DM Sans">File Storage</text>
+        <text x="700" y="188" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">On-Premise</text>
 
         {[125, 325, 525, 700].map((x, i) => (
-          <line key={i} x1={Math.min(x, 400)} y1={90} x2={x} y2={150} stroke="#2E3238" strokeDasharray="4,4" />
+          <line key={i} x1={Math.min(x, 400)} y1={90} x2={x} y2={150} style={{ stroke: 'var(--border-default)' }} strokeDasharray="4,4" />
         ))}
 
-        <rect x="80" y="280" width="140" height="45" rx="4" fill="#141618" stroke="#3498DB" strokeWidth="1.5" />
-        <text x="150" y="300" textAnchor="middle" fill="#3498DB" fontSize="11" fontFamily="DM Sans">Portal A</text>
-        <text x="150" y="315" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">naturwissenschaften.ch</text>
+        <rect x="80" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="150" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal A</text>
+        <text x="150" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">naturwissenschaften.ch</text>
 
-        <rect x="250" y="280" width="140" height="45" rx="4" fill="#141618" stroke="#3498DB" strokeWidth="1.5" />
-        <text x="320" y="300" textAnchor="middle" fill="#3498DB" fontSize="11" fontFamily="DM Sans">Portal B</text>
-        <text x="320" y="315" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">Akademie-Portale</text>
+        <rect x="250" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="320" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal B</text>
+        <text x="320" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Akademie-Portale</text>
 
-        <rect x="420" y="280" width="140" height="45" rx="4" fill="#141618" stroke="#3498DB" strokeWidth="1.5" />
-        <text x="490" y="300" textAnchor="middle" fill="#3498DB" fontSize="11" fontFamily="DM Sans">Portal C</text>
-        <text x="490" y="315" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">Events / Mitglieder</text>
+        <rect x="420" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="490" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal C</text>
+        <text x="490" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Events / Mitglieder</text>
 
-        <rect x="590" y="280" width="140" height="45" rx="4" fill="#141618" stroke="#3498DB" strokeWidth="1.5" />
-        <text x="660" y="300" textAnchor="middle" fill="#3498DB" fontSize="11" fontFamily="DM Sans">Newsletter</text>
-        <text x="660" y="315" textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="JetBrains Mono">Mailchimp-Sync</text>
+        <rect x="590" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="660" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Newsletter</text>
+        <text x="660" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Mailchimp-Sync</text>
 
         {[150, 320, 490, 660].map((x, i) => (
-          <line key={`b${i}`} x1={325} y1={200} x2={x} y2={280} stroke="#23262B" strokeDasharray="3,3" />
+          <line key={`b${i}`} x1={325} y1={200} x2={x} y2={280} style={{ stroke: 'var(--border-faint)' }} strokeDasharray="3,3" />
         ))}
 
         {status?.konsolidierung_prozent && (
           <>
-            <rect x="30" y="360" width="740" height="20" rx="4" fill="#1C1E22" />
-            <rect x="30" y="360" width={740 * (status.konsolidierung_prozent / 100)} height="20" rx="4" fill="#2ECC71" fillOpacity="0.3" />
-            <text x="400" y="374" textAnchor="middle" fill="#2ECC71" fontSize="10" fontFamily="JetBrains Mono">
+            <rect x="30" y="360" width="740" height="20" rx="4" style={{ fill: 'var(--bg-elevated)' }} />
+            <rect x="30" y="360" width={740 * (status.konsolidierung_prozent / 100)} height="20" rx="4" style={{ fill: 'var(--status-green)' }} fillOpacity="0.3" />
+            <text x="400" y="374" textAnchor="middle" style={{ fill: 'var(--status-green)' }} fontSize="10" fontFamily="JetBrains Mono">
               Konsolidierung: {status.konsolidierung_prozent}% · Geplant: {status.geplanter_abschluss}
             </text>
           </>

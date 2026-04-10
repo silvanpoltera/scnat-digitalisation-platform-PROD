@@ -273,10 +273,10 @@ function InteractiveSprintCycle() {
       <div className="bg-bg-surface border border-bd-faint rounded-xl p-4 overflow-x-auto flex-shrink-0">
         <svg viewBox="0 0 400 400" className="w-full max-w-[380px] min-w-[300px] mx-auto" style={{ overflow: 'visible' }}>
           {/* Center ring */}
-          <circle cx={cx} cy={cy} r={R - 10} fill="none" stroke="#2E3238" strokeWidth="1" strokeDasharray="6,4" />
-          <circle cx={cx} cy={cy} r={50} fill="#1A1D21" stroke="#2E3238" strokeWidth="1.5" />
-          <text x={cx} y={cy - 8} textAnchor="middle" fill="#ECEEF1" fontSize="11" fontWeight="700" fontFamily="DM Sans">4-Wochen</text>
-          <text x={cx} y={cy + 8} textAnchor="middle" fill="#8A8F9B" fontSize="10" fontFamily="DM Sans">Sprint</text>
+          <circle cx={cx} cy={cy} r={R - 10} fill="none" style={{ stroke: 'var(--border-default)' }} strokeWidth="1" strokeDasharray="6,4" />
+          <circle cx={cx} cy={cy} r={50} style={{ fill: 'var(--bg-base)', stroke: 'var(--border-default)' }} strokeWidth="1.5" />
+          <text x={cx} y={cy - 8} textAnchor="middle" style={{ fill: 'var(--text-primary)' }} fontSize="11" fontWeight="700" fontFamily="DM Sans">4-Wochen</text>
+          <text x={cx} y={cy + 8} textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="10" fontFamily="DM Sans">Sprint</text>
 
           {/* Connection arrows */}
           {CYCLE_STEPS.map((step, i) => {
@@ -296,7 +296,7 @@ function InteractiveSprintCycle() {
                 key={`arc-${i}`}
                 d={`M${x1},${y1} Q${pullX},${pullY} ${x2},${y2}`}
                 fill="none"
-                stroke="#2E3238"
+                style={{ stroke: 'var(--border-default)' }}
                 strokeWidth="1"
                 strokeDasharray="3,3"
               />
@@ -321,12 +321,12 @@ function InteractiveSprintCycle() {
                   stroke={step.color}
                   strokeWidth={isActive ? 2.5 : 1.5}
                 />
-                <text x={x} y={y - 5} textAnchor="middle" fill={isActive ? '#fff' : '#ECEEF1'} fontSize="8" fontWeight="600" fontFamily="DM Sans">
+                <text x={x} y={y - 5} textAnchor="middle" style={{ fill: isActive ? '#fff' : 'var(--text-primary)' }} fontSize="8" fontWeight="600" fontFamily="DM Sans">
                   {step.label.split('\n').map((line, li) => (
                     <tspan key={li} x={x} dy={li === 0 ? 0 : 11}>{line}</tspan>
                   ))}
                 </text>
-                <text x={x} y={y + nodeR + 14} textAnchor="middle" fill="#8A8F9B" fontSize="9" fontFamily="DM Sans">{step.week}</text>
+                <text x={x} y={y + nodeR + 14} textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="DM Sans">{step.week}</text>
               </g>
             );
           })}

@@ -39,6 +39,7 @@ router.post('/', requireAuth, requireAdmin, (req, res) => {
     categoryColor: req.body.categoryColor || '#5A616B',
     title: req.body.title || '',
     teaser: req.body.teaser || '',
+    detail: req.body.detail || '',
     linkTo: req.body.linkTo || null,
     isNew: req.body.isNew || false,
     aktiv: req.body.aktiv !== false,
@@ -55,7 +56,7 @@ router.put('/:id', requireAuth, requireAdmin, (req, res) => {
   const idx = data.findIndex(i => i.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
-  const allowed = ['datum', 'category', 'categoryColor', 'title', 'teaser', 'linkTo', 'isNew', 'aktiv', 'gueltigBis'];
+  const allowed = ['datum', 'category', 'categoryColor', 'title', 'teaser', 'detail', 'linkTo', 'isNew', 'aktiv', 'gueltigBis'];
   allowed.forEach(k => {
     if (req.body[k] !== undefined) data[idx][k] = req.body[k];
   });

@@ -9,6 +9,7 @@
     --font-heading: 'DM Sans', system-ui, sans-serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --radius: 0.25rem;
 
     --bg-base: #0C0E10;
     --bg-surface: #141618;
@@ -44,7 +45,43 @@
     --border: 210 8% 17%;
     --input: 210 8% 17%;
     --ring: 357 78% 62%;
-    --radius: 0.25rem;
+  }
+
+  .theme-bright {
+    --bg-base: #F2F3F5;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #F8F9FA;
+    --border-faint: #E2E4E8;
+    --border-default: #CDD1D6;
+    --border-strong: #5A616B;
+    --text-primary: #1A1D21;
+    --text-secondary: #5A616B;
+    --text-tertiary: #8A8F9B;
+    --accent-red: #EA515A;
+    --accent-red-hover: #D4454E;
+    --status-green: #1B8A4A;
+    --status-yellow: #B27308;
+    --status-blue: #2471A3;
+
+    --background: 220 10% 96%;
+    --foreground: 216 12% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 216 12% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 216 12% 11%;
+    --primary: 357 78% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 10% 94%;
+    --secondary-foreground: 216 12% 11%;
+    --muted: 220 10% 94%;
+    --muted-foreground: 215 8% 42%;
+    --accent: 220 10% 92%;
+    --accent-foreground: 216 12% 11%;
+    --destructive: 357 78% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 8% 85%;
+    --input: 220 8% 85%;
+    --ring: 357 78% 62%;
   }
 }
 
@@ -73,6 +110,15 @@ html {
 }
 .backface-hidden {
   backface-visibility: hidden;
+}
+
+@keyframes cubeRotate {
+  from { transform: rotateX(-20deg) rotateY(0deg); }
+  to { transform: rotateX(-20deg) rotateY(360deg); }
+}
+@keyframes layerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
 
 ::-webkit-scrollbar {

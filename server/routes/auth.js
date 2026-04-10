@@ -4,14 +4,23 @@ import { comparePassword, signToken, verifyToken } from '../auth.js';
 
 const router = Router();
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE === 'true',
+  sameSite: 'strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: '/',
+};
+
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'E-Mail und Passwort erforderlich' });
   }
 
+  const emailNorm = email.toLowerCase().trim();
   const users = readJSON('users.json');
-  const user = users.find(u => u.email === email);
+  const user = users.find(u => u.email.toLowerCase().trim() === emailNorm);
   if (!user) return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
 
   const valid = await comparePassword(password, user.passwordHash);
@@ -19,13 +28,7 @@ router.post('/login', async (req, res) => {
 
   const token = signToken({ id: user.id, email: user.email, name: user.name, role: user.role });
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-
+  res.cookie('token', token, COOKIE_OPTIONS);
   res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role } });
 });
 
@@ -40,7 +43,12 @@ router.get('/me', (req, res) => {
 });
 
 router.post('/logout', (_req, res) => {
-  res.clearCookie('token');
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.COOKIE_SECURE === 'true',
+    sameSite: 'strict',
+    path: '/',
+  });
   res.json({ ok: true });
 });
 

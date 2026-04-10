@@ -180,7 +180,7 @@ export default function CpDashboard() {
                     <span className="text-txt-tertiary font-mono w-20">{e.datum.slice(5)}</span>
                     <span className="text-txt-primary flex-1 truncate">{e.titel}</span>
                     <div className="w-16 h-1.5 bg-bg-elevated rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? '#EA515A' : pct > 50 ? '#F39C12' : '#2ECC71' }} />
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pct > 80 ? 'var(--accent-red)' : pct > 50 ? 'var(--status-yellow)' : 'var(--status-green)' }} />
                     </div>
                     <span className="text-txt-tertiary font-mono w-12 text-right">{regs}/{e.maxTeilnehmer}</span>
                   </div>
@@ -279,7 +279,7 @@ export default function CpDashboard() {
           <div className="space-y-2">
             <p className="text-[10px] font-mono text-txt-tertiary mb-1">Meiste Bewertungen</p>
             {softwareStats.topVoted.map(([id, counts]) => (
-              <MiniBar key={id} label={id} value={counts.total} max={Math.max(...softwareStats.topVoted.map(([, c]) => c.total))} color="#3498DB" />
+              <MiniBar key={id} label={id} value={counts.total} max={Math.max(...softwareStats.topVoted.map(([, c]) => c.total))} color="var(--status-blue)" />
             ))}
           </div>
         </div>

@@ -403,7 +403,7 @@ export default function CpMassnahmen() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung: <strong className="text-status-green">{m.wirkung}</strong></label>
-                      <input type="range" min="0" max="10" step="0.1" value={m.wirkung || 0} onChange={e => updateLocal(m.id, 'wirkung', parseFloat(e.target.value))} className="w-full accent-[#2ECC71]" />
+                      <input type="range" min="0" max="10" step="0.1" value={m.wirkung || 0} onChange={e => updateLocal(m.id, 'wirkung', parseFloat(e.target.value))} className="w-full accent-status-green" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Aufwand: <strong className="text-scnat-red">{m.aufwand}</strong></label>
