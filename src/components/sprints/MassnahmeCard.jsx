@@ -39,15 +39,17 @@ export default function MassnahmeCard({ m, clusterColor }) {
       <div className="flex items-center gap-1.5 mt-0.5">
         {clusterColor && <div className="w-1.5 h-1.5 rounded-sm shrink-0" style={{ background: clusterColor }} />}
         {m.cluster && <span className="font-mono text-[8.5px] text-txt-tertiary">{m.cluster}</span>}
-        <div className="ml-auto flex items-center gap-1.5 text-[11px] text-txt-secondary">
-          <div
-            className="w-4 h-4 rounded-full flex items-center justify-center font-mono text-[7px] border border-bd-default shrink-0"
-            style={{ background: 'var(--elevated, #1C1E22)' }}
-          >
-            {initials}
+        {m.verantwortliche && (
+          <div className="ml-auto flex items-center gap-1.5 text-[11px] text-txt-secondary">
+            <div
+              className="w-4 h-4 rounded-full flex items-center justify-center font-mono text-[7px] border border-bd-default shrink-0"
+              style={{ background: 'var(--elevated, #1C1E22)' }}
+            >
+              {initials}
+            </div>
+            <span>{m.verantwortliche}</span>
           </div>
-          <span>{m.verantwortliche}</span>
-        </div>
+        )}
       </div>
 
       {m.progress > 0 && (

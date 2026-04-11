@@ -11,7 +11,7 @@ const STATUS_FILTERS = [
 
 function formatDate(iso) {
   if (!iso) return '';
-  const d = new Date(iso);
+  const d = new Date(iso + (iso.includes('T') ? '' : 'T00:00:00'));
   return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' });
 }
 
@@ -52,8 +52,8 @@ export default function SprintDetailPanel({ sprint, isOpen }) {
       <div className="p-5">
         <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
           <div>
-            <div className="font-semibold text-[15px] mb-0.5">{sprint.name}</div>
-            <div className="font-mono text-[9px] text-txt-tertiary">
+            <div className="font-semibold text-base text-txt-primary mb-0.5">{sprint.name}</div>
+            <div className="font-mono text-[10px] text-txt-secondary">
               {sprint.massnahmen.length} Massnahmen · {formatDate(sprint.startDate)} → {formatDate(sprint.endDate)}
             </div>
           </div>

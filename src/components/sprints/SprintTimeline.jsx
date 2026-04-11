@@ -11,7 +11,7 @@ function getKW(d) {
 }
 
 function formatDate(d) {
-  return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' });
+  return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', timeZone: 'Europe/Zurich' });
 }
 
 const STATUS_DOT_COLORS = {
@@ -43,6 +43,13 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
 
   const todayPct = pct(today);
 
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
   return (
     <>
       {/* Desktop Timeline */}
@@ -68,39 +75,41 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
           {/* Today line */}
           <div
             className="absolute top-0 bottom-0 border-l-[1.5px] border-dashed border-scnat-red z-[2] pointer-events-none"
-            style={{ left: `calc(200px + ${(todayPct / 100) * (100)}% * (1 - 200px / 100%))` }}
+            style={{ left: `calc(200px + (100% - 200px) * ${todayPct / 100})` }}
           />
 
           {/* Sprint rows */}
           {sprints.map(sp => {
-            const start = new Date(sp.startDate);
-            const end = new Date(sp.endDate);
+            const start = new Date(sp.startDate + 'T00:00:00');
+            const end = new Date(sp.endDate + 'T23:59:59');
             const left = pct(start);
             const right = pct(end);
-            const width = Math.max(right - left, 4);
+            const width = Math.max(right - left, 8);
             const isOpen = expandedIds.has(sp.id);
             const dotColor = STATUS_DOT_COLORS[sp.status] || '#4E535D';
+            const barBg = hexToRgba(sp.clusterColor || '#4E535D', 0.3);
+            const barBorder = hexToRgba(sp.clusterColor || '#4E535D', isOpen ? 0.8 : 0.4);
 
             return (
               <div key={sp.id} className="flex items-center mb-2 relative z-[1]">
                 <div className="w-[200px] shrink-0 pr-4">
-                  <div className="text-[13px] font-medium truncate text-txt-primary">{sp.name.split('–')[0].trim()}</div>
+                  <div className="text-[13px] font-medium truncate text-txt-primary">{sp.name}</div>
                   <div className="font-mono text-[9px] text-txt-tertiary">{sp.massnahmen.length} Massnahmen · {formatDate(start)} → {formatDate(end)}</div>
                 </div>
                 <div className="flex-1 h-10 relative flex items-center">
                   <div
                     onClick={() => onToggle(sp.id)}
-                    className={`absolute h-[30px] rounded-[3px] flex items-center px-3 gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap ${isOpen ? 'brightness-110' : 'hover:brightness-120'}`}
+                    className="absolute h-[30px] rounded-[3px] flex items-center px-3 gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
                     style={{
                       left: `${left}%`,
                       width: `${width}%`,
-                      background: `color-mix(in srgb, ${sp.clusterColor} 18%, transparent)`,
-                      borderColor: isOpen ? sp.clusterColor : 'transparent',
+                      background: barBg,
+                      borderColor: barBorder,
                     }}
                   >
-                    <div className="w-[5px] h-[5px] rounded-full shrink-0" style={{ background: dotColor }} />
+                    <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
                     <span className="text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
-                    <span className="font-mono text-[8px] bg-black/25 px-1.5 py-0.5 rounded-sm whitespace-nowrap">{sp.massnahmen.length} M</span>
+                    <span className="font-mono text-[8px] bg-black/30 text-txt-secondary px-1.5 py-0.5 rounded-sm whitespace-nowrap">{sp.massnahmen.length} M</span>
                   </div>
                 </div>
               </div>
