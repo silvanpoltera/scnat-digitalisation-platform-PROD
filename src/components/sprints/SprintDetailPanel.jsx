@@ -44,7 +44,7 @@ export default function SprintDetailPanel({ sprint, isOpen }) {
     <div
       className="mx-4 md:mx-8 mb-3 overflow-hidden rounded border border-bd-default transition-all duration-[450ms] ease-out"
       style={{
-        maxHeight: isOpen ? 700 : 0,
+        maxHeight: isOpen ? 1200 : 0,
         opacity: isOpen ? 1 : 0,
         background: 'var(--elevated, #1C1E22)',
       }}

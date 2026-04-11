@@ -37,14 +37,14 @@ export default function GlStatsBar({ sprints }) {
 
   return (
     <div className="sticky top-0 z-[100] bg-bg-base/97 backdrop-blur-md border-b border-bd-faint">
-      <div className="flex items-center gap-0 px-4 md:px-8 py-3 overflow-x-auto">
+      <div className="flex items-center gap-0 px-2 sm:px-4 md:px-8 py-2 sm:py-3 overflow-x-auto scrollbar-hide">
         <StatItem dotColor="#0098DA" value={activeCount} label="Aktive Sprints" />
         <StatItem dotColor="#F07800" value={runningCount} label="In Arbeit" />
         <StatItem dotColor="rgba(240,120,0,.7)" value={reviewCount} label="In Review" />
-        <StatItem dotColor="#008770" value={doneCount} label="Abgeschlossen" />
-        <StatItem value={`${avgProgress}%`} label="∅ Fortschritt" valueColor="#EA515A" />
+        <StatItem dotColor="#008770" value={doneCount} label="Abgeschl." />
+        <StatItem value={`${avgProgress}%`} label="Fortschritt" valueColor="#EA515A" />
 
-        <div className="hidden md:flex gap-2.5 items-center pl-5 ml-auto">
+        <div className="hidden lg:flex gap-2.5 items-center pl-5 ml-auto">
           {clusterBars.map(cb => (
             <div key={cb.key} className="flex flex-col items-center gap-1">
               <div className="w-8 h-7 rounded-sm overflow-hidden flex items-end" style={{ background: 'var(--b-faint, #1E2124)' }}>
@@ -61,11 +61,11 @@ export default function GlStatsBar({ sprints }) {
 
 function StatItem({ dotColor, value, label, valueColor }) {
   return (
-    <div className="flex items-center gap-2.5 py-1 px-3 md:px-5 border-r border-bd-faint last:border-r-0 min-w-0">
+    <div className="flex items-center gap-1.5 sm:gap-2.5 py-1 px-2 sm:px-3 md:px-5 border-r border-bd-faint last:border-r-0 shrink-0">
       {dotColor && <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dotColor }} />}
       <div>
-        <div className="text-lg font-bold leading-none text-txt-primary" style={valueColor ? { color: valueColor } : undefined}>{value}</div>
-        <div className="font-mono text-[9px] uppercase tracking-wider text-txt-tertiary leading-snug">{label}</div>
+        <div className="text-base sm:text-lg font-bold leading-none text-txt-primary" style={valueColor ? { color: valueColor } : undefined}>{value}</div>
+        <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-txt-tertiary leading-snug whitespace-nowrap">{label}</div>
       </div>
     </div>
   );
