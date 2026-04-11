@@ -7,27 +7,35 @@ alwaysApply: true
 
 ## Architecture
 
-- **Repo**: git@github.com:silvanpoltera/scnat-digitalisation-platform-PROD.git
+- **Repo**: https://github.com/silvanpoltera/scnat-digitalisation-platform-PROD.git
 - **Live URL**: https://platform.poltis.ch
-- **VM**: Google Cloud, Ubuntu 22.04, 1 vCPU / 1 GB RAM + 2 GB Swap
-- **SSH**: `ssh silvanpoltera@34.148.41.234`
+- **VM**: Google Cloud `scnat-portal-new`, Ubuntu 22.04, e2-small, us-east1-b
+- **Static IP**: `34.26.170.228`
+- **SSH**: `ssh silvanpoltera@34.26.170.228`
 - **App path on VM**: `/opt/scnat-portal-prod`
-- **Process manager**: PM2 (process name: `scnat-api`)
-- **Reverse proxy**: Nginx with SSL (Let's Encrypt, auto-renew)
-- **Backend**: Express on port 3001 (proxied via Nginx at `/api/`)
+- **Process manager**: PM2 (process name: `scnat-api`, auto-start on boot)
+- **Reverse proxy**: Nginx with SSL (Let's Encrypt, auto-renew via certbot.timer)
+- **Backend**: Express on 127.0.0.1:3001 (proxied via Nginx at `/api/`)
 - **Frontend**: Vite SPA served from `/opt/scnat-portal-prod/dist`
+- **Swap**: 2 GB (required for build on low-RAM VM)
 
 ## Deploy Command
 
 After committing and pushing to `origin/main`:
 
 ```bash
-ssh silvanpoltera@34.148.41.234 "cd /opt/scnat-portal-prod && bash deploy.sh"
+ssh silvanpoltera@34.26.170.228 'bash /opt/scnat-portal-prod/deploy.sh'
 ```
 
-`deploy.sh` runs: `git pull`, `npm install`, `npm run build`, `pm2 restart scnat-api`.
+`deploy.sh` does the following automatically:
+1. Activates maintenance page (spinning logo, auto-reloads when app returns)
+2. `git pull origin main`
+3. `npm install --prefer-offline`
+4. `npm run build` (~3-5 min due to limited VM RAM)
+5. Restores production Nginx config
+6. `pm2 restart scnat-api`
 
-The build takes ~3 minutes due to limited VM RAM (swap is configured).
+**During deployment**, users on desktop and mobile see a branded maintenance page.
 
 ## Security Rules — MANDATORY
 
@@ -35,21 +43,22 @@ The build takes ~3 minutes due to limited VM RAM (swap is configured).
 - **NEVER** expose SSH keys, IPs, or credentials in code or comments
 - **NEVER** run `git push --force` on this repo
 - **NEVER** modify `.env` on the VM without explicit user approval
-- **NEVER** open additional ports on the VM firewall
-- **NEVER** disable or weaken SSL, CORS, or cookie security settings
+- **NEVER** open additional ports on the VM firewall (only SSH + Nginx Full)
+- **NEVER** disable or weaken SSL, CORS, cookie security, or Nginx deny rules
+- **NEVER** change `.env` permissions (must stay `600`, owner-only)
 - Cookie config: `secure: true`, `sameSite: 'strict'`, `httpOnly: true`
 - CORS: restricted to `process.env.CORS_ORIGIN` (production domain only)
 - All API routes require authentication unless explicitly public
+- SSH: password auth disabled, root login disabled, pubkey only
+- Nginx blocks access to: `.git`, `.env`, `data/`, `server/`, `node_modules/`, `package.json`
 
 ## Verification After Deploy
 
-Run this to confirm everything is healthy:
-
 ```bash
-ssh silvanpoltera@34.148.41.234 "pm2 status && curl -s -o /dev/null -w 'HTTPS: %{http_code}\n' https://platform.poltis.ch/ && curl -s https://platform.poltis.ch/api/auth/me"
+ssh silvanpoltera@34.26.170.228 'pm2 list && curl -s http://127.0.0.1:3001/api/health'
 ```
 
-Expected: PM2 `online`, HTTPS `200`, API returns `{"error":"Nicht authentifiziert"}`.
+Expected: PM2 `online`, API returns `{"status":"ok"}`.
 
 ## Local Development
 
@@ -62,8 +71,7 @@ npm run dev:all        # Frontend (5173) + Backend (3001)
 
 | File | Purpose |
 |------|---------|
-| `deploy.sh` | VM deployment script |
-| `server-setup.sh` | One-time VM provisioning |
-| `nginx.conf` | Reference Nginx config (live config managed by Certbot) |
+| `deploy.sh` | VM deployment script (with maintenance page) |
 | `.env.example` | Environment variable template |
+| `public/maintenance.html` | Service page shown during deployments |
 | `data/*.json` | Application data (committed, used by both frontend and backend) |
