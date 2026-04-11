@@ -37,7 +37,7 @@ export default function GlStatsBar({ sprints }) {
   });
 
   return (
-    <div className="sticky top-0 z-[100] bg-bg-base/97 backdrop-blur-md border-b border-bd-faint">
+    <div className="sticky top-0 z-30 bg-bg-base/97 backdrop-blur-md border-b border-bd-faint">
       <div className="flex items-center gap-0 px-2 sm:px-4 md:px-8 py-2 sm:py-3 overflow-x-auto scrollbar-hide">
         <StatItem dotColor="#0098DA" value={activeCount} label="Aktive Sprints" />
         <StatItem dotColor="#4E535D" value={plannedCount} label="Geplant" />
