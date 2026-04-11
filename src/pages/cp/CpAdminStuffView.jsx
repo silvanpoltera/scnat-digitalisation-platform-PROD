@@ -20,6 +20,7 @@ export default function CpAdminStuffView() {
   const location = useLocation();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const { theme } = useTheme();
   const config = PAGES[page];
 
   const currentIndex = PAGE_ORDER.indexOf(page);
@@ -47,9 +48,9 @@ export default function CpAdminStuffView() {
     );
   }
 
-  const { theme } = useTheme();
+  const iframeTheme = theme === 'bright' ? 'light' : 'dark';
   const hash = location.hash || '';
-  const iframeSrc = config.file + `?theme=${theme}` + hash;
+  const iframeSrc = config.file + `?theme=${iframeTheme}` + hash;
 
   if (expanded) {
     return (
