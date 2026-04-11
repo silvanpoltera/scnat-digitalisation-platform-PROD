@@ -115,5 +115,12 @@
     <script src="content.js"></script>
     <!-- Main Script -->
     <script src="script.js"></script>
+<script>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top){ var n=document.querySelector('.topnav'); if(n) n.style.display='none'; }
+})();
+</script>
 </body>
 </html>

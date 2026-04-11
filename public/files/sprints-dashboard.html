@@ -17,6 +17,13 @@
   --c-infra:#0098DA; --c-daten:#7C5CBF; --c-prozess:#008770;
   --c-komm:#EA515A;  --c-skills:#F07800; --c-comp:#5A616B;
 }
+html.light{
+  --bg:#F2F3F5;--surface:#FFFFFF;--elevated:#F8F9FA;--subtle:#E8EAED;
+  --b-faint:#E2E4E8;--b-def:#CDD1D6;--b-strong:#9DA3AE;
+  --text:#1A1D23;--text2:#4A5060;--text3:#7A8090;
+  --red-dim:rgba(234,81,90,0.06);--red-mid:rgba(234,81,90,0.15);
+}
+html.light .topnav{background:rgba(255,255,255,0.95)}
 html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
 
 /* ── SIDEBAR ── */
@@ -614,6 +621,13 @@ function toggleCompleted() {
 
 // Auto-open first sprint for demo
 setTimeout(()=>toggleDetail('sp1'), 600);
+</script>
+<script>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top){ var n=document.querySelector('.topnav'); if(n) n.style.display='none'; }
+})();
 </script>
 </body>
 </html>

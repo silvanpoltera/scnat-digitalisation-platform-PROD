@@ -1,6 +1,7 @@
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const PAGES = {
   frame: { title: 'The Frame', sub: 'Strategische Einordnung', file: '/files/digitaler_rahmen.html' },
@@ -46,8 +47,9 @@ export default function CpAdminStuffView() {
     );
   }
 
+  const { theme } = useTheme();
   const hash = location.hash || '';
-  const iframeSrc = config.file + hash;
+  const iframeSrc = config.file + `?theme=${theme}` + hash;
 
   if (expanded) {
     return (

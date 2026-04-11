@@ -14,7 +14,24 @@
   --anth:#5A616B;--text:#ECEEF1;--text2:#8A8F9B;--text3:#4E535D;
   --ok:#3DAA75;--warn:#D4882A;--info:#4A90D9;--purple:#7C5CBF;
 }
+html.light{
+  --bg:#F2F3F5;--surface:#FFFFFF;--elevated:#F8F9FA;--subtle:#E8EAED;
+  --b-faint:#E2E4E8;--b-def:#CDD1D6;--b-strong:#9DA3AE;
+  --text:#1A1D23;--text2:#4A5060;--text3:#7A8090;
+  --red-dim:rgba(234,81,90,0.06);--red-mid:rgba(234,81,90,0.15);
+}
 html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow-x:hidden}
+html.light .topnav{background:rgba(255,255,255,0.95)}
+html.light .grid-bg{opacity:.08}
+html.light .glow{opacity:.3}
+html.light .cube-face{background:rgba(234,81,90,0.06);border-color:rgba(234,81,90,0.25)}
+html.light .phase{background:var(--surface)}
+html.light .phase:hover{background:var(--elevated)}
+html.light .constraint{background:rgba(212,136,42,0.04);border-color:rgba(212,136,42,0.2)}
+html.light .pai-header{background:linear-gradient(135deg,rgba(74,144,217,0.05) 0%,rgba(124,92,191,0.05) 100%)}
+html.light .closing-box{background:rgba(234,81,90,0.04);border-color:rgba(234,81,90,0.15)}
+html.light .pipe-node{background:var(--surface);border-color:var(--b-def)}
+html.light .merge-line{background:var(--b-def)}
 
 /* NAV */
 .topnav{position:sticky;top:0;z-index:300;background:rgba(12,14,16,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--b-faint);padding:0 2rem;display:flex;align-items:center;height:52px;gap:2rem}
@@ -378,7 +395,7 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
         <div class="sdot" onclick="goStep(4)"></div>
         <div class="sdot" onclick="goStep(5)"></div>
       </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-align:center">Klick · automatische Rotation alle 4s</p>
+      <!-- dots only, no text -->
     </div>
 
     <!-- STEP DETAIL PANEL -->
@@ -648,6 +665,16 @@ document.getElementById('cubeScene').addEventListener('click', ()=>goStep((curre
 
 // Init
 goStep(0);
+
+// Theme detection from URL param
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top) {
+    var nav = document.querySelector('.topnav');
+    if(nav) nav.style.display='none';
+  }
+})();
 </script>
 </body>
 </html>

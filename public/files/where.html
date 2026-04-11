@@ -14,7 +14,22 @@
   --anth:#5A616B;--text:#ECEEF1;--text2:#8A8F9B;--text3:#4E535D;
   --ok:#3DAA75;--warn:#D4882A;--info:#4A90D9;--purple:#7C5CBF;
 }
+html.light{
+  --bg:#F2F3F5;--surface:#FFFFFF;--elevated:#F8F9FA;--subtle:#E8EAED;
+  --b-faint:#E2E4E8;--b-def:#CDD1D6;--b-strong:#9DA3AE;
+  --text:#1A1D23;--text2:#4A5060;--text3:#7A8090;
+  --red-dim:rgba(234,81,90,0.06);--red-mid:rgba(234,81,90,0.15);
+}
 html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow-x:hidden}
+html.light .topnav{background:rgba(255,255,255,0.95)}
+html.light .grid-bg-where{opacity:.08}
+html.light .theme-red .face{background:rgba(234,81,90,.12);border-color:rgba(234,81,90,.5)}
+html.light .theme-info .face{background:rgba(74,144,217,.10);border-color:rgba(74,144,217,.45)}
+html.light .theme-ok .face{background:rgba(61,170,117,.10);border-color:rgba(61,170,117,.45)}
+html.light .theme-warn .face{background:rgba(212,136,42,.10);border-color:rgba(212,136,42,.45)}
+html.light .theme-anth .face{background:rgba(90,97,107,.12);border-color:rgba(90,97,107,.45)}
+html.light .theme-purple .face{background:rgba(124,92,191,.10);border-color:rgba(124,92,191,.45)}
+html.light .theme-future .face{background:rgba(90,97,107,.08);border-color:rgba(90,97,107,.3)}
 
 /* NAV */
 .topnav{position:sticky;top:0;z-index:300;background:rgba(12,14,16,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--b-faint);padding:0 2rem;display:flex;align-items:center;height:52px;gap:2rem}
@@ -579,9 +594,9 @@ function drawConnections() {
     {id:'node-cms',   color:'rgba(212,136,42,0.4)',  dash:'4,4', width:1.2},
     {id:'node-portals',color:'rgba(90,97,107,0.35)', dash:'3,5', width:1},
     {id:'node-mail',  color:'rgba(124,92,191,0.4)',  dash:'5,4', width:1.2},
-    {id:'node-ki',    color:'rgba(61,170,117,0.45)', dash:'4,3', width:1.5},
-    {id:'node-collab',color:'rgba(90,97,107,0.3)',   dash:'3,5', width:1},
-    {id:'node-future',color:'rgba(90,97,107,0.2)',   dash:'2,6', width:.8},
+    {id:'node-ki',    color:'rgba(61,170,117,0.6)', dash:'4,3', width:2},
+    {id:'node-collab',color:'rgba(90,97,107,0.5)',   dash:'3,5', width:1.5},
+    {id:'node-future',color:'rgba(90,97,107,0.4)',   dash:'2,6', width:1.2},
   ];
 
   const c = getCenter(center);
@@ -630,6 +645,13 @@ function drawConnections() {
 // Draw on load + resize
 window.addEventListener('load', () => { setTimeout(drawConnections, 300); });
 window.addEventListener('resize', drawConnections);
+
+// Theme detection from URL param
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top) document.querySelector('.topnav').style.display='none';
+})();
 </script>
 </body>
 </html>

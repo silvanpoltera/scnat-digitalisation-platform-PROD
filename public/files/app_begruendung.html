@@ -33,6 +33,14 @@
     --cluster-6:    rgba(124,92,191,0.80);
   }
 
+  html.light{
+    --bg-base:#F2F3F5;--bg-surface:#FFFFFF;--bg-elevated:#F8F9FA;--bg-subtle:#E8EAED;
+    --border-faint:#E2E4E8;--border-def:#CDD1D6;--border-strong:#9DA3AE;
+    --text-primary:#1A1D23;--text-sec:#4A5060;--text-ter:#7A8090;
+    --red-dim:rgba(234,81,90,0.06);--red-mid:rgba(234,81,90,0.15);
+  }
+  html.light .topnav{background:rgba(255,255,255,0.95)}
+
   html { background: var(--bg-base); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; }
 
   body { max-width: 960px; margin: 0 auto; padding: 3rem 2rem 6rem; }
@@ -496,5 +504,12 @@
   </p>
 </div>
 
+<script>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top){ var n=document.querySelector('.topnav'); if(n) n.style.display='none'; }
+})();
+</script>
 </body>
 </html>

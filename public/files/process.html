@@ -87,6 +87,13 @@
     </script>
     <!-- Process Script -->
     <script src="process.js"></script>
+<script>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('theme')==='light') document.documentElement.classList.add('light');
+  if(window.self !== window.top){ var n=document.querySelector('.topnav'); if(n) n.style.display='none'; }
+})();
+</script>
 </body>
 </html>
 

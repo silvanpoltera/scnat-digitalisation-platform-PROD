@@ -23,7 +23,8 @@
     --title-bg: rgba(12, 14, 16, 0.98);
 }
 
-.theme-bright {
+.theme-bright,
+html.light {
     --bg-dark: #F2F3F5;
     --bg-darker: #E8EAED;
     --text-primary: #1A1D21;
