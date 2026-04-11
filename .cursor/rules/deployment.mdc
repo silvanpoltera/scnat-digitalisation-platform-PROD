@@ -1,0 +1,69 @@
+---
+description: Production deployment workflow for scnat-portal-prod
+alwaysApply: true
+---
+
+# Deployment — SCNAT Digitalisierungsportal
+
+## Architecture
+
+- **Repo**: git@github.com:silvanpoltera/scnat-digitalisation-platform-PROD.git
+- **Live URL**: https://platform.poltis.ch
+- **VM**: Google Cloud, Ubuntu 22.04, 1 vCPU / 1 GB RAM + 2 GB Swap
+- **SSH**: `ssh silvanpoltera@34.148.41.234`
+- **App path on VM**: `/opt/scnat-portal-prod`
+- **Process manager**: PM2 (process name: `scnat-api`)
+- **Reverse proxy**: Nginx with SSL (Let's Encrypt, auto-renew)
+- **Backend**: Express on port 3001 (proxied via Nginx at `/api/`)
+- **Frontend**: Vite SPA served from `/opt/scnat-portal-prod/dist`
+
+## Deploy Command
+
+After committing and pushing to `origin/main`:
+
+```bash
+ssh silvanpoltera@34.148.41.234 "cd /opt/scnat-portal-prod && bash deploy.sh"
+```
+
+`deploy.sh` runs: `git pull`, `npm install`, `npm run build`, `pm2 restart scnat-api`.
+
+The build takes ~3 minutes due to limited VM RAM (swap is configured).
+
+## Security Rules — MANDATORY
+
+- **NEVER** commit or log secrets (`.env`, JWT_SECRET, passwords)
+- **NEVER** expose SSH keys, IPs, or credentials in code or comments
+- **NEVER** run `git push --force` on this repo
+- **NEVER** modify `.env` on the VM without explicit user approval
+- **NEVER** open additional ports on the VM firewall
+- **NEVER** disable or weaken SSL, CORS, or cookie security settings
+- Cookie config: `secure: true`, `sameSite: 'strict'`, `httpOnly: true`
+- CORS: restricted to `process.env.CORS_ORIGIN` (production domain only)
+- All API routes require authentication unless explicitly public
+
+## Verification After Deploy
+
+Run this to confirm everything is healthy:
+
+```bash
+ssh silvanpoltera@34.148.41.234 "pm2 status && curl -s -o /dev/null -w 'HTTPS: %{http_code}\n' https://platform.poltis.ch/ && curl -s https://platform.poltis.ch/api/auth/me"
+```
+
+Expected: PM2 `online`, HTTPS `200`, API returns `{"error":"Nicht authentifiziert"}`.
+
+## Local Development
+
+```bash
+cd scnat-portal-prod
+npm run dev:all        # Frontend (5173) + Backend (3001)
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `deploy.sh` | VM deployment script |
+| `server-setup.sh` | One-time VM provisioning |
+| `nginx.conf` | Reference Nginx config (live config managed by Certbot) |
+| `.env.example` | Environment variable template |
+| `data/*.json` | Application data (committed, used by both frontend and backend) |

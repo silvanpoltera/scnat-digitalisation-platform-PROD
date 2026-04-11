@@ -1,0 +1,32 @@
+---
+description: Security requirements for production code changes
+globs: server/**/*.js
+alwaysApply: false
+---
+
+# Backend Security Standards
+
+## Input Validation
+
+- Sanitize ALL user input before processing or storing
+- Validate request body fields exist and have correct types
+- Use parameterized queries / safe JSON operations only
+
+## Authorization
+
+- Every mutating endpoint MUST verify the user's JWT token
+- Admin-only routes MUST check `decoded.role === 'admin'`
+- Users must only access/modify their own data (prevent IDOR)
+
+## Cookie & Session
+
+- `httpOnly: true` — always, no exceptions
+- `secure: true` — required in production
+- `sameSite: 'strict'` — required in production
+- Never expose tokens in URL parameters or response bodies
+
+## Data Privacy
+
+- Never return `passwordHash` in API responses
+- Filter sensitive fields before sending user data
+- Log errors server-side only, never expose stack traces to clients
