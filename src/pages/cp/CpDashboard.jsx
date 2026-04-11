@@ -4,6 +4,7 @@ import {
   Calendar, Inbox, Users, BarChart3, MessageSquare,
   Monitor, ThumbsUp, ThumbsDown, Clock, AlertTriangle,
   CheckCircle2, Activity, TrendingUp, Sparkles, ArrowRight, GitPullRequest,
+  CalendarRange, Play, Pause, Eye, CircleDot,
 } from 'lucide-react';
 
 function StatCard({ label, value, icon: Icon, color = 'text-txt-tertiary', sub, to }) {
@@ -44,6 +45,7 @@ export default function CpDashboard() {
   const [themen, setThemen] = useState([]);
   const [votes, setVotes] = useState([]);
   const [changes, setChanges] = useState([]);
+  const [sprints, setSprints] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,9 +57,11 @@ export default function CpDashboard() {
       fetch('/api/schulungsthemen', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
       fetch('/api/software-votes', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
       fetch('/api/changes', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
-    ]).then(([ev, req, usr, mass, th, sv, ch]) => {
+      fetch('/api/sprints', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
+    ]).then(([ev, req, usr, mass, th, sv, ch, sp]) => {
       setEvents(ev); setRequests(req); setUsers(usr);
       setMassnahmen(mass); setThemen(th); setVotes(Array.isArray(sv) ? sv : []); setChanges(ch);
+      setSprints(Array.isArray(sp) ? sp : []);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -131,7 +135,8 @@ export default function CpDashboard() {
       </div>
 
       {/* Quick Stats Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <StatCard label="Sprints" value={sprints.length} icon={CalendarRange} color="text-scnat-orange" sub={`${sprints.filter(s => s.status === 'active').length} aktiv`} to="/cp/sprints" />
         <StatCard label="Events" value={eventStats.total} icon={Calendar} color="text-scnat-teal" sub={`${eventStats.upcoming} bevorstehend`} to="/cp/events" />
         <StatCard label="Anmeldungen" value={eventStats.totalRegs} icon={Users} color="text-scnat-green" sub={`${eventStats.fillRate}% Auslastung`} />
         <StatCard label="Anträge" value={requestStats.total} icon={Inbox} color="text-scnat-orange" sub={`${requestStats.offen} offen`} to="/cp/antraege" />
@@ -140,6 +145,109 @@ export default function CpDashboard() {
         <StatCard label="Changes" value={changeStats.total} icon={GitPullRequest} color="text-scnat-cyan" sub={`${changeStats.eingereicht} neu`} to="/cp/changes" />
         <StatCard label="Software-Votes" value={softwareStats.totalVotes} icon={Monitor} color="text-status-blue" sub={`${softwareStats.uniqueSoftware} Apps bewertet`} />
       </div>
+
+      {/* Sprint Overview */}
+      {sprints.length > 0 && (
+        <div className="bg-bg-surface border border-bd-faint rounded-sm p-5">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-sm font-heading font-semibold text-txt-primary flex items-center gap-2">
+              <CalendarRange className="w-4 h-4 text-scnat-orange" /> Sprint-Übersicht
+            </h3>
+            <Link to="/cp/sprints" className="text-xs text-scnat-red hover:text-scnat-red/80 transition-colors">Verwalten →</Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+            <div className="bg-status-blue/10 rounded-sm p-2 text-center">
+              <p className="text-base font-heading font-semibold text-status-blue">{sprints.filter(s => s.status === 'active').length}</p>
+              <p className="text-[9px] text-txt-tertiary">Aktiv</p>
+            </div>
+            <div className="bg-bg-elevated rounded-sm p-2 text-center">
+              <p className="text-base font-heading font-semibold text-txt-secondary">{sprints.filter(s => s.status === 'planned').length}</p>
+              <p className="text-[9px] text-txt-tertiary">Geplant</p>
+            </div>
+            <div className="bg-status-yellow/10 rounded-sm p-2 text-center">
+              <p className="text-base font-heading font-semibold text-status-yellow">{sprints.filter(s => s.status === 'review').length}</p>
+              <p className="text-[9px] text-txt-tertiary">Review</p>
+            </div>
+            <div className="bg-status-green/10 rounded-sm p-2 text-center">
+              <p className="text-base font-heading font-semibold text-status-green">{sprints.filter(s => s.status === 'completed').length}</p>
+              <p className="text-[9px] text-txt-tertiary">Abgeschlossen</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {sprints
+              .sort((a, b) => {
+                const order = { active: 0, review: 1, planned: 2, completed: 3 };
+                return (order[a.status] ?? 9) - (order[b.status] ?? 9);
+              })
+              .map(sp => {
+                const totalM = sp.massnahmen?.length || 0;
+                const avgProgress = totalM > 0
+                  ? Math.round(sp.massnahmen.reduce((s, m) => s + (m.progress || 0), 0) / totalM)
+                  : 0;
+                const doneCount = sp.massnahmen?.filter(m => m.status === 'done' || m.progress >= 100).length || 0;
+                const inArbeit = sp.massnahmen?.filter(m => m.status === 'in-arbeit').length || 0;
+                const startFmt = sp.startDate ? new Date(sp.startDate).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) : '';
+                const endFmt = sp.endDate ? new Date(sp.endDate).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit' }) : '';
+                const isActive = sp.status === 'active';
+                const isOverdue = sp.endDate && new Date(sp.endDate) < new Date() && sp.status === 'active';
+
+                return (
+                  <div key={sp.id} className={`rounded-sm border p-4 transition-colors ${
+                    isActive ? 'border-l-2 bg-bg-elevated/50' : 'border-bd-faint'
+                  }`} style={isActive ? { borderLeftColor: sp.clusterColor } : undefined}>
+                    <div className="flex items-start gap-3">
+                      <div
+                        className="mt-0.5 w-2.5 h-2.5 rounded-sm shrink-0"
+                        style={{ background: sp.clusterColor }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="text-sm font-medium text-txt-primary truncate">{sp.name}</span>
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-sm ${
+                            sp.status === 'active'    ? 'bg-status-blue/15 text-status-blue' :
+                            sp.status === 'review'    ? 'bg-status-yellow/15 text-status-yellow' :
+                            sp.status === 'completed' ? 'bg-status-green/15 text-status-green' :
+                            'bg-bg-elevated text-txt-tertiary'
+                          }`}>
+                            {sp.status === 'active' ? 'Aktiv' : sp.status === 'planned' ? 'Geplant' : sp.status === 'review' ? 'Review' : 'Fertig'}
+                          </span>
+                          {isOverdue && (
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-scnat-red/15 text-scnat-red">
+                              Überfällig
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-4 text-[11px] text-txt-tertiary mb-2.5">
+                          <span className="font-mono">{startFmt} → {endFmt}</span>
+                          <span className="capitalize">{sp.cluster}</span>
+                          <span>{totalM} Massnahmen</span>
+                          {inArbeit > 0 && <span className="text-status-blue">{inArbeit} in Arbeit</span>}
+                          {doneCount > 0 && <span className="text-status-green">{doneCount} fertig</span>}
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 h-1.5 bg-bg-base rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${avgProgress}%`,
+                                backgroundColor: avgProgress >= 80 ? 'var(--status-green)' : avgProgress >= 40 ? sp.clusterColor : 'var(--txt-tertiary)',
+                              }}
+                            />
+                          </div>
+                          <span className="text-[11px] font-mono text-txt-secondary w-10 text-right">{avgProgress}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
 
       {/* Detail Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
