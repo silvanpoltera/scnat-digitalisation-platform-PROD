@@ -5,12 +5,14 @@ import { ArrowLeft, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 const PAGES = {
   frame: { title: 'The Frame', sub: 'Strategische Einordnung', file: '/files/digitaler_rahmen.html' },
   reason: { title: 'The Reason Why', sub: 'Analyse & Begründung', file: '/files/app_begruendung.html' },
+  where: { title: 'Where', sub: 'Standort & Infrastruktur', file: '/files/where.html' },
   details: { title: 'The Details', sub: 'Technische Details · Cube', file: '/files/index.html' },
   recherche: { title: 'Recherche', sub: 'Infrastruktur & Sicherheit', file: '/files/recherche.html' },
   process: { title: 'Process', sub: 'Prinzipien & Roadmap', file: '/files/process.html' },
+  'how-built': { title: 'How it gets Built', sub: 'Tech Stack · Codex · PAI', file: '/files/how-built.html' },
 };
 
-const PAGE_ORDER = ['frame', 'reason', 'details', 'recherche', 'process'];
+const PAGE_ORDER = ['frame', 'reason', 'where', 'details', 'recherche', 'process', 'how-built'];
 
 export default function CpAdminStuffView() {
   const { page } = useParams();

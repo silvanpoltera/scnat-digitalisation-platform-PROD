@@ -5,13 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Die Analyse – Was sagen die Zahlen? SCNAT Digitalisierung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>
-(function(){
-  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
-  sync();
-  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
-})();
-</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -38,23 +31,6 @@
     --cluster-4:    rgba(61,170,117,0.80);
     --cluster-5:    rgba(212,136,42,0.80);
     --cluster-6:    rgba(124,92,191,0.80);
-  }
-
-  .theme-bright {
-    --bg-base:      #F2F3F5;
-    --bg-surface:   #FFFFFF;
-    --bg-elevated:  #F8F9FA;
-    --bg-subtle:    #EEF0F2;
-    --border-faint: #E2E4E8;
-    --border-def:   #CDD1D6;
-    --border-strong:#5A616B;
-    --red-dim:      rgba(234,81,90,0.08);
-    --text-primary: #1A1D21;
-    --text-sec:     #5A616B;
-    --text-ter:     #8A8F9B;
-    --success:      #1B8A4A;
-    --warning:      #B27308;
-    --info:         #2471A3;
   }
 
   html { background: var(--bg-base); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; }
@@ -166,7 +142,16 @@
     .stats-grid { grid-template-columns: 1fr; }
     .cat-grid, .mapping-grid { grid-template-columns: 1fr; }
     .visual-row { flex-direction: column; gap: 1.5rem; }
-    .bar-label { width: 160px; font-size: .75rem; }
+    .bar-label { width: 140px; font-size: .73rem; }
+    .bar-row { gap: .6rem; }
+    body { padding: 2rem 1.25rem 4rem; }
+    .stat-cell { padding: 1.5rem 1.25rem; }
+    .stat-number { font-size: 2.4rem; }
+    .arg-card { grid-template-columns: 1fr; gap: .5rem; }
+    .arg-num { display: none; }
+    .proc-table { font-size: .75rem; }
+    .proc-table th, .proc-table td { padding: .6rem .75rem; }
+    h1 { font-size: 2rem; }
   }
 </style>
 </head>

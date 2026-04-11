@@ -5,13 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Der grosse Rahmen – SCNAT Digitalisierung</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>
-(function(){
-  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
-  sync();
-  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
-})();
-</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -34,23 +27,6 @@
   --warn:#D4882A;
   --info:#4A90D9;
   --purple:#7C5CBF;
-}
-.theme-bright{
-  --bg:#F2F3F5;
-  --surface:#FFFFFF;
-  --elevated:#F8F9FA;
-  --subtle:#EEF0F2;
-  --b-faint:#E2E4E8;
-  --b-def:#CDD1D6;
-  --b-strong:#5A616B;
-  --red-dim:rgba(234,81,90,0.08);
-  --red-mid:rgba(234,81,90,0.18);
-  --text:#1A1D21;
-  --text2:#5A616B;
-  --text3:#8A8F9B;
-  --ok:#1B8A4A;
-  --warn:#B27308;
-  --info:#2471A3;
 }
 
 html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
@@ -217,12 +193,30 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
 .nav-dot:hover{background:var(--text2)}
 
 @media(max-width:640px){
+  .floatnav{display:none}
+  .hero{padding:3rem 1.25rem 1.5rem}
+  .section{padding:3rem 1.25rem}
   .tension-grid{grid-template-columns:1fr}
   .bridge-grid{grid-template-columns:1fr;gap:.75rem}
   .bridge-arrow{transform:rotate(90deg)}
-  .risk-row{grid-template-columns:140px 1fr 50px}
-  .risk-label{font-size:.75rem}
-  .floatnav{display:none}
+  .risk-row{grid-template-columns:130px 1fr 60px}
+  .risk-label{font-size:.74rem}
+  .stack-scene{height:260px}
+  .stack{height:280px}
+  .stack-layer{height:52px}
+  .stack-layer.l1{bottom:0}
+  .stack-layer.l2{bottom:52px}
+  .stack-layer.l3{bottom:104px}
+  .stack-layer.l4{bottom:156px}
+  .stack-layer.l5{bottom:208px}
+  .layer-title{font-size:.8rem}
+  .layer-tag{font-size:9px;padding:1px 5px}
+  .problems{border-radius:4px}
+  .problem-header{gap:.75rem;padding:1rem 1.25rem}
+  .problem-title{font-size:.88rem}
+  .problem-body{padding:0 1.25rem}
+  .problem-item.open .problem-body{padding:0 1.25rem 1.25rem}
+  .final{padding:1.5rem}
 }
 </style>
 </head>

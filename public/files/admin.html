@@ -269,9 +269,25 @@ html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 }
 
 @media(max-width:768px){
-  .card{grid-template-columns:1fr}
-  .card-visual{width:100%;border-left:none;border-top:1px solid var(--b-faint);min-height:200px}
+  .topnav-brand{display:none}
   .topnav-badge{display:none}
+  .topnav-links{overflow-x:auto}
+  .topnav-link{padding:.4rem .5rem;font-size:.72rem;white-space:nowrap}
+  .hero{padding:3rem 1.25rem 1.5rem}
+  .cards{margin:2rem 1rem 0;border-radius:5px}
+  .card{grid-template-columns:1fr}
+  .card-visual{width:100%;border-left:none;border-top:1px solid var(--b-faint);min-height:180px;padding:1.5rem}
+  .card-body{padding:2rem 1.5rem 1.5rem}
+  .card-action{flex-wrap:wrap;gap:.5rem}
+  .cube-wrap{width:140px;height:140px}
+  .cube3d{width:110px;height:110px}
+  .cube-face{width:110px;height:110px}
+  .cube-face.front{transform:translateZ(55px)}
+  .cube-face.back {transform:rotateY(180deg) translateZ(55px)}
+  .cube-face.right{transform:rotateY(90deg)  translateZ(55px)}
+  .cube-face.left {transform:rotateY(-90deg) translateZ(55px)}
+  .cube-face.top  {transform:rotateX(90deg)  translateZ(55px)}
+  .cube-face.bot  {transform:rotateX(-90deg) translateZ(55px)}
 }
 </style>
 </head>
@@ -287,6 +303,8 @@ html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <a href="#" class="topnav-link">Massnahmen</a>
     <a href="#" class="topnav-link">KI</a>
     <a href="#" class="topnav-link">Schulungen</a>
+    <a href="where.html" class="topnav-link">Where</a>
+    <a href="how-built.html" class="topnav-link">How it gets Built</a>
     <a href="#" class="topnav-link active">Admin Stuff</a>
   </div>
   <span class="topnav-badge">Admin · Silvan</span>
@@ -386,10 +404,57 @@ html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
-  <!-- CARD 3: THE DETAILS -->
+  <!-- CARD 3: WHERE -->
   <div class="card">
     <div class="card-body">
-      <div class="card-num">03 · Technische Details</div>
+      <div class="card-num">03 · Systemlandschaft</div>
+      <div class="card-title">Where does<br>it <em>fit?</em></div>
+      <div class="card-sub">Plattform-Architektur · Integrationen · Systemlandschaft</div>
+      <p class="card-desc">
+        Die Plattform ist kein Silo. Sieben Systeme, eine Karte – interaktiv als 3D-Würfel-Landschaft. Zeigt wo die Plattform sitzt, was sie verbindet, was geplant ist (Jira, Service Desk) und was noch kommt.
+      </p>
+      <div class="card-action">
+        <a href="where.html" class="btn btn-primary">
+          Öffnen <span class="btn-arrow">→</span>
+        </a>
+        <a href="where.html#integrations" class="btn btn-ghost">
+          Zu den Integrationen
+        </a>
+      </div>
+    </div>
+    <div class="card-visual">
+      <!-- Mini 3D orbit preview -->
+      <div style="position:relative;width:200px;height:180px;perspective:400px">
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:rgba(234,81,90,0.12);border:1px solid rgba(234,81,90,0.5);border-radius:4px;display:flex;align-items:center;justify-content:center;z-index:2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(234,81,90,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><line x1="6" y1="6.5" x2="10.5" y2="10.5"/><line x1="18" y1="6.5" x2="13.5" y2="10.5"/><line x1="6" y1="17.5" x2="10.5" y2="13.5"/><line x1="18" y1="17.5" x2="13.5" y2="13.5"/></svg>
+        </div>
+        <!-- Orbiting mini cubes -->
+        <div style="position:absolute;left:12px;top:20px;width:42px;height:42px;background:rgba(74,144,217,0.08);border:1px solid rgba(74,144,217,0.4);border-radius:3px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(74,144,217,0.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <div style="position:absolute;right:14px;top:18px;width:42px;height:42px;background:rgba(212,136,42,0.08);border:1px solid rgba(212,136,42,0.4);border-radius:3px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(212,136,42,0.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <div style="position:absolute;left:18px;bottom:18px;width:42px;height:42px;background:rgba(61,170,117,0.07);border:1px solid rgba(61,170,117,0.4);border-radius:3px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(61,170,117,0.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+        </div>
+        <div style="position:absolute;right:18px;bottom:18px;width:42px;height:42px;background:rgba(124,92,191,0.07);border:1px solid rgba(124,92,191,0.4);border-radius:3px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(124,92,191,0.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <!-- Lines -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="100" y1="90" x2="33" y2="41" stroke="rgba(74,144,217,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="100" y1="90" x2="167" y2="39" stroke="rgba(212,136,42,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="100" y1="90" x2="39" y2="141" stroke="rgba(61,170,117,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="100" y1="90" x2="161" y2="141" stroke="rgba(124,92,191,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: THE DETAILS -->
+  <div class="card">    <div class="card-body">
+      <div class="card-num">04 · Technische Details</div>
       <div class="card-title">The <em>Details</em></div>
       <div class="card-sub">SCNAT Infrastruktur · Souveränität · Betrieb · Publishing</div>
       <p class="card-desc">
@@ -459,6 +524,30 @@ html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           </div>
         </div>
         <p style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-top:.75rem">Hover · 5 Themenblöcke</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5: HOW IT GETS BUILT -->
+  <div class="card">
+    <div class="card-body">
+      <div class="card-num">05 · Technologie & Prozess</div>
+      <div class="card-title">How it gets<br><em>Built</em></div>
+      <div class="card-sub">Tech Stack · Codex · The Super Mini PAI</div>
+      <p class="card-desc">Kein externes Team. Kein klassisches Projekt. Struktur und Code mit OpenAI Codex in Cursor. Interne Dokumente datenschutzkonform mit einer eigens entwickelten lokalen KI-Pipeline – The Super Mini PAI auf Qwen2.5.</p>
+      <div class="card-action">
+        <a href="how-built.html" class="btn btn-primary">Öffnen <span class="btn-arrow">→</span></a>
+        <a href="how-built.html" class="btn btn-ghost">PAI Pipeline</a>
+      </div>
+    </div>
+    <div class="card-visual">
+      <div style="display:flex;flex-direction:column;gap:6px;width:100%;max-width:240px">
+        <div style="height:32px;border-radius:3px;background:rgba(61,170,117,0.08);border:1px solid rgba(61,170,117,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(61,170,117,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg><span style="font-size:.7rem;color:var(--text2)">Design · Tailwind · SCNAT CD</span></div>
+        <div style="height:32px;border-radius:3px;background:rgba(124,92,191,0.08);border:1px solid rgba(124,92,191,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(124,92,191,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span style="font-size:.7rem;color:var(--text2)">UI · React 18 · Server Components</span></div>
+        <div style="height:32px;border-radius:3px;background:rgba(74,144,217,0.08);border:1px solid rgba(74,144,217,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(74,144,217,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span style="font-size:.7rem;color:var(--text2)">API Routes · Next.js · TypeScript</span></div>
+        <div style="height:32px;border-radius:3px;background:rgba(234,81,90,0.08);border:1px solid rgba(234,81,90,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(234,81,90,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span style="font-size:.7rem;color:var(--text2)">Auth · NextAuth v5 · bcrypt</span></div>
+        <div style="height:32px;border-radius:3px;background:rgba(212,136,42,0.08);border:1px solid rgba(212,136,42,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(212,136,42,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span style="font-size:.7rem;color:var(--text2)">Data · JSON Files · Node.js fs</span></div>
+        <div style="height:32px;border-radius:3px;background:rgba(90,97,107,0.10);border:1px solid rgba(90,97,107,0.35);display:flex;align-items:center;padding:0 .9rem;gap:.6rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(90,97,107,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg><span style="font-size:.7rem;color:var(--text2)">Hosting · On-Prem / VPS</span></div>
       </div>
     </div>
   </div>

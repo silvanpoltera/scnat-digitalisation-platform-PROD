@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen } from 'lucide-react';
+import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench } from 'lucide-react';
 
 const CARDS = [
   {
@@ -31,6 +31,18 @@ const CARDS = [
   },
   {
     num: '03',
+    section: 'Standort & Infrastruktur',
+    title: 'Where',
+    sub: 'Positionierung · Verortung · Kontext',
+    desc: 'Wo steht die SCNAT im digitalen Raum? Infrastruktur-Landkarte, Organisationsverortung und strategische Positionierung – interaktiv dargestellt.',
+    primary: { to: '/cp/admin-stuff/where', label: 'Öffnen' },
+    visual: 'none',
+    quickIcon: MapPin,
+    quickColor: 'text-scnat-teal',
+    accentBg: 'bg-scnat-teal/8',
+  },
+  {
+    num: '04',
     section: 'Technische Details',
     title: 'The Details',
     sub: 'Sicherheit · Betrieb · Publishing · Governance',
@@ -51,6 +63,18 @@ const CARDS = [
     quickIcon: Box,
     quickColor: 'text-status-green',
     accentBg: 'bg-status-green/8',
+  },
+  {
+    num: '05',
+    section: 'Technologie & Prozess',
+    title: 'How it gets Built',
+    sub: 'Tech Stack · Codex · The Super Mini PAI',
+    desc: 'Kein externes Team. Kein klassisches Projekt. Struktur und Code mit OpenAI Codex in Cursor. Interne Dokumente datenschutzkonform mit einer eigens entwickelten lokalen KI-Pipeline – The Super Mini PAI auf Qwen2.5.',
+    primary: { to: '/cp/admin-stuff/how-built', label: 'Öffnen' },
+    visual: 'stack',
+    quickIcon: Wrench,
+    quickColor: 'text-status-blue',
+    accentBg: 'bg-status-blue/8',
   },
 ];
 
@@ -198,10 +222,54 @@ function CubeVisual() {
   );
 }
 
+function StackVisual() {
+  const STACK_LAYERS = [
+    { color: 'rgba(61,170,117,', label: 'Design · Tailwind' },
+    { color: 'rgba(124,92,191,', label: 'UI · React 18' },
+    { color: 'rgba(74,144,217,', label: 'API · Express · Node' },
+    { color: 'rgba(234,81,90,', label: 'Auth · JWT · bcrypt' },
+    { color: 'rgba(212,136,42,', label: 'Data · JSON · fs' },
+    { color: 'rgba(90,97,107,', label: 'Hosting · VPS' },
+  ];
+  return (
+    <div className="flex flex-col gap-1 w-full max-w-[200px]">
+      {STACK_LAYERS.map((l, i) => (
+        <div
+          key={i}
+          className="h-6 rounded-sm flex items-center px-2 gap-1.5 text-[9px] text-txt-secondary"
+          style={{
+            background: l.color + '0.08)',
+            border: `1px solid ${l.color}0.35)`,
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: l.color + '0.8)' }} />
+          <span className="truncate">{l.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function WhereVisual() {
+  return (
+    <div className="flex items-center justify-center">
+      <svg width="120" height="100" viewBox="0 0 120 100" fill="none">
+        <circle cx="60" cy="38" r="24" stroke="rgba(234,81,90,0.3)" strokeWidth="1" strokeDasharray="3 3" />
+        <circle cx="60" cy="38" r="5" fill="rgba(234,81,90,0.6)" />
+        <path d="M60 62 L60 90" stroke="rgba(90,97,107,0.4)" strokeWidth="1" />
+        <rect x="20" y="88" width="80" height="8" rx="2" fill="rgba(90,97,107,0.08)" stroke="rgba(90,97,107,0.2)" strokeWidth="1" />
+        <text x="60" y="94" textAnchor="middle" fill="rgba(138,143,155,0.8)" fontSize="6" fontFamily="JetBrains Mono, monospace">SCNAT · Infrastruktur</text>
+      </svg>
+    </div>
+  );
+}
+
 function CardVisual({ type }) {
   if (type === 'layers') return <LayersVisual />;
   if (type === 'stats') return <StatsVisual />;
   if (type === 'cube') return <CubeVisual />;
+  if (type === 'stack') return <StackVisual />;
+  if (type === 'none') return <WhereVisual />;
   return null;
 }
 
@@ -214,7 +282,7 @@ export default function CpAdminStuff() {
           <h2 className="text-xl font-heading font-semibold text-txt-primary flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-scnat-red" /> Admin Stuff
           </h2>
-          <p className="text-xs text-txt-secondary mt-0.5">3 Dokumente · Strategie, Begründung und technische Details</p>
+          <p className="text-xs text-txt-secondary mt-0.5">5 Dokumente · Strategie, Begründung, Standort, Details und Technologie</p>
         </div>
       </div>
 
