@@ -109,7 +109,7 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
                   >
                     <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
                     <span className="text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
-                    <span className="font-mono text-[8px] bg-black/30 text-txt-secondary px-1.5 py-0.5 rounded-sm whitespace-nowrap">{sp.massnahmen.length} M</span>
+                    <span className="font-mono text-[8px] bg-bg-base/40 text-txt-secondary px-1.5 py-0.5 rounded-sm whitespace-nowrap">{sp.massnahmen.length} M</span>
                   </div>
                 </div>
               </div>

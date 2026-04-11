@@ -113,7 +113,7 @@ export default function HowBuilt() {
   return (
     <div className="min-h-screen relative">
       <style>{`
-        .grid-bg-how{position:fixed;inset:0;background-image:linear-gradient(var(--b-faint,#1E2124) 1px,transparent 1px),linear-gradient(90deg,var(--b-faint,#1E2124) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 0%,transparent 70%);pointer-events:none;z-index:0;opacity:.4}
+        .grid-bg-how{position:fixed;inset:0;background-image:linear-gradient(var(--border-faint,#1E2124) 1px,transparent 1px),linear-gradient(90deg,var(--border-faint,#1E2124) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 0%,transparent 70%);pointer-events:none;z-index:0;opacity:.4}
         .glow-how{position:fixed;top:0;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse at 50% 0%,rgba(74,144,217,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
         .build-face{position:absolute;width:240px;height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;border:1px solid;backface-visibility:hidden}
         @media(max-width:768px){

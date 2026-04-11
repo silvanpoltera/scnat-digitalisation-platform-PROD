@@ -19,6 +19,7 @@ const CLUSTER_SHORT = {
 export default function GlStatsBar({ sprints }) {
   const allMassnahmen = sprints.flatMap(s => s.massnahmen);
   const activeCount = sprints.filter(s => s.status === 'active').length;
+  const plannedCount = allMassnahmen.filter(m => m.status === 'geplant').length;
   const runningCount = allMassnahmen.filter(m => m.status === 'in-arbeit').length;
   const reviewCount = allMassnahmen.filter(m => m.status === 'review').length;
   const doneCount = allMassnahmen.filter(m => m.status === 'fertig').length;
@@ -39,6 +40,7 @@ export default function GlStatsBar({ sprints }) {
     <div className="sticky top-0 z-[100] bg-bg-base/97 backdrop-blur-md border-b border-bd-faint">
       <div className="flex items-center gap-0 px-2 sm:px-4 md:px-8 py-2 sm:py-3 overflow-x-auto scrollbar-hide">
         <StatItem dotColor="#0098DA" value={activeCount} label="Aktive Sprints" />
+        <StatItem dotColor="#4E535D" value={plannedCount} label="Geplant" />
         <StatItem dotColor="#F07800" value={runningCount} label="In Arbeit" />
         <StatItem dotColor="rgba(240,120,0,.7)" value={reviewCount} label="In Review" />
         <StatItem dotColor="#008770" value={doneCount} label="Abgeschl." />
@@ -47,7 +49,7 @@ export default function GlStatsBar({ sprints }) {
         <div className="hidden lg:flex gap-2.5 items-center pl-5 ml-auto">
           {clusterBars.map(cb => (
             <div key={cb.key} className="flex flex-col items-center gap-1">
-              <div className="w-8 h-7 rounded-sm overflow-hidden flex items-end" style={{ background: 'var(--b-faint, #1E2124)' }}>
+              <div className="w-8 h-7 rounded-sm overflow-hidden flex items-end bg-bd-faint">
                 <div className="w-full rounded-sm transition-all duration-500" style={{ height: `${Math.max(cb.pct, 4)}%`, background: cb.color }} />
               </div>
               <span className="font-mono text-[8px] tracking-wide text-txt-tertiary">{cb.label}</span>

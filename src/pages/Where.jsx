@@ -251,7 +251,7 @@ export default function Where() {
   return (
     <div className="min-h-screen relative">
       <style>{`
-        .grid-bg-where{position:fixed;inset:0;background-image:linear-gradient(var(--b-faint,#1E2124) 1px,transparent 1px),linear-gradient(90deg,var(--b-faint,#1E2124) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 0%,transparent 75%);pointer-events:none;z-index:0;opacity:.4}
+        .grid-bg-where{position:fixed;inset:0;background-image:linear-gradient(var(--border-faint,#1E2124) 1px,transparent 1px),linear-gradient(90deg,var(--border-faint,#1E2124) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 0%,transparent 75%);pointer-events:none;z-index:0;opacity:.4}
         .glow-where{position:fixed;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse at 50% 0%,rgba(234,81,90,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
         @keyframes floatCube{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
         @keyframes floatCubeCenter{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}

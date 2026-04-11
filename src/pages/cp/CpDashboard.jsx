@@ -156,10 +156,11 @@ export default function CpDashboard() {
             <Link to="/cp/sprints" className="text-xs text-scnat-red hover:text-scnat-red/80 transition-colors">Verwalten →</Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+          {/* Sprint-Status */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
             <div className="bg-status-blue/10 rounded-sm p-2 text-center">
               <p className="text-base font-heading font-semibold text-status-blue">{sprints.filter(s => s.status === 'active').length}</p>
-              <p className="text-[9px] text-txt-tertiary">Aktiv</p>
+              <p className="text-[9px] text-txt-tertiary">Aktive Sprints</p>
             </div>
             <div className="bg-bg-elevated rounded-sm p-2 text-center">
               <p className="text-base font-heading font-semibold text-txt-secondary">{sprints.filter(s => s.status === 'planned').length}</p>
@@ -173,6 +174,31 @@ export default function CpDashboard() {
               <p className="text-base font-heading font-semibold text-status-green">{sprints.filter(s => s.status === 'completed').length}</p>
               <p className="text-[9px] text-txt-tertiary">Abgeschlossen</p>
             </div>
+          </div>
+
+          {/* Massnahmen-Status */}
+          <p className="text-[10px] font-mono text-txt-tertiary mb-2">Massnahmen</p>
+          <div className="grid grid-cols-5 gap-2 mb-5">
+            {(() => {
+              const allM = sprints.flatMap(s => s.massnahmen || []);
+              const geplant = allM.filter(m => m.status === 'geplant').length;
+              const inArbeit = allM.filter(m => m.status === 'in-arbeit').length;
+              const review = allM.filter(m => m.status === 'review').length;
+              const fertig = allM.filter(m => m.status === 'fertig').length;
+              const total = allM.length;
+              return [
+                { v: total, l: 'Total', c: 'text-txt-primary', bg: 'bg-bg-elevated' },
+                { v: geplant, l: 'Geplant', c: 'text-txt-secondary', bg: 'bg-bg-elevated' },
+                { v: inArbeit, l: 'In Arbeit', c: 'text-status-blue', bg: 'bg-status-blue/10' },
+                { v: review, l: 'Review', c: 'text-status-yellow', bg: 'bg-status-yellow/10' },
+                { v: fertig, l: 'Fertig', c: 'text-status-green', bg: 'bg-status-green/10' },
+              ].map((s, i) => (
+                <div key={i} className={`${s.bg} rounded-sm p-2 text-center`}>
+                  <p className={`text-sm font-heading font-semibold ${s.c}`}>{s.v}</p>
+                  <p className="text-[8px] text-txt-tertiary">{s.l}</p>
+                </div>
+              ));
+            })()}
           </div>
 
           <div className="space-y-3">
