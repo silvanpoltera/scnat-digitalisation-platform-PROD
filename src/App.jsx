@@ -39,6 +39,11 @@ import CpAdminStuff from './pages/cp/CpAdminStuff';
 import CpAdminStuffView from './pages/cp/CpAdminStuffView';
 import CpInbox from './pages/cp/CpInbox';
 import CpSichtbarkeit from './pages/cp/CpSichtbarkeit';
+import Sprints from './pages/Sprints';
+import Where from './pages/Where';
+import HowBuilt from './pages/HowBuilt';
+import CpSprints from './pages/cp/CpSprints';
+import CpSprintEditor from './pages/cp/CpSprintEditor';
 
 function App() {
   return (
@@ -64,6 +69,9 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/faqs" element={<Faqs />} />
             <Route path="/glossar" element={<Glossar />} />
+            <Route path="/sprints" element={<Sprints />} />
+            <Route path="/where" element={<Where />} />
+            <Route path="/how-built" element={<HowBuilt />} />
             <Route path="*" element={<NotFound />} />
           </Route>
 
@@ -84,6 +92,8 @@ function App() {
             <Route path="/cp/sichtbarkeit" element={<CpSichtbarkeit />} />
             <Route path="/cp/admin-stuff" element={<CpAdminStuff />} />
             <Route path="/cp/admin-stuff/:page" element={<CpAdminStuffView />} />
+            <Route path="/cp/sprints" element={<CpSprints />} />
+            <Route path="/cp/sprints/:id" element={<CpSprintEditor />} />
           </Route>
         </Routes>
         </NotificationProvider>

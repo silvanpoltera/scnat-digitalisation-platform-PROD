@@ -4,7 +4,7 @@ import {
   Home, Target, Layers, Monitor, Brain, GitBranch,
   Users, HelpCircle, BookOpen, BarChart3, GraduationCap,
   LogOut, Search, Settings, X, UserCircle, Bell,
-  ChevronsLeft, ChevronsRight, Sun, Moon,
+  ChevronsLeft, ChevronsRight, Sun, Moon, CalendarRange,
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import SearchModal from './SearchModal';
@@ -19,6 +19,7 @@ const navItems = [
   { label: 'Strategie', path: '/strategie', icon: Target },
   { label: 'Handlungsfelder', path: '/handlungsfelder', icon: Layers },
   { label: 'Massnahmen', path: '/massnahmen', icon: BarChart3 },
+  { label: 'Sprints', path: '/sprints', icon: CalendarRange },
   { label: 'Software & Co', path: '/systemlandschaft', icon: Monitor },
   { label: 'KI', path: '/ki-hub', icon: Brain },
   { label: 'Schulungen', path: '/schulungen', icon: GraduationCap },

@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard, FileText, Calendar, Inbox, Users,
   BarChart3, MessageSquare, Brain, Database, ArrowLeft, LogOut, Menu, X, GitPullRequest,
-  Radio, Newspaper, FolderOpen, ChevronsLeft, ChevronsRight, Sun, Moon, Megaphone, Eye,
+  Radio, Newspaper, FolderOpen, ChevronsLeft, ChevronsRight, Sun, Moon, Megaphone, Eye, CalendarRange,
 } from 'lucide-react';
 import ScnatLogo from './ScnatLogo';
 import { ScnatMark } from './ScnatLogo';
@@ -28,6 +28,7 @@ const cpNavItems = [
   { label: 'Users', path: '/cp/users', icon: Users },
   { label: 'Changes', path: '/cp/changes', icon: GitPullRequest, badgeKey: 'changes' },
   { label: 'Massnahmen', path: '/cp/massnahmen', icon: BarChart3 },
+  { label: 'Sprints', path: '/cp/sprints', icon: CalendarRange },
   { label: 'Themen', path: '/cp/themen', icon: MessageSquare, badgeKey: 'themen' },
   { label: 'KI', path: '/cp/ki', icon: Brain },
   { label: 'SCNAT DB', path: '/cp/scnat-db', icon: Database },
