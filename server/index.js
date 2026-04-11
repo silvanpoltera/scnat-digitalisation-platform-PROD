@@ -22,6 +22,7 @@ import liveInfosRoutes from './routes/live-infos.js';
 import newsRoutes from './routes/news.js';
 import notificationsRoutes from './routes/notifications.js';
 import inboxRoutes from './routes/inbox.js';
+import visibilityRoutes from './routes/visibility.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -96,6 +97,7 @@ app.use('/api/live-infos', liveInfosRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/inbox', inboxRoutes);
+app.use('/api/visibility', visibilityRoutes);
 
 // ── 404 catch-all for unknown API routes ────────────────────────────
 app.use((req, res, next) => {

@@ -38,6 +38,7 @@ import CpNews from './pages/cp/CpNews';
 import CpAdminStuff from './pages/cp/CpAdminStuff';
 import CpAdminStuffView from './pages/cp/CpAdminStuffView';
 import CpInbox from './pages/cp/CpInbox';
+import CpSichtbarkeit from './pages/cp/CpSichtbarkeit';
 
 function App() {
   return (
@@ -80,6 +81,7 @@ function App() {
             <Route path="/cp/news" element={<CpNews />} />
             <Route path="/cp/nachrichten" element={<CpInbox />} />
             <Route path="/cp/scnat-db" element={<CpScnatDb />} />
+            <Route path="/cp/sichtbarkeit" element={<CpSichtbarkeit />} />
             <Route path="/cp/admin-stuff" element={<CpAdminStuff />} />
             <Route path="/cp/admin-stuff/:page" element={<CpAdminStuffView />} />
           </Route>
