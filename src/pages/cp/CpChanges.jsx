@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2, MessageSquare, Send } from 'lucide-react';
+import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2, MessageSquare, Send, ListChecks, Rocket } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'eingereicht', label: 'Eingereicht', color: 'bg-status-yellow/15 text-status-yellow' },
@@ -21,6 +21,13 @@ const WIDERSTAND_COLORS = {
   hoch: 'text-scnat-red',
 };
 
+const PRIO_OPTIONS = [
+  { value: 'A', label: 'Quick Win' },
+  { value: 'B', label: 'Wichtig & machbar' },
+  { value: 'C', label: 'Strategisch' },
+  { value: 'D', label: 'Zurückstellen' },
+];
+
 export default function CpChanges() {
   const [changes, setChanges] = useState([]);
   const [massnahmen, setMassnahmen] = useState([]);
@@ -28,6 +35,9 @@ export default function CpChanges() {
   const [editData, setEditData] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [convertingId, setConvertingId] = useState(null);
+  const [convertForm, setConvertForm] = useState({});
+  const [convertBusy, setConvertBusy] = useState(false);
 
   const load = () => {
     Promise.all([
@@ -84,6 +94,52 @@ export default function CpChanges() {
     setReplyingTo(null);
     setReplyText('');
     load();
+  };
+
+  const startConvert = (change) => {
+    setConvertingId(change.id);
+    setConvertForm({
+      titel: change.titel,
+      beschreibung: change.beschreibung,
+      cluster: change.cluster || '',
+      prioritaet: 'B',
+      wirkung: 5,
+      aufwand: 5,
+      tags: [],
+      scnat_db: false,
+      scnat_portal: false,
+      start_empfohlen: false,
+    });
+  };
+
+  const handleConvert = async (changeId) => {
+    if (!convertForm.titel?.trim()) return;
+    setConvertBusy(true);
+    try {
+      const prio = PRIO_OPTIONS.find(p => p.value === convertForm.prioritaet);
+      const res = await fetch('/api/massnahmen', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          ...convertForm,
+          prioritaet_label: prio?.label || '',
+          status: 'geplant',
+        }),
+      });
+      const newM = await res.json();
+      await fetch(`/api/changes/${changeId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: 'angenommen', massnahmeId: newM.id }),
+      });
+      setConvertingId(null);
+      setConvertForm({});
+      load();
+    } finally {
+      setConvertBusy(false);
+    }
   };
 
   const getStatusStyle = (status) => STATUS_OPTIONS.find(s => s.value === status)?.color || 'bg-bg-elevated text-txt-secondary';
@@ -232,13 +288,25 @@ export default function CpChanges() {
                             className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
                           />
                         </div>
-                        <div className="flex items-center gap-2 mt-3">
+                        <div className="flex items-center gap-2 mt-3 flex-wrap">
                           {isDirty && (
                             <button
                               onClick={() => handleSave(c)}
                               className="flex items-center gap-1 bg-status-green/15 text-status-green text-xs px-3 py-1.5 rounded-sm hover:bg-status-green/25 transition-colors"
                             >
                               <Save className="w-3 h-3" /> Speichern
+                            </button>
+                          )}
+                          {!c.massnahmeId && (
+                            <button
+                              onClick={() => convertingId === c.id ? setConvertingId(null) : startConvert(c)}
+                              className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-sm transition-colors ${
+                                convertingId === c.id
+                                  ? 'bg-scnat-red/15 text-scnat-red'
+                                  : 'bg-status-blue/15 text-status-blue hover:bg-status-blue/25'
+                              }`}
+                            >
+                              <Rocket className="w-3 h-3" /> {convertingId === c.id ? 'Abbrechen' : 'Zur Massnahme machen'}
                             </button>
                           )}
                           <button
@@ -254,6 +322,106 @@ export default function CpChanges() {
                             <Trash2 className="w-3 h-3" /> Löschen
                           </button>
                         </div>
+
+                        {/* Convert to Massnahme form */}
+                        {convertingId === c.id && (
+                          <div className="mt-3 bg-status-blue/5 border border-status-blue/20 rounded-sm p-4 space-y-3">
+                            <div className="flex items-center gap-2 mb-1">
+                              <ListChecks className="w-4 h-4 text-status-blue" />
+                              <span className="text-xs font-heading font-semibold text-txt-primary">Neue Massnahme aus Change-Vorschlag</span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div className="sm:col-span-2">
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Titel</label>
+                                <input
+                                  value={convertForm.titel || ''}
+                                  onChange={e => setConvertForm(f => ({ ...f, titel: e.target.value }))}
+                                  className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Beschreibung</label>
+                                <textarea
+                                  value={convertForm.beschreibung || ''}
+                                  onChange={e => setConvertForm(f => ({ ...f, beschreibung: e.target.value }))}
+                                  rows={2}
+                                  className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Cluster</label>
+                                <select
+                                  value={convertForm.cluster || ''}
+                                  onChange={e => setConvertForm(f => ({ ...f, cluster: e.target.value }))}
+                                  className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                                >
+                                  <option value="">– Cluster wählen –</option>
+                                  {CLUSTER_OPTIONS.filter(Boolean).map(cl => <option key={cl} value={cl}>{cl}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Priorität</label>
+                                <select
+                                  value={convertForm.prioritaet || 'B'}
+                                  onChange={e => setConvertForm(f => ({ ...f, prioritaet: e.target.value }))}
+                                  className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                                >
+                                  {PRIO_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.value} – {p.label}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung (1–10)</label>
+                                <input
+                                  type="range" min="1" max="10" step="0.5"
+                                  value={convertForm.wirkung || 5}
+                                  onChange={e => setConvertForm(f => ({ ...f, wirkung: parseFloat(e.target.value) }))}
+                                  className="w-full accent-status-blue"
+                                />
+                                <span className="text-[10px] font-mono text-txt-secondary">{convertForm.wirkung}</span>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Aufwand (1–10)</label>
+                                <input
+                                  type="range" min="1" max="10" step="0.5"
+                                  value={convertForm.aufwand || 5}
+                                  onChange={e => setConvertForm(f => ({ ...f, aufwand: parseFloat(e.target.value) }))}
+                                  className="w-full accent-status-blue"
+                                />
+                                <span className="text-[10px] font-mono text-txt-secondary">{convertForm.aufwand}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-4 flex-wrap">
+                              <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+                                <input type="checkbox" checked={convertForm.scnat_db || false} onChange={e => setConvertForm(f => ({ ...f, scnat_db: e.target.checked }))} className="accent-status-blue" />
+                                SCNAT DB
+                              </label>
+                              <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+                                <input type="checkbox" checked={convertForm.scnat_portal || false} onChange={e => setConvertForm(f => ({ ...f, scnat_portal: e.target.checked }))} className="accent-status-blue" />
+                                SCNAT Portal
+                              </label>
+                              <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+                                <input type="checkbox" checked={convertForm.start_empfohlen || false} onChange={e => setConvertForm(f => ({ ...f, start_empfohlen: e.target.checked }))} className="accent-status-blue" />
+                                Start empfohlen
+                              </label>
+                            </div>
+                            <div className="flex gap-2 pt-1">
+                              <button
+                                onClick={() => handleConvert(c.id)}
+                                disabled={convertBusy || !convertForm.titel?.trim()}
+                                className="flex items-center gap-1.5 bg-scnat-red text-white text-xs px-4 py-2 rounded-sm hover:bg-scnat-darkred disabled:opacity-50 transition-colors"
+                              >
+                                <ListChecks className="w-3.5 h-3.5" />
+                                {convertBusy ? 'Erstelle…' : 'Massnahme erstellen & verknüpfen'}
+                              </button>
+                              <button
+                                onClick={() => setConvertingId(null)}
+                                className="text-xs text-txt-tertiary hover:text-txt-primary px-3 py-1.5"
+                              >
+                                Abbrechen
+                              </button>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Existing reply */}
                         {c.antwort && replyingTo !== c.id && (
