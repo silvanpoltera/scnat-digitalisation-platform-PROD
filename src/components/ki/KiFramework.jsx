@@ -27,9 +27,9 @@ const SECTIONS = [
   },
   {
     id: "daten",
-    titel: "Persönliche Daten",
+    titel: "Personenbezogene & sensible Daten",
     icon: Lock,
-    intro: "Beim Umgang mit persönlichen Daten ist besondere Sorgfalt erforderlich. Die SCNAT unterscheidet zwei Arten von Daten:",
+    intro: "Beim Umgang mit personenbezogenen und sensiblen Daten ist besondere Sorgfalt erforderlich. Die SCNAT unterscheidet zwei Arten von Daten:",
     datentypen: [
       {
         name: "Öffentliche Daten",
@@ -42,7 +42,7 @@ const SECTIONS = [
         erlaubt: false,
         beschreibung: "Alle nicht öffentlichen Informationen:",
         details: [
-          "Personen-Daten: Geburtsdatum, private Adresse, Telefonnummer, Gehalt oder andere Angaben, die unter Datenschutzgesetze fallen",
+          "Personenbezogene Daten: Geburtsdatum, private Adresse, Telefonnummer, Gehalt oder andere Angaben, die unter Datenschutzgesetze fallen",
           "Interne Inhalte: Nicht veröffentlichte Berichte, Protokolle, Strategiepapiere oder Finanzdaten (inkl. Excel-Dateien mit Budgetinformationen)",
           "Wissenschaftliche Daten: Forschungsergebnisse vor der Veröffentlichung oder vertrauliche Daten von Partner:innen, Autor:innen, usw.",
           "Vertragliche Informationen: Inhalte aus Verhandlungen oder Absprachen mit externen Partner:innen",
@@ -57,7 +57,7 @@ const SECTIONS = [
     icon: Wrench,
     regeln: [
       "Die Nutzung von Softwares und Lizenzen, darin insbesondere eingeschlossen auch KI-Tools, ist ausschliesslich mit den auf der SoLiWebL-Liste (Software, Lizenzen, WebLösungen) aufgeführten und von der IT freigegebenen Tools gestattet. Die Verwendung jedes anderen Tools ist im Kontext der SCNAT nicht erlaubt.",
-      "Zu den zugelassenen KI-Tools gehören beispielsweise DeepL und — neu ab 2025 — die lizenzierte Version von ChatGPT (Team-Plan). Es ist jedoch wichtig, weder Personendaten noch vertrauliche Daten preiszugeben.",
+      "Zu den zugelassenen KI-Tools gehören beispielsweise DeepL und — neu ab 2025 — die lizenzierte Version von ChatGPT (Team-Plan). Es ist jedoch wichtig, weder personenbezogene Daten noch vertrauliche oder sensible Daten preiszugeben.",
       "Andere Tools können in Zukunft je nach Bedürfnissen zugelassen werden. Dazu können sich die Mitarbeitenden an die KI-Spezialist:innen wenden. Diese sammeln die Bedürfnisse und geben sie gebündelt an die IT weiter.",
     ],
   },
@@ -71,7 +71,7 @@ const QUICK_RULES = [
   { type: "warn", text: "KI-Transkription nur mit Einverständnis aller Teilnehmenden" },
   { type: "warn", text: "Vertrauliche Infos in Prompts anonymisieren" },
   { type: "warn", text: "Bei Unsicherheit: David, Anina oder Arber fragen" },
-  { type: "dont", text: "Keine Personendaten (Geburtsdatum, Gehalt, private Adressen)" },
+  { type: "dont", text: "Keine personenbezogenen Daten (Geburtsdatum, Gehalt, private Adressen)" },
   { type: "dont", text: "Keine internen Berichte, Finanzdaten oder Protokolle" },
   { type: "dont", text: "Keine nicht freigegebenen KI-Tools verwenden" },
   { type: "dont", text: "Keine rassistischen, sexistischen oder diskriminierenden Inhalte generieren" },

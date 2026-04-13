@@ -69,7 +69,7 @@
         "Kein Halluzinationsrisiko für die bereitgestellten Fakten (wenn gut implementiert)",
         "Funktioniert mit internen, vertraulichen Dokumenten, die nie ins Training eingeflossen sind"
       ],
-      "scnat_relevanz": "RAG ist genau das, was passiert, wenn du in ChatGPT Dateien hochlädst oder Custom GPTs mit Wissensdateien erstellst. Auch ChatGPTs «Browse the Web» ist eine Form von RAG. Für die SCNAT relevant: Eigene Wissensbasen (Glossare, FAQs, Berichte) könnten als RAG-System aufgebaut werden."
+      "scnat_relevanz": "RAG ist genau das, was passiert, wenn du in ChatGPT Dateien hochlädst oder Custom GPTs mit Wissensdateien erstellst. Auch ChatGPTs «Browse the Web» ist eine Form von RAG. Für die SCNAT relevant: Eigene Wissensbasen (Glossare, FAQs, Berichte) könnten als RAG-System aufgebaut werden. Wichtig: Auch hier gelten die SCNAT-Regeln — keine vertraulichen, personenbezogenen oder sensiblen Dokumente in externe KI-Dienste hochladen."
     },
     "embeddings": {
       "titel": "Embeddings & Vektoren — Wie KI Bedeutung versteht",
@@ -433,7 +433,8 @@
         "Dateien aktuell halten — veraltete Dokumente führen zu falschen Antworten",
         "Nicht zu viele Dateien hochladen — Qualität vor Quantität. Max. 10–15 relevante Dokumente",
         "Für jede grössere Aufgabe einen eigenen Chat innerhalb des Projekts starten",
-        "Projekte regelmässig aufräumen: Abgeschlossene Chats archivieren"
+        "Projekte regelmässig aufräumen: Abgeschlossene Chats archivieren",
+        "Achtung: Keine vertraulichen, personenbezogenen oder sensiblen Dokumente hochladen. Die SCNAT-Regeln zum Umgang mit sensiblen Daten gelten auch hier."
       ]
     },
     "gpts": {
@@ -461,7 +462,8 @@
         "Conversation Starters definieren — vorgefertigte Fragen/Aufgaben, die Nutzer mit einem Klick starten können",
         "Wissensdateien regelmässig aktualisieren, wenn sich Inhalte ändern",
         "Nicht alles in einen GPT packen — lieber spezialisierte GPTs für verschiedene Aufgaben",
-        "Im Team testen lassen und Feedback einholen, bevor man den GPT breit ausrollt"
+        "Im Team testen lassen und Feedback einholen, bevor man den GPT breit ausrollt",
+        "Wichtig: Auch bei Custom GPTs gelten die SCNAT-Regeln zu sensiblen Daten — keine vertraulichen, personenbezogenen oder internen Dokumente als Wissensdateien hochladen, sofern diese sensible Inhalte enthalten. Siehe KI-Rahmen."
       ]
     },
     "dateien": {
@@ -487,7 +489,7 @@
         "Bei langen Dokumenten: Erst fragen «Worum geht es in diesem Dokument?», dann gezielt vertiefen",
         "Für Datenanalyse: Saubere Spaltennamen in Excel/CSV helfen ChatGPT enorm",
         "Ergebnisse von Datenanalysen immer stichprobenartig prüfen",
-        "Achtung: Keine vertraulichen oder personenbezogenen Daten hochladen (ausser im Team-Plan)"
+        "Wichtig: Keine vertraulichen, personenbezogenen oder sensiblen Daten in ChatGPT hochladen. Dies gilt unabhängig vom gewählten Plan. Siehe KI-Rahmen der SCNAT."
       ]
     },
     "canvas": {

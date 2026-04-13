@@ -5,7 +5,7 @@ const pillars = [
   {
     icon: Target,
     title: "Vision",
-    desc: "SCNAT als agile, datengetriebene Organisation, die digitale Werkzeuge souverän einsetzt.",
+    desc: "Wir gestalten die vernetzte und digitale SCNAT der Zukunft.",
     color: "bg-scnat-red",
   },
   {

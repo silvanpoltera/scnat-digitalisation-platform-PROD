@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Save, ChevronDown, Globe, FileText, Mail, Brain, Monitor, Users, Calendar, BarChart3, Database, Settings, Megaphone, BookOpen, HelpCircle, Search } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Save, ChevronDown, Globe, FileText, Mail, Brain, Monitor, Users, Calendar, BarChart3, Database, Settings, Megaphone, BookOpen, HelpCircle, Search, Code2, Loader2 } from 'lucide-react';
 
 const SECTIONS = [
   {
@@ -227,9 +227,40 @@ export default function CpContent() {
   const [openSections, setOpenSections] = useState(['hero']);
   const [search, setSearch] = useState('');
 
+  const [kiJson, setKiJson] = useState('');
+  const [kiSaving, setKiSaving] = useState(false);
+  const [kiError, setKiError] = useState('');
+  const [kiSaved, setKiSaved] = useState(false);
+  const [kiOpen, setKiOpen] = useState(false);
+
   useEffect(() => {
     fetch('/api/content', { credentials: 'include' }).then(r => r.json()).then(setContent).catch(() => {});
+    fetch('/api/ki-content', { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => setKiJson(JSON.stringify(data, null, 2)))
+      .catch(() => {});
   }, []);
+
+  const handleKiSave = useCallback(async () => {
+    setKiSaving(true);
+    setKiError('');
+    try {
+      const parsed = JSON.parse(kiJson);
+      const res = await fetch('/api/ki-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(parsed),
+      });
+      if (!res.ok) throw new Error('Speichern fehlgeschlagen');
+      setKiSaved(true);
+      setTimeout(() => setKiSaved(false), 2000);
+    } catch (err) {
+      setKiError(err instanceof SyntaxError ? 'Ungültiges JSON — bitte Syntax prüfen' : err.message);
+    } finally {
+      setKiSaving(false);
+    }
+  }, [kiJson]);
 
   const toggleSection = (key) => {
     setOpenSections(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
@@ -345,6 +376,46 @@ export default function CpContent() {
             </div>
           );
         })}
+
+        {(!search || 'ki-hub inhalte json erweitert'.includes(search.toLowerCase())) && (
+          <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+            <button
+              onClick={() => setKiOpen(prev => !prev)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-bg-elevated transition-colors"
+            >
+              <Code2 className="w-4 h-4 text-txt-tertiary shrink-0" />
+              <span className="text-sm font-medium text-txt-primary flex-1">KI-Hub Inhalte (JSON)</span>
+              <span className="text-[10px] font-mono text-txt-tertiary">CoT · ChatGPT · Sicherheit · Profis</span>
+              <ChevronDown className={`w-4 h-4 text-txt-tertiary transition-transform ${kiOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {kiOpen && (
+              <div className="border-t border-bd-faint">
+                <div className="px-4 pt-3 pb-2 flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-[11px] text-txt-secondary">
+                    Strukturierte KI-Hub-Daten — CoT-Szenarien, ChatGPT-Schulung, Sicherheitsregeln, Profi-Inhalte. Wird separat gespeichert.
+                  </p>
+                  <button
+                    onClick={handleKiSave}
+                    disabled={kiSaving}
+                    className="flex items-center gap-1.5 bg-scnat-red text-white text-xs px-3 py-1.5 rounded-sm hover:bg-[#F06570] disabled:opacity-50 transition-colors shrink-0"
+                  >
+                    {kiSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                    {kiSaving ? 'Speichern…' : kiSaved ? 'Gespeichert!' : 'KI-Inhalte speichern'}
+                  </button>
+                </div>
+                {kiError && (
+                  <div className="mx-4 mb-2 bg-scnat-red/10 border border-scnat-red/30 text-scnat-red text-xs px-3 py-2 rounded-sm">{kiError}</div>
+                )}
+                <textarea
+                  value={kiJson}
+                  onChange={e => setKiJson(e.target.value)}
+                  className="w-full h-[50vh] bg-bg-elevated border-t border-bd-faint text-txt-primary text-xs font-mono px-4 py-3 focus:outline-none resize-y leading-relaxed"
+                  spellCheck={false}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

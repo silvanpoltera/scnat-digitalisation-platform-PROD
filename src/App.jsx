@@ -2,8 +2,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { VisibilityProvider } from './contexts/VisibilityContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import VisibilityGuard from './components/VisibilityGuard';
 import Layout from './components/Layout';
 import CpLayout from './components/CpLayout';
 
@@ -30,7 +32,6 @@ import CpAntraege from './pages/cp/CpAntraege';
 import CpUsers from './pages/cp/CpUsers';
 import CpMassnahmen from './pages/cp/CpMassnahmen';
 import CpThemen from './pages/cp/CpThemen';
-import CpKi from './pages/cp/CpKi';
 import CpScnatDb from './pages/cp/CpScnatDb';
 import CpChanges from './pages/cp/CpChanges';
 import CpLiveInfos from './pages/cp/CpLiveInfos';
@@ -45,33 +46,38 @@ import HowBuilt from './pages/HowBuilt';
 import CpSprints from './pages/cp/CpSprints';
 import CpSprintEditor from './pages/cp/CpSprintEditor';
 
+function V({ k, children }) {
+  return <VisibilityGuard vKey={k}>{children}</VisibilityGuard>;
+}
+
 function App() {
   return (
     <ThemeProvider>
     <Router>
       <AuthProvider>
+        <VisibilityProvider>
         <NotificationProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
 
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route path="/" element={<Home />} />
-            <Route path="/strategie" element={<Strategie />} />
-            <Route path="/handlungsfelder" element={<Handlungsfelder />} />
-            <Route path="/massnahmen" element={<Massnahmen />} />
-            <Route path="/systemlandschaft" element={<Systemlandschaft />} />
-            <Route path="/ki-hub" element={<KiHub />} />
-            <Route path="/schulungen" element={<Schulungen />} />
-            <Route path="/software-antraege" element={<SoftwareAntraege />} />
-            <Route path="/scnat-db" element={<ScnatDb />} />
-            <Route path="/meine-uebersicht" element={<MeineUebersicht />} />
-            <Route path="/prozesse" element={<Prozesse />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/faqs" element={<Faqs />} />
-            <Route path="/glossar" element={<Glossar />} />
-            <Route path="/sprints" element={<Sprints />} />
-            <Route path="/where" element={<Where />} />
-            <Route path="/how-built" element={<HowBuilt />} />
+            <Route path="/" element={<V k="home"><Home /></V>} />
+            <Route path="/strategie" element={<V k="strategie"><Strategie /></V>} />
+            <Route path="/handlungsfelder" element={<V k="handlungsfelder"><Handlungsfelder /></V>} />
+            <Route path="/massnahmen" element={<V k="massnahmen"><Massnahmen /></V>} />
+            <Route path="/systemlandschaft" element={<V k="systemlandschaft"><Systemlandschaft /></V>} />
+            <Route path="/ki-hub" element={<V k="ki-hub"><KiHub /></V>} />
+            <Route path="/schulungen" element={<V k="schulungen"><Schulungen /></V>} />
+            <Route path="/software-antraege" element={<V k="software-antraege"><SoftwareAntraege /></V>} />
+            <Route path="/scnat-db" element={<V k="scnat-db"><ScnatDb /></V>} />
+            <Route path="/meine-uebersicht" element={<V k="meine-uebersicht"><MeineUebersicht /></V>} />
+            <Route path="/prozesse" element={<V k="prozesse"><Prozesse /></V>} />
+            <Route path="/team" element={<V k="team"><Team /></V>} />
+            <Route path="/faqs" element={<V k="faqs"><Faqs /></V>} />
+            <Route path="/glossar" element={<V k="glossar"><Glossar /></V>} />
+            <Route path="/sprints" element={<V k="sprints"><Sprints /></V>} />
+            <Route path="/where" element={<V k="cp-admin-stuff"><Where /></V>} />
+            <Route path="/how-built" element={<V k="cp-admin-stuff"><HowBuilt /></V>} />
             <Route path="*" element={<NotFound />} />
           </Route>
 
@@ -84,7 +90,6 @@ function App() {
             <Route path="/cp/changes" element={<CpChanges />} />
             <Route path="/cp/massnahmen" element={<CpMassnahmen />} />
             <Route path="/cp/themen" element={<CpThemen />} />
-            <Route path="/cp/ki" element={<CpKi />} />
             <Route path="/cp/live-infos" element={<CpLiveInfos />} />
             <Route path="/cp/news" element={<CpNews />} />
             <Route path="/cp/nachrichten" element={<CpInbox />} />
@@ -97,6 +102,7 @@ function App() {
           </Route>
         </Routes>
         </NotificationProvider>
+        </VisibilityProvider>
       </AuthProvider>
     </Router>
     </ThemeProvider>

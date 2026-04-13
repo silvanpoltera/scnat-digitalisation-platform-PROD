@@ -1,31 +1,17 @@
 [
   {
-    "id": "pm-framework-v1",
-    "datum": "2026-04-07",
-    "category": "PM & Umsetzung",
-    "categoryColor": "#006482",
-    "title": "PM-Framework verabschiedet: Lean-Agile für die SCNAT Digitalisierung",
-    "teaser": "Sprint-basiertes Framework für die Umsetzung der Digitalisierungsstrategie ist bereit. 4-Wochen-Sprints, klare Rollen, Steering Committee quartalsweise.",
-    "detail": "Das neue PM-Framework setzt auf einen Lean-Agile-Ansatz mit 4-Wochen-Sprints. Jeder Sprint beginnt mit einer Planung und endet mit einem Review. Die Rollen sind klar verteilt: Product Owner, Scrum Master und Umsetzungsteam. Quartalsweise trifft sich das Steering Committee, um strategische Entscheidungen zu treffen und Prioritäten anzupassen.\n\nWichtige Elemente:\n• 4-Wochen-Sprints mit klarem Rhythmus\n• Definierte Rollen und Verantwortlichkeiten\n• Quartalsweises Steering Committee\n• Transparentes Backlog für alle Beteiligten",
-    "linkTo": "/prozesse",
-    "isNew": true,
-    "aktiv": true,
-    "gueltigBis": null,
-    "erstellt": "2026-04-07T00:00:00.000Z"
-  },
-  {
-    "id": "portal-launch",
-    "datum": "2026-04-01",
-    "category": "Portal",
+    "id": "strategie-abgesegnet",
+    "datum": "2026-04-13",
+    "category": "Strategie",
     "categoryColor": "#EA515A",
-    "title": "Digitalisierungsportal geht live",
-    "teaser": "Dieses interne Portal ist eure zentrale Anlaufstelle für Infos zur Digitalisierung: Systemlandschaft, KI-Rahmen, Beschaffungsprozess und mehr.",
-    "detail": "Das Digitalisierungsportal bündelt alle relevanten Informationen rund um die digitale Transformation der SCNAT an einem Ort. Hier findet ihr:\n\n• Übersicht über die Systemlandschaft\n• Den KI-Rahmen und Richtlinien\n• Informationen zum Beschaffungsprozess\n• Aktuelle Massnahmen und deren Status\n• Schulungsangebote und Ressourcen\n\nDas Portal wird laufend erweitert und aktualisiert.",
-    "linkTo": null,
+    "title": "Strategie abgesegnet: Die Digitalisierung der SCNAT geht in die Umsetzung",
+    "teaser": "Ende 2025 wurde die Digitalisierungsstrategie mit Vision und Handlungsfeldern von Vorstand und GL verabschiedet. Jetzt beginnt die strukturierte Umsetzung.",
+    "detail": "Ende 2025 wurde die Digitalisierungsstrategie der SCNAT mit der dazugehörigen Vision «Wir gestalten die vernetzte und digitale SCNAT der Zukunft» sowie den definierten Handlungsfeldern von Vorstand und Geschäftsleitung verabschiedet.\n\nDamit ist die strategische Grundlage geschaffen. Aufbauend auf den bisherigen Arbeiten – von der Reifegradanalyse über die Definition der Vision bis hin zur Massnahmenentwicklung – beginnt nun die nächste Phase: die strukturierte Umsetzung.\n\nIn den vergangenen Wochen wurden erste konkrete Massnahmen erarbeitet und vorbereitet. Mit dem Start von Silvan Poltera als Verantwortlicher Digitalisierung wird das Thema nun zentral gebündelt und systematisch vorangetrieben.\n\nDie nächsten Schritte umfassen:\n\n• Priorisierung und Fokussierung der Massnahmen nach Wirkung und Umsetzbarkeit\n• Klärung der verfügbaren Ressourcen und organisatorischen Rahmenbedingungen\n• Austausch mit den verschiedenen Bereichen und Anspruchsgruppen, um Bedürfnisse und Abhängigkeiten besser zu verstehen\n• Initiierung erster konkreter Umsetzungsprojekte\n\nDie Digitalisierung der SCNAT ist keine isolierte Initiative, sondern betrifft die gesamte Organisation – Prozesse, Zusammenarbeit und Systeme. Ziel ist es, bestehende Strukturen gezielt weiterzuentwickeln, Silos abzubauen und die Organisation effizienter und wirkungsvoller zu machen.\n\nWir werden euch regelmässig über Fortschritte informieren und schrittweise einbeziehen. Die Umsetzung gelingt nur gemeinsam.",
+    "linkTo": "/strategie",
     "isNew": true,
     "aktiv": true,
     "gueltigBis": null,
-    "erstellt": "2026-04-01T00:00:00.000Z"
+    "erstellt": "2026-04-13T00:00:00.000Z"
   },
   {
     "id": "glossar-launch",

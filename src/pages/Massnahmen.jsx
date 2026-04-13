@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles, Zap } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 
 const CLUSTER_COLORS = {
@@ -27,9 +27,9 @@ function PrioBar({ value, max = 10, color = '#EA515A' }) {
   );
 }
 
-function StatusBadge({ m }) {
+function StatusBadge({ m, sprintNames }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1.5 flex-wrap">
       {m.isNew && (
         <span className="flex items-center gap-0.5 text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">
           <Sparkles className="w-3 h-3" /> NEU
@@ -50,6 +50,11 @@ function StatusBadge({ m }) {
           <Database className="w-3 h-3" /> DB
         </Link>
       )}
+      {sprintNames && (
+        <span className="flex items-center gap-0.5 text-[10px] font-mono bg-[#F07800]/12 text-[#F07800] px-1.5 py-0.5 rounded-sm" title={sprintNames.join(', ')}>
+          <Zap className="w-3 h-3" /> Sprint
+        </span>
+      )}
       {m.tags?.map(t => (
         <span key={t} className="text-[10px] font-mono bg-bg-elevated text-txt-secondary px-1.5 py-0.5 rounded-sm">{t}</span>
       ))}
@@ -57,7 +62,7 @@ function StatusBadge({ m }) {
   );
 }
 
-function ListView({ items }) {
+function ListView({ items, sprintMap }) {
   const grouped = useMemo(() => {
     const g = {};
     items.forEach(m => {
@@ -111,7 +116,7 @@ function ListView({ items }) {
                       <PrioBar value={m.aufwand} color="var(--accent-red)" />
                     </div>
                   </div>
-                  <StatusBadge m={m} />
+                  <StatusBadge m={m} sprintNames={sprintMap[m.id]} />
                   {m.notiz && <p className="text-[11px] text-txt-tertiary mt-1.5 italic">→ {m.notiz}</p>}
                 </div>
               ))}
@@ -123,7 +128,7 @@ function ListView({ items }) {
   );
 }
 
-function MatrixView({ items }) {
+function MatrixView({ items, sprintMap }) {
   const rated = items.filter(m => m.wirkung > 0 && m.aufwand > 0);
   const unrated = items.filter(m => !m.wirkung || !m.aufwand);
   const [hover, setHover] = useState(null);
@@ -165,22 +170,30 @@ function MatrixView({ items }) {
               const color = CLUSTER_COLORS[m.cluster] || '#888';
               const isHover = hover === m.id;
               const isSelected = selected === m.id;
-              const tooltipX = x + 12 > W + pad - 180 ? x - 212 : x + 12;
-              const tooltipY = y - 30 < pad ? y + 10 : y - 30;
               return (
                 <g key={m.id} onMouseEnter={() => setHover(m.id)} onMouseLeave={() => setHover(null)} onClick={() => setSelected(selected === m.id ? null : m.id)} style={{ cursor: 'pointer' }}>
                   <circle cx={x} cy={y} r={isHover || isSelected ? 8 : 5} fill={color} fillOpacity={isHover || isSelected ? 1 : 0.8} stroke={isSelected || isHover ? 'var(--text-primary)' : 'none'} strokeWidth={2} />
-                  {isHover && !isSelected && (
-                    <foreignObject x={tooltipX} y={tooltipY} width="200" height="60" style={{ overflow: 'visible', pointerEvents: 'none' }}>
-                      <div xmlns="http://www.w3.org/1999/xhtml" className="bg-bg-elevated border border-bd-default rounded-sm px-2 py-1.5 text-xs shadow-lg">
-                        <p className="text-txt-primary font-medium">{m.titel}</p>
-                        <p className="text-txt-tertiary font-mono">{m.id.toUpperCase()} · W:{m.wirkung} A:{m.aufwand}</p>
-                      </div>
-                    </foreignObject>
-                  )}
                 </g>
               );
             })}
+
+            {/* Tooltip rendered last so it's always on top of all circles */}
+            {hover && !selected && (() => {
+              const m = rated.find(r => r.id === hover);
+              if (!m) return null;
+              const x = pad + (m.aufwand / 10) * W;
+              const y = pad + H - (m.wirkung / 10) * H;
+              const tooltipX = x + 12 > W + pad - 180 ? x - 212 : x + 12;
+              const tooltipY = y - 30 < pad ? y + 10 : y - 30;
+              return (
+                <foreignObject x={tooltipX} y={tooltipY} width="200" height="60" style={{ overflow: 'visible', pointerEvents: 'none' }}>
+                  <div xmlns="http://www.w3.org/1999/xhtml" className="bg-bg-elevated border border-bd-default rounded-sm px-2 py-1.5 text-xs shadow-lg">
+                    <p className="text-txt-primary font-medium">{m.titel}</p>
+                    <p className="text-txt-tertiary font-mono">{m.id.toUpperCase()} · W:{m.wirkung} A:{m.aufwand}</p>
+                  </div>
+                </foreignObject>
+              );
+            })()}
           </svg>
         </div>
         {unrated.length > 0 && (
@@ -212,6 +225,11 @@ function MatrixView({ items }) {
                 }`}>Prio {selectedItem.prioritaet} – {PRIO_LABEL[selectedItem.prioritaet]}</span>
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: CLUSTER_COLORS[selectedItem.cluster] || '#888' }} />
                 <span className="text-[10px] text-txt-tertiary">{selectedItem.cluster}</span>
+                {sprintMap[selectedItem.id] && (
+                  <span className="flex items-center gap-0.5 text-[10px] font-mono bg-[#F07800]/12 text-[#F07800] px-1.5 py-0.5 rounded-sm" title={sprintMap[selectedItem.id].join(', ')}>
+                    <Zap className="w-3 h-3" /> {sprintMap[selectedItem.id][0]}
+                  </span>
+                )}
               </div>
               <h4 className="text-sm font-heading font-semibold text-txt-primary mb-1">{selectedItem.titel}</h4>
               <p className="text-xs text-txt-secondary leading-relaxed">{selectedItem.beschreibung}</p>
@@ -230,7 +248,7 @@ function MatrixView({ items }) {
   );
 }
 
-function MassnahmenCard({ m, index, variant = 'primary' }) {
+function MassnahmenCard({ m, index, variant = 'primary', sprintNames }) {
   const isPrimary = variant === 'primary';
   return (
     <div className={`bg-bg-surface border rounded-sm p-5 transition-all ${isPrimary ? 'border-bd-faint hover:border-bd-strong' : 'border-bd-faint opacity-80 hover:opacity-100 hover:border-bd-strong'}`}>
@@ -247,6 +265,11 @@ function MassnahmenCard({ m, index, variant = 'primary' }) {
             {m.status === 'in_umsetzung' && (
               <span className="flex items-center gap-0.5 text-[10px] font-mono bg-status-green/15 text-status-green px-1.5 py-0.5 rounded-sm">
                 <Activity className="w-3 h-3" /> Aktiv
+              </span>
+            )}
+            {sprintNames && (
+              <span className="flex items-center gap-0.5 text-[10px] font-mono bg-[#F07800]/12 text-[#F07800] px-1.5 py-0.5 rounded-sm" title={sprintNames.join(', ')}>
+                <Zap className="w-3 h-3" /> Sprint
               </span>
             )}
           </div>
@@ -272,7 +295,7 @@ function MassnahmenCard({ m, index, variant = 'primary' }) {
   );
 }
 
-function StartSixView({ items }) {
+function StartSixView({ items, sprintMap }) {
   const firstSix = items
     .filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 6)
     .sort((a, b) => a.reihenfolge - b.reihenfolge);
@@ -300,7 +323,7 @@ function StartSixView({ items }) {
         <p className="text-sm text-txt-secondary mb-6">Priorisierte Massnahmen für den sofortigen Start</p>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {firstSix.map((m) => (
-            <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="primary" />
+            <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="primary" sprintNames={sprintMap[m.id]} />
           ))}
         </div>
       </div>
@@ -323,7 +346,7 @@ function StartSixView({ items }) {
           <p className="text-xs text-txt-secondary mb-4">Diese Massnahmen werden in der nächsten Welle angegangen — Priorisierung erfolgt iterativ.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {secondSix.map((m) => (
-              <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="secondary" />
+              <MassnahmenCard key={m.id} m={m} index={m.reihenfolge} variant="secondary" sprintNames={sprintMap[m.id]} />
             ))}
           </div>
         </div>
@@ -351,19 +374,36 @@ function StartSixView({ items }) {
 
 export default function Massnahmen() {
   const [data, setData] = useState([]);
+  const [sprints, setSprints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('list');
   const [filterCluster, setFilterCluster] = useState('');
   const [filterPrio, setFilterPrio] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterDb, setFilterDb] = useState(false);
+  const [filterWelle, setFilterWelle] = useState('');
 
   useEffect(() => {
     fetch('/api/massnahmen', { credentials: 'include' })
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
+    fetch('/api/sprints', { credentials: 'include' })
+      .then(r => r.json())
+      .then(setSprints)
+      .catch(() => {});
   }, []);
+
+  const sprintMap = useMemo(() => {
+    const map = {};
+    sprints.forEach(s => {
+      (s.massnahmen || []).forEach(sm => {
+        if (!map[sm.massnahmeId]) map[sm.massnahmeId] = [];
+        map[sm.massnahmeId].push(s.name);
+      });
+    });
+    return map;
+  }, [sprints]);
 
   const filtered = useMemo(() => {
     let result = [...data];
@@ -371,6 +411,8 @@ export default function Massnahmen() {
     if (filterPrio) result = result.filter(m => m.prioritaet === filterPrio);
     if (filterStatus) result = result.filter(m => m.status === filterStatus);
     if (filterDb) result = result.filter(m => m.scnat_db);
+    if (filterWelle === '6') result = result.filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 6);
+    else if (filterWelle === '12') result = result.filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 12);
     result.sort((a, b) => {
       const prioA = PRIO_ORDER[a.prioritaet] ?? 4;
       const prioB = PRIO_ORDER[b.prioritaet] ?? 4;
@@ -378,7 +420,7 @@ export default function Massnahmen() {
       return (b.wirkung || 0) * (11 - (b.aufwand || 5)) - (a.wirkung || 0) * (11 - (a.aufwand || 5));
     });
     return result;
-  }, [data, filterCluster, filterPrio, filterStatus, filterDb]);
+  }, [data, filterCluster, filterPrio, filterStatus, filterDb, filterWelle]);
 
   const clusters = useMemo(() => [...new Set(data.map(m => m.cluster))].sort(), [data]);
 
@@ -462,13 +504,32 @@ export default function Massnahmen() {
             <input type="checkbox" checked={filterDb} onChange={e => setFilterDb(e.target.checked)} className="rounded-sm" />
             Nur SCNAT-DB
           </label>
+          <div className="flex items-center bg-bg-elevated border border-bd-faint rounded-sm p-0.5">
+            {[
+              { value: '', label: 'Alle' },
+              { value: '6', label: 'Top 6' },
+              { value: '12', label: 'Top 12' },
+            ].map(w => (
+              <button
+                key={w.value}
+                onClick={() => setFilterWelle(filterWelle === w.value ? '' : w.value)}
+                className={`px-2 py-1 text-[10px] font-mono rounded-sm transition-colors ${
+                  filterWelle === w.value
+                    ? 'bg-scnat-red/15 text-scnat-red font-medium border border-scnat-red/30'
+                    : 'text-txt-tertiary hover:text-txt-secondary border border-transparent'
+                }`}
+              >
+                {w.value ? `★ ${w.label}` : w.label}
+              </button>
+            ))}
+          </div>
           <span className="text-xs text-txt-tertiary font-mono ml-auto">{filtered.length} Massnahmen</span>
         </div>
       )}
 
-      {view === 'list' && <ListView items={filtered} />}
-      {view === 'matrix' && <MatrixView items={filtered} />}
-      {view === 'start6' && <StartSixView items={data} />}
+      {view === 'list' && <ListView items={filtered} sprintMap={sprintMap} />}
+      {view === 'matrix' && <MatrixView items={filtered} sprintMap={sprintMap} />}
+      {view === 'start6' && <StartSixView items={data} sprintMap={sprintMap} />}
     </div>
     </div>
   );

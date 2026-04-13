@@ -74,15 +74,21 @@ const handlungsfelder = [
 ];
 
 const pages = [
-  { title: "Übersicht", desc: "Startseite mit Schnellzugriff und Neuigkeiten", path: "/" },
-  { title: "Strategie", desc: "Vision, Zielbild, Strategieprozess und Rollen", path: "/strategie" },
-  { title: "Handlungsfelder", desc: "6 strategische Transformationsfelder", path: "/handlungsfelder" },
-  { title: "Software & Co", desc: "Alle Applikationen und Tools der SCNAT", path: "/systemlandschaft" },
-  { title: "KI-Hub", desc: "KI-Richtlinien, LLM-Vergleich, lokale Modelle", path: "/ki-hub" },
-  { title: "Glossar", desc: "Digitalisierungsbegriffe erklärt", path: "/glossar" },
-  { title: "FAQs", desc: "Häufig gestellte Fragen", path: "/faqs" },
-  { title: "Prozesse", desc: "Software beschaffen, PM-Framework", path: "/prozesse" },
-  { title: "Team", desc: "Task Force & Ansprechpersonen", path: "/team" },
+  { title: "Übersicht", desc: "Startseite mit Schnellzugriff und Neuigkeiten", path: "/", keywords: "home dashboard start" },
+  { title: "Strategie", desc: "Vision, Zielbild, Strategieprozess und Rollen", path: "/strategie", keywords: "vision haus digitalisierung leitsatz" },
+  { title: "Handlungsfelder", desc: "6 strategische Transformationsfelder", path: "/handlungsfelder", keywords: "cluster themen bereiche" },
+  { title: "Massnahmen", desc: "32 Massnahmen zur Umsetzung der Digitalisierungsstrategie", path: "/massnahmen", keywords: "priorisierung wirkung aufwand matrix start mit 6" },
+  { title: "Sprints", desc: "Sprint-Planung, Timeline und Massnahmen-Zuweisung", path: "/sprints", keywords: "sprint planung agile 4 wochen takte timeline gantt" },
+  { title: "Software & Co", desc: "Alle Applikationen und Tools der SCNAT", path: "/systemlandschaft", keywords: "tools applikationen systeme landschaft" },
+  { title: "KI-Hub", desc: "KI-Richtlinien, ChatGPT, LLM-Vergleich, lokale Modelle", path: "/ki-hub", keywords: "künstliche intelligenz chatgpt llm prompt ai" },
+  { title: "Schulungen", desc: "Weiterbildung und Trainings zur Digitalisierung", path: "/schulungen", keywords: "lernen training workshop weiterbildung kurs" },
+  { title: "Software-Anträge", desc: "Neue Software beantragen und Beschaffungsprozess", path: "/software-antraege", keywords: "beschaffung antrag neue software tool" },
+  { title: "SCNAT-Datenbank", desc: "Informationen zur SCNAT-DB und deren Weiterentwicklung", path: "/scnat-db", keywords: "datenbank db portale technologie" },
+  { title: "Meine Übersicht", desc: "Persönliches Dashboard mit relevanten Infos", path: "/meine-uebersicht", keywords: "persönlich mein dashboard profil" },
+  { title: "Prozesse", desc: "Software beschaffen, PM-Framework, Change-Prozess", path: "/prozesse", keywords: "prozess workflow beschaffung change projektmanagement" },
+  { title: "Glossar", desc: "Digitalisierungsbegriffe erklärt", path: "/glossar", keywords: "begriffe lexikon definition wörterbuch" },
+  { title: "FAQs", desc: "Häufig gestellte Fragen", path: "/faqs", keywords: "fragen antworten hilfe" },
+  { title: "Team", desc: "Task Force & Ansprechpersonen", path: "/team", keywords: "kontakt ansprechpartner taskforce silvan" },
 ];
 
 function match(text, query) {
@@ -96,7 +102,7 @@ export function globalSearch(query) {
 
   // Pages
   pages.forEach((p) => {
-    if (match(p.title, query) || match(p.desc, query)) {
+    if (match(p.title, query) || match(p.desc, query) || (p.keywords && match(p.keywords, query))) {
       results.push({ type: "page", title: p.title, subtitle: p.desc, path: p.path });
     }
   });

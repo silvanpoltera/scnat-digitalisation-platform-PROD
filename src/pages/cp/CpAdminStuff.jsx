@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench } from 'lucide-react';
+import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic } from 'lucide-react';
 
 const CARDS = [
   {
@@ -75,6 +75,18 @@ const CARDS = [
     quickIcon: Wrench,
     quickColor: 'text-status-blue',
     accentBg: 'bg-status-blue/8',
+  },
+  {
+    num: '06',
+    section: 'KI-Tools · Analyse',
+    title: 'Speech-to-Text',
+    sub: '9 Tools · SaaS · API · Lokal · CH-DE',
+    desc: 'Neun Lösungen im Vergleich – von schlüsselfertigem SaaS bis zum lokal betriebenen Modell. Bewertet nach WER, Kosten, Datenschutz und Schweizerdeutsch-Tauglichkeit. Inkl. SCNAT-Empfehlung und Hardware-Übersicht.',
+    primary: { to: '/cp/admin-stuff/speech-to-text', label: 'Öffnen' },
+    visual: 'stt',
+    quickIcon: Mic,
+    quickColor: 'text-status-green',
+    accentBg: 'bg-status-green/8',
   },
 ];
 
@@ -264,11 +276,46 @@ function WhereVisual() {
   );
 }
 
+function SttVisual() {
+  const bars = [3,5,8,6,9,4,7,10,6,8,5,3,7,9,5,4,6,8,3,5];
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="flex items-end gap-[3px] h-[60px]">
+        {bars.map((h, i) => (
+          <div
+            key={i}
+            className="w-[6px] rounded-[1px]"
+            style={{
+              height: `${h * 6}px`,
+              background: i % 3 === 0 ? 'rgba(234,81,90,0.6)' : i % 3 === 1 ? 'rgba(74,144,217,0.4)' : 'rgba(61,170,117,0.4)',
+              animation: `waveFloat ${1.5 + (i % 4) * 0.3}s ease-in-out ${i * 0.08}s infinite alternate`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-3">
+        {[
+          { n: '9', l: 'Tools', c: 'text-scnat-red' },
+          { n: '3', l: 'Kategorien', c: 'text-status-blue' },
+          { n: 'CH-DE', l: 'Fokus', c: 'text-status-green' },
+        ].map((s, i) => (
+          <div key={i} className="text-center">
+            <p className={`text-sm font-heading font-bold leading-none ${s.c}`}>{s.n}</p>
+            <p className="text-[8px] font-mono text-txt-tertiary">{s.l}</p>
+          </div>
+        ))}
+      </div>
+      <style>{`@keyframes waveFloat{0%{transform:scaleY(1)}100%{transform:scaleY(0.5)}}`}</style>
+    </div>
+  );
+}
+
 function CardVisual({ type }) {
   if (type === 'layers') return <LayersVisual />;
   if (type === 'stats') return <StatsVisual />;
   if (type === 'cube') return <CubeVisual />;
   if (type === 'stack') return <StackVisual />;
+  if (type === 'stt') return <SttVisual />;
   if (type === 'none') return <WhereVisual />;
   return null;
 }
@@ -282,7 +329,7 @@ export default function CpAdminStuff() {
           <h2 className="text-xl font-heading font-semibold text-txt-primary flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-scnat-red" /> Admin Stuff
           </h2>
-          <p className="text-xs text-txt-secondary mt-0.5">5 Dokumente · Strategie, Begründung, Standort, Details und Technologie</p>
+          <p className="text-xs text-txt-secondary mt-0.5">6 Dokumente · Strategie, Begründung, Standort, Details, Technologie und KI-Analyse</p>
         </div>
       </div>
 

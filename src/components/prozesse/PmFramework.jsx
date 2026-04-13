@@ -269,9 +269,9 @@ function InteractiveSprintCycle() {
   const cx = 200, cy = 200, R = 140, nodeR = 32;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 items-start">
-      <div className="bg-bg-surface border border-bd-faint rounded-xl p-4 overflow-x-auto flex-shrink-0">
-        <svg viewBox="0 0 400 400" className="w-full max-w-[380px] min-w-[300px] mx-auto" style={{ overflow: 'visible' }}>
+    <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+      <div className="bg-bg-surface border border-bd-faint rounded-xl p-4 overflow-x-auto flex-shrink-0 w-full lg:w-auto">
+        <svg viewBox="0 0 400 400" className="w-full max-w-[340px] sm:max-w-[380px] mx-auto" style={{ overflow: 'visible' }}>
           {/* Center ring */}
           <circle cx={cx} cy={cy} r={R - 10} fill="none" style={{ stroke: 'var(--border-default)' }} strokeWidth="1" strokeDasharray="6,4" />
           <circle cx={cx} cy={cy} r={50} style={{ fill: 'var(--bg-base)', stroke: 'var(--border-default)' }} strokeWidth="1.5" />
@@ -774,7 +774,7 @@ export default function PmFramework({ initialSection }) {
       </div>
       <p className="text-xs text-muted-foreground mb-6">Version 1.0 — 7.4.2026 · Erstellt für Silvan, Verantwortlicher Digitalisierung</p>
 
-      <div className="flex flex-wrap gap-1.5 p-1 bg-muted rounded-xl mb-8 overflow-x-auto">
+      <div className="flex flex-wrap gap-1.5 p-1 bg-muted rounded-xl mb-8 overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
         {SECTIONS.map((s) => (
           <button
             key={s.id}

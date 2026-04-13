@@ -11,9 +11,10 @@ const PAGES = {
   recherche: { title: 'Recherche', sub: 'Infrastruktur & Sicherheit', file: '/files/recherche.html' },
   process: { title: 'Process', sub: 'Prinzipien & Roadmap', file: '/files/process.html' },
   'how-built': { title: 'How it gets Built', sub: 'Tech Stack · Codex · PAI', file: '/files/how-built.html' },
+  'speech-to-text': { title: 'Speech-to-Text', sub: 'KI-Tool-Analyse · 9 Lösungen', file: '/files/speech-to-text.html' },
 };
 
-const PAGE_ORDER = ['frame', 'reason', 'where', 'details', 'recherche', 'process', 'how-built'];
+const PAGE_ORDER = ['frame', 'reason', 'where', 'details', 'recherche', 'process', 'how-built', 'speech-to-text'];
 
 export default function CpAdminStuffView() {
   const { page } = useParams();

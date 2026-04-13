@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Plus, X, Search } from 'lucide-react';
+import { Plus, X, Search, PlusCircle } from 'lucide-react';
 
 const CLUSTER_OPTIONS = [
   { value: 'infrastruktur', label: 'Infrastruktur', color: '#0098DA' },
@@ -41,6 +41,10 @@ export default function CpSprintEditor() {
   const [mClusterFilter, setMClusterFilter] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!isNew);
+  const [showNewM, setShowNewM] = useState(false);
+  const [newMTitel, setNewMTitel] = useState('');
+  const [newMCluster, setNewMCluster] = useState('');
+  const [creatingM, setCreatingM] = useState(false);
 
   useEffect(() => {
     fetch('/api/massnahmen', { credentials: 'include' })
@@ -79,6 +83,7 @@ export default function CpSprintEditor() {
       const q = mSearch.toLowerCase();
       ms = ms.filter(m => m.titel.toLowerCase().includes(q) || m.id.toLowerCase().includes(q));
     }
+    ms.sort((a, b) => (a.reihenfolge || Infinity) - (b.reihenfolge || Infinity));
     return ms;
   }, [allMassnahmen, assignedIds, mClusterFilter, mSearch]);
 
@@ -136,6 +141,38 @@ export default function CpSprintEditor() {
       setSaving(false);
     }
   };
+
+  const handleCreateMassnahme = useCallback(async () => {
+    if (!newMTitel.trim()) return;
+    setCreatingM(true);
+    try {
+      const res = await fetch('/api/massnahmen', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          titel: newMTitel.trim(),
+          beschreibung: '',
+          cluster: newMCluster || CLUSTER_OPTIONS[0].label,
+          status: 'geplant',
+          tags: [],
+          wirkung: 0,
+          aufwand: 0,
+          prioritaet: 'C',
+          prioritaet_label: 'Mittelfristig',
+          start_empfohlen: false,
+          scnat_db: false,
+          scnat_portal: false,
+        }),
+      });
+      const created = await res.json();
+      setAllMassnahmen(prev => [...prev, created]);
+      addMassnahme(created);
+      setNewMTitel('');
+      setShowNewM(false);
+    } catch { /* silent */ }
+    finally { setCreatingM(false); }
+  }, [newMTitel, newMCluster]);
 
   if (loading) {
     return (
@@ -204,7 +241,16 @@ export default function CpSprintEditor() {
           <input
             type="date"
             value={form.startDate}
-            onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
+            onChange={e => {
+              const start = e.target.value;
+              const updates = { startDate: start };
+              if (start && !form.endDate) {
+                const d = new Date(start);
+                d.setDate(d.getDate() + 28);
+                updates.endDate = d.toISOString().split('T')[0];
+              }
+              setForm(f => ({ ...f, ...updates }));
+            }}
             className="w-full bg-bg-surface border border-bd-default rounded-[3px] px-3 py-2 text-sm text-txt-primary outline-none focus:border-scnat-red/50 transition-colors"
           />
         </div>
@@ -274,8 +320,57 @@ export default function CpSprintEditor() {
                 </button>
               </div>
             ))}
-            {availableMassnahmen.length === 0 && (
+            {availableMassnahmen.length === 0 && !showNewM && (
               <div className="py-6 text-center text-[11px] text-txt-tertiary">Keine verfügbaren Massnahmen</div>
+            )}
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-bd-faint">
+            {showNewM ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={newMTitel}
+                  onChange={e => setNewMTitel(e.target.value)}
+                  placeholder="Titel der neuen Massnahme"
+                  className="w-full bg-bg-elevated border border-bd-default rounded-sm px-2.5 py-1.5 text-[12px] text-txt-primary outline-none focus:border-scnat-red/50"
+                  autoFocus
+                  onKeyDown={e => { if (e.key === 'Enter' && newMTitel.trim()) handleCreateMassnahme(); if (e.key === 'Escape') setShowNewM(false); }}
+                />
+                <select
+                  value={newMCluster}
+                  onChange={e => setNewMCluster(e.target.value)}
+                  className="w-full bg-bg-elevated border border-bd-default rounded-sm px-2 py-1.5 text-[11px] text-txt-secondary outline-none"
+                >
+                  <option value="">Cluster wählen…</option>
+                  {[...new Set(allMassnahmen.map(m => m.cluster))].filter(Boolean).map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleCreateMassnahme}
+                    disabled={!newMTitel.trim() || creatingM}
+                    className="text-[11px] font-medium text-white bg-scnat-red hover:bg-scnat-red/90 disabled:opacity-40 px-3 py-1.5 rounded-sm transition-colors"
+                  >
+                    {creatingM ? 'Erstellen…' : 'Erstellen & zuweisen'}
+                  </button>
+                  <button
+                    onClick={() => { setShowNewM(false); setNewMTitel(''); }}
+                    className="text-[11px] text-txt-tertiary hover:text-txt-secondary px-2 py-1.5"
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowNewM(true)}
+                className="flex items-center gap-1.5 text-[11px] text-txt-secondary hover:text-scnat-red transition-colors w-full py-1.5"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                Neue Massnahme anlegen
+              </button>
             )}
           </div>
         </div>

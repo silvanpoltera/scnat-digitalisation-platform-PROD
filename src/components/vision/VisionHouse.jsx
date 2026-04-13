@@ -74,8 +74,8 @@ export default function VisionHouse({ selected, onSelect, compact = false }) {
             clipPath: "polygon(3% 100%, 97% 100%, 100% 0%, 0% 0%)",
           }}
         >
-          <p className={`font-heading font-bold text-white ${compact ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"}`}>
-            &laquo;Digitalisierung vereinfacht.&raquo;
+          <p className={`font-heading font-bold text-white ${compact ? "text-sm sm:text-base" : "text-base sm:text-lg"}`}>
+            &laquo;Wir gestalten die vernetzte und digitale SCNAT der Zukunft.&raquo;
           </p>
           <p className="text-white/70 text-xs mt-1">
             Digitale Transformation &middot; Übergreifendes Handlungsfeld

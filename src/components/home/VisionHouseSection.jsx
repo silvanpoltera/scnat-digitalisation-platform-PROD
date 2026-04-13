@@ -14,7 +14,7 @@ export default function VisionHouseSection() {
             Strategisches Zielbild
           </span>
           <h2 className="text-2xl sm:text-3xl font-heading font-bold text-foreground mt-2">
-            Das Haus der digitalen Transformation
+            Das Haus der Digitalisierung
           </h2>
           <p className="text-muted-foreground mt-2 max-w-xl mx-auto text-sm">
             Klick auf ein Handlungsfeld für Details zu Themen und Zielen.

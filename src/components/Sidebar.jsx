@@ -1,40 +1,34 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  Home, Target, Layers, Monitor, Brain, GitBranch,
-  Users, HelpCircle, BookOpen, BarChart3, GraduationCap,
-  LogOut, Search, Settings, X, UserCircle, Bell,
-  ChevronsLeft, ChevronsRight, Sun, Moon, CalendarRange,
+  LogOut, Search, X, Bell,
+  ChevronsLeft, ChevronsRight, Sun, Moon, Settings, UserCircle,
 } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import SearchModal from './SearchModal';
 import NetworkBackground from './NetworkBackground';
 import ScnatLogo from './ScnatLogo';
 import { ScnatMark } from './ScnatLogo';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
-
-const navItems = [
-  { label: 'Übersicht', path: '/', icon: Home },
-  { label: 'Strategie', path: '/strategie', icon: Target },
-  { label: 'Handlungsfelder', path: '/handlungsfelder', icon: Layers },
-  { label: 'Massnahmen', path: '/massnahmen', icon: BarChart3 },
-  { label: 'Sprints', path: '/sprints', icon: CalendarRange },
-  { label: 'Software & Co', path: '/systemlandschaft', icon: Monitor },
-  { label: 'KI', path: '/ki-hub', icon: Brain },
-  { label: 'Schulungen', path: '/schulungen', icon: GraduationCap },
-  { label: 'Prozesse', path: '/prozesse', icon: GitBranch },
-  { label: 'Team', path: '/team', icon: Users },
-  { label: 'FAQs', path: '/faqs', icon: HelpCircle },
-  { label: 'Glossar', path: '/glossar', icon: BookOpen },
-];
+import { useVisibility } from '../contexts/VisibilityContext';
+import { getSectionMeta } from '../config/sections';
 
 export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { count: notifCount, inboxCount } = useNotifications();
+  const { count: notifCount } = useNotifications();
   const { theme, toggleTheme } = useTheme();
+  const { portal, isVisible } = useVisibility();
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const navItems = useMemo(() =>
+    portal
+      .filter(s => isVisible(s.key))
+      .map(s => ({ ...getSectionMeta(s.key), key: s.key }))
+      .filter(s => s.path),
+    [portal, isVisible]
+  );
 
   const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
@@ -59,7 +53,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
 
   return (
     <>
-      {/* Mobile backdrop */}
       {open && (
         <div
           className="fixed inset-0 bg-black/60 z-40 md:hidden"
@@ -74,7 +67,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
         md:translate-x-0 md:z-40
         ${collapsed ? 'md:w-14' : 'md:w-56'}
       `}>
-        {/* Header */}
         <div className={`relative overflow-hidden p-4 pb-2 ${collapsed ? 'md:p-2' : ''}`}>
           <NetworkBackground nodeCount={18} seed={7} accentColor="#EA515A" opacity={0.25} showPulse={false} />
           <div className={`relative z-10 flex items-center justify-between ${collapsed ? 'md:justify-center' : ''}`}>
@@ -92,7 +84,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           </div>
         </div>
 
-        {/* Search */}
         <div className={`px-3 py-2 ${collapsed ? 'md:px-1.5' : ''}`}>
           <button
             onClick={() => setSearchOpen(true)}
@@ -109,7 +100,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className={`flex-1 overflow-y-auto px-3 py-1 space-y-0.5 ${collapsed ? 'md:px-1.5' : ''}`}>
           {navItems.map(item => {
             const Icon = item.icon;
@@ -117,7 +107,7 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
               (item.path !== '/' && location.pathname.startsWith(item.path));
             return (
               <Link
-                key={item.path}
+                key={item.key}
                 to={item.path}
                 title={item.label}
                 className={`flex items-center gap-2.5 px-2.5 py-1.5 text-sm rounded-sm transition-colors duration-150 ${
@@ -135,7 +125,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           })}
         </nav>
 
-        {/* Bottom section */}
         <div className={`p-3 border-t border-bd-faint ${collapsed ? 'md:p-1.5' : ''}`}>
           {user && (
             <div className={`flex items-center gap-2 mb-2 ${collapsed ? 'md:justify-center md:mb-1' : ''}`}>
@@ -218,7 +207,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           </button>
         </div>
 
-        {/* Theme toggle */}
         <button
           onClick={toggleTheme}
           title={theme === 'dark' ? 'Bright Mode' : 'Dark Mode'}
@@ -232,7 +220,6 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           </span>
         </button>
 
-        {/* Collapse toggle – desktop only */}
         <button
           onClick={onToggleCollapse}
           className="hidden md:flex items-center justify-center p-2.5 border-t border-bd-faint text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated transition-colors"

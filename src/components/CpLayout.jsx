@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  LayoutDashboard, FileText, Calendar, Inbox, Users,
-  BarChart3, MessageSquare, Brain, Database, ArrowLeft, LogOut, Menu, X, GitPullRequest,
-  Radio, Newspaper, FolderOpen, ChevronsLeft, ChevronsRight, Sun, Moon, Megaphone, Eye, CalendarRange,
+  ArrowLeft, LogOut, Menu, X,
+  ChevronsLeft, ChevronsRight, Sun, Moon,
 } from 'lucide-react';
 import ScnatLogo from './ScnatLogo';
 import { ScnatMark } from './ScnatLogo';
 import { useTheme } from '../contexts/ThemeContext';
+import { useVisibility } from '../contexts/VisibilityContext';
+import { getSectionMeta, CP_BADGE_KEYS } from '../config/sections';
 
 const SECTION_MAP = {
   '/cp/antraege': 'antraege',
@@ -17,35 +18,28 @@ const SECTION_MAP = {
   '/cp/themen': 'themen',
 };
 
-const cpNavItems = [
-  { label: 'Dashboard', path: '/cp', icon: LayoutDashboard },
-  { label: 'Live Infos', path: '/cp/live-infos', icon: Radio },
-  { label: 'News', path: '/cp/news', icon: Newspaper },
-  { label: 'Nachrichten', path: '/cp/nachrichten', icon: Megaphone },
-  { label: 'Content', path: '/cp/content', icon: FileText },
-  { label: 'Events', path: '/cp/events', icon: Calendar, badgeKey: 'events' },
-  { label: 'Anträge', path: '/cp/antraege', icon: Inbox, badgeKey: 'antraege' },
-  { label: 'Users', path: '/cp/users', icon: Users },
-  { label: 'Changes', path: '/cp/changes', icon: GitPullRequest, badgeKey: 'changes' },
-  { label: 'Massnahmen', path: '/cp/massnahmen', icon: BarChart3 },
-  { label: 'Sprints', path: '/cp/sprints', icon: CalendarRange },
-  { label: 'Themen', path: '/cp/themen', icon: MessageSquare, badgeKey: 'themen' },
-  { label: 'KI', path: '/cp/ki', icon: Brain },
-  { label: 'SCNAT DB', path: '/cp/scnat-db', icon: Database },
-  { label: 'Sichtbarkeit', path: '/cp/sichtbarkeit', icon: Eye },
-  { label: 'Admin Stuff', path: '/cp/admin-stuff', icon: FolderOpen },
-];
-
 export default function CpLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { cp, isVisible } = useVisibility();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [badges, setBadges] = useState({});
   const [collapsed, setCollapsed] = useState(() => {
     return localStorage.getItem('cp-sidebar-collapsed') === 'true';
   });
+
+  const cpNavItems = useMemo(() =>
+    cp
+      .filter(s => isVisible(s.key))
+      .map(s => {
+        const meta = getSectionMeta(s.key);
+        return meta ? { ...meta, key: s.key, badgeKey: CP_BADGE_KEYS[s.key] || null } : null;
+      })
+      .filter(Boolean),
+    [cp, isVisible]
+  );
 
   useEffect(() => {
     localStorage.setItem('cp-sidebar-collapsed', String(collapsed));
@@ -97,7 +91,6 @@ export default function CpLayout() {
         md:translate-x-0 md:z-40
         ${collapsed ? 'md:w-14' : 'md:w-56'}
       `}>
-        {/* Header */}
         <div className={`p-4 pb-2 ${collapsed ? 'md:p-2' : ''}`}>
           <div className={`flex items-center gap-2 ${collapsed ? 'md:justify-center' : ''}`}>
             <div className={collapsed ? 'md:hidden' : ''}>
@@ -117,7 +110,6 @@ export default function CpLayout() {
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className={`flex-1 overflow-y-auto px-3 py-1 space-y-0.5 ${collapsed ? 'md:px-1.5' : ''}`}>
           {cpNavItems.map(item => {
             const Icon = item.icon;
@@ -127,7 +119,7 @@ export default function CpLayout() {
             const badgeCount = item.badgeKey ? (badges[item.badgeKey] || 0) : 0;
             return (
               <Link
-                key={item.path}
+                key={item.key}
                 to={item.path}
                 title={item.label}
                 className={`flex items-center gap-2.5 px-2.5 py-1.5 text-sm rounded-sm transition-colors duration-150 ${
@@ -159,7 +151,6 @@ export default function CpLayout() {
           })}
         </nav>
 
-        {/* Bottom section */}
         <div className={`p-3 border-t border-bd-faint space-y-1 ${collapsed ? 'md:p-1.5' : ''}`}>
           <button
             onClick={() => navigate('/')}
@@ -183,7 +174,6 @@ export default function CpLayout() {
           </button>
         </div>
 
-        {/* Theme toggle */}
         <button
           onClick={toggleTheme}
           title={theme === 'dark' ? 'Bright Mode' : 'Dark Mode'}
@@ -197,7 +187,6 @@ export default function CpLayout() {
           </span>
         </button>
 
-        {/* Collapse toggle – desktop only */}
         <button
           onClick={() => setCollapsed(c => !c)}
           className="hidden md:flex items-center justify-center p-2.5 border-t border-bd-faint text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated transition-colors"

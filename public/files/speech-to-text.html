@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech-to-Text · Tool-Analyse SCNAT</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function(){
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b)}catch(e){}}
+  sync();
+  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0E10;--surface:#141618;--elevated:#1C1E22;--subtle:#222529;
+  --b-faint:#1E2124;--b-def:#2A2D34;--b-strong:#5A616B;
+  --red:#EA515A;--red-dim:rgba(234,81,90,.08);--red-mid:rgba(234,81,90,.2);
+  --anth:#5A616B;--text:#ECEEF1;--text2:#8A8F9B;--text3:#4E535D;
+  --ok:#3DAA75;--warn:#D4882A;--info:#4A90D9;--purple:#7C5CBF;
+}
+html.theme-bright{
+  --bg:#F8F9FA;--surface:#FFFFFF;--elevated:#F0F1F3;--subtle:#E8E9EC;
+  --b-faint:#E5E7EB;--b-def:#D1D5DB;--b-strong:#9CA3AF;
+  --text:#1F2937;--text2:#6B7280;--text3:#9CA3AF;
+  --red-dim:rgba(234,81,90,.06);--red-mid:rgba(234,81,90,.15);
+}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* ── GRID BG ── */
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--b-faint) 1px,transparent 1px),linear-gradient(90deg,var(--b-faint) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent 70%);pointer-events:none;z-index:0;opacity:.4}
+
+/* ── HERO ── */
+.hero{max-width:1060px;margin:0 auto;padding:3rem 2rem 2.5rem;position:relative;z-index:1}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.9rem}
+.hero h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:700;line-height:1.05;margin-bottom:1rem}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-sub{font-size:.92rem;color:var(--text2);line-height:1.85;max-width:560px}
+
+/* ── FILTER BAR ── */
+.filter-wrap{max-width:1060px;margin:0 auto;padding:.5rem 2rem 1.5rem;position:relative;z-index:1;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.filter-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-right:.25rem}
+.fchip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 11px;border-radius:2px;border:1px solid var(--b-def);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.fchip:hover{border-color:var(--b-strong);color:var(--text)}
+.fchip.on{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.fchip.saas.on{border-color:var(--info);color:var(--info);background:rgba(74,144,217,.08)}
+.fchip.api.on{border-color:var(--warn);color:var(--warn);background:rgba(212,136,42,.08)}
+.fchip.lokal.on{border-color:var(--ok);color:var(--ok);background:rgba(61,170,117,.08)}
+.filter-sep{width:1px;height:20px;background:var(--b-faint);margin:0 .25rem}
+
+/* ── SECTION HEADER ── */
+.section-header{max-width:1060px;margin:0 auto;padding:0 2rem .6rem;display:flex;align-items:center;gap:.75rem;position:relative;z-index:1}
+.section-line{flex:1;height:1px;background:var(--b-faint)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);white-space:nowrap}
+.section-cat{display:flex;align-items:center;gap:.4rem}
+.cat-dot{width:6px;height:6px;border-radius:1px}
+
+/* ── TOOL GRID ── */
+.tool-grid{max-width:1060px;margin:0 auto;padding:0 2rem 2rem;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;position:relative;z-index:1}
+.tool-grid.single{grid-template-columns:1fr}
+
+/* ── TOOL CARD ── */
+.tool-card{
+  background:var(--surface);border:1px solid var(--b-def);border-radius:4px;
+  overflow:hidden;cursor:pointer;position:relative;
+  transition:border-color .2s,background .2s;
+  animation:cardIn .3s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.tool-card.saas::before{background:var(--info)}
+.tool-card.api::before{background:var(--warn)}
+.tool-card.lokal::before{background:var(--ok)}
+.tool-card:hover{border-color:var(--b-strong);background:var(--elevated)}
+.tool-card.expanded{border-color:var(--b-strong)}
+.tool-card.hidden{display:none}
+
+/* CARD HEADER */
+.card-head{padding:1.1rem 1.25rem .75rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.card-name{font-size:.95rem;font-weight:600;margin-bottom:.15rem}
+.card-tagline{font-size:.75rem;color:var(--text2)}
+.rec-badge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.rec-ch{background:rgba(234,81,90,.12);color:var(--red);border:1px solid rgba(234,81,90,.3)}
+.rec-de{background:rgba(74,144,217,.1);color:var(--info);border:1px solid rgba(74,144,217,.3)}
+.rec-wer{background:rgba(61,170,117,.1);color:var(--ok);border:1px solid rgba(61,170,117,.3)}
+.rec-easy{background:rgba(124,92,191,.1);color:var(--purple);border:1px solid rgba(124,92,191,.3)}
+.rec-speed{background:rgba(212,136,42,.1);color:var(--warn);border:1px solid rgba(212,136,42,.3)}
+.rec-os{background:rgba(61,170,117,.1);color:var(--ok);border:1px solid rgba(61,170,117,.3)}
+.rec-std{background:rgba(74,144,217,.1);color:var(--info);border:1px solid rgba(74,144,217,.3)}
+.rec-local{background:rgba(61,170,117,.1);color:var(--ok);border:1px solid rgba(61,170,117,.3)}
+.rec-scnat{background:rgba(234,81,90,.15);color:var(--red);border:1px solid var(--red-mid)}
+
+/* CARD SPECS */
+.card-specs{padding:0 1.25rem .75rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.spec{display:flex;flex-direction:column;gap:.15rem}
+.spec-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+.spec-val{font-size:.78rem;font-weight:500;color:var(--text)}
+.spec-val.good{color:var(--ok)}
+.spec-val.warn{color:var(--warn)}
+.spec-val.bad{color:var(--red)}
+
+/* LANG BADGES */
+.card-langs{padding:0 1.25rem .75rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.lang{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:2px;border:1px solid}
+.lang.ok{background:rgba(61,170,117,.08);border-color:rgba(61,170,117,.4);color:var(--ok)}
+.lang.part{background:rgba(212,136,42,.08);border-color:rgba(212,136,42,.4);color:var(--warn)}
+.lang.no{background:rgba(78,83,93,.1);border-color:rgba(78,83,93,.3);color:var(--text3)}
+.lang.chde-ok{background:rgba(234,81,90,.1);border-color:rgba(234,81,90,.4);color:var(--red);font-weight:500}
+
+/* RADAR */
+.card-radar{padding:0 1.25rem .5rem;display:grid;grid-template-columns:120px 1fr;gap:.75rem;align-items:center}
+.radar-svg{flex-shrink:0}
+.radar-legend{display:flex;flex-direction:column;gap:.3rem}
+.radar-leg-item{display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--text2)}
+.radar-leg-bar{height:3px;border-radius:1px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.radar-leg-val{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-left:auto}
+
+/* EXPAND BODY */
+.card-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.22,1,.36,1);
+  border-top:1px solid transparent;
+}
+.tool-card.expanded .card-body{max-height:400px;border-top-color:var(--b-faint)}
+.card-body-inner{padding:1rem 1.25rem 1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.card-desc{font-size:.8rem;color:var(--text2);line-height:1.75}
+.card-pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.pros-cons-col{display:flex;flex-direction:column;gap:.3rem}
+.pros-cons-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.1rem}
+.pros-cons-label.pro{color:var(--ok)}
+.pros-cons-label.con{color:var(--red)}
+.pc-item{font-size:.75rem;color:var(--text2);display:flex;gap:.35rem;align-items:flex-start;line-height:1.4}
+.pc-item::before{flex-shrink:0;margin-top:.1rem}
+.pc-item.pro::before{content:'✓';color:var(--ok)}
+.pc-item.con::before{content:'×';color:var(--red)}
+.card-expand-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-align:center;padding:.35rem 0 .6rem;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.expand-chevron{transition:transform .3s;display:inline-block}
+.tool-card.expanded .expand-chevron{transform:rotate(180deg)}
+
+/* ── RECOMMENDATION SECTION ── */
+.rec-section{max-width:1060px;margin:0 auto;padding:0 2rem 2rem;position:relative;z-index:1}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.rec-card{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.25rem}
+.rec-card-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.rec-card-title{font-weight:600;font-size:.88rem;margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+.rec-card-sub{font-size:.78rem;color:var(--red);font-family:'JetBrains Mono',monospace;margin-bottom:.6rem}
+.rec-card-text{font-size:.78rem;color:var(--text2);line-height:1.7}
+
+/* ── HARDWARE TABLE ── */
+.hw-table{width:100%;border-collapse:collapse;margin-top:.75rem}
+.hw-table th{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:.55rem .75rem;border-bottom:1px solid var(--b-faint);text-align:left}
+.hw-table td{padding:.65rem .75rem;border-bottom:1px solid var(--b-faint);font-size:.78rem;color:var(--text2)}
+.hw-table tr:hover td{background:var(--elevated)}
+.hw-table td:first-child{color:var(--text);font-weight:500}
+.hw-table .hl{color:var(--red);font-family:'JetBrains Mono',monospace}
+
+/* ── CH-DE SECTION ── */
+.chde-box{background:var(--red-dim);border:1px solid rgba(234,81,90,.2);border-radius:4px;padding:1.5rem;margin-top:1rem}
+.chde-title{font-weight:600;font-size:.9rem;margin-bottom:.5rem;color:var(--text)}
+.chde-text{font-size:.78rem;color:var(--text2);line-height:1.75}
+
+/* ── COMPARE BUTTON ON CARD ── */
+.cmp-btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:3px 9px;border-radius:2px;border:1px solid var(--b-def);
+  background:transparent;color:var(--text3);cursor:pointer;
+  transition:all .15s;white-space:nowrap;flex-shrink:0;
+}
+.cmp-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.cmp-btn.selected{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.cmp-btn svg{width:11px;height:11px}
+.tool-card.cmp-selected{outline:2px solid var(--red);outline-offset:-1px}
+
+/* ── COMPARISON TOGGLE ── */
+.compare-bar{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:500;display:flex;align-items:center;gap:.75rem;background:var(--elevated);border:1px solid var(--b-strong);border-radius:4px;padding:.6rem 1rem;box-shadow:0 20px 60px rgba(0,0,0,.6);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none}
+.compare-bar.visible{opacity:1;pointer-events:all}
+.compare-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red)}
+.compare-btn{font-size:.75rem;padding:.4rem .85rem;border-radius:3px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.compare-btn.primary{background:var(--red);color:#fff}
+.compare-btn.ghost{background:transparent;border:1px solid var(--b-def);color:var(--text2)}
+.compare-btn:hover{opacity:.85}
+
+/* ── COMPARE MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:600;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--b-def);border-radius:6px;width:100%;max-width:900px;overflow:hidden}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--b-faint);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-weight:600;font-size:.95rem}
+.modal-close{background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:1.2rem;line-height:1}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th{background:var(--elevated);padding:.75rem 1rem;text-align:left;font-size:.78rem;font-weight:500;border-bottom:1px solid var(--b-faint)}
+.compare-table th:first-child{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);width:140px}
+.compare-table td{padding:.65rem 1rem;border-bottom:1px solid var(--b-faint);font-size:.78rem;color:var(--text2);vertical-align:top}
+.compare-table tr:hover td{background:var(--elevated)}
+.best-val{color:var(--ok);font-weight:500}
+
+/* ── DECISION HELPER ── */
+.decision-box{max-width:1060px;margin:0 auto;padding:0 2rem 2rem;position:relative;z-index:1}
+.decision-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+.d-card{background:var(--surface);border:1px solid var(--b-def);border-radius:3px;padding:1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.d-card:hover,.d-card.active{border-color:var(--red);background:var(--red-dim)}
+.d-card-icon{font-size:1.2rem;margin-bottom:.4rem;line-height:1}
+.d-card-label{font-size:.78rem;font-weight:600;margin-bottom:.2rem}
+.d-card-sub{font-size:.7rem;color:var(--text2)}
+.d-result{background:var(--elevated);border:1px solid var(--b-def);border-radius:3px;padding:1.25rem;margin-top:.75rem;display:none}
+.d-result.show{display:block}
+.d-result-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.4rem}
+.d-result-tool{font-weight:600;font-size:1rem;color:var(--text);margin-bottom:.25rem}
+.d-result-reason{font-size:.8rem;color:var(--text2);line-height:1.7}
+
+/* SECTIONS */
+.sec-wrap{max-width:1060px;margin:0 auto;padding:0 2rem 1rem;position:relative;z-index:1}
+.sec-title{font-size:1rem;font-weight:600;margin-bottom:.25rem}
+.sec-sub{font-size:.8rem;color:var(--text2);margin-bottom:1.5rem}
+
+hr.sep{border:none;border-top:1px solid var(--b-faint);margin:2rem 0}
+
+@media(max-width:768px){
+  .hero{padding:2rem 1.25rem 1.5rem}
+  .filter-wrap,.tool-grid,.section-header,.rec-section,.hw-table,.decision-box,.sec-wrap{padding-left:1.25rem;padding-right:1.25rem}
+  .tool-grid{grid-template-columns:1fr}
+  .card-specs{grid-template-columns:repeat(2,1fr)}
+  .rec-grid{grid-template-columns:1fr}
+  .decision-grid{grid-template-columns:repeat(2,1fr)}
+  .card-pros-cons{grid-template-columns:1fr}
+  .modal-overlay{padding:1rem}
+  .card-radar{grid-template-columns:1fr;gap:.5rem}
+  .radar-svg{display:none}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow">KI-Tools · Analyse · April 2026</div>
+  <h1>Speech-to-Text<br><em>Tool-Analyse</em></h1>
+  <p class="hero-sub">Neun Lösungen im Vergleich – von schlüsselfertigem SaaS bis zum lokal betriebenen Modell. Bewertet nach WER, Kosten, Datenschutz und Schweizerdeutsch-Tauglichkeit.</p>
+</div>
+
+<!-- DECISION HELPER -->
+<div class="decision-box">
+  <div class="sec-title">Schnellentscheid: Was ist euer Hauptkriterium?</div>
+  <div class="sec-sub">Klick für eine direkte Empfehlung.</div>
+  <div class="decision-grid">
+    <div class="d-card" onclick="decide(this,'datenschutz')">
+      <div class="d-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA515A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="d-card-label">Datenschutz</div>
+      <div class="d-card-sub">Daten in der Schweiz / lokal</div>
+    </div>
+    <div class="d-card" onclick="decide(this,'chde')">
+      <div class="d-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA515A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="d-card-label">Schweizerdeutsch</div>
+      <div class="d-card-sub">CH-DE als Kernanforderung</div>
+    </div>
+    <div class="d-card" onclick="decide(this,'budget')">
+      <div class="d-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA515A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="d-card-label">Kein Budget</div>
+      <div class="d-card-sub">Kostenlos oder sehr günstig</div>
+    </div>
+    <div class="d-card" onclick="decide(this,'qualitaet')">
+      <div class="d-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA515A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div class="d-card-label">Beste Qualität</div>
+      <div class="d-card-sub">Niedrigster WER, egal was es kostet</div>
+    </div>
+  </div>
+  <div class="d-result" id="decisionResult">
+    <div class="d-result-label">Empfehlung für euren Anwendungsfall</div>
+    <div class="d-result-tool" id="d-tool"></div>
+    <div class="d-result-reason" id="d-reason"></div>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-wrap">
+  <span class="filter-label">Kategorie</span>
+  <button class="fchip on" onclick="filterCat(this,'all')">Alle</button>
+  <button class="fchip saas" onclick="filterCat(this,'saas')">Online SaaS</button>
+  <button class="fchip api" onclick="filterCat(this,'api')">API</button>
+  <button class="fchip lokal" onclick="filterCat(this,'lokal')">Lokal</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Eigenschaft</span>
+  <button class="fchip" id="fc-chde" onclick="filterProp(this,'chde')">CH-DE</button>
+  <button class="fchip" id="fc-gratis" onclick="filterProp(this,'gratis')">Gratis</button>
+  <button class="fchip" id="fc-keincloud" onclick="filterProp(this,'keincloud')">Kein Cloud-Upload</button>
+</div>
+
+<!-- ─────────── SAAS ─────────── -->
+<div class="section-header" id="sec-saas">
+  <div class="section-cat"><div class="cat-dot" style="background:var(--info)"></div><span class="section-label" style="color:var(--info)">Online Software (SaaS) — Kein Setup, sofort nutzbar</span></div>
+  <div class="section-line"></div>
+</div>
+<div class="tool-grid" id="grid-saas">
+
+  <div class="tool-card saas" data-cat="saas" data-chde="1" data-gratis="0" data-keincloud="1" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">töggl.ch</div><div class="card-tagline">Swiss-made SaaS · Fokus CH-DE</div></div>
+      <span class="rec-badge rec-scnat">★ SCNAT Empfehlung</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (Genauigkeit)</div><div class="spec-val good">~8–12% CH-DE</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (SaaS)</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val warn">~CHF 29/Mt. Pro</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓✓</span>
+      <span class="lang chde-ok">CH-DE ✓✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang part">EN (Basis)</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110" id="radar-toggl"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:95%;background:var(--ok)"></div><span class="radar-leg-val">9.5</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:80%;background:var(--info)"></div><span class="radar-leg-val">8.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:95%;background:var(--ok)"></div><span class="radar-leg-val">9.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:50%;background:var(--warn)"></div><span class="radar-leg-val">5.0</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:65%;background:var(--warn)"></div><span class="radar-leg-val">6.5</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Trainiert auf SRF-Material. Daten bleiben in der Schweiz, Swiss Made Software Label. Speaker-Diarization rudimentär. Gut für Interviews und Meetings auf Schweizerdeutsch. Keine Aufnahmen für Training verwendet.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Einzige schlüsselfertige CH-DE SaaS</div>
+          <div class="pc-item pro">Daten ausschliesslich in der Schweiz</div>
+          <div class="pc-item pro">Kein Setup, sofort nutzbar</div>
+          <div class="pc-item pro">revDSG-konform</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Kein globaler Spitzen-WER</div>
+          <div class="pc-item con">Diarization begrenzt</div>
+          <div class="pc-item con">Laufende Kosten ~CHF 29/Mt.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card saas" data-cat="saas" data-chde="0" data-gratis="0" data-keincloud="0" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Speechmatics Web-Portal</div><div class="card-tagline">Starkes DE/FR · Enterprise-Qualität</div></div>
+      <span class="rec-badge rec-de">Beste DE/FR Qualität</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER Deutsch</div><div class="spec-val good">~4% (96% Acc.)</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (SaaS)</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val warn">8h/Mt. gratis, dann pay-per-use</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:55%;background:var(--warn)"></div><span class="radar-leg-val">5.5</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:15%;background:var(--red)"></div><span class="radar-leg-val">1.5</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:85%;background:var(--ok)"></div><span class="radar-leg-val">8.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:90%;background:var(--ok)"></div><span class="radar-leg-val">9.0</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:60%;background:var(--warn)"></div><span class="radar-leg-val">6.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Überperformt Whisper und Deepgram auf Deutsch laut eigenen Benchmarks. Kein CH-DE, aber Hochdeutsch aus CH-Akzent läuft gut. On-Prem-Option vorhanden (Enterprise). DSGVO-konform auf EU-Servern.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Bester DE/FR WER im SaaS-Bereich</div>
+          <div class="pc-item pro">8h/Mt. kostenlos für Tests</div>
+          <div class="pc-item pro">Enterprise On-Prem verfügbar</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Kein echtes CH-DE</div>
+          <div class="pc-item con">Server ausserhalb CH</div>
+          <div class="pc-item con">Teuer bei hohem Volumen</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card saas" data-cat="saas" data-chde="0" data-gratis="0" data-keincloud="0" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Notta.ai</div><div class="card-tagline">Generalist · 58 Sprachen · Web + App</div></div>
+      <span class="rec-badge rec-easy">Einfachste Nutzung</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (optimiert)</div><div class="spec-val">~5–8% EN</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (SaaS)</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val warn">Free + ab $9/Mt.</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:30%;background:var(--red)"></div><span class="radar-leg-val">3.0</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:10%;background:var(--red)"></div><span class="radar-leg-val">1.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:95%;background:var(--ok)"></div><span class="radar-leg-val">9.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:70%;background:var(--warn)"></div><span class="radar-leg-val">7.0</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:75%;background:var(--ok)"></div><span class="radar-leg-val">7.5</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Gut für Meetings / Teams-Integration. AI-Summary inkl. Export als DOCX/SRT/PDF. AWS-Infrastruktur (nicht CH). Für CH-DE-Nutzung ungeeignet. EN ist die Stärke.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">AI-Summary direkt integriert</div>
+          <div class="pc-item pro">Teams/Zoom-Integration</div>
+          <div class="pc-item pro">Export in viele Formate</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">AWS-Infrastruktur (USA)</div>
+          <div class="pc-item con">Kein CH-DE</div>
+          <div class="pc-item con">Für SCNAT-Datenschutz problematisch</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ─────────── API ─────────── -->
+<div class="section-header" id="sec-api" style="margin-top:.5rem">
+  <div class="section-cat"><div class="cat-dot" style="background:var(--warn)"></div><span class="section-label" style="color:var(--warn)">API-Lösungen — Für eigene App / Integration</span></div>
+  <div class="section-line"></div>
+</div>
+<div class="tool-grid" id="grid-api">
+
+  <div class="tool-card api" data-cat="api" data-chde="0" data-gratis="0" data-keincloud="0" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">ElevenLabs Scribe v2</div><div class="card-tagline">Bester WER global · 99 Sprachen</div></div>
+      <span class="rec-badge rec-wer">Bestes WER (2.3%)</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (AA-WER)</div><div class="spec-val good">2.3% — #1 weltweit</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (API only)</div></div>
+      <div class="spec"><div class="spec-label">Kosten API</div><div class="spec-val warn">~$0.22/h (+ $0.07 Key Terms)</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein (cloud)</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:25%;background:var(--red)"></div><span class="radar-leg-val">2.5</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:10%;background:var(--red)"></div><span class="radar-leg-val">1.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:75%;background:var(--ok)"></div><span class="radar-leg-val">7.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:50%;background:var(--warn)"></div><span class="radar-leg-val">5.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Batch + Real-time. Speaker-Diarization (max. 5 Channels ohne Diarization-Kombi). Closed-Source – Daten verlassen CH. Für datenschutzsensible Inhalte prüfen.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">#1 WER weltweit (2.3%)</div>
+          <div class="pc-item pro">Speaker-Diarization inkl.</div>
+          <div class="pc-item pro">Batch + Real-time</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Closed-Source, keine Lokalinstallation</div>
+          <div class="pc-item con">Daten verlassen die Schweiz</div>
+          <div class="pc-item con">Kein CH-DE</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card api" data-cat="api" data-chde="0" data-gratis="1" data-keincloud="0" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Mistral Voxtral (API)</div><div class="card-tagline">Open Weights · Bestes Open-Source-WER</div></div>
+      <span class="rec-badge rec-os">Open Source &amp; günstig</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (AA-WER)</div><div class="spec-val good">2.9% — #3 weltweit</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">Small: 24B / Mini: 3B</div></div>
+      <div class="spec"><div class="spec-label">Kosten API</div><div class="spec-val good">$0.001/min = $0.06/h</div></div>
+      <div class="spec"><div class="spec-label">GPU lokal</div><div class="spec-val warn">Mini: 16GB VRAM</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:60%;background:var(--warn)"></div><span class="radar-leg-val">6.0</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:15%;background:var(--red)"></div><span class="radar-leg-val">1.5</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:65%;background:var(--warn)"></div><span class="radar-leg-val">6.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:92%;background:var(--ok)"></div><span class="radar-leg-val">9.2</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:95%;background:var(--ok)"></div><span class="radar-leg-val">9.5</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Apache 2.0 — lokal deploybar. Bis 30 Min. Audio am Stück. Inkl. Q&A, Zusammenfassung direkt aus Audio. Billigste API-Option. Kann auch selbst gehostet werden. Inkl. Realtime-Variante (4B).</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Günstigste API ($0.001/min)</div>
+          <div class="pc-item pro">Open Weights, lokal deploybar</div>
+          <div class="pc-item pro">Q&A + Summary direkt aus Audio</div>
+          <div class="pc-item pro">Apache 2.0 Lizenz</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">CH-DE nur über Hochdeutsch</div>
+          <div class="pc-item con">Lokal braucht 16GB VRAM (Mini)</div>
+          <div class="pc-item con">API: Daten verlassen CH</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card api" data-cat="api" data-chde="0" data-gratis="0" data-keincloud="0" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Deepgram Nova-3</div><div class="card-tagline">Schnellste Latenz · günstig · robust</div></div>
+      <span class="rec-badge rec-speed">Beste Geschwindigkeit</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER</div><div class="spec-val">~5–7% multilingual</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (API)</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val warn">$0.46/h streaming</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein (cloud)</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:25%;background:var(--red)"></div><span class="radar-leg-val">2.5</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:10%;background:var(--red)"></div><span class="radar-leg-val">1.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:80%;background:var(--ok)"></div><span class="radar-leg-val">8.0</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:72%;background:var(--warn)"></div><span class="radar-leg-val">7.2</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:55%;background:var(--warn)"></div><span class="radar-leg-val">5.5</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Sub-300ms Latenz. Ideal für Live-Transkription / Voice-Agents. 472x Real-Time (extrem schnell). Custom-Vocabulary für Fachbegriffe. US-Infrastruktur – Datenschutz prüfen.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Schnellste Latenz (&lt;300ms)</div>
+          <div class="pc-item pro">Custom-Vocabulary für Fachbegriffe</div>
+          <div class="pc-item pro">Einfache API-Integration</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">US-Infrastruktur</div>
+          <div class="pc-item con">Kein CH-DE</div>
+          <div class="pc-item con">Teurer als Voxtral</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ─────────── LOKAL ─────────── -->
+<div class="section-header" id="sec-lokal" style="margin-top:.5rem">
+  <div class="section-cat"><div class="cat-dot" style="background:var(--ok)"></div><span class="section-label" style="color:var(--ok)">Lokal — Alles bleibt intern, keine Cloud</span></div>
+  <div class="section-line"></div>
+</div>
+<div class="tool-grid" id="grid-lokal">
+
+  <div class="tool-card lokal" data-cat="lokal" data-chde="1" data-gratis="1" data-keincloud="1" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Whisper Large v3 Turbo</div><div class="card-tagline">OpenAI / HuggingFace · Standard lokal</div></div>
+      <span class="rec-badge rec-std">Bewährter Standard</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (multilingual)</div><div class="spec-val">~7.4% Ø</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">809M Params / ~1.6 GB</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val good">Gratis (MIT-Lizenz)</div></div>
+      <div class="spec"><div class="spec-label">Min. GPU</div><div class="spec-val warn">RTX 3060 12GB VRAM</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang chde-ok">CH-DE ✓ (→ Hochdeutsch)</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:60%;background:var(--warn)"></div><span class="radar-leg-val">6.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:55%;background:var(--warn)"></div><span class="radar-leg-val">5.5</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:76%;background:var(--ok)"></div><span class="radar-leg-val">7.6</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">99 Sprachen. 5M+ Trainingsstunden. faster-whisper (CTranslate2) macht es 4x schneller + INT8-Quant, reduziert VRAM auf ~3GB. Für 1h Audio braucht RTX 4090 ~1 Sekunde. Mit faster-whisper als lokale API deploybar. Breite Community, gut dokumentiert.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">MIT-Lizenz, 100% gratis</div>
+          <div class="pc-item pro">Keine Datenweitergabe</div>
+          <div class="pc-item pro">Als lokale REST-API deploybar</div>
+          <div class="pc-item pro">CH-DE wird (als Hochdeutsch) verstanden</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Benötigt GPU-Hardware</div>
+          <div class="pc-item con">CH-DE nicht nativ trainiert</div>
+          <div class="pc-item con">Setup-Aufwand nötig</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card lokal" data-cat="lokal" data-chde="0" data-gratis="1" data-keincloud="1" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Voxtral Mini 3B (lokal / vLLM)</div><div class="card-tagline">Mistral · Bestes Open-Weight-WER lokal</div></div>
+      <span class="rec-badge rec-local">Beste lokale Qualität</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (AA-WER)</div><div class="spec-val good">2.9% — Open-Weight #1</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">3–4B Params / ~8 GB</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val good">Gratis (Apache 2.0)</div></div>
+      <div class="spec"><div class="spec-label">Min. GPU</div><div class="spec-val bad">RTX 3090 / A10 (16GB)</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">EN ✓✓</span>
+      <span class="lang no">CH-DE —</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:15%;background:var(--red)"></div><span class="radar-leg-val">1.5</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:40%;background:var(--warn)"></div><span class="radar-leg-val">4.0</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:92%;background:var(--ok)"></div><span class="radar-leg-val">9.2</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Apache 2.0 – vollständig lokal, keine Datenweitergabe. Deployment via vLLM + Docker (OpenAI-kompatibler API-Endpunkt). Realtime-Variante (4B) ebenfalls verfügbar. Bis 30 Min. Audio, inkl. Summarization direkt. Braucht Linux + NVIDIA-GPU. Auch als Pure-C-Implementierung (voxtral.c) für Apple Silicon verfügbar.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Bester lokaler WER (2.9%)</div>
+          <div class="pc-item pro">OpenAI-kompatibler API-Endpunkt</div>
+          <div class="pc-item pro">Summary direkt aus Audio</div>
+          <div class="pc-item pro">Apple Silicon via voxtral.c</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">16GB VRAM Minimum</div>
+          <div class="pc-item con">Linux + NVIDIA für vLLM empfohlen</div>
+          <div class="pc-item con">Kein CH-DE</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card lokal" data-cat="lokal" data-chde="1" data-gratis="1" data-keincloud="1" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">Whisper fine-tuned Swiss German</div><div class="card-tagline">Flurin17/FHNW · Speziell für CH-DE</div></div>
+      <span class="rec-badge rec-ch">Einzige lokale CH-DE-Option</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER CH-DE</div><div class="spec-val good">Besser als Whisper-Base auf CH-DE</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">809M Params / ~1.6 GB</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val good">Gratis (HuggingFace)</div></div>
+      <div class="spec"><div class="spec-label">Min. GPU</div><div class="spec-val warn">RTX 3060 12GB (oder CPU langsam)</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang chde-ok">CH-DE ✓✓ → Hochdeutsch</span>
+      <span class="lang ok">DE ✓</span>
+      <span class="lang part">FR ✓ (über Base)</span>
+      <span class="lang ok">EN ✓</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:90%;background:var(--ok)"></div><span class="radar-leg-val">9.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:50%;background:var(--warn)"></div><span class="radar-leg-val">5.0</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:55%;background:var(--warn)"></div><span class="radar-leg-val">5.5</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:100%;background:var(--ok)"></div><span class="radar-leg-val">10.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Fine-Tune auf SwissDial (ETH), Swiss Parliaments Corpus V2 (FHNW, 293h), ArchiMob (UZH). Transkribiert CH-DE → Hochdeutsch. Modell auf HuggingFace verfügbar. Trainingsgrundlage grösstenteils privat. FHNW betreibt auch STT4SG (Demo-Tool). Ideal wenn CH-DE ein Kernbedarf ist.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Beste CH-DE Genauigkeit lokal</div>
+          <div class="pc-item pro">Auf akademischen CH-Korpora trainiert</div>
+          <div class="pc-item pro">Keine Datenweitergabe</div>
+          <div class="pc-item pro">Gratis auf HuggingFace</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Nur für CH-DE optimiert</div>
+          <div class="pc-item con">WER für Hochdeutsch schlechter</div>
+          <div class="pc-item con">GPU empfohlen</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<hr class="sep" style="max-width:1060px;margin:0 auto 2rem">
+
+<!-- SCNAT RECOMMENDATION -->
+<div class="rec-section">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);margin-bottom:.9rem">★ Empfehlung für SCNAT</div>
+  <div style="font-size:1.1rem;font-weight:700;margin-bottom:.35rem">Was wir empfehlen</div>
+  <div style="font-size:.82rem;color:var(--text2);margin-bottom:1.5rem">Akademisches Umfeld · Datenschutz/revDSG · CH-DE relevant · GPU-Server in Planung · MacBook-Arbeitsgeräte</div>
+  <div class="rec-grid">
+    <div class="rec-card" style="border-color:rgba(61,170,117,.3);background:rgba(61,170,117,.04)">
+      <div class="rec-card-num">★ Hauptempfehlung · GPU-Server</div>
+      <div class="rec-card-title"><span style="color:var(--ok)">01</span> Whisper Large v3 Turbo</div>
+      <div class="rec-card-sub">Gratis · MIT-Lizenz · Shared Server für alle</div>
+      <div class="rec-card-text">Mit einem dedizierten GPU-Server läuft Whisper als lokale REST-API, die alle MacBook-User der SCNAT über das Netz nutzen können – ohne GPU auf dem eigenen Gerät. faster-whisper reduziert VRAM-Bedarf auf ~3 GB. Bei CH-DE als Kernbedarf: das FHNW-Fine-Tune direkt auf demselben Server deployen.</div>
+    </div>
+    <div class="rec-card" style="border-color:rgba(234,81,90,.2)">
+      <div class="rec-card-num">Sofort · Überbrückung bis Server</div>
+      <div class="rec-card-title"><span style="color:var(--red)">02</span> töggl.ch</div>
+      <div class="rec-card-sub">CHF 29/Mt. · Daten in CH · kein Setup</div>
+      <div class="rec-card-text">Bis der GPU-Server läuft: töggl.ch als schlüsselfertige Lösung. Daten bleiben in der Schweiz, CH-DE funktioniert nativ, kein IT-Aufwand. Kann parallel weiterlaufen für Nutzer ohne Zugriff auf den internen Server.</div>
+    </div>
+    <div class="rec-card" style="border-color:rgba(212,136,42,.2)">
+      <div class="rec-card-num">Auf MacBook · Ohne Server</div>
+      <div class="rec-card-title"><span style="color:var(--warn)">03</span> Whisper via MLX / whisper.cpp</div>
+      <div class="rec-card-sub">Gratis · Apple Silicon · Metal-Beschleunigung</div>
+      <div class="rec-card-text">Auf M1/M2/M3/M4 MacBooks läuft Whisper über MLX (Apple) oder whisper.cpp mit Metal-Beschleunigung direkt auf dem Gerät – ohne Cloud, ohne GPU-Server. Langsamer als dedizierter Server, aber für gelegentliche Nutzung durchaus praktikabel.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HARDWARE TABLE -->
+<div class="sec-wrap">
+  <div class="sec-title">Hardware-Übersicht</div>
+  <div class="sec-sub">Von MacBook bis dedizierter GPU-Server – Whisper läuft auf allem. 1h Audio = Referenzwert.</div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--info);margin-bottom:.5rem">Apple Silicon · MacBook / Mac Studio</div>
+  <table class="hw-table" style="margin-bottom:1.5rem">
+    <tr><th>Gerät</th><th>Chip</th><th>Unified Memory</th><th>Kosten ca.</th><th>Batch 1h Audio</th><th>Methode</th></tr>
+    <tr><td>MacBook Air M2</td><td>Apple M2</td><td>8–24 GB</td><td>ab CHF 1'299</td><td>~8–12 Min.</td><td>whisper.cpp · Metal</td></tr>
+    <tr><td>MacBook Pro M3 Pro</td><td>Apple M3 Pro</td><td>18–36 GB</td><td>ab CHF 2'199</td><td>~3–5 Min.</td><td>MLX / whisper.cpp</td></tr>
+    <tr><td class="hl">Mac Studio M4 Max</td><td class="hl">Apple M4 Max</td><td class="hl">48–128 GB</td><td class="hl">ab CHF 2'199</td><td class="hl">~1–2 Min.</td><td class="hl">MLX · als lokaler Server nutzbar</td></tr>
+  </table>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ok);margin-bottom:.5rem">★ SCNAT Empfehlung · Dedizierter GPU-Server</div>
+  <table class="hw-table" style="margin-bottom:1.5rem">
+    <tr><th>Setup</th><th>GPU</th><th>VRAM</th><th>Kosten ca.</th><th>Batch 1h Audio</th><th>Nutzer parallel</th></tr>
+    <tr><td>Einstieg Server</td><td>RTX 4060 Ti</td><td>16 GB</td><td>~CHF 450</td><td>~2–3 Min.</td><td>2–3 parallel</td></tr>
+    <tr><td class="hl">Empfohlen SCNAT</td><td class="hl">RTX 4080 Super</td><td class="hl">16 GB</td><td class="hl">~CHF 800</td><td class="hl">~1 Min.</td><td class="hl">4–6 parallel</td></tr>
+    <tr><td>Voxtral Mini lokal</td><td>RTX 3090 / 4090</td><td>24 GB</td><td>~CHF 1'200–2'000</td><td>&lt;1 Min.</td><td>6–10 parallel</td></tr>
+  </table>
+
+  <div style="background:var(--elevated);border:1px solid var(--b-def);border-left:3px solid var(--info);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1rem">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--info);margin-bottom:.4rem">Setup auf MacBook (kein Server nötig)</div>
+    <div style="font-size:.78rem;color:var(--text2);line-height:1.75">
+      <strong style="color:var(--text)">whisper.cpp</strong> – läuft nativ auf Apple Silicon via Metal. Kein Python, kein Setup-Aufwand. Direkte CLI oder als API. Modell (~1.6 GB) einmalig herunterladen.<br>
+      <strong style="color:var(--text)">MLX Whisper</strong> (Apple Framework) – Python, läuft auf dem Neural Engine des M-Chips. Schneller als whisper.cpp auf M3+. Installierbar via <code style="font-family:'JetBrains Mono',monospace;font-size:.75rem;background:var(--subtle);padding:1px 5px;border-radius:2px">pip install mlx-whisper</code>.<br>
+      <strong style="color:var(--text)">Faustregel:</strong> M2 Pro reicht für gelegentliche Nutzung (Interviews, kurze Sitzungen). Für Dauerbetrieb oder mehrere Nutzer gleichzeitig: dedizierter Server.
+    </div>
+  </div>
+
+  <div class="chde-box">
+    <div class="chde-title">Schweizerdeutsch – realistische Einschätzung</div>
+    <div class="chde-text">Kein kommerzielles Modell unterstützt CH-DE wirklich nativ. Whisper transkribiert Schweizerdeutsch, obwohl es nicht explizit Teil der Trainingsdaten war — es behandelt es wie eine Übersetzung ins Hochdeutsche. Das klappt für viele Zwecke. Wer präziser sein will, nimmt das <strong>FHNW/Flurin17-Fine-Tune</strong> (SwissDial ETH, Swiss Parliaments Corpus V2 FHNW 293h, ArchiMob UZH) – läuft auf demselben Server oder MacBook. <strong>töggl.ch</strong> bleibt die einzige schlüsselfertige SaaS-Option mit echter CH-DE-Unterstützung und Schweizer Datenhaltung.</div>
+  </div>
+</div>
+
+<div style="height:5rem"></div>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="21" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+  <span class="compare-count" id="compareCount">1 Tool ausgewählt</span>
+  <button class="compare-btn primary" id="compareBarBtn" onclick="openCompare()" disabled style="opacity:.4">Jetzt vergleichen</button>
+  <button class="compare-btn ghost" onclick="clearCompare()">Auswahl leeren</button>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-overlay" id="compareModal" onclick="closeCompareOnOutside(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Tool-Vergleich</div>
+      <button class="modal-close" onclick="closeCompare()">×</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="compare-table" id="compareTable"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleCard(card) {
+  if (card.classList.contains('expanded')) {
+    card.classList.remove('expanded');
+  } else {
+    card.classList.add('expanded');
+  }
+}
+
+let activeCat = 'all';
+let activeProp = null;
+
+function filterCat(btn, cat) {
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  activeCat = cat;
+  applyFilters();
+}
+
+function filterProp(btn, prop) {
+  if (activeProp === prop) {
+    btn.classList.remove('on');
+    activeProp = null;
+  } else {
+    document.querySelectorAll('#fc-chde,#fc-gratis,#fc-keincloud').forEach(c=>c.classList.remove('on'));
+    btn.classList.add('on');
+    activeProp = prop;
+  }
+  applyFilters();
+}
+
+function applyFilters() {
+  document.querySelectorAll('.tool-card').forEach(card => {
+    const cat = card.dataset.cat;
+    const catOk = activeCat === 'all' || cat === activeCat;
+    let propOk = true;
+    if (activeProp === 'chde')     propOk = card.dataset.chde === '1';
+    if (activeProp === 'gratis')   propOk = card.dataset.gratis === '1';
+    if (activeProp === 'keincloud')propOk = card.dataset.keincloud === '1';
+    card.classList.toggle('hidden', !catOk || !propOk);
+  });
+  ['saas','api','lokal'].forEach(cat => {
+    const sec  = document.getElementById('sec-' + cat);
+    const grid = document.getElementById('grid-' + cat);
+    if (!sec || !grid) return;
+    const visible = [...grid.querySelectorAll('.tool-card')].some(c => !c.classList.contains('hidden'));
+    sec.style.display = visible ? '' : 'none';
+    grid.style.display = visible ? '' : 'none';
+  });
+}
+
+const decisions = {
+  datenschutz: { tool:'töggl.ch + Whisper v3 Turbo (lokal)', reason:'Datenschutz als Priorität bedeutet: entweder SaaS mit Schweizer Datenhaltung (töggl.ch) oder vollständig lokal (Whisper/Voxtral). Für sofortige Nutzung ohne IT-Aufwand: töggl.ch. Für die eigene App mittelfristig: Whisper Large v3 Turbo via faster-whisper als lokale REST-API.' },
+  chde: { tool:'töggl.ch (SaaS) oder FHNW Fine-Tune (lokal)', reason:'Für echtes CH-DE gibt es zwei Optionen: töggl.ch ist die einzige schlüsselfertige SaaS-Lösung mit SRF-Trainingsdaten und Schweizer Datenhaltung. Lokal: das FHNW/Flurin17-Fine-Tune (SwissDial-ETH + Swiss Parliaments Corpus V2, 293h) ist die einzige lokale CH-DE-Option mit akademischer Trainingsgrundlage.' },
+  budget: { tool:'Whisper Large v3 Turbo (lokal, MIT-Lizenz)', reason:'MIT-Lizenz, komplett gratis, läuft auf vorhandener Hardware. Mit faster-whisper auch ohne GPU auf CPU nutzbar (langsamer). Einzige Kosten: optional GPU-Hardware. Voxtral Mini ist ebenfalls gratis (Apache 2.0) wenn 16GB VRAM verfügbar.' },
+  qualitaet: { tool:'ElevenLabs Scribe v2 (API, 2.3% WER)', reason:'Bester WER weltweit (2.3%), #1 auf dem AA-WER-Benchmark. Für maximale Qualität ohne Datenschutzeinschränkungen. Wenn lokal: Voxtral Mini 3B (2.9% WER, bester Open-Weight-WER) – braucht aber 16GB VRAM und Linux.' },
+};
+
+function decide(btn, key) {
+  document.querySelectorAll('.d-card').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  const d = decisions[key];
+  document.getElementById('d-tool').textContent = d.tool;
+  document.getElementById('d-reason').textContent = d.reason;
+  document.getElementById('decisionResult').classList.add('show');
+}
+
+const selected = new Set();
+
+function toggleCompare(e, btn) {
+  e.stopPropagation();
+  const card = btn.closest('.tool-card');
+  const name = card.querySelector('.card-name').textContent;
+  if (selected.has(name)) {
+    selected.delete(name);
+    btn.classList.remove('selected');
+    card.classList.remove('cmp-selected');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen';
+  } else if (selected.size < 4) {
+    selected.add(name);
+    btn.classList.add('selected');
+    card.classList.add('cmp-selected');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Ausgewählt';
+  } else {
+    const bar = document.getElementById('compareBar');
+    bar.style.borderColor = 'var(--red)';
+    setTimeout(() => bar.style.borderColor = '', 600);
+    return;
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const n = selected.size;
+  document.getElementById('compareCount').textContent =
+    n === 0 ? '—' : n === 1 ? '1 Tool ausgewählt · mind. 2 für Vergleich' : n + ' Tools ausgewählt';
+  document.getElementById('compareBar').classList.toggle('visible', n >= 1);
+  document.getElementById('compareBarBtn').disabled = n < 2;
+  document.getElementById('compareBarBtn').style.opacity = n < 2 ? '.4' : '1';
+}
+
+function clearCompare() {
+  selected.clear();
+  document.querySelectorAll('.tool-card').forEach(c => {
+    c.classList.remove('cmp-selected');
+    const btn = c.querySelector('.cmp-btn');
+    if (btn) {
+      btn.classList.remove('selected');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen';
+    }
+  });
+  document.getElementById('compareBar').classList.remove('visible');
+}
+
+const toolData = {
+  'töggl.ch':                  { wer:'~8–12% CH-DE', kosten:'~CHF 29/Mt.',    gpu:'Nein',                    lizenz:'Proprietär', chde:'✓✓ nativ', datenschutz:'🇨🇭 in CH'},
+  'Speechmatics Web-Portal':   { wer:'~4% DE',       kosten:'8h gratis + pay', gpu:'Nein',                    lizenz:'Proprietär', chde:'—',         datenschutz:'EU'},
+  'Notta.ai':                  { wer:'~5–8% EN',      kosten:'Free + $9/Mt.',  gpu:'Nein',                    lizenz:'Proprietär', chde:'—',         datenschutz:'USA (AWS)'},
+  'ElevenLabs Scribe v2':      { wer:'2.3%',          kosten:'$0.22/h',        gpu:'Nein (cloud)',            lizenz:'Proprietär', chde:'—',         datenschutz:'Cloud (US)'},
+  'Mistral Voxtral (API)':     { wer:'2.9%',          kosten:'$0.001/min',     gpu:'Mini: 16GB (lokal)',       lizenz:'Apache 2.0', chde:'—',         datenschutz:'API/lokal'},
+  'Deepgram Nova-3':           { wer:'~5–7%',         kosten:'$0.46/h',        gpu:'Nein (cloud)',            lizenz:'Proprietär', chde:'—',         datenschutz:'USA'},
+  'Whisper Large v3 Turbo':    { wer:'~7.4%',         kosten:'Gratis',         gpu:'RTX 3060 12GB',           lizenz:'MIT',        chde:'✓ (→ Hochdt.)', datenschutz:'🔒 lokal'},
+  'Voxtral Mini 3B (lokal / vLLM)':{ wer:'2.9%',     kosten:'Gratis',         gpu:'RTX 3090/A10 16GB',       lizenz:'Apache 2.0', chde:'—',         datenschutz:'🔒 lokal'},
+  'Whisper fine-tuned Swiss German':{ wer:'Besser als Base CH-DE', kosten:'Gratis', gpu:'RTX 3060 12GB', lizenz:'HuggingFace', chde:'✓✓ spezialisiert', datenschutz:'🔒 lokal'},
+};
+
+function openCompare() {
+  const names = [...selected];
+  const rows = [
+    ['WER','wer'],['Kosten','kosten'],['GPU / Infra','gpu'],
+    ['Lizenz','lizenz'],['CH-DE','chde'],['Datenschutz','datenschutz']
+  ];
+  let html = '<tr><th>Kriterium</th>' + names.map(n=>'<th>'+n+'</th>').join('') + '</tr>';
+  rows.forEach(function(r) {
+    var label = r[0], key = r[1];
+    html += '<tr><td style="font-family:\'JetBrains Mono\',monospace;font-size:9px;text-transform:uppercase;color:var(--text3)">' + label + '</td>';
+    names.forEach(function(n) {
+      var val = (toolData[n] && toolData[n][key]) || '—';
+      var isGood = val.indexOf('Gratis') >= 0 || val.indexOf('🔒') >= 0 || val.indexOf('✓') >= 0;
+      html += '<td class="' + (isGood ? 'best-val' : '') + '">' + val + '</td>';
+    });
+    html += '</tr>';
+  });
+  document.getElementById('compareTable').innerHTML = html;
+  document.getElementById('compareModal').classList.add('open');
+}
+
+function closeCompare() { document.getElementById('compareModal').classList.remove('open'); }
+function closeCompareOnOutside(e) { if (e.target === document.getElementById('compareModal')) closeCompare(); }
+</script>
+</body>
+</html>

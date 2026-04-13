@@ -1,15 +1,126 @@
 {
-  "home": true,
-  "strategie": true,
-  "handlungsfelder": true,
-  "massnahmen": true,
-  "systemlandschaft": true,
-  "ki-hub": true,
-  "schulungen": true,
-  "software-antraege": true,
-  "scnat-db": true,
-  "prozesse": true,
-  "team": true,
-  "faqs": true,
-  "glossar": true
+  "portal": [
+    {
+      "key": "home",
+      "visible": true
+    },
+    {
+      "key": "strategie",
+      "visible": true
+    },
+    {
+      "key": "handlungsfelder",
+      "visible": true
+    },
+    {
+      "key": "massnahmen",
+      "visible": true
+    },
+    {
+      "key": "sprints",
+      "visible": true
+    },
+    {
+      "key": "systemlandschaft",
+      "visible": true
+    },
+    {
+      "key": "ki-hub",
+      "visible": true
+    },
+    {
+      "key": "schulungen",
+      "visible": true
+    },
+    {
+      "key": "software-antraege",
+      "visible": true
+    },
+    {
+      "key": "scnat-db",
+      "visible": true
+    },
+    {
+      "key": "meine-uebersicht",
+      "visible": true
+    },
+    {
+      "key": "prozesse",
+      "visible": true
+    },
+    {
+      "key": "team",
+      "visible": true
+    },
+    {
+      "key": "faqs",
+      "visible": true
+    },
+    {
+      "key": "glossar",
+      "visible": true
+    }
+  ],
+  "cp": [
+    {
+      "key": "cp-dashboard",
+      "visible": true
+    },
+    {
+      "key": "cp-users",
+      "visible": true
+    },
+    {
+      "key": "cp-nachrichten",
+      "visible": true
+    },
+    {
+      "key": "cp-live-infos",
+      "visible": true
+    },
+    {
+      "key": "cp-news",
+      "visible": true
+    },
+    {
+      "key": "cp-content",
+      "visible": true
+    },
+    {
+      "key": "cp-events",
+      "visible": true
+    },
+    {
+      "key": "cp-antraege",
+      "visible": true
+    },
+    {
+      "key": "cp-changes",
+      "visible": true
+    },
+    {
+      "key": "cp-massnahmen",
+      "visible": true
+    },
+    {
+      "key": "cp-sprints",
+      "visible": true
+    },
+    {
+      "key": "cp-themen",
+      "visible": true
+    },
+    {
+      "key": "cp-scnat-db",
+      "visible": true
+    },
+    {
+      "key": "cp-sichtbarkeit",
+      "visible": true
+    },
+    {
+      "key": "cp-admin-stuff",
+      "visible": true
+    }
+  ]
 }

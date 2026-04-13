@@ -5,13 +5,16 @@
     "titel": "Kommunikation Digitale Transformation",
     "beschreibung": "Regelmässige Updates zur Digitalisierung einführen, einen einfachen Kommunikationsplan entwickeln und eine zentrale Ansprechperson für Fragen zur Strategie definieren und sichtbar machen.",
     "cluster": "Kommunikation & Transparenz",
-    "wirkung": 8.5,
-    "aufwand": 8,
+    "wirkung": 8.3,
+    "aufwand": 3,
     "prioritaet": "A",
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": true,
-    "tags": ["Information & Transparenz", "Kommunikation"],
+    "tags": [
+      "Information & Transparenz",
+      "Kommunikation"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -19,17 +22,20 @@
   },
   {
     "id": "m29",
-    "reihenfolge": 2,
+    "reihenfolge": 4,
     "titel": "Einführung Digitalisierungsplattform",
     "beschreibung": "Aufbau einer modernen, interaktiven Plattform als zentraler Info- und Wissenshub zur Digitalisierung. Geht über das klassische Intranet hinaus: Toolübersicht, Massnahmentracking, KI-Hub, FAQ und Schulungsinhalte an einem Ort.",
     "cluster": "Kommunikation & Transparenz",
     "wirkung": 8.5,
-    "aufwand": 7,
+    "aufwand": 5,
     "prioritaet": "A",
     "prioritaet_label": "Quick Win",
     "status": "in_umsetzung",
     "start_empfohlen": true,
-    "tags": ["Information & Transparenz", "Kommunikation"],
+    "tags": [
+      "Information & Transparenz",
+      "Kommunikation"
+    ],
     "scnat_db": false,
     "scnat_portal": true,
     "isNew": true,
@@ -37,7 +43,7 @@
   },
   {
     "id": "m01",
-    "reihenfolge": 3,
+    "reihenfolge": 8,
     "titel": "KI Lernpfad",
     "beschreibung": "SCNAT-spezifische KI-Schulungsinhalte anbieten, inkl. Reminder für Guidelines. Die Digitalisierungsplattform dient als ergänzender Kanal mit KI-Hub, Prompt-Tipps und Best Practices.",
     "cluster": "Digitale Kultur & Befähigung",
@@ -47,7 +53,10 @@
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": true,
-    "tags": ["Schulungen", "Befähigungen"],
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": true,
     "isNew": false,
@@ -55,12 +64,12 @@
   },
   {
     "id": "m07",
-    "reihenfolge": 4,
+    "reihenfolge": 2,
     "titel": "Ressourcenabklärung mit klarem Konzept",
     "beschreibung": "Systematische Ressourcenabklärung pro Bereich: Wer ist motiviert? Wie werden Kapazitäten verbindlich geregelt? Wie wird Arbeit an Agents übergeben und wie organisieren sich die Teams intern?",
     "cluster": "Strategie & Steuerung",
     "wirkung": 8,
-    "aufwand": 7,
+    "aufwand": 4,
     "prioritaet": "A",
     "prioritaet_label": "Quick Win",
     "status": "geplant",
@@ -78,12 +87,14 @@
     "beschreibung": "Übersicht über alle digitalen Tools der SCNAT erarbeiten und klar kommunizieren. Inkl. strukturierter Bewertung zur Evaluation, welche Tools konsolidiert, ersetzt oder ergänzt werden sollten.",
     "cluster": "Kommunikation & Transparenz",
     "wirkung": 8.1,
-    "aufwand": 5,
+    "aufwand": 3,
     "prioritaet": "B",
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": true,
-    "tags": ["Information & Transparenz"],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": true,
     "isNew": false,
@@ -91,17 +102,20 @@
   },
   {
     "id": "m30",
-    "reihenfolge": 6,
+    "reihenfolge": 3,
     "titel": "Team Change Agents",
     "beschreibung": "Pro Abteilung eine motivierte Person als Change Agent identifizieren, die als Brückenbauer zwischen Task Force und Team wirkt – Feedback sammelt, Best Practices teilt und die digitale Kultur fördert.",
     "cluster": "Digitale Kultur & Befähigung",
     "wirkung": 7.5,
-    "aufwand": 6,
+    "aufwand": 4,
     "prioritaet": "A",
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": true,
-    "tags": ["Befähigungen", "Kommunikation"],
+    "tags": [
+      "Befähigungen",
+      "Kommunikation"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": true,
@@ -109,12 +123,12 @@
   },
   {
     "id": "m31",
-    "reihenfolge": 7,
+    "reihenfolge": 6,
     "titel": "Konzept technologische Zukunft DB & Portale",
     "beschreibung": "Strategisches Konzept für die technologische Zukunft der SCNAT-Datenbank und Webportale: Modernisierung der Architektur, Entkopplung von DB und Portalen, Schnittstellen zu Drittsystemen und Grundlage für die IT-Roadmap.",
     "cluster": "Daten & Wissen",
-    "wirkung": 7,
-    "aufwand": 5,
+    "wirkung": 7.5,
+    "aufwand": 8,
     "prioritaet": "B",
     "prioritaet_label": "Strategisch",
     "status": "geplant",
@@ -127,7 +141,7 @@
   },
   {
     "id": "m04",
-    "reihenfolge": 8,
+    "reihenfolge": 11,
     "titel": "Prozessdigitalisierung",
     "beschreibung": "Digitalisierung priorisierter Geschäftsprozesse auf Basis der Top-Prozess-Identifikation. Fokus auf Eventmanagement, Beitragswesen, Wahlgeschäft, Archivierung, Projektmanagement und Publikationsentwicklung als erste Kandidaten.",
     "cluster": "Prozesse & Methoden",
@@ -145,12 +159,12 @@
   },
   {
     "id": "m05",
-    "reihenfolge": 9,
+    "reihenfolge": 7,
     "titel": "KI-Strategie",
     "beschreibung": "KI-Strategie für die SCNAT erarbeiten: Einsatzgebiete identifizieren, Leitplanken definieren, Pilotprojekte priorisieren und Governance-Regeln für den verantwortungsvollen Umgang mit KI-Tools festlegen.",
     "cluster": "Strategie & Steuerung",
     "wirkung": 8.3,
-    "aufwand": 6,
+    "aufwand": 7,
     "prioritaet": "B",
     "prioritaet_label": "Strategisch",
     "status": "geplant",
@@ -173,7 +187,9 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Beschaffung"],
+    "tags": [
+      "Beschaffung"
+    ],
     "scnat_db": true,
     "scnat_portal": false,
     "isNew": false,
@@ -181,8 +197,8 @@
   },
   {
     "id": "m32",
-    "reihenfolge": 11,
-    "titel": "Tools Analyse",
+    "reihenfolge": 9,
+    "titel": "Anaylse Tools & Software",
     "beschreibung": "Systematische Analyse der bestehenden Toollandschaft: Welche Tools werden tatsächlich genutzt, wo gibt es Redundanzen, wo fehlen Lösungen? Entscheidungsgrundlage für Konsolidierung, Reduktion oder gezielte Erweiterung.",
     "cluster": "Infrastruktur & Beschaffung",
     "wirkung": 7,
@@ -191,7 +207,10 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Beschaffung", "Information & Transparenz"],
+    "tags": [
+      "Beschaffung",
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": true,
     "isNew": true,
@@ -204,12 +223,14 @@
     "beschreibung": "Klärung der Verantwortlichkeiten für die gesamte Applikationslandschaft, Einbettung in den Beschaffungsprozess und das Betriebskonzept. Anpassung anhand der Ergebnisse der SCNAT-DB-Analyse.",
     "cluster": "Infrastruktur & Beschaffung",
     "wirkung": 8.8,
-    "aufwand": 3,
+    "aufwand": 6,
     "prioritaet": "B",
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Beschaffung"],
+    "tags": [
+      "Beschaffung"
+    ],
     "scnat_db": true,
     "scnat_portal": false,
     "isNew": false,
@@ -226,11 +247,14 @@
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen"],
+    "tags": [
+      "Schulungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m10",
@@ -247,7 +271,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Hoher Aufwand – extern vergeben oder stark vereinfachen"
+    "notiz": "Hoher Aufwand – extern vergeben oder stark vereinfachen",
+    "reihenfolge": null
   },
   {
     "id": "m11",
@@ -255,16 +280,20 @@
     "beschreibung": "Einführung einer einfachen, einheitlichen Projektmanagementmethode für die gesamte Organisation. Inkl. Schulung, Vorlagen und Toolempfehlung, um Projekte transparenter und nachvollziehbarer zu führen.",
     "cluster": "Prozesse & Methoden",
     "wirkung": 7.1,
-    "aufwand": 9,
-    "prioritaet": "C",
-    "prioritaet_label": "Mittelfristig",
+    "aufwand": 1,
+    "prioritaet": "B",
+    "prioritaet_label": "Strategisch",
     "status": "geplant",
-    "start_empfohlen": false,
-    "tags": ["Schulungen", "Befähigungen"],
+    "start_empfohlen": true,
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": 13
   },
   {
     "id": "m12",
@@ -272,7 +301,7 @@
     "beschreibung": "Data Governance weiterentwickeln: Klare Verantwortlichkeiten, Prozesse und Regeln für das Datenmanagement definieren. Aufbauend auf dem bestehenden Datenkonzept, mit Fokus auf Qualität und Nachvollziehbarkeit.",
     "cluster": "Daten & Wissen",
     "wirkung": 7,
-    "aufwand": 4,
+    "aufwand": 6,
     "prioritaet": "B",
     "prioritaet_label": "Strategisch",
     "status": "geplant",
@@ -281,7 +310,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m13",
@@ -298,7 +328,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m14",
@@ -311,11 +342,14 @@
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Beschaffung"],
+    "tags": [
+      "Beschaffung"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m15",
@@ -332,7 +366,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m16",
@@ -349,7 +384,8 @@
     "scnat_db": true,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Voraussetzung für Prozessdigitalisierung (m04)"
+    "notiz": "Voraussetzung für Prozessdigitalisierung (m04)",
+    "reihenfolge": 19
   },
   {
     "id": "m17",
@@ -357,16 +393,19 @@
     "beschreibung": "Formate für die nachhaltige Verankerung der Digitalen Transformation etablieren: z.B. Change Agents, Fokusgruppen oder eine Community of Practice als feste Gefässe im Arbeitsalltag.",
     "cluster": "Digitale Kultur & Befähigung",
     "wirkung": 6.5,
-    "aufwand": 8,
+    "aufwand": 5,
     "prioritaet": "C",
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Befähigungen"],
+    "tags": [
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": 18
   },
   {
     "id": "m18",
@@ -379,11 +418,15 @@
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen", "Befähigungen"],
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m19",
@@ -392,15 +435,19 @@
     "cluster": "Digitale Kultur & Befähigung",
     "wirkung": 6.5,
     "aufwand": 7,
-    "prioritaet": "C",
-    "prioritaet_label": "Mittelfristig",
+    "prioritaet": "B",
+    "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen", "Befähigungen"],
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m20",
@@ -408,22 +455,43 @@
     "beschreibung": "Definition der relevanten digitalen Kompetenzen und zugehörigen Kategorien in einem Workshop mit Schlüsselpersonen. Grundlage für gezielte Weiterbildungsmassnahmen und Anforderungsprofile.",
     "cluster": "Digitale Kultur & Befähigung",
     "wirkung": 6.5,
-    "aufwand": 1,
+    "aufwand": 7,
     "prioritaet": "D",
     "prioritaet_label": "Langfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Befähigungen"],
+    "tags": [
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Sehr schwierig – strategische Grundlagenarbeit"
+    "notiz": "Sehr schwierig – strategische Grundlagenarbeit",
+    "reihenfolge": null
   },
   {
     "id": "m21",
     "titel": "Datenkonzept",
     "beschreibung": "Umfassendes Datenkonzept erstellen: Übersicht aller relevanten Datenbestände, deren Ablageorte, Verantwortlichkeiten und Schnittstellen zwischen Systemen. Basis für bessere Datenqualität und einheitliches Datenmanagement.",
     "cluster": "Daten & Wissen",
+    "wirkung": 6.3,
+    "aufwand": 5,
+    "prioritaet": "C",
+    "prioritaet_label": "Mittelfristig",
+    "status": "geplant",
+    "start_empfohlen": false,
+    "tags": [],
+    "scnat_db": false,
+    "scnat_portal": false,
+    "isNew": false,
+    "notiz": "",
+    "reihenfolge": null
+  },
+  {
+    "id": "m22",
+    "titel": "Kundenzufriedenheit messen",
+    "beschreibung": "Format etablieren, um die Zufriedenheit der Kundengruppen periodisch und systematisch zu messen. Erkenntnisse fliessen in die Weiterentwicklung der digitalen Services und Prozesse ein.",
+    "cluster": "Kommunikation & Transparenz",
     "wirkung": 6.3,
     "aufwand": 9,
     "prioritaet": "C",
@@ -434,24 +502,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
-  },
-  {
-    "id": "m22",
-    "titel": "Kundenzufriedenheit messen",
-    "beschreibung": "Format etablieren, um die Zufriedenheit der Kundengruppen periodisch und systematisch zu messen. Erkenntnisse fliessen in die Weiterentwicklung der digitalen Services und Prozesse ein.",
-    "cluster": "Kommunikation & Transparenz",
-    "wirkung": 6.3,
-    "aufwand": 6,
-    "prioritaet": "C",
-    "prioritaet_label": "Mittelfristig",
-    "status": "geplant",
-    "start_empfohlen": false,
-    "tags": [],
-    "scnat_db": false,
-    "scnat_portal": false,
-    "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": null
   },
   {
     "id": "m23",
@@ -468,7 +520,8 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": 17
   },
   {
     "id": "m24",
@@ -481,11 +534,15 @@
     "prioritaet_label": "Langfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen", "Befähigungen"],
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": ""
+    "notiz": "",
+    "reihenfolge": 16
   },
   {
     "id": "m25",
@@ -493,7 +550,7 @@
     "beschreibung": "Konzept und Übersicht über alle vorhandenen Informationsbestände der SCNAT erstellen, Lücken identifizieren und konkrete Handlungsempfehlungen für ein verbessertes Informationsmanagement ableiten.",
     "cluster": "Daten & Wissen",
     "wirkung": 4.4,
-    "aufwand": 0,
+    "aufwand": 6,
     "prioritaet": "D",
     "prioritaet_label": "Langfristig",
     "status": "geplant",
@@ -502,57 +559,67 @@
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Noch nicht bewertet – Aufwand unklar"
+    "notiz": "Durch hohe Beteiligung von Stakeholdern wird der Aufwand als gross geschätzt.",
+    "reihenfolge": null
   },
   {
     "id": "m26",
     "titel": "Einführung agile Methoden",
     "beschreibung": "Einführung in agile Methoden der Zusammenarbeit für Mitarbeitende. Praxisnahe Schulung zu Sprints, iterativem Arbeiten und Selbstorganisation in Teams, abgestimmt auf die SCNAT-Kultur.",
     "cluster": "Prozesse & Methoden",
-    "wirkung": 0,
-    "aufwand": 0,
+    "wirkung": 4.5,
+    "aufwand": 5,
     "prioritaet": "D",
-    "prioritaet_label": "Langfristig",
+    "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen", "Befähigungen"],
+    "tags": [
+      "Schulungen",
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Noch nicht bewertet"
+    "notiz": "Dies müsste wohl Schritt für Schritt eingeführt werden. Zuerst sollte ein agiler Prozess im Team der Change Agents implementiert und getestet werden um dies dann Schritt für Schritt auf weitere Prozeese auszuweiten.",
+    "reihenfolge": 15
   },
   {
     "id": "m27",
     "titel": "Datenschutz schulen",
     "beschreibung": "Datenschutz regelmässig schulen und formalisieren: Klare Erwartungen an Datenverantwortliche, Integration in das Onboarding neuer Mitarbeitender und wiederkehrende Auffrischung für bestehende Teams.",
     "cluster": "Daten & Wissen",
-    "wirkung": 0,
-    "aufwand": 0,
+    "wirkung": 6,
+    "aufwand": 4,
     "prioritaet": "C",
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": ["Schulungen", "Information & Transparenz"],
+    "tags": [
+      "Schulungen",
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Noch nicht bewertet – DSG-Pflicht, daher Prio C trotz fehlender Scores"
+    "notiz": "Lösungsansätze wie G Date (oder den Ersatz davon) exitistiren bereits. Hier müsste einfach ein klares Konzept hin.",
+    "reihenfolge": null
   },
   {
     "id": "m28",
     "titel": "Digital Board und Umsetzungsprozess",
     "beschreibung": "Einheitlicher Prozess für die Umsetzung digitaler Initiativen auf einem Digital Board mit regelmässiger Evaluation, transparenter Priorisierung und klarer Verantwortungszuordnung.",
     "cluster": "Prozesse & Methoden",
-    "wirkung": 0,
-    "aufwand": 0,
+    "wirkung": 8.5,
+    "aufwand": 2,
     "prioritaet": "A",
     "prioritaet_label": "Quick Win",
     "status": "in_umsetzung",
-    "start_empfohlen": false,
+    "start_empfohlen": true,
     "tags": [],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
-    "notiz": "Bereits in Umsetzung"
+    "notiz": "Bereits in Umsetzung",
+    "reihenfolge": 14
   }
 ]
