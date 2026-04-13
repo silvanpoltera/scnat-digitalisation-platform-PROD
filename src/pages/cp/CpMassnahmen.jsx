@@ -1,18 +1,27 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, AlertCircle, Check, Zap } from 'lucide-react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap } from 'lucide-react';
+import { DndContext, DragOverlay, closestCenter, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, useDraggable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 const PRIO_OPTIONS = ['A', 'B', 'C', 'D'];
 const PRIO_LABEL = { A: 'Quick Win', B: 'Strategisch', C: 'Mittelfristig', D: 'Langfristig' };
-const STATUS_OPTIONS = ['geplant', 'in_umsetzung', 'abgeschlossen', 'sistiert'];
+const STATUS_OPTIONS = ['geplant', 'in_umsetzung', 'blockiert', 'abgeschlossen', 'sistiert'];
+const STATUS_LABELS = { geplant: 'Backlog', in_umsetzung: 'In Bearbeitung', blockiert: 'Blockiert', abgeschlossen: 'Erledigt', sistiert: 'Sistiert' };
 const STATUS_COLORS = {
   geplant: 'bg-bg-elevated text-txt-secondary',
   in_umsetzung: 'bg-status-green/15 text-status-green',
+  blockiert: 'bg-status-yellow/15 text-status-yellow',
   abgeschlossen: 'bg-scnat-teal/15 text-scnat-teal',
   sistiert: 'bg-scnat-red/15 text-scnat-red',
 };
+const KANBAN_COLUMNS = [
+  { id: 'geplant', label: 'Backlog', desc: 'Alle geplanten Massnahmen', borderClass: 'border-txt-tertiary/40' },
+  { id: 'in_umsetzung', label: 'In Bearbeitung', desc: 'Aktiv in Umsetzung', borderClass: 'border-status-green' },
+  { id: 'blockiert', label: 'Blockiert', desc: 'Braucht Entscheid / Freigabe', borderClass: 'border-status-yellow' },
+  { id: 'abgeschlossen', label: 'Erledigt', desc: 'Abgenommen & dokumentiert', borderClass: 'border-scnat-teal' },
+  { id: 'sistiert', label: 'Sistiert', desc: 'Zurückgestellt', borderClass: 'border-scnat-red' },
+];
 const TAG_OPTIONS = ['Schulungen', 'Befähigungen', 'Beschaffung', 'Information & Transparenz', 'Kommunikation'];
 const CLUSTER_OPTIONS = [
   'Digitale Kultur & Befähigung', 'Infrastruktur & Beschaffung',
@@ -173,6 +182,132 @@ function ReorderView({ data, onSave }) {
 
 const isUnrated = (m) => !m.wirkung || m.wirkung === 0 || !m.aufwand || m.aufwand === 0;
 
+function KanbanCard({ m, sprintMap }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: m.id });
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className={`bg-bg-surface border border-bd-faint rounded-sm p-2.5 cursor-grab active:cursor-grabbing touch-none transition-opacity ${isDragging ? 'opacity-25' : ''}`}
+    >
+      <div className="flex items-center gap-1 mb-1 flex-wrap">
+        <span className="text-[9px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+        <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
+          m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
+          m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
+          m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
+          'bg-bg-elevated text-txt-tertiary'
+        }`}>{m.prioritaet}</span>
+        {m.isNew && <span className="text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1 rounded-sm">NEU</span>}
+        {m.start_empfohlen && <Star className="w-2.5 h-2.5 text-status-yellow fill-status-yellow" />}
+        {m.scnat_db && <Database className="w-2.5 h-2.5 text-status-blue" />}
+        {m.reihenfolge && <span className="text-[8px] font-mono text-scnat-red">#{m.reihenfolge}</span>}
+      </div>
+      <h4 className="text-[11px] text-txt-primary font-medium line-clamp-2 leading-snug">{m.titel}</h4>
+      <p className="text-[9px] text-txt-tertiary mt-1 truncate">{m.cluster}</p>
+      <div className="flex items-center gap-2 mt-1">
+        <span className="text-[8px] font-mono text-status-green">W:{m.wirkung || 0}</span>
+        <span className="text-[8px] font-mono text-scnat-red">A:{m.aufwand || 0}</span>
+      </div>
+      {sprintMap[m.id]?.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-1">
+          {sprintMap[m.id].map(sp => (
+            <span key={sp.id} className="text-[8px] font-mono bg-[#F07800]/12 text-[#F07800] px-1 py-0.5 rounded-sm">
+              {sp.name}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function KanbanCardOverlay({ m }) {
+  return (
+    <div className="bg-bg-surface border-2 border-scnat-red/40 rounded-sm p-2.5 shadow-2xl w-[210px] rotate-1">
+      <div className="flex items-center gap-1 mb-1">
+        <span className="text-[9px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+        <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
+          m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
+          m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
+          m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
+          'bg-bg-elevated text-txt-tertiary'
+        }`}>{m.prioritaet}</span>
+      </div>
+      <h4 className="text-[11px] text-txt-primary font-medium line-clamp-2">{m.titel}</h4>
+      <p className="text-[9px] text-txt-tertiary mt-1">{m.cluster}</p>
+    </div>
+  );
+}
+
+function KanbanColumn({ column, items, sprintMap }) {
+  const { setNodeRef, isOver } = useDroppable({ id: column.id });
+  return (
+    <div ref={setNodeRef} className={`flex-1 min-w-[200px] flex flex-col rounded-sm transition-all ${isOver ? 'ring-2 ring-scnat-red/30' : ''}`}>
+      <div className={`px-3 py-2 border-t-2 ${column.borderClass} bg-bg-elevated rounded-t-sm`}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-heading font-semibold text-txt-primary">{column.label}</h3>
+          <span className="text-[10px] font-mono bg-bg-surface px-1.5 py-0.5 rounded-sm text-txt-tertiary">{items.length}</span>
+        </div>
+        <p className="text-[9px] text-txt-tertiary mt-0.5">{column.desc}</p>
+      </div>
+      <div className="flex-1 p-2 space-y-2 min-h-[120px] bg-bg-elevated/30 rounded-b-sm border border-t-0 border-bd-faint">
+        {items.map(m => <KanbanCard key={m.id} m={m} sprintMap={sprintMap} />)}
+        {items.length === 0 && (
+          <div className="flex items-center justify-center h-20 text-[10px] text-txt-tertiary/40 font-mono">Leer</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function KanbanView({ data, sprintMap, onStatusChange }) {
+  const [activeId, setActiveId] = useState(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const grouped = useMemo(() => {
+    const map = {};
+    KANBAN_COLUMNS.forEach(col => { map[col.id] = []; });
+    data.forEach(m => {
+      const col = map[m.status] ? m.status : 'geplant';
+      map[col].push(m);
+    });
+    return map;
+  }, [data]);
+
+  const activeItem = activeId ? data.find(m => m.id === activeId) : null;
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={({ active }) => setActiveId(active.id)}
+      onDragCancel={() => setActiveId(null)}
+      onDragEnd={({ active, over }) => {
+        setActiveId(null);
+        if (!over) return;
+        const item = data.find(m => m.id === active.id);
+        if (item && item.status !== over.id && KANBAN_COLUMNS.some(c => c.id === over.id)) {
+          onStatusChange(item.id, over.id);
+        }
+      }}
+    >
+      <div className="flex gap-3 overflow-x-auto pb-4">
+        {KANBAN_COLUMNS.map(col => (
+          <KanbanColumn key={col.id} column={col} items={grouped[col.id] || []} sprintMap={sprintMap} />
+        ))}
+      </div>
+      <DragOverlay dropAnimation={{ duration: 200 }}>
+        {activeItem && <KanbanCardOverlay m={activeItem} />}
+      </DragOverlay>
+    </DndContext>
+  );
+}
+
 function InlineSelect({ value, options, renderOption, onSelect, className = '' }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -279,6 +414,8 @@ export default function CpMassnahmen() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterUnrated, setFilterUnrated] = useState(false);
+  const [filterCluster, setFilterCluster] = useState('');
+  const [filterSprint, setFilterSprint] = useState('');
   const [view, setView] = useState('list');
   const [newItem, setNewItem] = useState({
     titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0],
@@ -348,6 +485,8 @@ export default function CpMassnahmen() {
       result = result.filter(m => m.titel.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) || m.cluster?.toLowerCase().includes(q));
     }
     if (filterStatus) result = result.filter(m => m.status === filterStatus);
+    if (filterCluster) result = result.filter(m => m.cluster === filterCluster);
+    if (filterSprint) result = result.filter(m => sprintMap[m.id]?.some(sp => sp.id === filterSprint));
     if (filterUnrated) result = result.filter(isUnrated);
     result.sort((a, b) => {
       const ra = a.reihenfolge || Infinity;
@@ -355,7 +494,7 @@ export default function CpMassnahmen() {
       return ra - rb;
     });
     return result;
-  }, [data, search, filterStatus, filterUnrated]);
+  }, [data, search, filterStatus, filterCluster, filterSprint, sprintMap, filterUnrated]);
 
   const stats = useMemo(() => ({
     total: data.length,
@@ -431,6 +570,9 @@ export default function CpMassnahmen() {
             <button onClick={() => setView('list')} className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm transition-colors ${view === 'list' ? 'bg-bg-surface text-txt-primary border border-bd-default' : 'text-txt-secondary border border-transparent'}`}>
               <List className="w-3.5 h-3.5" /> Liste
             </button>
+            <button onClick={() => setView('kanban')} className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm transition-colors ${view === 'kanban' ? 'bg-bg-surface text-txt-primary border border-bd-default' : 'text-txt-secondary border border-transparent'}`}>
+              <LayoutGrid className="w-3.5 h-3.5" /> Kanban
+            </button>
             <button onClick={() => setView('reorder')} className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm transition-colors ${view === 'reorder' ? 'bg-bg-surface text-txt-primary border border-bd-default' : 'text-txt-secondary border border-transparent'}`}>
               <ArrowUpDown className="w-3.5 h-3.5" /> Reihenfolge
             </button>
@@ -445,7 +587,7 @@ export default function CpMassnahmen() {
 
       {view === 'reorder' && <ReorderView data={data} onSave={load} />}
 
-      {view === 'list' && <>
+      {view !== 'reorder' && <>
       {/* Filters */}
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
@@ -457,14 +599,34 @@ export default function CpMassnahmen() {
             className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs pl-8 pr-3 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
           />
         </div>
+        {view === 'list' && (
+          <select
+            value={filterStatus}
+            onChange={e => setFilterStatus(e.target.value)}
+            className="bg-bg-elevated border border-bd-faint text-txt-secondary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+          >
+            <option value="">Alle Status</option>
+            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
+          </select>
+        )}
         <select
-          value={filterStatus}
-          onChange={e => setFilterStatus(e.target.value)}
+          value={filterCluster}
+          onChange={e => setFilterCluster(e.target.value)}
           className="bg-bg-elevated border border-bd-faint text-txt-secondary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
         >
-          <option value="">Alle Status</option>
-          {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+          <option value="">Alle Cluster</option>
+          {CLUSTER_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
+        {sprints.filter(s => s.status !== 'archived').length > 0 && (
+          <select
+            value={filterSprint}
+            onChange={e => setFilterSprint(e.target.value)}
+            className="bg-bg-elevated border border-bd-faint text-txt-secondary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+          >
+            <option value="">Alle Sprints</option>
+            {sprints.filter(s => s.status !== 'archived').map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        )}
         <button
           onClick={() => setFilterUnrated(prev => !prev)}
           className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm border transition-colors ${
@@ -484,6 +646,15 @@ export default function CpMassnahmen() {
         <span className="text-xs text-txt-tertiary font-mono ml-auto">{filtered.length} angezeigt</span>
       </div>
 
+      {view === 'kanban' && (
+        <KanbanView
+          data={filtered}
+          sprintMap={sprintMap}
+          onStatusChange={(id, status) => inlineSave(id, { status })}
+        />
+      )}
+
+      {view === 'list' && <>
       {/* Add Form */}
       {showAdd && (
         <form onSubmit={handleAdd} className="bg-bg-surface border border-bd-faint rounded-sm p-4 mb-6 space-y-3">
@@ -543,10 +714,10 @@ export default function CpMassnahmen() {
 
                     <InlineSelect
                       value={m.status}
-                      options={STATUS_OPTIONS.map(s => ({ value: s, label: s }))}
+                      options={STATUS_OPTIONS.map(s => ({ value: s, label: STATUS_LABELS[s] || s }))}
                       onSelect={(v) => inlineSave(m.id, { status: v })}
                       renderOption={(v) => (
-                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm hover:ring-1 hover:ring-bd-strong transition-shadow ${STATUS_COLORS[v] || STATUS_COLORS.geplant}`}>{v}</span>
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm hover:ring-1 hover:ring-bd-strong transition-shadow ${STATUS_COLORS[v] || STATUS_COLORS.geplant}`}>{STATUS_LABELS[v] || v}</span>
                       )}
                     />
 
@@ -671,7 +842,7 @@ export default function CpMassnahmen() {
                     <div>
                       <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Status</label>
                       <select value={m.status} onChange={e => updateLocal(m.id, 'status', e.target.value)} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none">
-                        {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                        {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
                       </select>
                     </div>
                     <div>
@@ -748,6 +919,7 @@ export default function CpMassnahmen() {
           );
         })}
       </div>
+      </>}
       </>}
     </div>
   );
