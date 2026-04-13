@@ -4,6 +4,7 @@ import {
   GitBranch, CheckCircle2, XCircle, ChevronDown, Rocket, Server, RefreshCw,
 } from 'lucide-react';
 import ArchitekturDiagramm from '@/components/systemlandschaft/ArchitekturDiagramm';
+import FunktionenUebersicht from '@/components/systemlandschaft/FunktionenUebersicht';
 
 /* ── Strategische Optionen (read-only) ── */
 const OPTION_ICONS = { shield: Shield, zap: Zap, 'git-branch': GitBranch };
@@ -203,6 +204,7 @@ function BacklogView({ backlog, onAdd, onDelete, newBacklog, setNewBacklog }) {
 /* ── Main Component ── */
 const TABS = [
   { id: 'uebersicht', label: 'Architektur' },
+  { id: 'funktionen', label: 'Funktionen' },
   { id: 'strategie', label: 'Strategische Optionen' },
   { id: 'entscheide', label: 'Grundsatzentscheide' },
   { id: 'backlog', label: 'Backlog' },
@@ -285,6 +287,8 @@ export default function CpScnatDb() {
       </div>
 
       {tab === 'uebersicht' && <ArchitekturDiagramm status={data.status} />}
+
+      {tab === 'funktionen' && <FunktionenUebersicht bereiche={data.funktionsbereiche || []} />}
 
       {tab === 'strategie' && <StrategischeOptionen data={data.strategische_optionen} />}
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Database, AlertTriangle, Filter, Shield, Zap, GitBranch, CheckCircle2, XCircle, ChevronDown, Rocket, Server, RefreshCw } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import ArchitekturDiagramm from '../components/systemlandschaft/ArchitekturDiagramm';
+import FunktionenUebersicht from '../components/systemlandschaft/FunktionenUebersicht';
 
 const OPTION_ICONS = { shield: Shield, zap: Zap, 'git-branch': GitBranch };
 const OPTION_COLORS = {
@@ -227,6 +228,7 @@ export default function ScnatDb() {
 
   const tabs = [
     { id: 'uebersicht', label: 'Übersicht' },
+    { id: 'funktionen', label: `Funktionen (${data.funktionsbereiche?.length || 0})` },
     { id: 'strategie', label: 'Strategische Optionen' },
     { id: 'entscheide', label: `Grundsatzentscheide (${data.entscheide?.length || 0})` },
     { id: 'backlog', label: `Backlog (${data.backlog?.length || 0})` },
@@ -259,6 +261,7 @@ export default function ScnatDb() {
       </div>
 
       {tab === 'uebersicht' && <ArchitekturDiagramm status={data.status} />}
+      {tab === 'funktionen' && <FunktionenUebersicht bereiche={data.funktionsbereiche || []} />}
       {tab === 'strategie' && <StrategischeOptionen data={data.strategische_optionen} />}
       {tab === 'entscheide' && <EntscheideView entscheide={data.entscheide || []} />}
       {tab === 'backlog' && <BacklogView backlog={data.backlog || []} />}

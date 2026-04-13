@@ -118,6 +118,130 @@
       "status": "offen"
     }
   ],
+  "funktionsbereiche": [
+    {
+      "id": "f1",
+      "name": "Verwaltung von Personen",
+      "kategorie": "Personen",
+      "farbe": "blue",
+      "projekt": "DB",
+      "funktionen": [
+        "Personenstammdaten erfassen und pflegen",
+        "Mitgliedschaften verwalten",
+        "Rollen und Funktionen zuweisen",
+        "Adress- und Kontaktdaten pflegen",
+        "Personenhistorie führen",
+        "Dubletten erkennen und bereinigen"
+      ]
+    },
+    {
+      "id": "f2",
+      "name": "Verwaltung von Organisationen",
+      "kategorie": "Organisationen",
+      "farbe": "green",
+      "projekt": "DB",
+      "funktionen": [
+        "Organisationsstruktur abbilden",
+        "Mitgliedsorganisationen verwalten"
+      ]
+    },
+    {
+      "id": "f3",
+      "name": "Verwaltung von Kontakten",
+      "kategorie": "Personen",
+      "farbe": "orange",
+      "projekt": "DB",
+      "funktionen": [
+        "Kontakthistorie erfassen",
+        "Korrespondenz verwalten",
+        "Verteilerlisten pflegen",
+        "Kontaktpräferenzen verwalten"
+      ]
+    },
+    {
+      "id": "f4",
+      "name": "Diverse Suchfunktionen",
+      "kategorie": "Daten",
+      "farbe": "green",
+      "projekt": "DB",
+      "funktionen": [
+        "Personensuche (Volltextsuche)",
+        "Organisationssuche",
+        "Erweiterte Filtersuche"
+      ]
+    },
+    {
+      "id": "f5",
+      "name": "Freigabe durch Datenmanagement",
+      "kategorie": "Daten",
+      "farbe": "orange",
+      "projekt": "DB",
+      "funktionen": [
+        "Datenqualitätsprüfung und Freigabeworkflow",
+        "Änderungshistorie und Audit-Trail"
+      ]
+    },
+    {
+      "id": "f6",
+      "name": "Forschungsprogramme & Projekte",
+      "kategorie": "Organisationen",
+      "farbe": "purple",
+      "projekt": "DB",
+      "funktionen": [
+        "Forschungsprogramme erfassen und verwalten",
+        "Projektbeteiligungen zuordnen"
+      ]
+    },
+    {
+      "id": "f7",
+      "name": "Interaktionen",
+      "kategorie": "Personen",
+      "farbe": "orange",
+      "projekt": "DB",
+      "funktionen": [
+        "Veranstaltungsteilnahmen erfassen",
+        "Interaktionshistorie führen"
+      ]
+    },
+    {
+      "id": "f8",
+      "name": "Datenexport",
+      "kategorie": "Daten",
+      "farbe": "green",
+      "projekt": "DB",
+      "funktionen": [
+        "Standardexporte (CSV, Excel)",
+        "Individuelle Abfragen und Reports"
+      ]
+    },
+    {
+      "id": "f9",
+      "name": "Communities",
+      "kategorie": "Web & Portal",
+      "farbe": "green",
+      "projekt": "DB",
+      "funktionen": [
+        "Community-Zugehörigkeiten verwalten",
+        "Community-Kommunikation koordinieren"
+      ]
+    },
+    {
+      "id": "f10",
+      "name": "PPO — Websystem-Erweiterungen",
+      "kategorie": "PPO-Erweiterungen",
+      "farbe": "red",
+      "projekt": "PPO",
+      "funktionen": [
+        "Portalseiten verwalten",
+        "Veranstaltungskalender",
+        "Publikationsverwaltung",
+        "Personenprofile auf Portalen",
+        "Organisationsprofile auf Portalen",
+        "Mehrsprachigkeit (DE/FR/IT/EN)",
+        "Suchmaschinenoptimierung"
+      ]
+    }
+  ],
   "backlog": [
     {
       "id": "b1",
