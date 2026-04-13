@@ -31,25 +31,26 @@ function ArchitekturDiagramm({ status }) {
           <line key={i} x1={Math.min(x, 400)} y1={90} x2={x} y2={150} style={{ stroke: 'var(--border-default)' }} strokeDasharray="4,4" />
         ))}
 
-        <rect x="80" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
-        <text x="150" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal A</text>
-        <text x="150" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">naturwissenschaften.ch</text>
+        {/* Akademie-Portale — confirmed connection */}
+        <rect x="150" y="280" width="160" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="230" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Akademie-Portale</text>
+        <text x="230" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Angebunden</text>
 
-        <rect x="250" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
-        <text x="320" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal B</text>
-        <text x="320" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Akademie-Portale</text>
+        {/* Events / Mitglieder — confirmed connection */}
+        <rect x="330" y="280" width="160" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
+        <text x="410" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Events / Mitglieder</text>
+        <text x="410" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Angebunden</text>
 
-        <rect x="420" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
-        <text x="490" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Portal C</text>
-        <text x="490" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Events / Mitglieder</text>
+        {/* naturwissenschaften.ch — Statamic, connection uncertain */}
+        <rect x="510" y="280" width="180" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-yellow)' }} strokeWidth="1.5" strokeDasharray="4,3" />
+        <text x="600" y="300" textAnchor="middle" style={{ fill: 'var(--status-yellow)' }} fontSize="11" fontFamily="DM Sans">naturwissenschaften.ch</text>
+        <text x="600" y="315" textAnchor="middle" style={{ fill: 'var(--text-tertiary)' }} fontSize="9" fontFamily="JetBrains Mono">Statamic · Anbindung unklar</text>
 
-        <rect x="590" y="280" width="140" height="45" rx="4" style={{ fill: 'var(--bg-surface)', stroke: 'var(--status-blue)' }} strokeWidth="1.5" />
-        <text x="660" y="300" textAnchor="middle" style={{ fill: 'var(--status-blue)' }} fontSize="11" fontFamily="DM Sans">Newsletter</text>
-        <text x="660" y="315" textAnchor="middle" style={{ fill: 'var(--text-secondary)' }} fontSize="9" fontFamily="JetBrains Mono">Mailchimp-Sync</text>
-
-        {[150, 320, 490, 660].map((x, i) => (
-          <line key={`b${i}`} x1={325} y1={200} x2={x} y2={280} style={{ stroke: 'var(--border-faint)' }} strokeDasharray="3,3" />
-        ))}
+        {/* Connection lines */}
+        <line x1={325} y1={200} x2={230} y2={280} style={{ stroke: 'var(--border-faint)' }} strokeDasharray="3,3" />
+        <line x1={325} y1={200} x2={410} y2={280} style={{ stroke: 'var(--border-faint)' }} strokeDasharray="3,3" />
+        <line x1={325} y1={200} x2={600} y2={280} style={{ stroke: 'var(--status-yellow)' }} strokeDasharray="6,4" strokeOpacity="0.4" />
+        <text x="490" y="248" textAnchor="middle" style={{ fill: 'var(--status-yellow)' }} fontSize="9" fontFamily="JetBrains Mono">?</text>
 
         {status?.konsolidierung_prozent && (
           <>
