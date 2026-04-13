@@ -1,0 +1,182 @@
+[
+  {
+    "id": "sprint-01",
+    "name": "Der Start - starting the change",
+    "cluster": "skills",
+    "clusterColor": "#F07800",
+    "description": "",
+    "startDate": "2026-04-14",
+    "endDate": "2026-05-12",
+    "status": "active",
+    "massnahmen": [
+      {
+        "massnahmeId": "m03",
+        "status": "in_umsetzung",
+        "verantwortliche": "Silvan ",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Kommunikation Digitale Transformation"
+      },
+      {
+        "massnahmeId": "m07",
+        "status": "geplant",
+        "verantwortliche": "Silvan&GL",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Ressourcenabklärung mit klarem Konzept"
+      },
+      {
+        "massnahmeId": "m30",
+        "status": "geplant",
+        "verantwortliche": "Silvan",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Team Change Agents"
+      }
+    ]
+  },
+  {
+    "id": "sprint-02",
+    "name": "KI & Skills",
+    "cluster": "skills",
+    "clusterColor": "#F07800",
+    "description": "KI-Lernpfad, KI-Strategie und Digitales Mindset.",
+    "startDate": "2026-05-11",
+    "endDate": "2026-06-15",
+    "status": "planned",
+    "massnahmen": [
+      {
+        "massnahmeId": "m05",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m01",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "sprint-03",
+    "name": "Kommunikation",
+    "cluster": "kommunikation",
+    "clusterColor": "#EA515A",
+    "description": "Kommunikationsplan Digitale Transformation, Tools-Übersicht, Kundenzufriedenheit.",
+    "startDate": "2026-05-04",
+    "endDate": "2026-06-01",
+    "status": "active",
+    "massnahmen": [
+      {
+        "massnahmeId": "m29",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Einführung Digitalisierungsplattform"
+      },
+      {
+        "massnahmeId": "m32",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Anaylse Tools&Software"
+      },
+      {
+        "massnahmeId": "m06",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Übersicht digitale Tools"
+      },
+      {
+        "massnahmeId": "m19",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0,
+        "titel": "Angebot Digitale Kompetenzen",
+        "cluster": "Digitale Kultur & Befähigung"
+      }
+    ]
+  },
+  {
+    "id": "sprint-04",
+    "name": "IT Infrastruktur",
+    "cluster": "infrastruktur",
+    "clusterColor": "#0098DA",
+    "description": "Prozessdigitalisierung, Projektmanagement, Dokumentation Top-Prozesse.",
+    "startDate": "2026-03-30",
+    "endDate": "2026-05-04",
+    "status": "active",
+    "massnahmen": [
+      {
+        "massnahmeId": "m31",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      }
+    ]
+  },
+  {
+    "id": "sprint-mnwxlhfv935y2j",
+    "name": "Prozesse & Methoden",
+    "cluster": "prozessdigitalisierung",
+    "clusterColor": "#008770",
+    "description": "",
+    "startDate": "2026-05-04",
+    "endDate": "2026-06-01",
+    "status": "planned",
+    "massnahmen": [
+      {
+        "massnahmeId": "m04",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m08",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m26",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m11",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m28",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      },
+      {
+        "massnahmeId": "m29",
+        "status": "geplant",
+        "verantwortliche": "",
+        "notiz": "",
+        "progress": 0
+      }
+    ]
+  }
+]

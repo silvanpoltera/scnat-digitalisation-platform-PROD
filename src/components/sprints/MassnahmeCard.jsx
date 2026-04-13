@@ -1,17 +1,17 @@
 const STATUS_STYLES = {
-  'geplant':   { bg: 'rgba(78,83,93,.15)',  color: '#4E535D', border: 'rgba(78,83,93,.3)' },
-  'in-arbeit': { bg: 'rgba(0,152,218,.1)',  color: '#0098DA', border: 'rgba(0,152,218,.3)' },
-  'review':    { bg: 'rgba(240,120,0,.1)',  color: '#F07800', border: 'rgba(240,120,0,.3)' },
-  'fertig':    { bg: 'rgba(0,135,112,.1)',  color: '#008770', border: 'rgba(0,135,112,.3)' },
-  'blockiert': { bg: 'rgba(234,81,90,.1)',  color: '#EA515A', border: 'rgba(234,81,90,.3)' },
+  'geplant':       { bg: 'rgba(78,83,93,.15)',  color: '#4E535D', border: 'rgba(78,83,93,.3)' },
+  'in_umsetzung':  { bg: 'rgba(46,204,113,.1)', color: '#2ECC71', border: 'rgba(46,204,113,.3)' },
+  'blockiert':     { bg: 'rgba(243,156,18,.1)', color: '#F39C12', border: 'rgba(243,156,18,.3)' },
+  'abgeschlossen': { bg: 'rgba(0,122,135,.1)',  color: '#007A87', border: 'rgba(0,122,135,.3)' },
+  'sistiert':      { bg: 'rgba(234,81,90,.1)',  color: '#EA515A', border: 'rgba(234,81,90,.3)' },
 };
 
 const STATUS_LABELS = {
-  'geplant': 'Geplant',
-  'in-arbeit': 'In Arbeit',
-  'review': 'Review',
-  'fertig': 'Fertig',
+  'geplant': 'Backlog',
+  'in_umsetzung': 'In Bearbeitung',
   'blockiert': 'Blockiert',
+  'abgeschlossen': 'Erledigt',
+  'sistiert': 'Sistiert',
 };
 
 export default function MassnahmeCard({ m, clusterColor }) {

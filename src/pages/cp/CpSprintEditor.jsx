@@ -19,11 +19,11 @@ const STATUS_OPTIONS = [
 ];
 
 const M_STATUS_OPTIONS = [
-  { value: 'geplant', label: 'Geplant' },
-  { value: 'in-arbeit', label: 'In Arbeit' },
-  { value: 'review', label: 'Review' },
-  { value: 'fertig', label: 'Fertig' },
+  { value: 'geplant', label: 'Backlog' },
+  { value: 'in_umsetzung', label: 'In Bearbeitung' },
   { value: 'blockiert', label: 'Blockiert' },
+  { value: 'abgeschlossen', label: 'Erledigt' },
+  { value: 'sistiert', label: 'Sistiert' },
 ];
 
 export default function CpSprintEditor() {

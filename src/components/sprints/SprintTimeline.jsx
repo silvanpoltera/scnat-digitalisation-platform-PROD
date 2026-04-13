@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
+import { useMemo, useState, useRef, useCallback } from 'react';
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 const DAY = 86400000;
@@ -67,18 +67,6 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
 
   const LABEL_W = 180;
   const LABEL_W_MOBILE = 120;
-  const minDayPx = 14;
-  const minTimelineWidth = tlDays * minDayPx;
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const containerW = el.clientWidth - LABEL_W;
-    const contentW = Math.max(containerW, minTimelineWidth);
-    const todayOffset = LABEL_W + contentW * (todayPct / 100);
-    const scrollTo = todayOffset - el.clientWidth / 2;
-    el.scrollLeft = Math.max(0, scrollTo);
-  }, [zoom, todayPct, minTimelineWidth]);
 
   const handleWheel = useCallback((e) => {
     if (e.ctrlKey || e.metaKey) {
@@ -135,12 +123,11 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
         </span>
       </div>
 
-      {/* Scrollable Timeline */}
+      {/* Timeline */}
       <div
         ref={scrollRef}
         onWheel={handleWheel}
-        className="overflow-x-auto overflow-y-hidden px-4 md:px-8"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        className="px-4 md:px-8"
       >
         <GanttChart
           sprints={sprints}
@@ -150,32 +137,15 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
           todayPct={todayPct}
           pct={pct}
           labelW={typeof window !== 'undefined' && window.innerWidth < 768 ? LABEL_W_MOBILE : LABEL_W}
-          minWidth={minTimelineWidth}
         />
       </div>
     </div>
   );
 }
 
-function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW, minWidth }) {
-  const containerRef = useRef(null);
-  const [timelineW, setTimelineW] = useState(0);
-
-  useEffect(() => {
-    const measure = () => {
-      if (!containerRef.current) return;
-      const parentW = containerRef.current.parentElement?.clientWidth || 800;
-      setTimelineW(Math.max(parentW - labelW, minWidth));
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, [labelW, minWidth]);
-
-  const totalW = labelW + timelineW;
-
+function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW }) {
   return (
-    <div ref={containerRef} style={{ minWidth: totalW, width: totalW }}>
+    <div className="w-full">
       {/* KW Header */}
       <div className="flex relative mb-2" style={{ paddingLeft: labelW }}>
         {weeks.map((w, i) => (

@@ -3,10 +3,11 @@ import MassnahmeCard from './MassnahmeCard';
 
 const STATUS_FILTERS = [
   { key: 'alle', label: 'Alle' },
-  { key: 'geplant', label: 'Geplant' },
-  { key: 'in-arbeit', label: 'In Arbeit' },
-  { key: 'review', label: 'Review' },
-  { key: 'fertig', label: 'Fertig' },
+  { key: 'geplant', label: 'Backlog' },
+  { key: 'in_umsetzung', label: 'In Bearbeitung' },
+  { key: 'blockiert', label: 'Blockiert' },
+  { key: 'abgeschlossen', label: 'Erledigt' },
+  { key: 'sistiert', label: 'Sistiert' },
 ];
 
 function formatDate(iso) {
