@@ -44,6 +44,8 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   const idx = data.findIndex(m => m.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
+  const oldStatus = data[idx].status;
+
   const allowed = [
     'titel', 'beschreibung', 'cluster', 'status', 'notiz', 'tags',
     'wirkung', 'aufwand', 'prioritaet', 'prioritaet_label',
@@ -56,6 +58,19 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   });
 
   writeJSON(FILE, data);
+
+  if (safe.status === 'abgeschlossen' && oldStatus !== 'abgeschlossen') {
+    const changes = readJSON('changes.json');
+    let changed = false;
+    changes.forEach(c => {
+      if (c.massnahmeId === req.params.id && c.status !== 'umgesetzt') {
+        c.status = 'umgesetzt';
+        changed = true;
+      }
+    });
+    if (changed) writeJSON('changes.json', changes);
+  }
+
   res.json(data[idx]);
 });
 

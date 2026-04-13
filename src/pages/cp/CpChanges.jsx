@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2, MessageSquare, Send, ListChecks, Rocket } from 'lucide-react';
+import { ChevronDown, ChevronRight, User, Trash2, Save, AlertTriangle, CheckCircle2, Clock, Eye, Link2, MessageSquare, Send, ListChecks, Rocket, Search } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'eingereicht', label: 'Eingereicht', color: 'bg-status-yellow/15 text-status-yellow' },
@@ -23,10 +23,12 @@ const WIDERSTAND_COLORS = {
 
 const PRIO_OPTIONS = [
   { value: 'A', label: 'Quick Win' },
-  { value: 'B', label: 'Wichtig & machbar' },
-  { value: 'C', label: 'Strategisch' },
-  { value: 'D', label: 'Zurückstellen' },
+  { value: 'B', label: 'Strategisch' },
+  { value: 'C', label: 'Mittelfristig' },
+  { value: 'D', label: 'Langfristig' },
 ];
+
+const TAG_OPTIONS = ['Schulungen', 'Befähigungen', 'Beschaffung', 'Information & Transparenz', 'Kommunikation'];
 
 export default function CpChanges() {
   const [changes, setChanges] = useState([]);
@@ -38,6 +40,9 @@ export default function CpChanges() {
   const [convertingId, setConvertingId] = useState(null);
   const [convertForm, setConvertForm] = useState({});
   const [convertBusy, setConvertBusy] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [clusterFilter, setClusterFilter] = useState('');
 
   const load = () => {
     Promise.all([
@@ -55,6 +60,23 @@ export default function CpChanges() {
     angenommen: changes.filter(c => c.status === 'angenommen').length,
     abgelehnt: changes.filter(c => c.status === 'abgelehnt').length,
   }), [changes]);
+
+  const filtered = useMemo(() => {
+    let result = [...changes];
+    if (searchFilter) {
+      const q = searchFilter.toLowerCase();
+      result = result.filter(c =>
+        c.titel?.toLowerCase().includes(q) ||
+        c.beschreibung?.toLowerCase().includes(q) ||
+        c.kontakt?.toLowerCase().includes(q) ||
+        c.kontaktEmail?.toLowerCase().includes(q)
+      );
+    }
+    if (statusFilter) result = result.filter(c => c.status === statusFilter);
+    if (clusterFilter) result = result.filter(c => c.cluster === clusterFilter);
+    result.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+    return result;
+  }, [changes, searchFilter, statusFilter, clusterFilter]);
 
   const handleSave = async (c) => {
     const patch = editData[c.id] || {};
@@ -101,8 +123,8 @@ export default function CpChanges() {
     setConvertForm({
       titel: change.titel,
       beschreibung: change.beschreibung,
-      cluster: change.cluster || '',
-      prioritaet: 'B',
+      cluster: change.cluster || CLUSTER_OPTIONS.find(Boolean) || '',
+      prioritaet: 'C',
       wirkung: 5,
       aufwand: 5,
       tags: [],
@@ -156,16 +178,44 @@ export default function CpChanges() {
         </div>
       </div>
 
-      {changes.length === 0 ? (
+      {/* Filters */}
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
+          <Search className="w-3.5 h-3.5 text-txt-tertiary absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <input
+            value={searchFilter}
+            onChange={e => setSearchFilter(e.target.value)}
+            placeholder="Suchen (Titel, Beschreibung, Kontakt)..."
+            className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs pl-8 pr-3 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="bg-bg-elevated border border-bd-faint text-txt-secondary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+        >
+          <option value="">Alle Status</option>
+          {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+        </select>
+        <select
+          value={clusterFilter}
+          onChange={e => setClusterFilter(e.target.value)}
+          className="bg-bg-elevated border border-bd-faint text-txt-secondary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+        >
+          <option value="">Alle Cluster</option>
+          {CLUSTER_OPTIONS.filter(Boolean).map(cl => <option key={cl} value={cl}>{cl}</option>)}
+        </select>
+        <span className="text-xs text-txt-tertiary font-mono ml-auto">{filtered.length} / {changes.length}</span>
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="bg-bg-surface border border-bd-faint rounded-sm p-8 text-center">
           <Clock className="w-8 h-8 text-txt-tertiary mx-auto mb-3" />
-          <p className="text-sm text-txt-secondary">Noch keine Change-Vorschläge eingegangen.</p>
+          <p className="text-sm text-txt-secondary">{changes.length === 0 ? 'Noch keine Change-Vorschläge eingegangen.' : 'Keine Vorschläge für diesen Filter.'}</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {changes
-            .sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))
-            .map(c => {
+          {filtered.map(c => {
               const isExpanded = expanded === c.id;
               const patch = editData[c.id] || {};
               const currentStatus = patch.status ?? c.status;
@@ -370,39 +420,58 @@ export default function CpChanges() {
                                 </select>
                               </div>
                               <div>
-                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung (1–10)</label>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung: <strong className="text-status-green">{convertForm.wirkung}</strong></label>
                                 <input
-                                  type="range" min="1" max="10" step="0.5"
+                                  type="range" min="0" max="10" step="0.5"
                                   value={convertForm.wirkung || 5}
                                   onChange={e => setConvertForm(f => ({ ...f, wirkung: parseFloat(e.target.value) }))}
-                                  className="w-full accent-status-blue"
+                                  className="w-full accent-status-green"
                                 />
-                                <span className="text-[10px] font-mono text-txt-secondary">{convertForm.wirkung}</span>
                               </div>
                               <div>
-                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Aufwand (1–10)</label>
+                                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Aufwand: <strong className="text-scnat-red">{convertForm.aufwand}</strong></label>
                                 <input
-                                  type="range" min="1" max="10" step="0.5"
+                                  type="range" min="0" max="10" step="0.5"
                                   value={convertForm.aufwand || 5}
                                   onChange={e => setConvertForm(f => ({ ...f, aufwand: parseFloat(e.target.value) }))}
-                                  className="w-full accent-status-blue"
+                                  className="w-full accent-scnat-red"
                                 />
-                                <span className="text-[10px] font-mono text-txt-secondary">{convertForm.aufwand}</span>
                               </div>
                             </div>
                             <div className="flex items-center gap-4 flex-wrap">
+                              <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+                                <input type="checkbox" checked={convertForm.start_empfohlen || false} onChange={e => setConvertForm(f => ({ ...f, start_empfohlen: e.target.checked }))} className="accent-status-yellow" />
+                                Start empfohlen
+                              </label>
                               <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
                                 <input type="checkbox" checked={convertForm.scnat_db || false} onChange={e => setConvertForm(f => ({ ...f, scnat_db: e.target.checked }))} className="accent-status-blue" />
                                 SCNAT DB
                               </label>
                               <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
-                                <input type="checkbox" checked={convertForm.scnat_portal || false} onChange={e => setConvertForm(f => ({ ...f, scnat_portal: e.target.checked }))} className="accent-status-blue" />
+                                <input type="checkbox" checked={convertForm.scnat_portal || false} onChange={e => setConvertForm(f => ({ ...f, scnat_portal: e.target.checked }))} />
                                 SCNAT Portal
                               </label>
-                              <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
-                                <input type="checkbox" checked={convertForm.start_empfohlen || false} onChange={e => setConvertForm(f => ({ ...f, start_empfohlen: e.target.checked }))} className="accent-status-blue" />
-                                Start empfohlen
-                              </label>
+                            </div>
+                            {/* Tags */}
+                            <div>
+                              <label className="block text-[10px] text-txt-tertiary font-mono mb-1.5">Tags</label>
+                              <div className="flex flex-wrap gap-1.5">
+                                {TAG_OPTIONS.map(tag => (
+                                  <button
+                                    key={tag}
+                                    type="button"
+                                    onClick={() => setConvertForm(f => ({
+                                      ...f,
+                                      tags: f.tags?.includes(tag) ? f.tags.filter(t => t !== tag) : [...(f.tags || []), tag],
+                                    }))}
+                                    className={`text-[10px] px-2 py-1 rounded-sm transition-colors ${
+                                      convertForm.tags?.includes(tag) ? 'bg-scnat-red/15 text-scnat-red font-medium' : 'bg-bg-elevated text-txt-tertiary hover:text-txt-secondary'
+                                    }`}
+                                  >
+                                    {tag}
+                                  </button>
+                                ))}
+                              </div>
                             </div>
                             <div className="flex gap-2 pt-1">
                               <button
