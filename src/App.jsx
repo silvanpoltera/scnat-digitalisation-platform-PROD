@@ -20,6 +20,7 @@ import Prozesse from './pages/Prozesse';
 import Team from './pages/Team';
 import Login from './pages/Login';
 import Massnahmen from './pages/Massnahmen';
+import ScnatDb from './pages/ScnatDb';
 import Schulungen from './pages/Schulungen';
 import SoftwareAntraege from './pages/SoftwareAntraege';
 import MeineUebersicht from './pages/MeineUebersicht';
@@ -75,6 +76,7 @@ function App() {
             <Route path="/glossar" element={<V k="glossar"><Glossar /></V>} />
             <Route path="/sprints" element={<V k="sprints"><Sprints /></V>} />
             <Route path="/where" element={<V k="cp-admin-stuff"><Where /></V>} />
+            <Route path="/scnat-db" element={<V k="systemlandschaft"><ScnatDb /></V>} />
             <Route path="/how-built" element={<V k="cp-admin-stuff"><HowBuilt /></V>} />
             <Route path="*" element={<NotFound />} />
           </Route>

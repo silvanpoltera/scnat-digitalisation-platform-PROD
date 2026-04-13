@@ -135,3 +135,52 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
 }
+
+/* ── Architecture Diagram ── */
+
+@keyframes arch-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 8px var(--pulse-glow, transparent)); }
+}
+
+@keyframes arch-flow {
+  to { stroke-dashoffset: -36; }
+}
+
+.arch-pulse-web { animation: arch-pulse 4s ease-in-out infinite; }
+.arch-pulse-db  { animation: arch-pulse 4s ease-in-out 1.5s infinite; }
+
+.arch-flow {
+  stroke-dasharray: 7 11;
+  animation: arch-flow 2s linear infinite;
+  stroke-linecap: round;
+}
+.arch-flow-rev  { animation-direction: reverse; }
+.arch-flow-slow { animation-duration: 3.2s; }
+.arch-flow-fast { animation-duration: 1.1s; }
+
+.arch-apig { cursor: pointer; }
+.arch-apig .arch-fbg { opacity: .6; transition: opacity .2s; }
+.arch-apig:hover .arch-fbg { opacity: 1; }
+.arch-apig:hover .arch-flow {
+  stroke: var(--accent-red) !important;
+  opacity: 1 !important;
+  animation-duration: .7s !important;
+}
+.arch-apig:hover .arch-fbase {
+  stroke: var(--accent-red) !important;
+  opacity: .25;
+}
+.arch-apig:hover .arch-alabel {
+  fill: var(--text-primary) !important;
+}
+
+.arch-unode { cursor: pointer; }
+.arch-unode .arch-ucirc { transition: stroke .2s, fill .2s; }
+.arch-unode:hover .arch-ucirc {
+  stroke: var(--accent-red);
+  fill: rgba(234, 81, 90, .08);
+}
+.arch-unode:hover .arch-ulabel {
+  fill: var(--text-primary) !important;
+}
