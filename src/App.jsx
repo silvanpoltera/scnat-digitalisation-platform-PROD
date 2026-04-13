@@ -22,7 +22,6 @@ import Login from './pages/Login';
 import Massnahmen from './pages/Massnahmen';
 import Schulungen from './pages/Schulungen';
 import SoftwareAntraege from './pages/SoftwareAntraege';
-import ScnatDb from './pages/ScnatDb';
 import MeineUebersicht from './pages/MeineUebersicht';
 
 import CpDashboard from './pages/cp/CpDashboard';
@@ -69,8 +68,7 @@ function App() {
             <Route path="/ki-hub" element={<V k="ki-hub"><KiHub /></V>} />
             <Route path="/schulungen" element={<V k="schulungen"><Schulungen /></V>} />
             <Route path="/software-antraege" element={<V k="software-antraege"><SoftwareAntraege /></V>} />
-            <Route path="/scnat-db" element={<V k="scnat-db"><ScnatDb /></V>} />
-            <Route path="/meine-uebersicht" element={<V k="meine-uebersicht"><MeineUebersicht /></V>} />
+            <Route path="/meine-uebersicht" element={<MeineUebersicht />} />
             <Route path="/prozesse" element={<V k="prozesse"><Prozesse /></V>} />
             <Route path="/team" element={<V k="team"><Team /></V>} />
             <Route path="/faqs" element={<V k="faqs"><Faqs /></V>} />

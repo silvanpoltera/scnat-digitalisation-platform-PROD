@@ -8,7 +8,7 @@ const FILE = 'visibility.json';
 const DEFAULT_PORTAL = [
   'home', 'strategie', 'handlungsfelder', 'massnahmen', 'sprints',
   'systemlandschaft', 'ki-hub', 'schulungen', 'software-antraege',
-  'scnat-db', 'meine-uebersicht', 'prozesse', 'team', 'faqs', 'glossar',
+  'prozesse', 'team', 'faqs', 'glossar',
 ];
 
 const DEFAULT_CP = [

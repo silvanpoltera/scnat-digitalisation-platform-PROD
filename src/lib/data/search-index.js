@@ -83,7 +83,6 @@ const pages = [
   { title: "KI-Hub", desc: "KI-Richtlinien, ChatGPT, LLM-Vergleich, lokale Modelle", path: "/ki-hub", keywords: "künstliche intelligenz chatgpt llm prompt ai" },
   { title: "Schulungen", desc: "Weiterbildung und Trainings zur Digitalisierung", path: "/schulungen", keywords: "lernen training workshop weiterbildung kurs" },
   { title: "Software-Anträge", desc: "Neue Software beantragen und Beschaffungsprozess", path: "/software-antraege", keywords: "beschaffung antrag neue software tool" },
-  { title: "SCNAT-Datenbank", desc: "Informationen zur SCNAT-DB und deren Weiterentwicklung", path: "/scnat-db", keywords: "datenbank db portale technologie" },
   { title: "Meine Übersicht", desc: "Persönliches Dashboard mit relevanten Infos", path: "/meine-uebersicht", keywords: "persönlich mein dashboard profil" },
   { title: "Prozesse", desc: "Software beschaffen, PM-Framework, Change-Prozess", path: "/prozesse", keywords: "prozess workflow beschaffung change projektmanagement" },
   { title: "Glossar", desc: "Digitalisierungsbegriffe erklärt", path: "/glossar", keywords: "begriffe lexikon definition wörterbuch" },

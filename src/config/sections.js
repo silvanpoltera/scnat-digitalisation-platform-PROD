@@ -1,7 +1,7 @@
 import {
   Home, Target, Layers, ListChecks, Network, Brain, GraduationCap,
   AppWindow, Database, Workflow, Users, HelpCircle, BookOpen,
-  CalendarRange, UserCircle,
+  CalendarRange,
   LayoutDashboard, FileText, Calendar, Inbox, GitPullRequest,
   MessageSquare, Radio, Newspaper, Megaphone, FolderOpen, Eye,
 } from 'lucide-react';
@@ -16,8 +16,6 @@ const ALL_SECTIONS = {
   'ki-hub':            { label: 'KI',                 icon: Brain,           path: '/ki-hub' },
   'schulungen':        { label: 'Schulungen',         icon: GraduationCap,   path: '/schulungen' },
   'software-antraege': { label: 'Software-Anträge',   icon: AppWindow,       path: '/software-antraege' },
-  'scnat-db':          { label: 'SCNAT Datenbank',    icon: Database,        path: '/scnat-db' },
-  'meine-uebersicht':  { label: 'Meine Übersicht',   icon: UserCircle,      path: '/meine-uebersicht' },
   'prozesse':          { label: 'Prozesse',           icon: Workflow,        path: '/prozesse' },
   'team':              { label: 'Team',               icon: Users,           path: '/team' },
   'faqs':              { label: 'FAQs',               icon: HelpCircle,      path: '/faqs' },

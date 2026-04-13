@@ -11,7 +11,7 @@ const VisibilityContext = createContext({
 const DEFAULT_PORTAL_KEYS = [
   'home', 'strategie', 'handlungsfelder', 'massnahmen', 'sprints',
   'systemlandschaft', 'ki-hub', 'schulungen', 'software-antraege',
-  'scnat-db', 'meine-uebersicht', 'prozesse', 'team', 'faqs', 'glossar',
+  'prozesse', 'team', 'faqs', 'glossar',
 ];
 
 const DEFAULT_CP_KEYS = [
