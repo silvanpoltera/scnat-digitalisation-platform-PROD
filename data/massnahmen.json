@@ -74,7 +74,9 @@
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": true,
-    "tags": [],
+    "tags": [
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -133,7 +135,10 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Beschaffung",
+      "Information & Transparenz"
+    ],
     "scnat_db": true,
     "scnat_portal": true,
     "isNew": true,
@@ -151,7 +156,9 @@
     "prioritaet_label": "Quick Win",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -169,7 +176,10 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Befähigungen",
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -267,7 +277,9 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -306,7 +318,9 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -324,7 +338,9 @@
     "prioritaet_label": "Strategisch",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Kommunikation"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -362,7 +378,9 @@
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -380,7 +398,9 @@
     "prioritaet_label": "Langfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": true,
     "scnat_portal": false,
     "isNew": false,
@@ -480,7 +500,9 @@
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -498,7 +520,9 @@
     "prioritaet_label": "Mittelfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Kommunikation"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -516,7 +540,9 @@
     "prioritaet_label": "Langfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Befähigungen"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -555,7 +581,9 @@
     "prioritaet_label": "Langfristig",
     "status": "geplant",
     "start_empfohlen": false,
-    "tags": [],
+    "tags": [
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
@@ -615,7 +643,10 @@
     "prioritaet_label": "Quick Win",
     "status": "in_umsetzung",
     "start_empfohlen": true,
-    "tags": [],
+    "tags": [
+      "Kommunikation",
+      "Information & Transparenz"
+    ],
     "scnat_db": false,
     "scnat_portal": false,
     "isNew": false,
