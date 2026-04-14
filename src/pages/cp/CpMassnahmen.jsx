@@ -638,7 +638,7 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
             {confirmDelete ? (
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-scnat-red">Wirklich löschen?</span>
-                <button onClick={() => { onDelete(m.id); onClose(); }} className="text-[10px] font-medium text-white bg-scnat-red px-2.5 py-1 rounded-sm hover:bg-[#F06570] transition-colors">Ja, löschen</button>
+                <button onClick={async () => { await onDelete(m.id); onClose(); }} className="text-[10px] font-medium text-white bg-scnat-red px-2.5 py-1 rounded-sm hover:bg-[#F06570] transition-colors">Ja, löschen</button>
                 <button onClick={() => setConfirmDelete(false)} className="text-[10px] text-txt-tertiary hover:text-txt-secondary px-2 py-1">Abbrechen</button>
               </div>
             ) : (
@@ -1428,7 +1428,7 @@ export default function CpMassnahmen() {
                       <button onClick={() => setEditing(m.id)} className="text-xs text-txt-secondary hover:text-txt-primary px-2 py-1 rounded-sm hover:bg-bg-elevated">Bearbeiten</button>
                       {deleteConfirmId === m.id ? (
                         <div className="flex items-center gap-1">
-                          <button onClick={() => { handleDelete(m.id); setDeleteConfirmId(null); }} className="text-[10px] font-mono text-white bg-scnat-red px-2 py-0.5 rounded-sm hover:bg-[#F06570]">Löschen</button>
+                          <button onClick={async () => { await handleDelete(m.id); setDeleteConfirmId(null); }} className="text-[10px] font-mono text-white bg-scnat-red px-2 py-0.5 rounded-sm hover:bg-[#F06570]">Löschen</button>
                           <button onClick={() => setDeleteConfirmId(null)} className="text-[10px] font-mono text-txt-tertiary hover:text-txt-secondary px-1">Nein</button>
                         </div>
                       ) : (
