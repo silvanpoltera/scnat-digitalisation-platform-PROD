@@ -22,8 +22,9 @@ function enrichMassnahmen(sprint) {
   };
 }
 
-router.get('/', requireAuth, (_req, res) => {
-  const sprints = readJSON(FILE).filter(s => s.status !== 'archived');
+router.get('/', requireAuth, (req, res) => {
+  let sprints = readJSON(FILE).filter(s => s.status !== 'archived');
+  if (req.user?.role !== 'admin') sprints = sprints.filter(s => !s.isAdminSprint);
   const allMassnahmen = readJSON('massnahmen.json');
   const enriched = sprints.map(s => ({
     ...s,
@@ -57,6 +58,7 @@ router.post('/', requireAuth, requireAdmin, (req, res) => {
     endDate: safe.endDate || '',
     status: safe.status || 'planned',
     massnahmen: Array.isArray(safe.massnahmen) ? safe.massnahmen : [],
+    isAdminSprint: !!safe.isAdminSprint,
   };
 
   sprints.push(newSprint);
@@ -70,7 +72,7 @@ router.put('/:id', requireAuth, requireAdmin, (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Sprint nicht gefunden' });
 
   const safe = sanitize(req.body);
-  const allowed = ['name', 'cluster', 'clusterColor', 'description', 'startDate', 'endDate', 'status', 'massnahmen'];
+  const allowed = ['name', 'cluster', 'clusterColor', 'description', 'startDate', 'endDate', 'status', 'massnahmen', 'isAdminSprint'];
   allowed.forEach(key => {
     if (safe[key] !== undefined) sprints[idx][key] = safe[key];
   });

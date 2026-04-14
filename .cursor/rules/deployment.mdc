@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## Architecture
 
-- **Repo**: https://github.com/silvanpoltera/scnat-digitalisation-platform-PROD.git
+- **Repo (PROD)**: https://github.com/silvanpoltera/scnat-digitalisation-platform-PROD.git
 - **Live URL**: https://platform.poltis.ch
 - **VM**: Google Cloud `scnat-portal-new`, Ubuntu 22.04, e2-small, us-east1-b
 - **Static IP**: `34.26.170.228`
@@ -18,6 +18,16 @@ alwaysApply: true
 - **Backend**: Express on 127.0.0.1:3001 (proxied via Nginx at `/api/`)
 - **Frontend**: Vite SPA served from `/opt/scnat-portal-prod/dist`
 - **Swap**: 2 GB (required for build on low-RAM VM)
+
+## Stack
+
+| Layer    | Technology                                      |
+|----------|-------------------------------------------------|
+| Frontend | React 18, Vite 6, React Router 6, Tailwind 3   |
+| UI       | Radix UI, Framer Motion, Lucide Icons, Recharts, dnd-kit |
+| Backend  | Express 5, Node.js (ESM), 18 route modules      |
+| Auth     | JWT (jsonwebtoken), bcryptjs, httpOnly Cookies   |
+| Storage  | 19 JSON files in `/data` (file-based, no DB)    |
 
 ## Deploy Command
 
@@ -35,7 +45,7 @@ ssh silvanpoltera@34.26.170.228 'bash /opt/scnat-portal-prod/deploy.sh'
 5. Restores production Nginx config
 6. `pm2 restart scnat-api`
 
-**During deployment**, users on desktop and mobile see a branded maintenance page.
+**During deployment**, users see a branded maintenance page (`public/maintenance.html`).
 
 ## Security Rules — MANDATORY
 
@@ -63,8 +73,13 @@ Expected: PM2 `online`, API returns `{"status":"ok"}`.
 ## Local Development
 
 ```bash
-cd scnat-portal-prod
-npm run dev:all        # Frontend (5173) + Backend (3001)
+npm run dev:all          # Frontend (5173) + Backend (3001)
+```
+
+Or via helper script:
+
+```bash
+bash start.sh
 ```
 
 ## Key Files
@@ -72,6 +87,18 @@ npm run dev:all        # Frontend (5173) + Backend (3001)
 | File | Purpose |
 |------|---------|
 | `deploy.sh` | VM deployment script (with maintenance page) |
+| `start.sh` | Local development start helper |
 | `.env.example` | Environment variable template |
-| `public/maintenance.html` | Service page shown during deployments |
-| `data/*.json` | Application data (committed, used by both frontend and backend) |
+| `public/maintenance.html` | Maintenance page shown during deployments |
+| `data/*.json` | 19 application data files (committed, used by frontend and backend) |
+| `server/routes/*.js` | 18 API route modules |
+| `src/pages/cp/*.jsx` | 18 Control Panel admin modules |
+
+## Key Features (for context)
+
+- **Massnahmen**: CRUD with Kanban (dnd-kit), list view, drag-reorder, comments, admin tasks
+- **Sprints**: CRUD with interactive Gantt chart, admin sprints, massnahmen assignment
+- **Admin Tasks / Admin Sprints**: `isAdminTask` / `isAdminSprint` flags, filtered for non-admins in API
+- **Visibility**: Per-page visibility toggles via `/api/visibility`
+- **News / Live-Infos**: Ticker and banner system
+- **Inbox**: Admin messaging system

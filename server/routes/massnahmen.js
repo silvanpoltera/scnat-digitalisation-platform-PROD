@@ -5,15 +5,40 @@ import { requireAuth, requireAdmin } from '../auth.js';
 const router = Router();
 const FILE = 'massnahmen.json';
 
-router.get('/', requireAuth, (_req, res) => {
-  res.json(readJSON(FILE));
+router.get('/', requireAuth, (req, res) => {
+  const all = readJSON(FILE);
+  if (req.user?.role === 'admin') return res.json(all);
+  res.json(all.filter(m => !m.isAdminTask));
 });
 
 router.put('/', requireAuth, requireAdmin, (req, res) => {
   const data = readJSON(FILE);
-  const { titel, beschreibung, cluster, status, tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal } = sanitize(req.body);
-  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
-  const newItem = { id: generateId(), titel, beschreibung, cluster, status: status || 'geplant', tags, wirkung, aufwand, prioritaet, prioritaet_label, start_empfohlen, scnat_db, scnat_portal };
+  const safe = sanitize(req.body);
+  if (!safe.titel) return res.status(400).json({ error: 'Titel erforderlich' });
+
+  const existingIds = new Set(data.map(m => m.id));
+  const prefix = safe.isAdminTask ? 'at' : 'm';
+  let nextNum = data.filter(m => m.id.startsWith(prefix)).length + 1;
+  let newId = `${prefix}${String(nextNum).padStart(2, '0')}`;
+  while (existingIds.has(newId)) { nextNum++; newId = `${prefix}${String(nextNum).padStart(2, '0')}`; }
+
+  const newItem = {
+    id: newId,
+    titel: safe.titel,
+    beschreibung: safe.beschreibung || '',
+    cluster: safe.cluster || '',
+    status: safe.status || 'geplant',
+    tags: safe.tags || [],
+    wirkung: safe.wirkung || 0,
+    aufwand: safe.aufwand || 0,
+    prioritaet: safe.prioritaet || 'C',
+    prioritaet_label: safe.prioritaet_label || '',
+    start_empfohlen: safe.start_empfohlen || false,
+    scnat_db: safe.scnat_db || false,
+    scnat_portal: safe.scnat_portal || false,
+    isAdminTask: !!safe.isAdminTask,
+    comments: [],
+  };
   data.push(newItem);
   writeJSON(FILE, data);
   res.status(201).json(newItem);
@@ -50,7 +75,7 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
     'titel', 'beschreibung', 'cluster', 'status', 'notiz', 'tags',
     'wirkung', 'aufwand', 'prioritaet', 'prioritaet_label',
     'start_empfohlen', 'scnat_db', 'scnat_portal',
-    'isNew', 'reihenfolge',
+    'isNew', 'reihenfolge', 'isAdminTask', 'comments',
   ];
   const safe = sanitize(req.body);
   allowed.forEach(key => {
@@ -72,6 +97,26 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   }
 
   res.json(data[idx]);
+});
+
+router.delete('/:id', requireAuth, requireAdmin, (req, res) => {
+  const data = readJSON(FILE);
+  const idx = data.findIndex(m => m.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
+
+  data.splice(idx, 1);
+  writeJSON(FILE, data);
+
+  const sprints = readJSON('sprints.json');
+  let sprintsChanged = false;
+  sprints.forEach(s => {
+    const before = s.massnahmen.length;
+    s.massnahmen = s.massnahmen.filter(m => m.massnahmeId !== req.params.id);
+    if (s.massnahmen.length !== before) sprintsChanged = true;
+  });
+  if (sprintsChanged) writeJSON('sprints.json', sprints);
+
+  res.json({ ok: true });
 });
 
 export default router;

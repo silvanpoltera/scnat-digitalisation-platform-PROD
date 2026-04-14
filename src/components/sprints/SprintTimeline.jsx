@@ -188,7 +188,10 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labe
           return (
             <div key={sp.id} className="flex items-center mb-2 relative z-[1]">
               <div className="shrink-0 pr-3" style={{ width: labelW }}>
-                <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary">{sp.name}</div>
+                <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
+                  {sp.name}
+                  {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
+                </div>
                 <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
                   {sp.massnahmen.length} Massnahmen · {formatDate(start)} → {formatDate(end)}
                 </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Plus, X, Search, PlusCircle } from 'lucide-react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { Plus, X, Search, PlusCircle, Shield } from 'lucide-react';
 
 const CLUSTER_OPTIONS = [
   { value: 'infrastruktur', label: 'Infrastruktur', color: '#0098DA' },
@@ -29,12 +29,14 @@ const M_STATUS_OPTIONS = [
 export default function CpSprintEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const isNew = id === 'new';
+  const isAdminFromUrl = searchParams.get('admin') === '1';
 
   const [form, setForm] = useState({
     name: '', cluster: 'infrastruktur', clusterColor: '#0098DA',
     description: '', startDate: '', endDate: '', status: 'planned',
-    massnahmen: [],
+    massnahmen: [], isAdminSprint: isAdminFromUrl,
   });
   const [allMassnahmen, setAllMassnahmen] = useState([]);
   const [mSearch, setMSearch] = useState('');
@@ -67,6 +69,7 @@ export default function CpSprintEditor() {
             endDate: data.endDate || '',
             status: data.status || 'planned',
             massnahmen: data.massnahmen || [],
+            isAdminSprint: !!data.isAdminSprint,
           });
         })
         .catch(() => {})
@@ -185,7 +188,14 @@ export default function CpSprintEditor() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold">{isNew ? 'Sprint erstellen' : 'Sprint bearbeiten'}</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold">{isNew ? 'Sprint erstellen' : 'Sprint bearbeiten'}</h1>
+          {form.isAdminSprint && (
+            <span className="text-[10px] font-mono bg-purple-500/15 text-purple-400 px-2 py-1 rounded-sm font-semibold flex items-center gap-1">
+              <Shield className="w-3 h-3" /> Admin Sprint
+            </span>
+          )}
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => navigate('/cp/sprints')}
@@ -274,6 +284,23 @@ export default function CpSprintEditor() {
               <option key={s.value} value={s.value}>{s.label}</option>
             ))}
           </select>
+        </div>
+        <div className="flex items-center">
+          <label
+            className="flex items-center gap-2.5 cursor-pointer select-none group"
+            onClick={() => setForm(f => ({ ...f, isAdminSprint: !f.isAdminSprint }))}
+          >
+            <div className={`w-9 h-5 rounded-full transition-colors relative ${form.isAdminSprint ? 'bg-purple-500' : 'bg-bd-default'}`}>
+              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${form.isAdminSprint ? 'translate-x-4' : 'translate-x-0.5'}`} />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <Shield className={`w-3.5 h-3.5 ${form.isAdminSprint ? 'text-purple-400' : 'text-txt-tertiary'}`} />
+                <span className="text-sm text-txt-primary font-medium">Admin Sprint</span>
+              </div>
+              <span className="text-[10px] text-txt-tertiary">Nur für Admins sichtbar</span>
+            </div>
+          </label>
         </div>
       </div>
 

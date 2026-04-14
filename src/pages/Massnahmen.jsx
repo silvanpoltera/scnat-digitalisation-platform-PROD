@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles, Zap } from 'lucide-react';
+import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles, Zap, Shield, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import PageHeader from '../components/PageHeader';
 
 const CLUSTER_COLORS = {
@@ -30,6 +31,11 @@ function PrioBar({ value, max = 10, color = '#EA515A' }) {
 function StatusBadge({ m, sprintNames }) {
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
+      {m.isAdminTask && (
+        <span className="flex items-center gap-0.5 text-[10px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold">
+          <Shield className="w-3 h-3" /> Admin
+        </span>
+      )}
       {m.isNew && (
         <span className="flex items-center gap-0.5 text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">
           <Sparkles className="w-3 h-3" /> NEU
@@ -373,6 +379,8 @@ function StartSixView({ items, sprintMap }) {
 }
 
 export default function Massnahmen() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [data, setData] = useState([]);
   const [sprints, setSprints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -382,6 +390,7 @@ export default function Massnahmen() {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterDb, setFilterDb] = useState(false);
   const [filterWelle, setFilterWelle] = useState('');
+  const [showAdminTasks, setShowAdminTasks] = useState(false);
 
   useEffect(() => {
     fetch('/api/massnahmen', { credentials: 'include' })
@@ -407,6 +416,7 @@ export default function Massnahmen() {
 
   const filtered = useMemo(() => {
     let result = [...data];
+    if (!showAdminTasks) result = result.filter(m => !m.isAdminTask);
     if (filterCluster) result = result.filter(m => m.cluster === filterCluster);
     if (filterPrio) result = result.filter(m => m.prioritaet === filterPrio);
     if (filterStatus) result = result.filter(m => m.status === filterStatus);
@@ -420,7 +430,7 @@ export default function Massnahmen() {
       return (b.wirkung || 0) * (11 - (b.aufwand || 5)) - (a.wirkung || 0) * (11 - (a.aufwand || 5));
     });
     return result;
-  }, [data, filterCluster, filterPrio, filterStatus, filterDb, filterWelle]);
+  }, [data, filterCluster, filterPrio, filterStatus, filterDb, filterWelle, showAdminTasks]);
 
   const clusters = useMemo(() => [...new Set(data.map(m => m.cluster))].sort(), [data]);
 
@@ -523,6 +533,20 @@ export default function Massnahmen() {
               </button>
             ))}
           </div>
+          {isAdmin && data.some(m => m.isAdminTask) && (
+            <button
+              onClick={() => setShowAdminTasks(prev => !prev)}
+              className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm border transition-colors ${
+                showAdminTasks
+                  ? 'bg-purple-500/15 text-purple-400 border-purple-500/30 font-medium'
+                  : 'bg-bg-elevated text-txt-secondary border-bd-faint hover:border-bd-default'
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5" />
+              {showAdminTasks ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+              Admin Tasks
+            </button>
+          )}
           <span className="text-xs text-txt-tertiary font-mono ml-auto">{filtered.length} Massnahmen</span>
         </div>
       )}

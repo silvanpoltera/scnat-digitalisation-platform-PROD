@@ -52,7 +52,10 @@ export default function SprintDetailPanel({ sprint, isOpen }) {
       <div className="p-5">
         <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
           <div>
-            <div className="font-semibold text-base text-txt-primary mb-0.5">{sprint.name}</div>
+            <div className="font-semibold text-base text-txt-primary mb-0.5 flex items-center gap-2">
+              {sprint.name}
+              {sprint.isAdminSprint && <span className="text-[9px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold">ADM</span>}
+            </div>
             <div className="font-mono text-[10px] text-txt-secondary">
               {sprint.massnahmen.length} Massnahmen · {formatDate(sprint.startDate)} → {formatDate(sprint.endDate)}
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Archive, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Archive, ChevronDown, ChevronRight, Shield } from 'lucide-react';
+import CpSprintGantt from '../../components/sprints/CpSprintGantt';
 
 const SPRINT_STATUS_STYLES = {
   active:    { bg: 'rgba(0,152,218,.1)', color: '#0098DA', border: 'rgba(0,152,218,.3)', label: 'Aktiv' },
@@ -31,6 +32,7 @@ export default function CpSprints() {
   const [archiveConfirm, setArchiveConfirm] = useState(null);
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [statusFilter, setStatusFilter] = useState({});
+  const [typeFilter, setTypeFilter] = useState('all');
 
   useEffect(() => {
     fetch('/api/sprints', { credentials: 'include' })
@@ -89,6 +91,28 @@ export default function CpSprints() {
     });
   }, [sprints]);
 
+  const handleDatesChange = useCallback(async (sprintId, startDate, endDate) => {
+    setSprints(prev => prev.map(sp =>
+      sp.id === sprintId ? { ...sp, startDate, endDate } : sp
+    ));
+
+    await fetch(`/api/sprints/${sprintId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ startDate, endDate }),
+    });
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (typeFilter === 'sprints') return sprints.filter(s => !s.isAdminSprint);
+    if (typeFilter === 'admin') return sprints.filter(s => s.isAdminSprint);
+    return sprints;
+  }, [sprints, typeFilter]);
+
+  const adminCount = sprints.filter(s => s.isAdminSprint).length;
+  const normalCount = sprints.length - adminCount;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -99,22 +123,57 @@ export default function CpSprints() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-xl font-bold mb-1">Sprint-Verwaltung</h1>
           <p className="text-sm text-txt-secondary">{sprints.length} Sprints</p>
         </div>
-        <Link
-          to="/cp/sprints/new"
-          className="flex items-center gap-1.5 text-sm font-medium text-white bg-scnat-red hover:bg-scnat-red/90 px-4 py-2 rounded-[3px] transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Sprint erstellen
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/cp/sprints/new?admin=1"
+            className="flex items-center gap-1.5 text-sm font-medium text-purple-400 border border-purple-500/30 hover:bg-purple-500/10 px-4 py-2 rounded-[3px] transition-colors"
+          >
+            <Shield className="w-4 h-4" />
+            Admin Sprint
+          </Link>
+          <Link
+            to="/cp/sprints/new"
+            className="flex items-center gap-1.5 text-sm font-medium text-white bg-scnat-red hover:bg-scnat-red/90 px-4 py-2 rounded-[3px] transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Sprint erstellen
+          </Link>
+        </div>
       </div>
 
+      {/* Type filter tabs */}
+      <div className="flex items-center gap-1.5 mb-5">
+        {[
+          { key: 'all', label: 'Alle', count: sprints.length },
+          { key: 'sprints', label: 'Sprints', count: normalCount },
+          { key: 'admin', label: 'Admin Sprints', count: adminCount },
+        ].map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTypeFilter(t.key)}
+            className={`font-mono text-[10px] px-2.5 py-1.5 rounded-sm border transition-all ${
+              typeFilter === t.key
+                ? t.key === 'admin'
+                  ? 'border-purple-500/40 bg-purple-500/15 text-purple-400 font-medium'
+                  : 'border-scnat-red/40 bg-scnat-red/10 text-scnat-red font-medium'
+                : 'border-bd-default text-txt-tertiary hover:text-txt-secondary'
+            }`}
+          >
+            {t.key === 'admin' && <Shield className="w-3 h-3 inline mr-1 -mt-0.5" />}
+            {t.label} · {t.count}
+          </button>
+        ))}
+      </div>
+
+      <CpSprintGantt sprints={filtered} onDatesChange={handleDatesChange} />
+
       <div className="space-y-3">
-        {sprints.map(sp => {
+        {filtered.map(sp => {
           const ss = SPRINT_STATUS_STYLES[sp.status] || SPRINT_STATUS_STYLES.planned;
           const isOpen = expandedIds.has(sp.id);
           const filter = statusFilter[sp.id] || 'alle';
@@ -139,7 +198,14 @@ export default function CpSprints() {
                 </div>
                 <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: sp.clusterColor }} />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-txt-primary truncate">{sp.name}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-txt-primary truncate">{sp.name}</span>
+                    {sp.isAdminSprint && (
+                      <span className="text-[9px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold flex items-center gap-0.5 shrink-0">
+                        <Shield className="w-2.5 h-2.5" /> ADM
+                      </span>
+                    )}
+                  </div>
                   <div className="font-mono text-[9px] text-txt-tertiary">
                     {sp.massnahmen.length} Massnahmen · {formatDate(sp.startDate)} → {formatDate(sp.endDate)}
                     <span className="hidden sm:inline"> · {sp.cluster}</span>
@@ -229,7 +295,7 @@ export default function CpSprints() {
           );
         })}
 
-        {sprints.length === 0 && (
+        {filtered.length === 0 && (
           <div className="py-12 text-center text-txt-tertiary text-sm border border-bd-faint rounded-[3px]">
             Noch keine Sprints vorhanden.
           </div>

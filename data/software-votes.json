@@ -63,7 +63,8 @@
     "id": "sv12",
     "softwareId": "m365",
     "userId": "1",
-    "type": "up"
+    "type": "up",
+    "timestamp": "2026-04-13T11:16:31.818Z"
   },
   {
     "id": "sv13",
@@ -124,5 +125,23 @@
     "userId": "1",
     "type": "up",
     "timestamp": "2026-04-09T09:49:26.881Z"
+  },
+  {
+    "softwareId": "templateserver",
+    "userId": "1",
+    "type": "up",
+    "timestamp": "2026-04-13T11:16:37.498Z"
+  },
+  {
+    "softwareId": "ia-writer",
+    "userId": "1",
+    "type": "up",
+    "timestamp": "2026-04-13T11:18:09.717Z"
+  },
+  {
+    "softwareId": "magnet",
+    "userId": "1",
+    "type": "down",
+    "timestamp": "2026-04-13T11:20:14.188Z"
   }
 ]

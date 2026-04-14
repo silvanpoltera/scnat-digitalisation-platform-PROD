@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap } from 'lucide-react';
+import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap, Shield, MessageSquare, Send, Trash2 } from 'lucide-react';
 import { DndContext, DragOverlay, closestCenter, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, useDraggable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -182,43 +182,66 @@ function ReorderView({ data, onSave }) {
 
 const isUnrated = (m) => !m.wirkung || m.wirkung === 0 || !m.aufwand || m.aufwand === 0;
 
-function KanbanCard({ m, sprintMap }) {
+function KanbanCard({ m, sprintMap, isSelected, onSelect }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: m.id });
+
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
       {...attributes}
-      className={`bg-bg-surface border border-bd-faint rounded-sm p-2.5 cursor-grab active:cursor-grabbing touch-none transition-opacity ${isDragging ? 'opacity-25' : ''}`}
+      className={`bg-bg-surface border rounded-sm transition-all flex ${
+        isDragging ? 'opacity-25 border-bd-faint' :
+        isSelected ? 'border-scnat-red/50 ring-1 ring-scnat-red/20 shadow-sm' :
+        'border-bd-faint hover:border-bd-strong'
+      }`}
     >
-      <div className="flex items-center gap-1 mb-1 flex-wrap">
-        <span className="text-[9px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
-        <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
-          m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
-          m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
-          m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
-          'bg-bg-elevated text-txt-tertiary'
-        }`}>{m.prioritaet}</span>
-        {m.isNew && <span className="text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1 rounded-sm">NEU</span>}
-        {m.start_empfohlen && <Star className="w-2.5 h-2.5 text-status-yellow fill-status-yellow" />}
-        {m.scnat_db && <Database className="w-2.5 h-2.5 text-status-blue" />}
-        {m.reihenfolge && <span className="text-[8px] font-mono text-scnat-red">#{m.reihenfolge}</span>}
+      {/* Drag handle */}
+      <div
+        {...listeners}
+        className="flex items-center px-1 cursor-grab active:cursor-grabbing touch-none text-txt-tertiary/30 hover:text-txt-tertiary hover:bg-bg-elevated/50 transition-colors rounded-l-sm shrink-0"
+        title="Ziehen zum Verschieben"
+      >
+        <GripVertical className="w-3 h-3" />
       </div>
-      <h4 className="text-[11px] text-txt-primary font-medium line-clamp-2 leading-snug">{m.titel}</h4>
-      <p className="text-[9px] text-txt-tertiary mt-1 truncate">{m.cluster}</p>
-      <div className="flex items-center gap-2 mt-1">
-        <span className="text-[8px] font-mono text-status-green">W:{m.wirkung || 0}</span>
-        <span className="text-[8px] font-mono text-scnat-red">A:{m.aufwand || 0}</span>
-      </div>
-      {sprintMap[m.id]?.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-1">
-          {sprintMap[m.id].map(sp => (
-            <span key={sp.id} className="text-[8px] font-mono bg-[#F07800]/12 text-[#F07800] px-1 py-0.5 rounded-sm">
-              {sp.name}
-            </span>
-          ))}
+
+      {/* Clickable card body */}
+      <div
+        className="flex-1 p-2 cursor-pointer min-w-0"
+        onClick={() => onSelect(m.id)}
+      >
+        <div className="flex items-center gap-1 mb-1 flex-wrap">
+          <span className="text-[9px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+          {m.isAdminTask && <span className="text-[9px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm font-semibold">ADM</span>}
+          {m.prioritaet && <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
+            m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
+            m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
+            m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
+            'bg-bg-elevated text-txt-tertiary'
+          }`}>{m.prioritaet}</span>}
+          {m.isNew && <span className="text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1 rounded-sm">NEU</span>}
+          {m.start_empfohlen && <Star className="w-2.5 h-2.5 text-status-yellow fill-status-yellow" />}
+          {m.scnat_db && <Database className="w-2.5 h-2.5 text-status-blue" />}
+          {m.reihenfolge && <span className="text-[8px] font-mono text-scnat-red">#{m.reihenfolge}</span>}
+          {m.comments?.length > 0 && <span className="text-[8px] font-mono text-txt-tertiary"><MessageSquare className="w-2.5 h-2.5 inline" /> {m.comments.length}</span>}
         </div>
-      )}
+        <h4 className="text-[11px] text-txt-primary font-medium line-clamp-2 leading-snug">{m.titel}</h4>
+        {m.cluster && <p className="text-[9px] text-txt-tertiary mt-1 truncate">{m.cluster}</p>}
+        {!m.isAdminTask && (
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[8px] font-mono text-status-green">W:{m.wirkung || 0}</span>
+            <span className="text-[8px] font-mono text-scnat-red">A:{m.aufwand || 0}</span>
+          </div>
+        )}
+        {sprintMap[m.id]?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {sprintMap[m.id].map(sp => (
+              <span key={sp.id} className="text-[8px] font-mono bg-[#F07800]/12 text-[#F07800] px-1 py-0.5 rounded-sm">
+                {sp.name}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -228,20 +251,120 @@ function KanbanCardOverlay({ m }) {
     <div className="bg-bg-surface border-2 border-scnat-red/40 rounded-sm p-2.5 shadow-2xl w-[210px] rotate-1">
       <div className="flex items-center gap-1 mb-1">
         <span className="text-[9px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
-        <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
+        {m.prioritaet && <span className={`text-[9px] font-mono px-1 py-0.5 rounded-sm ${
           m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
           m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
           m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
           'bg-bg-elevated text-txt-tertiary'
-        }`}>{m.prioritaet}</span>
+        }`}>{m.prioritaet}</span>}
       </div>
       <h4 className="text-[11px] text-txt-primary font-medium line-clamp-2">{m.titel}</h4>
-      <p className="text-[9px] text-txt-tertiary mt-1">{m.cluster}</p>
+      {m.cluster && <p className="text-[9px] text-txt-tertiary mt-1">{m.cluster}</p>}
     </div>
   );
 }
 
-function KanbanColumn({ column, items, sprintMap }) {
+function KanbanQuickAdd({ status, sprints, onAdd }) {
+  const [open, setOpen] = useState(false);
+  const [titel, setTitel] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sprintId, setSprintId] = useState('');
+  const [saving, setSaving] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (open && inputRef.current) inputRef.current.focus();
+  }, [open]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!titel.trim() || saving) return;
+    setSaving(true);
+    await onAdd({ titel: titel.trim(), status, isAdminTask: isAdmin, sprintId: sprintId || null });
+    setTitel('');
+    setIsAdmin(false);
+    setSprintId('');
+    setSaving(false);
+  };
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full flex items-center justify-center gap-1 py-2 text-[10px] font-mono text-txt-tertiary/40 hover:text-txt-tertiary hover:bg-bg-elevated/50 rounded-sm transition-colors"
+      >
+        <Plus className="w-3 h-3" /> Hinzufügen
+      </button>
+    );
+  }
+
+  const activeSprints = sprints.filter(s => s.status !== 'archived' && s.status !== 'completed');
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-bg-surface border border-bd-default rounded-sm p-2 space-y-1.5 shadow-sm">
+      <input
+        ref={inputRef}
+        value={titel}
+        onChange={e => setTitel(e.target.value)}
+        placeholder="Titel eingeben..."
+        className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-[11px] px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none"
+        onKeyDown={e => { if (e.key === 'Escape') { setOpen(false); setTitel(''); } }}
+      />
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex bg-bg-elevated border border-bd-faint rounded-sm p-0.5">
+          <button
+            type="button"
+            onClick={() => setIsAdmin(false)}
+            className={`text-[9px] font-mono px-1.5 py-0.5 rounded-sm transition-colors ${
+              !isAdmin ? 'bg-scnat-red/15 text-scnat-red font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+            }`}
+          >
+            Massnahme
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsAdmin(true)}
+            className={`flex items-center gap-0.5 text-[9px] font-mono px-1.5 py-0.5 rounded-sm transition-colors ${
+              isAdmin ? 'bg-purple-500/15 text-purple-400 font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+            }`}
+          >
+            <Shield className="w-2.5 h-2.5" /> Admin
+          </button>
+        </div>
+        {activeSprints.length > 0 && (
+          <select
+            value={sprintId}
+            onChange={e => setSprintId(e.target.value)}
+            className="flex-1 min-w-0 bg-bg-elevated border border-bd-faint text-txt-secondary text-[9px] px-1.5 py-0.5 rounded-sm focus:border-scnat-red focus:outline-none"
+          >
+            <option value="">Kein Sprint</option>
+            {activeSprints.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+        )}
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          type="submit"
+          disabled={!titel.trim() || saving}
+          className="flex-1 flex items-center justify-center gap-1 text-[10px] font-medium text-white bg-scnat-red hover:bg-[#F06570] disabled:bg-bg-elevated disabled:text-txt-tertiary px-2 py-1 rounded-sm transition-colors"
+        >
+          {saving ? '...' : <><Plus className="w-3 h-3" /> Erstellen</>}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setOpen(false); setTitel(''); setIsAdmin(false); setSprintId(''); }}
+          className="text-txt-tertiary hover:text-txt-secondary p-1 transition-colors"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function KanbanColumn({ column, items, sprintMap, sprints, onQuickAdd, selectedId, onSelect }) {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
   return (
     <div ref={setNodeRef} className={`flex-1 min-w-[200px] flex flex-col rounded-sm transition-all ${isOver ? 'ring-2 ring-scnat-red/30' : ''}`}>
@@ -253,17 +376,19 @@ function KanbanColumn({ column, items, sprintMap }) {
         <p className="text-[9px] text-txt-tertiary mt-0.5">{column.desc}</p>
       </div>
       <div className="flex-1 p-2 space-y-2 min-h-[120px] bg-bg-elevated/30 rounded-b-sm border border-t-0 border-bd-faint">
-        {items.map(m => <KanbanCard key={m.id} m={m} sprintMap={sprintMap} />)}
+        {items.map(m => <KanbanCard key={m.id} m={m} sprintMap={sprintMap} isSelected={selectedId === m.id} onSelect={onSelect} />)}
         {items.length === 0 && (
-          <div className="flex items-center justify-center h-20 text-[10px] text-txt-tertiary/40 font-mono">Leer</div>
+          <div className="flex items-center justify-center h-12 text-[10px] text-txt-tertiary/40 font-mono">Leer</div>
         )}
+        <KanbanQuickAdd status={column.id} sprints={sprints} onAdd={onQuickAdd} />
       </div>
     </div>
   );
 }
 
-function KanbanView({ data, sprintMap, onStatusChange }) {
+function KanbanView({ data, sprintMap, sprints, onStatusChange, onQuickAdd, onSave, onDelete, onAddComment, onDeleteComment, assignToSprint, removeFromSprint }) {
   const [activeId, setActiveId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -280,31 +405,226 @@ function KanbanView({ data, sprintMap, onStatusChange }) {
   }, [data]);
 
   const activeItem = activeId ? data.find(m => m.id === activeId) : null;
+  const selectedItem = selectedId ? data.find(m => m.id === selectedId) : null;
+  const assignableSprints = sprints.filter(s => s.status !== 'archived' && s.status !== 'completed');
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={({ active }) => setActiveId(active.id)}
-      onDragCancel={() => setActiveId(null)}
-      onDragEnd={({ active, over }) => {
-        setActiveId(null);
-        if (!over) return;
-        const item = data.find(m => m.id === active.id);
-        if (item && item.status !== over.id && KANBAN_COLUMNS.some(c => c.id === over.id)) {
-          onStatusChange(item.id, over.id);
-        }
-      }}
-    >
-      <div className="flex gap-3 overflow-x-auto pb-4">
-        {KANBAN_COLUMNS.map(col => (
-          <KanbanColumn key={col.id} column={col} items={grouped[col.id] || []} sprintMap={sprintMap} />
-        ))}
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={({ active }) => setActiveId(active.id)}
+        onDragCancel={() => setActiveId(null)}
+        onDragEnd={({ active, over }) => {
+          setActiveId(null);
+          if (!over) return;
+          const item = data.find(m => m.id === active.id);
+          if (item && item.status !== over.id && KANBAN_COLUMNS.some(c => c.id === over.id)) {
+            onStatusChange(item.id, over.id);
+          }
+        }}
+      >
+        <div className="flex gap-3 overflow-x-auto pb-4">
+          {KANBAN_COLUMNS.map(col => (
+            <KanbanColumn key={col.id} column={col} items={grouped[col.id] || []} sprintMap={sprintMap} sprints={sprints} onQuickAdd={onQuickAdd} selectedId={selectedId} onSelect={(id) => setSelectedId(selectedId === id ? null : id)} />
+          ))}
+        </div>
+        <DragOverlay dropAnimation={{ duration: 200 }}>
+          {activeItem && <KanbanCardOverlay m={activeItem} />}
+        </DragOverlay>
+      </DndContext>
+
+      {selectedItem && (
+        <KanbanDetailPanel
+          m={selectedItem}
+          sprintMap={sprintMap}
+          assignableSprints={assignableSprints}
+          onClose={() => setSelectedId(null)}
+          onSave={onSave}
+          onDelete={onDelete}
+          onAddComment={onAddComment}
+          onDeleteComment={onDeleteComment}
+          assignToSprint={assignToSprint}
+          removeFromSprint={removeFromSprint}
+        />
+      )}
+    </>
+  );
+}
+
+function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, onDelete, onAddComment, onDeleteComment, assignToSprint, removeFromSprint }) {
+  const [edit, setEdit] = useState({ ...m });
+  const [dirty, setDirty] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  useEffect(() => {
+    setEdit({ ...m });
+    setDirty(false);
+    setConfirmDelete(false);
+  }, [m.id]);
+
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  const update = (field, value) => {
+    setEdit(prev => ({ ...prev, [field]: value }));
+    setDirty(true);
+  };
+
+  const handleSave = () => {
+    onSave(edit);
+    setDirty(false);
+  };
+
+  const assignedSprintIds = new Set((sprintMap[m.id] || []).map(sp => sp.id));
+  const availableSprints = assignableSprints.filter(s => !assignedSprintIds.has(s.id));
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div
+        className="relative bg-bg-surface border border-bd-faint rounded-sm shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-bd-faint bg-bg-elevated">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+            {m.isAdminTask && (
+              <span className="flex items-center gap-0.5 text-[9px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold">
+                <Shield className="w-3 h-3" /> Admin Task
+              </span>
+            )}
+            <h3 className="text-sm font-medium text-txt-primary truncate">{m.titel}</h3>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {dirty && (
+              <button onClick={handleSave} className="flex items-center gap-1 text-[10px] font-medium text-white bg-scnat-red hover:bg-[#F06570] px-3 py-1 rounded-sm transition-colors">
+                <Save className="w-3 h-3" /> Speichern
+              </button>
+            )}
+            <button onClick={onClose} className="p-1 text-txt-tertiary hover:text-txt-primary transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-5 space-y-4">
+          {/* Title & Description */}
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Titel</label>
+              <input value={edit.titel || ''} onChange={e => update('titel', e.target.value)} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Beschreibung</label>
+              <textarea value={edit.beschreibung || ''} onChange={e => update('beschreibung', e.target.value)} rows={2} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none resize-none" />
+            </div>
+          </div>
+
+          {/* Status, Prio, Cluster row */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Status</label>
+              <select value={edit.status} onChange={e => update('status', e.target.value)} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none">
+                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Priorität</label>
+              <select value={edit.prioritaet || ''} onChange={e => { update('prioritaet', e.target.value); update('prioritaet_label', PRIO_LABEL[e.target.value] || ''); }} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none">
+                <option value="">–</option>
+                {PRIO_OPTIONS.map(p => <option key={p} value={p}>Prio {p} – {PRIO_LABEL[p]}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Cluster</label>
+              <select value={edit.cluster || ''} onChange={e => update('cluster', e.target.value)} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none">
+                <option value="">–</option>
+                {CLUSTER_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Wirkung / Aufwand */}
+          {!m.isAdminTask && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung: <strong className="text-status-green">{edit.wirkung || 0}</strong></label>
+                <input type="range" min="0" max="10" step="0.5" value={edit.wirkung || 0} onChange={e => update('wirkung', parseFloat(e.target.value))} className="w-full accent-status-green" />
+              </div>
+              <div>
+                <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Aufwand: <strong className="text-scnat-red">{edit.aufwand || 0}</strong></label>
+                <input type="range" min="0" max="10" step="0.5" value={edit.aufwand || 0} onChange={e => update('aufwand', parseFloat(e.target.value))} className="w-full accent-scnat-red" />
+              </div>
+            </div>
+          )}
+
+          {/* Notiz */}
+          <div>
+            <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Notiz</label>
+            <input value={edit.notiz || ''} onChange={e => update('notiz', e.target.value)} placeholder="Interne Notiz..." className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none" />
+          </div>
+
+          {/* Sprints */}
+          <div>
+            <label className="block text-[10px] text-txt-tertiary font-mono mb-1.5">Sprint-Zuweisung</label>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {(sprintMap[m.id] || []).map(sp => (
+                <span key={sp.id} className="group flex items-center gap-1 text-[10px] font-mono bg-[#F07800]/12 text-[#F07800] px-1.5 py-0.5 rounded-sm">
+                  <Zap className="w-3 h-3" /> {sp.name}
+                  <button
+                    type="button"
+                    onClick={() => removeFromSprint(m.id, sp.id)}
+                    className="ml-0.5 opacity-0 group-hover:opacity-100 hover:text-scnat-red transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              {availableSprints.length > 0 && (
+                <select
+                  value=""
+                  onChange={e => { if (e.target.value) assignToSprint(m.id, e.target.value); e.target.value = ''; }}
+                  className="bg-bg-elevated border border-bd-faint text-txt-tertiary text-[10px] px-1.5 py-0.5 rounded-sm focus:border-scnat-red focus:outline-none"
+                >
+                  <option value="">+ Sprint zuweisen</option>
+                  {availableSprints.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              )}
+              {(sprintMap[m.id] || []).length === 0 && availableSprints.length === 0 && (
+                <span className="text-[10px] text-txt-tertiary/40 font-mono">Keine Sprints verfügbar</span>
+              )}
+            </div>
+          </div>
+
+          {/* Comments */}
+          <CommentSection
+            comments={m.comments || []}
+            onAdd={(text) => onAddComment(m.id, text)}
+            onDelete={(commentId) => onDeleteComment(m.id, commentId)}
+          />
+
+          {/* Delete */}
+          <div className="pt-2 border-t border-bd-faint">
+            {confirmDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-scnat-red">Wirklich löschen?</span>
+                <button onClick={() => { onDelete(m.id); }} className="text-[10px] font-medium text-white bg-scnat-red px-2.5 py-1 rounded-sm hover:bg-[#F06570] transition-colors">Ja, löschen</button>
+                <button onClick={() => setConfirmDelete(false)} className="text-[10px] text-txt-tertiary hover:text-txt-secondary px-2 py-1">Abbrechen</button>
+              </div>
+            ) : (
+              <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-1 text-[10px] text-txt-tertiary hover:text-scnat-red transition-colors">
+                <Trash2 className="w-3 h-3" /> Entfernen
+              </button>
+            )}
+          </div>
+        </div>
       </div>
-      <DragOverlay dropAnimation={{ duration: 200 }}>
-        {activeItem && <KanbanCardOverlay m={activeItem} />}
-      </DragOverlay>
-    </DndContext>
+    </div>
   );
 }
 
@@ -406,22 +726,100 @@ function SprintAssignButton({ massnahmeId, assignableSprints, assignedSprintIds,
   );
 }
 
+function ListQuickAdd({ sprints, onAdd }) {
+  const [titel, setTitel] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sprintId, setSprintId] = useState('');
+  const [saving, setSaving] = useState(false);
+  const inputRef = useRef(null);
+
+  const activeSprints = sprints.filter(s => s.status !== 'archived' && s.status !== 'completed');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!titel.trim() || saving) return;
+    setSaving(true);
+    await onAdd({ titel: titel.trim(), status: 'geplant', isAdminTask: isAdmin, sprintId: sprintId || null });
+    setTitel('');
+    setIsAdmin(false);
+    setSprintId('');
+    setSaving(false);
+    inputRef.current?.focus();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 mb-3 bg-bg-surface border border-bd-faint rounded-sm px-3 py-2">
+      <Plus className="w-4 h-4 text-txt-tertiary shrink-0" />
+      <input
+        ref={inputRef}
+        value={titel}
+        onChange={e => setTitel(e.target.value)}
+        placeholder="Schnell erfassen — Titel eingeben, Enter drücken..."
+        className="flex-1 bg-transparent text-txt-primary text-sm focus:outline-none placeholder:text-txt-tertiary/40"
+      />
+      <div className="flex bg-bg-elevated border border-bd-faint rounded-sm p-0.5 shrink-0">
+        <button
+          type="button"
+          onClick={() => setIsAdmin(false)}
+          className={`text-[9px] font-mono px-2 py-0.5 rounded-sm transition-colors ${
+            !isAdmin ? 'bg-scnat-red/15 text-scnat-red font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+          }`}
+        >
+          Massnahme
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsAdmin(true)}
+          className={`flex items-center gap-0.5 text-[9px] font-mono px-2 py-0.5 rounded-sm transition-colors ${
+            isAdmin ? 'bg-purple-500/15 text-purple-400 font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+          }`}
+        >
+          <Shield className="w-2.5 h-2.5" /> Admin
+        </button>
+      </div>
+      {activeSprints.length > 0 && (
+        <select
+          value={sprintId}
+          onChange={e => setSprintId(e.target.value)}
+          className="bg-bg-elevated border border-bd-faint text-txt-secondary text-[10px] px-2 py-1 rounded-sm focus:border-scnat-red focus:outline-none shrink-0 max-w-[140px]"
+        >
+          <option value="">Kein Sprint</option>
+          {activeSprints.map(s => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
+      )}
+      <button
+        type="submit"
+        disabled={!titel.trim() || saving}
+        className="text-[10px] font-medium text-white bg-scnat-red hover:bg-[#F06570] disabled:bg-bg-elevated disabled:text-txt-tertiary px-2.5 py-1 rounded-sm transition-colors shrink-0"
+      >
+        {saving ? '...' : 'Enter ↵'}
+      </button>
+    </form>
+  );
+}
+
 export default function CpMassnahmen() {
   const [data, setData] = useState([]);
   const [sprints, setSprints] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [showAddAdmin, setShowAddAdmin] = useState(false);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterUnrated, setFilterUnrated] = useState(false);
   const [filterCluster, setFilterCluster] = useState('');
   const [filterSprint, setFilterSprint] = useState('');
+  const [filterType, setFilterType] = useState('');
   const [view, setView] = useState('list');
   const [newItem, setNewItem] = useState({
-    titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0],
-    wirkung: 5, aufwand: 5, prioritaet: 'C', status: 'geplant',
+    titel: '', beschreibung: '', cluster: '',
+    wirkung: 5, aufwand: 5, prioritaet: '', status: 'geplant',
     tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, isNew: false, reihenfolge: null, notiz: '',
   });
+  const [newAdminTask, setNewAdminTask] = useState({ titel: '', beschreibung: '', status: 'geplant' });
 
   const load = () => {
     fetch('/api/massnahmen', { credentials: 'include' }).then(r => r.json()).then(setData).catch(() => {});
@@ -480,6 +878,8 @@ export default function CpMassnahmen() {
 
   const filtered = useMemo(() => {
     let result = [...data];
+    if (filterType === 'admin') result = result.filter(m => m.isAdminTask);
+    else if (filterType === 'massnahmen') result = result.filter(m => !m.isAdminTask);
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(m => m.titel.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) || m.cluster?.toLowerCase().includes(q));
@@ -494,16 +894,18 @@ export default function CpMassnahmen() {
       return ra - rb;
     });
     return result;
-  }, [data, search, filterStatus, filterCluster, filterSprint, sprintMap, filterUnrated]);
+  }, [data, search, filterStatus, filterCluster, filterSprint, sprintMap, filterUnrated, filterType]);
 
   const stats = useMemo(() => ({
     total: data.length,
+    massnahmen: data.filter(m => !m.isAdminTask).length,
+    adminTasks: data.filter(m => m.isAdminTask).length,
     geplant: data.filter(m => m.status === 'geplant').length,
     aktiv: data.filter(m => m.status === 'in_umsetzung').length,
     start6: data.filter(m => m.start_empfohlen).length,
     neu: data.filter(m => m.isNew).length,
     db: data.filter(m => m.scnat_db).length,
-    unrated: data.filter(isUnrated).length,
+    unrated: data.filter(m => !m.isAdminTask && isUnrated(m)).length,
     inSprint: data.filter(m => sprintMap[m.id]).length,
   }), [data, sprintMap]);
 
@@ -518,6 +920,18 @@ export default function CpMassnahmen() {
     load();
   };
 
+  const handleDelete = useCallback(async (id) => {
+    await fetch(`/api/massnahmen/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    setData(prev => prev.filter(m => m.id !== id));
+    setSprints(prev => prev.map(s => ({
+      ...s,
+      massnahmen: s.massnahmen.filter(m => m.massnahmeId !== id),
+    })));
+  }, []);
+
   const handleAdd = async (e) => {
     e.preventDefault();
     await fetch('/api/massnahmen', {
@@ -527,9 +941,81 @@ export default function CpMassnahmen() {
       body: JSON.stringify({ ...newItem, prioritaet_label: PRIO_LABEL[newItem.prioritaet] || '' }),
     });
     setShowAdd(false);
-    setNewItem({ titel: '', beschreibung: '', cluster: CLUSTER_OPTIONS[0], wirkung: 5, aufwand: 5, prioritaet: 'C', status: 'geplant', tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, isNew: false, reihenfolge: null, notiz: '' });
+    setNewItem({ titel: '', beschreibung: '', cluster: '', wirkung: 5, aufwand: 5, prioritaet: '', status: 'geplant', tags: [], start_empfohlen: false, scnat_db: false, scnat_portal: false, isNew: false, reihenfolge: null, notiz: '' });
     load();
   };
+
+  const handleAddAdminTask = async (e) => {
+    e.preventDefault();
+    await fetch('/api/massnahmen', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ ...newAdminTask, isAdminTask: true }),
+    });
+    setShowAddAdmin(false);
+    setNewAdminTask({ titel: '', beschreibung: '', status: 'geplant' });
+    load();
+  };
+
+  const addComment = useCallback(async (id, text) => {
+    const m = data.find(d => d.id === id);
+    const comments = [...(m?.comments || []), { id: Date.now().toString(36), text, createdAt: new Date().toISOString(), author: 'Admin' }];
+    setData(prev => prev.map(d => d.id === id ? { ...d, comments } : d));
+    await fetch(`/api/massnahmen/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ comments }),
+    });
+  }, [data]);
+
+  const deleteComment = useCallback(async (massnahmeId, commentId) => {
+    const m = data.find(d => d.id === massnahmeId);
+    const comments = (m?.comments || []).filter(c => c.id !== commentId);
+    setData(prev => prev.map(d => d.id === massnahmeId ? { ...d, comments } : d));
+    await fetch(`/api/massnahmen/${massnahmeId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ comments }),
+    });
+  }, [data]);
+
+  const quickAdd = useCallback(async ({ titel, status, isAdminTask, sprintId }) => {
+    const res = await fetch('/api/massnahmen', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        titel,
+        status,
+        isAdminTask: !!isAdminTask,
+        cluster: '',
+        prioritaet: '',
+        prioritaet_label: '',
+      }),
+    });
+    const created = await res.json();
+    setData(prev => [...prev, created]);
+
+    if (sprintId) {
+      const sprint = sprints.find(s => s.id === sprintId);
+      if (sprint) {
+        const updated = [
+          ...sprint.massnahmen,
+          { massnahmeId: created.id, status: 'geplant', verantwortliche: '', notiz: '', progress: 0, titel: created.titel },
+        ];
+        setSprints(prev => prev.map(s => s.id === sprintId ? { ...s, massnahmen: updated } : s));
+        await fetch(`/api/sprints/${sprintId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ massnahmen: updated }),
+        });
+      }
+    }
+  }, [sprints]);
 
   const updateLocal = (id, field, value) => {
     setData(data.map(d => d.id === id ? { ...d, [field]: value } : d));
@@ -556,13 +1042,11 @@ export default function CpMassnahmen() {
         <div>
           <h2 className="text-xl font-heading font-semibold text-txt-primary">Massnahmen verwalten</h2>
           <div className="flex items-center gap-3 mt-1 text-[10px] font-mono text-txt-tertiary">
-            <span>{stats.total} total</span>
+            <span>{stats.massnahmen} Massnahmen</span>
+            {stats.adminTasks > 0 && <span className="text-purple-400">{stats.adminTasks} Admin Tasks</span>}
             <span className="text-status-green">{stats.aktiv} aktiv</span>
-            <span className="text-status-yellow">{stats.start6} «Start 6»</span>
-            <span className="text-scnat-teal">{stats.neu} neu</span>
-            <span className="text-status-blue">{stats.db} DB</span>
             {stats.inSprint > 0 && <span className="text-[#F07800]">{stats.inSprint} in Sprint</span>}
-            {stats.unrated > 0 && <span className="text-status-yellow">{stats.unrated} nicht eingeschätzt</span>}
+            {stats.unrated > 0 && <span className="text-status-yellow">{stats.unrated} unbewertet</span>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -578,11 +1062,43 @@ export default function CpMassnahmen() {
             </button>
           </div>
           {view === 'list' && (
-            <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 bg-scnat-red text-white text-sm px-3 py-1.5 rounded-sm hover:bg-[#F06570] transition-colors">
-              <Plus className="w-4 h-4" /> Neue Massnahme
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button onClick={() => { setShowAdd(!showAdd); setShowAddAdmin(false); }} className="flex items-center gap-1 bg-scnat-red text-white text-sm px-3 py-1.5 rounded-sm hover:bg-[#F06570] transition-colors">
+                <Plus className="w-4 h-4" /> Massnahme
+              </button>
+              <button onClick={() => { setShowAddAdmin(!showAddAdmin); setShowAdd(false); }} className="flex items-center gap-1 bg-purple-600 text-white text-sm px-3 py-1.5 rounded-sm hover:bg-purple-500 transition-colors">
+                <Shield className="w-3.5 h-3.5" /> Admin Task
+              </button>
+            </div>
           )}
         </div>
+      </div>
+
+      {/* Type filter */}
+      <div className="flex items-center gap-1.5 mb-4">
+        {[
+          { key: '', label: 'Alle', count: stats.total },
+          { key: 'massnahmen', label: 'Massnahmen', count: stats.massnahmen },
+          { key: 'admin', label: 'Admin Tasks', count: stats.adminTasks, icon: Shield },
+        ].map(f => {
+          const Icon = f.icon;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setFilterType(f.key)}
+              className={`flex items-center gap-1 font-mono text-[10px] px-2.5 py-1 rounded-sm border transition-all ${
+                filterType === f.key
+                  ? f.key === 'admin'
+                    ? 'border-purple-500/40 bg-purple-500/15 text-purple-400 font-medium'
+                    : 'border-current bg-black/20 text-txt-primary font-medium'
+                  : 'border-bd-faint text-txt-tertiary hover:text-txt-secondary'
+              }`}
+            >
+              {Icon && <Icon className="w-3 h-3" />}
+              {f.label} · {f.count}
+            </button>
+          );
+        })}
       </div>
 
       {view === 'reorder' && <ReorderView data={data} onSave={load} />}
@@ -650,21 +1166,31 @@ export default function CpMassnahmen() {
         <KanbanView
           data={filtered}
           sprintMap={sprintMap}
+          sprints={sprints}
           onStatusChange={(id, status) => inlineSave(id, { status })}
+          onQuickAdd={quickAdd}
+          onSave={(m) => { inlineSave(m.id, m); }}
+          onDelete={handleDelete}
+          onAddComment={addComment}
+          onDeleteComment={deleteComment}
+          assignToSprint={assignToSprint}
+          removeFromSprint={removeFromSprint}
         />
       )}
 
       {view === 'list' && <>
-      {/* Add Form */}
+      {/* Add Massnahme Form */}
       {showAdd && (
         <form onSubmit={handleAdd} className="bg-bg-surface border border-bd-faint rounded-sm p-4 mb-6 space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input value={newItem.titel} onChange={e => setNewItem({ ...newItem, titel: e.target.value })} required placeholder="Titel" className="bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none sm:col-span-2" />
             <textarea value={newItem.beschreibung} onChange={e => setNewItem({ ...newItem, beschreibung: e.target.value })} placeholder="Beschreibung" rows={2} className="bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none sm:col-span-2 resize-none" />
             <select value={newItem.cluster} onChange={e => setNewItem({ ...newItem, cluster: e.target.value })} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none">
+              <option value="">Kein Cluster</option>
               {CLUSTER_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
             <select value={newItem.prioritaet} onChange={e => setNewItem({ ...newItem, prioritaet: e.target.value })} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none">
+              <option value="">Keine Priorität</option>
               {PRIO_OPTIONS.map(p => <option key={p} value={p}>Prio {p} – {PRIO_LABEL[p]}</option>)}
             </select>
             <div className="flex items-center gap-4">
@@ -688,6 +1214,38 @@ export default function CpMassnahmen() {
         </form>
       )}
 
+      {/* Add Admin Task Form */}
+      {showAddAdmin && (
+        <form onSubmit={handleAddAdminTask} className="bg-bg-surface border border-purple-500/30 rounded-sm p-4 mb-6 space-y-3">
+          <div className="flex items-center gap-2 mb-1">
+            <Shield className="w-4 h-4 text-purple-400" />
+            <span className="text-sm font-medium text-purple-400">Neuer Admin Task</span>
+            <span className="text-[9px] font-mono text-txt-tertiary">(nur für dich sichtbar)</span>
+          </div>
+          <input
+            value={newAdminTask.titel}
+            onChange={e => setNewAdminTask({ ...newAdminTask, titel: e.target.value })}
+            required
+            placeholder="Was muss erledigt werden?"
+            className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-purple-500 focus:outline-none"
+          />
+          <textarea
+            value={newAdminTask.beschreibung}
+            onChange={e => setNewAdminTask({ ...newAdminTask, beschreibung: e.target.value })}
+            placeholder="Details / Notizen (optional)"
+            rows={2}
+            className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-purple-500 focus:outline-none resize-none"
+          />
+          <div className="flex items-center gap-2">
+            <button type="submit" className="bg-purple-600 text-white text-sm px-4 py-2 rounded-sm hover:bg-purple-500 transition-colors">Erstellen</button>
+            <button type="button" onClick={() => setShowAddAdmin(false)} className="text-sm text-txt-secondary hover:text-txt-primary px-3 py-2">Abbrechen</button>
+          </div>
+        </form>
+      )}
+
+      {/* Quick Add Bar */}
+      <ListQuickAdd sprints={sprints} onAdd={quickAdd} />
+
       <div className="space-y-2">
         {filtered.map(m => {
           const isEditing = editing === m.id;
@@ -697,6 +1255,12 @@ export default function CpMassnahmen() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
                     <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+
+                    {m.isAdminTask && (
+                      <span className="flex items-center gap-0.5 text-[10px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold">
+                        <Shield className="w-3 h-3" /> Admin
+                      </span>
+                    )}
 
                     <InlineSelect
                       value={m.prioritaet}
@@ -779,7 +1343,14 @@ export default function CpMassnahmen() {
                       onAssign={assignToSprint}
                     />
                   </div>
-                  <h4 className="text-sm text-txt-primary font-medium">{m.titel}</h4>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm text-txt-primary font-medium">{m.titel}</h4>
+                    {(m.comments?.length > 0) && (
+                      <span className="flex items-center gap-0.5 text-[9px] font-mono text-txt-tertiary">
+                        <MessageSquare className="w-3 h-3" /> {m.comments.length}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-txt-secondary truncate">{m.beschreibung}</p>
                   <div className="flex items-center gap-4 mt-1">
                     <span className="text-[10px] text-txt-tertiary">{m.cluster}</span>
@@ -809,14 +1380,30 @@ export default function CpMassnahmen() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {isEditing ? (
                     <>
                       <button onClick={() => handleSave(m)} className="flex items-center gap-1 bg-status-green/15 text-status-green text-xs px-2 py-1 rounded-sm hover:bg-status-green/25"><Save className="w-3 h-3" />Speichern</button>
                       <button onClick={() => { setEditing(null); load(); }} className="text-xs text-txt-tertiary hover:text-txt-secondary"><X className="w-3.5 h-3.5" /></button>
                     </>
                   ) : (
-                    <button onClick={() => setEditing(m.id)} className="text-xs text-txt-secondary hover:text-txt-primary px-2 py-1 rounded-sm hover:bg-bg-elevated">Bearbeiten</button>
+                    <>
+                      <button onClick={() => setEditing(m.id)} className="text-xs text-txt-secondary hover:text-txt-primary px-2 py-1 rounded-sm hover:bg-bg-elevated">Bearbeiten</button>
+                      {deleteConfirmId === m.id ? (
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => { handleDelete(m.id); setDeleteConfirmId(null); }} className="text-[10px] font-mono text-white bg-scnat-red px-2 py-0.5 rounded-sm hover:bg-[#F06570]">Löschen</button>
+                          <button onClick={() => setDeleteConfirmId(null)} className="text-[10px] font-mono text-txt-tertiary hover:text-txt-secondary px-1">Nein</button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setDeleteConfirmId(m.id)}
+                          className="p-1 text-txt-tertiary/40 hover:text-scnat-red transition-colors rounded-sm"
+                          title="Löschen"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -913,6 +1500,13 @@ export default function CpMassnahmen() {
                     <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Notiz</label>
                     <input value={m.notiz || ''} onChange={e => updateLocal(m.id, 'notiz', e.target.value)} placeholder="Interne Notiz..." className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none" />
                   </div>
+
+                  {/* Comments */}
+                  <CommentSection
+                    comments={m.comments || []}
+                    onAdd={(text) => addComment(m.id, text)}
+                    onDelete={(commentId) => deleteComment(m.id, commentId)}
+                  />
                 </div>
               )}
             </div>
@@ -921,6 +1515,83 @@ export default function CpMassnahmen() {
       </div>
       </>}
       </>}
+    </div>
+  );
+}
+
+function CommentSection({ comments, onAdd, onDelete }) {
+  const [text, setText] = useState('');
+  const [expanded, setExpanded] = useState(comments.length > 0);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!text.trim()) return;
+    onAdd(text.trim());
+    setText('');
+  };
+
+  function timeAgo(iso) {
+    const d = new Date(iso);
+    const diff = Date.now() - d.getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'gerade eben';
+    if (mins < 60) return `vor ${mins}m`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `vor ${hrs}h`;
+    const days = Math.floor(hrs / 24);
+    return `vor ${days}d`;
+  }
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1.5 text-[10px] font-mono text-txt-tertiary hover:text-txt-secondary transition-colors mb-2"
+      >
+        <MessageSquare className="w-3.5 h-3.5" />
+        Kommentare {comments.length > 0 && `(${comments.length})`}
+        {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+      </button>
+
+      {expanded && (
+        <div className="space-y-2 pl-1">
+          {comments.length > 0 && (
+            <div className="space-y-1.5 max-h-48 overflow-y-auto">
+              {comments.map(c => (
+                <div key={c.id} className="group flex items-start gap-2 bg-bg-elevated/60 rounded-sm px-2.5 py-2 border border-bd-faint/50">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] text-txt-primary leading-snug whitespace-pre-wrap">{c.text}</p>
+                    <span className="text-[9px] font-mono text-txt-tertiary mt-0.5 inline-block">{timeAgo(c.createdAt)}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}
+                    className="p-0.5 text-txt-tertiary/30 hover:text-scnat-red opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="flex items-center gap-2">
+            <input
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="Kommentar schreiben..."
+              className="flex-1 bg-bg-elevated border border-bd-faint text-txt-primary text-[11px] px-2.5 py-1.5 rounded-sm focus:border-purple-500/50 focus:outline-none"
+            />
+            <button
+              type="submit"
+              disabled={!text.trim()}
+              className="p-1.5 text-purple-400 hover:text-purple-300 disabled:text-txt-tertiary/30 disabled:cursor-not-allowed transition-colors"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

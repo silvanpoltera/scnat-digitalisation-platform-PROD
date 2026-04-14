@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Settings } from 'lucide-react';
+import { Settings, Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import GlStatsBar from '../components/sprints/GlStatsBar';
 import SprintTimeline from '../components/sprints/SprintTimeline';
@@ -15,6 +15,8 @@ export default function Sprints() {
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [clusterFilter, setClusterFilter] = useState('alle');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAdminSprints, setShowAdminSprints] = useState(false);
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     fetch('/api/sprints', { credentials: 'include' })
@@ -39,6 +41,7 @@ export default function Sprints() {
 
   const filteredSprints = useMemo(() => {
     let result = sprints;
+    if (!showAdminSprints) result = result.filter(s => !s.isAdminSprint);
     if (clusterFilter !== 'alle') result = result.filter(s => s.cluster === clusterFilter);
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
@@ -48,7 +51,7 @@ export default function Sprints() {
       );
     }
     return result;
-  }, [sprints, clusterFilter, searchTerm]);
+  }, [sprints, clusterFilter, searchTerm, showAdminSprints]);
 
   const activeSprints = filteredSprints.filter(s => s.status !== 'completed' && s.status !== 'archived');
   const completedSprints = filteredSprints.filter(s => s.status === 'completed');
@@ -76,14 +79,28 @@ export default function Sprints() {
             Übersicht aller laufenden und geplanten Sprints · 4-Wochen-Takte
           </p>
         </div>
-        {user?.role === 'admin' && (
-          <Link
-            to="/cp/sprints"
-            className="flex items-center gap-1.5 text-[12px] text-txt-secondary border border-bd-default rounded-[3px] px-3 py-2 hover:border-bd-strong hover:text-txt-primary transition-colors shrink-0"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            Admin / CP
-          </Link>
+        {isAdmin && (
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowAdminSprints(v => !v)}
+              className={`flex items-center gap-1.5 text-[12px] border rounded-[3px] px-3 py-2 transition-colors ${
+                showAdminSprints
+                  ? 'text-purple-400 border-purple-500/40 bg-purple-500/10'
+                  : 'text-txt-secondary border-bd-default hover:border-bd-strong hover:text-txt-primary'
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5" />
+              {showAdminSprints ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+              Admin Sprints
+            </button>
+            <Link
+              to="/cp/sprints"
+              className="flex items-center gap-1.5 text-[12px] text-txt-secondary border border-bd-default rounded-[3px] px-3 py-2 hover:border-bd-strong hover:text-txt-primary transition-colors"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              Admin / CP
+            </Link>
+          </div>
         )}
       </div>
 
