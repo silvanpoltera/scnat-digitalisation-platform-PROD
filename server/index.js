@@ -76,6 +76,14 @@ const loginLimiter = rateLimit({
 app.use('/api', globalLimiter);
 app.use('/api/auth/login', loginLimiter);
 
+// ── Request logging (mutation endpoints) ─────────────────────────────
+app.use('/api', (req, _res, next) => {
+  if (req.method !== 'GET' && req.method !== 'OPTIONS') {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+  }
+  next();
+});
+
 // ── Health check ────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

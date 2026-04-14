@@ -946,18 +946,26 @@ export default function CpMassnahmen() {
   };
 
   const handleDelete = useCallback(async (id) => {
-    setData(prev => prev.filter(m => m.id !== id));
-    setSprints(prev => prev.map(s => ({
-      ...s,
-      massnahmen: s.massnahmen.filter(m => m.massnahmeId !== id),
-    })));
     try {
       const res = await fetch(`/api/massnahmen/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (!res.ok) load();
-    } catch { load(); }
+      if (!res.ok) {
+        const err = await res.text();
+        console.error('Delete failed:', res.status, err);
+        alert(`Löschen fehlgeschlagen (${res.status})`);
+        return;
+      }
+      setData(prev => prev.filter(m => m.id !== id));
+      setSprints(prev => prev.map(s => ({
+        ...s,
+        massnahmen: s.massnahmen.filter(m => m.massnahmeId !== id),
+      })));
+    } catch (e) {
+      console.error('Delete error:', e);
+      alert('Löschen fehlgeschlagen: ' + e.message);
+    }
   }, []);
 
   const handleAdd = async (e) => {
