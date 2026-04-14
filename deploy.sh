@@ -4,14 +4,23 @@ set -e
 DOMAIN="platform.poltis.ch"
 APP_DIR="/opt/scnat-portal-prod"
 NGINX_CONF="/etc/nginx/sites-available/scnat-portal"
+NGINX_BAK="/etc/nginx/sites-available/scnat-portal.bak"
 
 echo "=== Deploying scnat-portal-prod · $(date) ==="
 cd "$APP_DIR"
 
-# ── 1. Save original Nginx config ────────────────────────────────────
-ORIG_CONF=$(sudo cat "$NGINX_CONF")
+# Restore Nginx and PM2 on ANY failure so the site never stays on maintenance
+restore_on_fail() {
+  echo "!! Deploy failed – restoring previous state"
+  sudo cp "$NGINX_BAK" "$NGINX_CONF" 2>/dev/null || true
+  sudo nginx -t 2>/dev/null && sudo systemctl reload nginx 2>/dev/null || true
+  pm2 delete scnat-api 2>/dev/null || true
+  pm2 start server/index.js --name scnat-api 2>/dev/null || true
+  pm2 save 2>/dev/null || true
+}
+trap restore_on_fail ERR
 
-# ── 2. Activate maintenance page ─────────────────────────────────────
+# ── 1. Activate maintenance page ─────────────────────────────────────
 echo "→ Maintenance mode ON"
 sudo mkdir -p /var/www
 sudo cp "$APP_DIR/public/maintenance.html" /var/www/maintenance.html
@@ -52,26 +61,27 @@ MAINT
 sudo nginx -t && sudo systemctl reload nginx
 echo "   Maintenance page active"
 
-# ── 3. Pull latest code (stash live data changes first) ─────────────
+# ── 2. Pull latest code ──────────────────────────────────────────────
 echo "→ git pull"
-git stash 2>/dev/null || true
+# data/*.json may have live changes from the running app – use checkout
+# to accept incoming code and then re-apply live data afterwards
+git checkout -- data/ 2>/dev/null || true
 git pull origin main
-git stash pop 2>/dev/null || true
 
-# ── 4. Install dependencies ──────────────────────────────────────────
+# ── 3. Install dependencies ──────────────────────────────────────────
 echo "→ npm install"
 npm install --prefer-offline
 
-# ── 5. Build frontend ────────────────────────────────────────────────
+# ── 4. Build frontend ────────────────────────────────────────────────
 echo "→ npm run build"
 npm run build
 
-# ── 6. Restore production Nginx config ───────────────────────────────
+# ── 5. Restore production Nginx config ───────────────────────────────
 echo "→ Maintenance mode OFF"
-echo "$ORIG_CONF" | sudo tee "$NGINX_CONF" > /dev/null
+sudo cp "$NGINX_BAK" "$NGINX_CONF"
 sudo nginx -t && sudo systemctl reload nginx
 
-# ── 7. Restart API (delete + start to ensure fresh code load) ────────
+# ── 6. Restart API (delete + start to ensure fresh code load) ────────
 echo "→ pm2 restart"
 pm2 delete scnat-api 2>/dev/null || true
 pm2 start server/index.js --name scnat-api
