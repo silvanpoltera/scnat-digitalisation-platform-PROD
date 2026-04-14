@@ -658,6 +658,52 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
             </div>
           )}
 
+          {/* Flags */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+              <input type="checkbox" checked={edit.start_empfohlen || false} onChange={e => update('start_empfohlen', e.target.checked)} className="rounded-sm accent-status-yellow" />
+              <Star className="w-3 h-3 text-status-yellow" /> Start empfohlen
+            </label>
+            <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+              <input type="checkbox" checked={edit.scnat_db || false} onChange={e => update('scnat_db', e.target.checked)} className="rounded-sm accent-status-blue" />
+              <Database className="w-3 h-3 text-status-blue" /> SCNAT-DB
+            </label>
+            <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+              <input type="checkbox" checked={edit.scnat_portal || false} onChange={e => update('scnat_portal', e.target.checked)} className="rounded-sm" />
+              SCNAT-Portal
+            </label>
+            <label className="flex items-center gap-1.5 text-xs text-txt-secondary cursor-pointer">
+              <input type="checkbox" checked={edit.isNew || false} onChange={e => update('isNew', e.target.checked)} className="rounded-sm accent-scnat-teal" />
+              <Sparkles className="w-3 h-3 text-scnat-teal" /> NEU
+            </label>
+            <label className="flex items-center gap-2 text-xs text-txt-secondary">
+              Reihenfolge:
+              <input type="number" min="0" max="99" value={edit.reihenfolge || ''} onChange={e => update('reihenfolge', e.target.value ? parseInt(e.target.value) : null)} className="w-14 bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1 rounded-sm focus:border-scnat-red focus:outline-none" />
+            </label>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-[10px] text-txt-tertiary font-mono mb-1.5">Tags</label>
+            <div className="flex flex-wrap gap-1.5">
+              {TAG_OPTIONS.map(tag => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => {
+                    const tags = edit.tags?.includes(tag) ? edit.tags.filter(t => t !== tag) : [...(edit.tags || []), tag];
+                    update('tags', tags);
+                  }}
+                  className={`text-[10px] px-2 py-1 rounded-sm transition-colors ${
+                    edit.tags?.includes(tag) ? 'bg-scnat-red/15 text-scnat-red font-medium' : 'bg-bg-elevated text-txt-tertiary hover:text-txt-secondary'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Notiz */}
           <div>
             <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Notiz</label>
