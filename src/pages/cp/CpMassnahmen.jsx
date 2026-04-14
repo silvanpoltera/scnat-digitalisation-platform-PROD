@@ -366,23 +366,93 @@ function KanbanQuickAdd({ status, sprints, onAdd }) {
   );
 }
 
+const SORT_MODES = [
+  { id: 'default', label: 'Standard' },
+  { id: 'newest', label: 'Neueste zuerst' },
+  { id: 'oldest', label: 'Älteste zuerst' },
+  { id: 'prio', label: 'Priorität' },
+  { id: 'alpha', label: 'A → Z' },
+];
+
+function sortItems(items, mode) {
+  if (mode === 'default') return items;
+  const sorted = [...items];
+  const prioOrder = { A: 1, B: 2, C: 3, D: 4 };
+  switch (mode) {
+    case 'newest': return sorted.reverse();
+    case 'oldest': return sorted;
+    case 'prio': return sorted.sort((a, b) => (prioOrder[a.prioritaet] || 99) - (prioOrder[b.prioritaet] || 99));
+    case 'alpha': return sorted.sort((a, b) => a.titel.localeCompare(b.titel, 'de'));
+    default: return sorted;
+  }
+}
+
 function KanbanColumn({ column, items, sprintMap, sprints, onQuickAdd, selectedId, onSelect }) {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
+  const [sortMode, setSortMode] = useState('default');
+  const [showSort, setShowSort] = useState(false);
+  const [showTopAdd, setShowTopAdd] = useState(false);
+  const sortRef = useRef(null);
+  const sorted = useMemo(() => sortItems(items, sortMode), [items, sortMode]);
+
+  useEffect(() => {
+    if (!showSort) return;
+    const close = (e) => { if (sortRef.current && !sortRef.current.contains(e.target)) setShowSort(false); };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, [showSort]);
+
   return (
     <div ref={setNodeRef} className={`flex-1 min-w-[200px] flex flex-col rounded-sm transition-all ${isOver ? 'ring-2 ring-scnat-red/30' : ''}`}>
       <div className={`px-3 py-2 border-t-2 ${column.borderClass} bg-bg-elevated rounded-t-sm`}>
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-heading font-semibold text-txt-primary">{column.label}</h3>
-          <span className="text-[10px] font-mono bg-bg-surface px-1.5 py-0.5 rounded-sm text-txt-tertiary">{items.length}</span>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-xs font-heading font-semibold text-txt-primary">{column.label}</h3>
+            <span className="text-[10px] font-mono bg-bg-surface px-1.5 py-0.5 rounded-sm text-txt-tertiary">{items.length}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowTopAdd(!showTopAdd)}
+              className="p-0.5 text-txt-tertiary/40 hover:text-scnat-red transition-colors"
+              title="Schnell hinzufügen"
+            >
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+            <div className="relative" ref={sortRef}>
+              <button
+                onClick={() => setShowSort(!showSort)}
+                className={`p-0.5 transition-colors ${sortMode !== 'default' ? 'text-scnat-red' : 'text-txt-tertiary/40 hover:text-txt-tertiary'}`}
+                title="Sortierung"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5" />
+              </button>
+              {showSort && (
+                <div className="absolute right-0 top-full mt-1 z-30 bg-bg-surface border border-bd-faint rounded-sm shadow-lg py-1 min-w-[130px]">
+                  {SORT_MODES.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => { setSortMode(s.id); setShowSort(false); }}
+                      className={`w-full text-left text-[10px] font-mono px-3 py-1.5 transition-colors ${
+                        sortMode === s.id ? 'text-scnat-red bg-scnat-red/5 font-semibold' : 'text-txt-secondary hover:bg-bg-elevated'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         <p className="text-[9px] text-txt-tertiary mt-0.5">{column.desc}</p>
       </div>
       <div className="flex-1 p-2 space-y-2 min-h-[120px] bg-bg-elevated/30 rounded-b-sm border border-t-0 border-bd-faint">
-        {items.map(m => <KanbanCard key={m.id} m={m} sprintMap={sprintMap} isSelected={selectedId === m.id} onSelect={onSelect} />)}
+        {showTopAdd && <KanbanQuickAdd status={column.id} sprints={sprints} onAdd={onQuickAdd} />}
+        {sorted.map(m => <KanbanCard key={m.id} m={m} sprintMap={sprintMap} isSelected={selectedId === m.id} onSelect={onSelect} />)}
         {items.length === 0 && (
           <div className="flex items-center justify-center h-12 text-[10px] text-txt-tertiary/40 font-mono">Leer</div>
         )}
-        <KanbanQuickAdd status={column.id} sprints={sprints} onAdd={onQuickAdd} />
+        {!showTopAdd && <KanbanQuickAdd status={column.id} sprints={sprints} onAdd={onQuickAdd} />}
       </div>
     </div>
   );
