@@ -52,9 +52,11 @@ MAINT
 sudo nginx -t && sudo systemctl reload nginx
 echo "   Maintenance page active"
 
-# ── 3. Pull latest code ──────────────────────────────────────────────
+# ── 3. Pull latest code (stash live data changes first) ─────────────
 echo "→ git pull"
+git stash 2>/dev/null || true
 git pull origin main
+git stash pop 2>/dev/null || true
 
 # ── 4. Install dependencies ──────────────────────────────────────────
 echo "→ npm install"
@@ -69,9 +71,10 @@ echo "→ Maintenance mode OFF"
 echo "$ORIG_CONF" | sudo tee "$NGINX_CONF" > /dev/null
 sudo nginx -t && sudo systemctl reload nginx
 
-# ── 7. Restart API ───────────────────────────────────────────────────
+# ── 7. Restart API (delete + start to ensure fresh code load) ────────
 echo "→ pm2 restart"
-pm2 restart scnat-api || pm2 start server/index.js --name scnat-api
+pm2 delete scnat-api 2>/dev/null || true
+pm2 start server/index.js --name scnat-api
 pm2 save
 
 echo "=== Deploy complete · $(date) ==="
