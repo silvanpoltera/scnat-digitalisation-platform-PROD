@@ -44,10 +44,11 @@ function SortableItem({ m, index }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+          {m.isAdminTask && <span className="flex items-center gap-0.5 text-[10px] font-mono bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded-sm font-semibold"><Shield className="w-3 h-3" /> ADM</span>}
           {m.isNew && <span className="text-[10px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm font-semibold">NEU</span>}
         </div>
         <h4 className="text-sm text-txt-primary font-medium truncate">{m.titel}</h4>
-        <p className="text-[10px] text-txt-tertiary">{m.cluster}</p>
+        {m.cluster && <p className="text-[10px] text-txt-tertiary">{m.cluster}</p>}
       </div>
       {index === 6 && <div className="text-[9px] font-mono text-scnat-red bg-scnat-red/10 px-2 py-0.5 rounded-sm shrink-0 hidden sm:block">Ende Welle 1</div>}
       {index === 12 && <div className="text-[9px] font-mono text-txt-tertiary bg-bg-elevated px-2 py-0.5 rounded-sm shrink-0 hidden sm:block">Ende Welle 2</div>}
@@ -161,9 +162,10 @@ function ReorderView({ data, onSave }) {
           <div className="space-y-1">
             {unordered.map(m => (
               <div key={m.id} className="flex items-center gap-3 bg-bg-surface border border-bd-faint rounded-sm px-4 py-2">
-                <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-mono text-txt-tertiary mr-2">{m.id.toUpperCase()}</span>
-                  <span className="text-xs text-txt-secondary">{m.titel}</span>
+                <div className="flex-1 min-w-0 flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+                  {m.isAdminTask && <span className="text-[9px] font-mono bg-purple-500/15 text-purple-400 px-1 py-0.5 rounded-sm font-semibold">ADM</span>}
+                  <span className="text-xs text-txt-secondary truncate">{m.titel}</span>
                 </div>
                 <button
                   onClick={() => addToOrder(m)}
@@ -525,8 +527,31 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
             </div>
           </div>
 
-          {/* Status, Prio, Cluster row */}
+          {/* Type, Status, Prio, Cluster row */}
           <div className="flex items-center gap-3 flex-wrap">
+            <div>
+              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Typ</label>
+              <div className="flex bg-bg-elevated border border-bd-faint rounded-sm p-0.5">
+                <button
+                  type="button"
+                  onClick={() => update('isAdminTask', false)}
+                  className={`text-[10px] font-mono px-2 py-1 rounded-sm transition-colors ${
+                    !edit.isAdminTask ? 'bg-scnat-red/15 text-scnat-red font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+                  }`}
+                >
+                  Massnahme
+                </button>
+                <button
+                  type="button"
+                  onClick={() => update('isAdminTask', true)}
+                  className={`flex items-center gap-0.5 text-[10px] font-mono px-2 py-1 rounded-sm transition-colors ${
+                    edit.isAdminTask ? 'bg-purple-500/15 text-purple-400 font-semibold' : 'text-txt-tertiary hover:text-txt-secondary'
+                  }`}
+                >
+                  <Shield className="w-3 h-3" /> Admin
+                </button>
+              </div>
+            </div>
             <div>
               <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Status</label>
               <select value={edit.status} onChange={e => update('status', e.target.value)} className="bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none">
@@ -550,7 +575,7 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
           </div>
 
           {/* Wirkung / Aufwand */}
-          {!m.isAdminTask && (
+          {!edit.isAdminTask && (
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Wirkung: <strong className="text-status-green">{edit.wirkung || 0}</strong></label>
@@ -613,7 +638,7 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
             {confirmDelete ? (
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-scnat-red">Wirklich löschen?</span>
-                <button onClick={() => { onDelete(m.id); }} className="text-[10px] font-medium text-white bg-scnat-red px-2.5 py-1 rounded-sm hover:bg-[#F06570] transition-colors">Ja, löschen</button>
+                <button onClick={() => { onDelete(m.id); onClose(); }} className="text-[10px] font-medium text-white bg-scnat-red px-2.5 py-1 rounded-sm hover:bg-[#F06570] transition-colors">Ja, löschen</button>
                 <button onClick={() => setConfirmDelete(false)} className="text-[10px] text-txt-tertiary hover:text-txt-secondary px-2 py-1">Abbrechen</button>
               </div>
             ) : (
@@ -813,7 +838,7 @@ export default function CpMassnahmen() {
   const [filterCluster, setFilterCluster] = useState('');
   const [filterSprint, setFilterSprint] = useState('');
   const [filterType, setFilterType] = useState('');
-  const [view, setView] = useState('list');
+  const [view, setView] = useState('kanban');
   const [newItem, setNewItem] = useState({
     titel: '', beschreibung: '', cluster: '',
     wirkung: 5, aufwand: 5, prioritaet: '', status: 'geplant',
@@ -921,15 +946,18 @@ export default function CpMassnahmen() {
   };
 
   const handleDelete = useCallback(async (id) => {
-    await fetch(`/api/massnahmen/${id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    });
     setData(prev => prev.filter(m => m.id !== id));
     setSprints(prev => prev.map(s => ({
       ...s,
       massnahmen: s.massnahmen.filter(m => m.massnahmeId !== id),
     })));
+    try {
+      const res = await fetch(`/api/massnahmen/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) load();
+    } catch { load(); }
   }, []);
 
   const handleAdd = async (e) => {
@@ -1263,16 +1291,17 @@ export default function CpMassnahmen() {
                     )}
 
                     <InlineSelect
-                      value={m.prioritaet}
-                      options={PRIO_OPTIONS.map(p => ({ value: p, label: `Prio ${p} – ${PRIO_LABEL[p]}` }))}
-                      onSelect={(v) => inlineSave(m.id, { prioritaet: v, prioritaet_label: PRIO_LABEL[v] })}
+                      value={m.prioritaet || ''}
+                      options={[{ value: '', label: 'Keine Prio' }, ...PRIO_OPTIONS.map(p => ({ value: p, label: `Prio ${p} – ${PRIO_LABEL[p]}` }))]}
+                      onSelect={(v) => inlineSave(m.id, { prioritaet: v, prioritaet_label: PRIO_LABEL[v] || '' })}
                       renderOption={(v) => (
                         <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm hover:ring-1 hover:ring-bd-strong transition-shadow ${
                           v === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
                           v === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
                           v === 'C' ? 'bg-status-blue/15 text-status-blue' :
-                          'bg-bg-elevated text-txt-tertiary'
-                        }`}>Prio {v}</span>
+                          v ? 'bg-bg-elevated text-txt-tertiary' :
+                          'bg-bg-elevated/50 text-txt-tertiary/40'
+                        }`}>{v ? `Prio ${v}` : '–'}</span>
                       )}
                     />
 
