@@ -1635,12 +1635,17 @@ body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
           IST-Prozess Analyse &amp; Schmerzpunkte
         </button>
 </div>
-<div style="margin-top:10px; padding-top:10px; border-top:1px solid #1E2530; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-<span style="font-size:12px; color:#6B7280;">Interaktiver Prozessablauf Jahresrechnung FG/KRG →</span>
-<a href="beitragsmanagement-prozess.html" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:#EA515A;text-decoration:none;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(234,81,90,.15)';this.style.borderColor='rgba(234,81,90,.4)'" onmouseout="this.style.background='rgba(234,81,90,.08)';this.style.borderColor='rgba(234,81,90,.25)'">
-<svg fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;" viewbox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-Prozessanimation öffnen
-</a>
+<div style="margin-top:10px; padding-top:10px; border-top:1px solid #1E2530;">
+<div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+<span style="font-size:12px; color:#6B7280;">Interaktiver Prozessablauf Jahresrechnung FG/KRG</span>
+<button id="bmToggleBtn" onclick="toggleBmFlow()" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:#EA515A;cursor:pointer;transition:all .15s;">
+<svg id="bmToggleIcon" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;" viewbox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+<span id="bmToggleLabel">Prozessanimation einblenden</span>
+</button>
+</div>
+<div id="bmFlowWrapper" style="display:none;border:1px solid #1E2530;border-radius:6px;overflow:hidden;margin-top:8px;">
+<iframe src="beitragsmanagement-prozess.html" style="width:100%;height:80vh;border:0;display:block;background:#0C0E10;" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+</div>
 </div>
 </div>
 </div>
@@ -2266,6 +2271,22 @@ function showTab(btn, contentId) {
   wrapper.querySelectorAll('.ws-content').forEach(function(c) { c.classList.remove('active'); });
   var target = document.getElementById(contentId);
   if (target) target.classList.add('active');
+}
+
+/* ─── BEITRAGSMANAGEMENT FLOW ────────────────────────────────────────── */
+function toggleBmFlow() {
+  var w = document.getElementById('bmFlowWrapper');
+  var label = document.getElementById('bmToggleLabel');
+  var icon = document.getElementById('bmToggleIcon');
+  if (w.style.display === 'none') {
+    w.style.display = 'block';
+    label.textContent = 'Prozessanimation ausblenden';
+    icon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+  } else {
+    w.style.display = 'none';
+    label.textContent = 'Prozessanimation einblenden';
+    icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+  }
 }
 
 /* ─── MODAL ──────────────────────────────────────────────────────────── */

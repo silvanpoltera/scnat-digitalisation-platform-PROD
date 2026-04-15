@@ -31,7 +31,7 @@ a{color:inherit;text-decoration:none}
 .hero-sub{font-size:.85rem;color:var(--text2);max-width:520px;margin:0 auto .75rem}
 
 /* Controls */
-.controls{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.controls{display:flex;align-items:center;justify-content:center;gap:.75rem;padding:.75rem 0;flex-wrap:wrap;position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--bd);margin:0 -1.5rem 1.5rem;padding-left:1.5rem;padding-right:1.5rem}
 .btn{font-family:var(--mono);font-size:.7rem;padding:.45rem 1rem;border-radius:var(--r);cursor:pointer;transition:all .15s;border:1px solid var(--bd2);background:var(--sf);color:var(--text2)}
 .btn:hover:not(:disabled){color:var(--text);border-color:var(--muted)}
 .btn:disabled{opacity:.3;cursor:not-allowed}
@@ -127,7 +127,6 @@ a{color:inherit;text-decoration:none}
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   <div class="step-count" id="stepCount">0 / 14</div>
 </div>
-<div style="text-align:center;margin-top:-1.5rem;margin-bottom:2rem"><span style="font-family:var(--mono);font-size:.58rem;color:var(--muted)">← → Pfeiltasten zum Navigieren</span></div>
 
 <div class="flow" id="flow">
   <div class="flow-line"><div class="flow-line-fill" id="flowLineFill"></div></div>
