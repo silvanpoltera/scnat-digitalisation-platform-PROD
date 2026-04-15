@@ -98,7 +98,7 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(255,255,255,.015);}
 td strong{color:var(--text);font-weight:500;}
 /* SPRINT */
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;}
+.spg{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;}
 .sw{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem;box-shadow:0 2px 12px rgba(0,0,0,.25);}
 .swn{font-family:var(--font-mono);font-size:.6rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
 .swt{font-size:.82rem;font-weight:600;color:var(--white);margin-bottom:.75rem;line-height:1.3;}
@@ -163,7 +163,7 @@ footer{grid-column:1/-1;background:var(--surface);border-top:1px solid var(--bor
   .st,.header-title{color:#000;}
   .badge{border:1px solid #ccc;color:#444;background:#eee;}
   .sl{color:#EA515A;}
-  .sg,.og,.tg{grid-template-columns:1fr 1fr;}
+  .spg,.og,.tg{grid-template-columns:1fr 1fr;}
   .tc.anchor{grid-column:1/-1;}
 }
 @media(max-width:900px){
@@ -171,25 +171,25 @@ footer{grid-column:1/-1;background:var(--surface);border-top:1px solid var(--bor
   nav{display:none;}
   main{grid-column:1;padding:2rem 1.25rem;max-width:100%;}
   .og{grid-template-columns:1fr;}
-  .sg{grid-template-columns:1fr 1fr;}
+  .spg{grid-template-columns:1fr 1fr;}
   header{padding:0 1.25rem;}
 }
 @media(max-width:560px){
-  .sg,.tg{grid-template-columns:1fr;}
+  .spg,.tg{grid-template-columns:1fr;}
   .tc.anchor{grid-column:1;}
   .header-title{font-size:1.4rem;}
 }
 
 
-.sg{transition:width .2s ease,transform .2s ease}
-.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
-.sg.collapsed~.sp{margin-left:0}
+aside.sg{transition:width .2s ease,transform .2s ease}
+aside.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
+aside.sg.collapsed~.sp{margin-left:0}
 .sg-toggle{border-top:1px solid var(--sb0);padding:.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--st3);background:none;border-left:none;border-right:none;border-bottom:none;transition:color .13s;flex-shrink:0}
 .sg-toggle:hover{color:var(--st)}
 .sg-toggle svg{width:14px;height:14px}
 .sg-expand{position:fixed;top:.65rem;left:.65rem;z-index:1001;width:33px;height:33px;border-radius:6px;background:var(--sf);border:1px solid var(--sb1);color:var(--st2);cursor:pointer;display:none;align-items:center;justify-content:center}
 .sg-expand:hover{color:var(--st);border-color:var(--sb2)}
-.sg.collapsed~.sg-expand{display:flex}
+aside.sg.collapsed~.sg-expand{display:flex}
 @media(max-width:760px){.sg-toggle{display:none}}
 </style>
 <style>
@@ -208,7 +208,7 @@ body{margin:0!important;padding:0!important}
 .ss{display:flex;min-height:100vh}
 
 /* ── LEFT GLOBAL SIDEBAR ── */
-.sg{
+aside.sg{
   width:var(--snav);flex-shrink:0;
   background:var(--sf);border-right:1px solid var(--sb0);
   display:flex;flex-direction:column;
@@ -318,16 +318,16 @@ body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
 .mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
 @media(max-width:680px){.scnat-rtoc{display:none}}
 @media(max-width:760px){
-  .sg{transform:translateX(-100%);transition:transform .2s}
-  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  aside.sg{transform:translateX(-100%);transition:transform .2s}
+  aside.sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
   .sp{margin-left:0}
   .mob-btn{display:flex}
 }
-@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+@media print{aside.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
 
 html.light body::before{background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,.03) 1px,transparent 0)}
 html.light .rtag{color:#fff}
-html.light .sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
+html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 
 </style>
 </head>
@@ -564,7 +564,7 @@ html.light .sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 <div class="sl">07 · Sprint-Ablauf</div>
 <h2 class="st">4-Wochen-Plan</h2>
 <p class="slead">Woche 1 bereitet vor, Woche 2 rekrutiert, Woche 3 kickt off, Woche 4 setzt den Betrieb auf.</p>
-<div class="sg">
+<div class="spg">
 <div class="sw">
 <div class="swn">Woche 1</div>
 <div class="swt">Vorbereitung &amp; Kommunikation</div>

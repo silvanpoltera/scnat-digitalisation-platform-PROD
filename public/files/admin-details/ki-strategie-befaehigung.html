@@ -816,15 +816,15 @@ html.light{--bg-base:#F8F9FA;--bg-card:#FFFFFF;--bg-elevated:#F3F4F6;--border:#E
     }
   
 
-.sg{transition:width .2s ease,transform .2s ease}
-.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
-.sg.collapsed~.sp{margin-left:0}
+aside.sg{transition:width .2s ease,transform .2s ease}
+aside.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
+aside.sg.collapsed~.sp{margin-left:0}
 .sg-toggle{border-top:1px solid var(--sb0);padding:.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--st3);background:none;border-left:none;border-right:none;border-bottom:none;transition:color .13s;flex-shrink:0}
 .sg-toggle:hover{color:var(--st)}
 .sg-toggle svg{width:14px;height:14px}
 .sg-expand{position:fixed;top:.65rem;left:.65rem;z-index:1001;width:33px;height:33px;border-radius:6px;background:var(--sf);border:1px solid var(--sb1);color:var(--st2);cursor:pointer;display:none;align-items:center;justify-content:center}
 .sg-expand:hover{color:var(--st);border-color:var(--sb2)}
-.sg.collapsed~.sg-expand{display:flex}
+aside.sg.collapsed~.sg-expand{display:flex}
 @media(max-width:760px){.sg-toggle{display:none}}
 </style>
 <style>
@@ -843,7 +843,7 @@ body{margin:0!important;padding:0!important}
 .ss{display:flex;min-height:100vh}
 
 /* ── LEFT GLOBAL SIDEBAR ── */
-.sg{
+aside.sg{
   width:var(--snav);flex-shrink:0;
   background:var(--sf);border-right:1px solid var(--sb0);
   display:flex;flex-direction:column;
@@ -953,15 +953,15 @@ body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
 .mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
 @media(max-width:680px){.scnat-rtoc{display:none}}
 @media(max-width:760px){
-  .sg{transform:translateX(-100%);transition:transform .2s}
-  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  aside.sg{transform:translateX(-100%);transition:transform .2s}
+  aside.sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
   .sp{margin-left:0}
   .mob-btn{display:flex}
 }
-@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+@media print{aside.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
 
 html.light .data-table tr:hover td{background:rgba(0,0,0,.03)}
-html.light .sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
+html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 
 </style>
 </head>
