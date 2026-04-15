@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light")})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top)document.documentElement.classList.add("in-iframe")})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Prozessdigitalisierung – Die drei Evergreens · SCNAT Digitalisierung</title>
@@ -1434,12 +1434,12 @@ aside.sg{
 .bm-book-pill{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:.3rem 1rem;letter-spacing:.08em}
 
 /* ── IFRAME EMBED ── */
-body.in-iframe .scnat-rtoc{width:200px}
-body.in-iframe .rtoc-prog{padding:1rem;background:var(--sfb);border-top:1px solid var(--sr);border-top-width:2px}
-body.in-iframe .rtoc-prog-lbl{color:var(--sr);font-size:9.5px;margin-bottom:.65rem}
-body.in-iframe .rtoc-prog-bar{height:6px;border-radius:3px}
-body.in-iframe .rtoc-prog-btn{border-color:var(--sr);color:var(--sr);opacity:.7}
-body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
+html.in-iframe .scnat-rtoc{width:200px}
+html.in-iframe .rtoc-prog{padding:1rem;background:var(--sfb);border-top:1px solid var(--sr);border-top-width:2px}
+html.in-iframe .rtoc-prog-lbl{color:var(--sr);font-size:9.5px;margin-bottom:.65rem}
+html.in-iframe .rtoc-prog-bar{height:6px;border-radius:3px}
+html.in-iframe .rtoc-prog-btn{border-color:var(--sr);color:var(--sr);opacity:.7}
+html.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
 /* ── MOBILE ── */
 .mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
 @media(max-width:680px){.scnat-rtoc{display:none}}
@@ -1491,6 +1491,7 @@ html.light .modal-body [style*="border-bottom:1px solid #1E2530"]{border-bottom-
 html.light .data-table tr:hover td{background:rgba(0,0,0,.03)}
 html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 
+html.in-iframe aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important}html.in-iframe aside.sg~.sp{margin-left:0!important}html.in-iframe .sg-expand{display:none!important}
 </style>
 </head>
 <body>
@@ -1526,6 +1527,7 @@ html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 <div class="sp">
 <div class="sb">
 <div class="sc"><header class="page-header">
+<div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;color:var(--muted)">SCNAT <span style="opacity:.5">›</span> Massnahmen <span style="opacity:.5">›</span> <span style="color:var(--red)">Prozessdigitalisierung</span></div>
 <div class="header-meta">
 <span class="badge badge-red">M-04</span>
 <span class="badge badge-cluster">Prozessdigitalisierung</span>
