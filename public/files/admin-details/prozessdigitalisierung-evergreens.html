@@ -1521,6 +1521,34 @@ html.light header[style]{background:var(--surface,#fff)!important}
 html.light header[style] h1{color:var(--text,#1F2937)!important}
 html.light header[style] p{color:var(--text2,#6B7280)!important}
 
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:640px){
+  header[style*="padding"]{padding:1.25rem 1rem 1.25rem!important}
+  header[style] h1{font-size:1.2rem!important}
+  header[style] p{font-size:.82rem!important;max-width:100%!important}
+  main,.main-content{padding:1.5rem 1rem 3rem!important}
+  .content{padding-left:1rem!important;padding-right:1rem!important}
+  .sec,.section{margin-bottom:2rem!important}
+  .og{grid-template-columns:1fr!important}
+  .tg{grid-template-columns:1fr!important}
+  .card,.tc,.oc,.sw{padding:1rem!important}
+  .tw{margin-left:-.5rem;margin-right:-.5rem;border-radius:0!important;border-left:0!important;border-right:0!important}
+  th,td{padding:.45rem .5rem!important;font-size:.75rem!important}
+  aside.sg,.sg-toggle,.mob-btn{display:none!important}
+  .sp{margin-left:0!important}
+  .sf-bar{padding:.6rem 1rem!important;flex-wrap:wrap;gap:.3rem}
+  html.in-iframe .layout>main{padding-left:1rem!important;padding-right:1rem!important}
+}
+@media(max-width:420px){
+  header[style*="padding"]{padding:1rem .75rem .75rem!important}
+  header[style] h1{font-size:1.05rem!important}
+  main,.main-content{padding:1rem .75rem 2rem!important}
+  .content{padding-left:.75rem!important;padding-right:.75rem!important}
+  .spg{grid-template-columns:1fr 1fr!important}
+  html.in-iframe .layout>main{padding-left:.75rem!important;padding-right:.75rem!important}
+}
+
 </style>
 </head>
 <body>

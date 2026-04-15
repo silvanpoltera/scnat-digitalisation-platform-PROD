@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0;min-width:0;overflow:hidden;border-right-color:transparent}aside.sg~.sp{margin-left:0}";document.head.appendChild(s)}})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important;transition:none!important}aside.sg~.sp{margin-left:0!important}";document.head.appendChild(s)}})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Übersicht – SCNAT Digitalisierungsplattform</title>
@@ -204,6 +204,39 @@ html.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
   .mob-btn{display:flex}
 }
 @media print{aside.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+
+/* ── IFRAME LAYOUT FIX: hide redundant internal nav ── */
+html.in-iframe .layout{display:block!important}
+html.in-iframe .layout>nav,html.in-iframe nav.sidebar,html.in-iframe .sidebar{display:none!important}
+html.in-iframe .layout>main{max-width:100%!important;padding-left:2rem!important;padding-right:2rem!important}
+html.in-iframe .content{max-width:100%!important}
+
+/* ── LIGHT MODE: comprehensive element fixes ── */
+html.light header,html.light .page-header,html.light .site-header{background:var(--surface,var(--bg-card,#fff))!important;color:var(--text,#1F2937)!important}
+html.light .card{background:var(--surface,var(--bg-card,#fff))!important;border-color:var(--border,#E5E7EB)!important}
+html.light .badge{border-color:var(--border,#E5E7EB)!important}
+html.light footer,html.light .sf-bar{background:var(--surface,var(--sf,#fff))!important}
+html.light table th{background:var(--elevated,var(--surface2,#F3F4F6))!important}
+html.light table td{border-color:var(--border,#E5E7EB)!important}
+html.light hr{border-color:var(--border,#E5E7EB)!important}
+html.light .hero{background:var(--surface,#fff)!important}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:640px){
+  .hero{padding:1.5rem 1rem 1.25rem!important}
+  .hero h1{font-size:1.3rem!important}
+  aside.sg,.sg-toggle,.mob-btn{display:none!important}
+  .sp{margin-left:0!important}
+  .sf-bar{padding:.6rem 1rem!important;flex-wrap:wrap;gap:.3rem}
+  .grid{gap:.75rem!important}
+  html.in-iframe .layout>main{padding-left:1rem!important;padding-right:1rem!important}
+}
+@media(max-width:420px){
+  .hero{padding:1rem .75rem 1rem!important}
+  .hero h1{font-size:1.1rem!important}
+  html.in-iframe .layout>main{padding-left:.75rem!important;padding-right:.75rem!important}
+}
+
 </style>
 </head>
 <body>
