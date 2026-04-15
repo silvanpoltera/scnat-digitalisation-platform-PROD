@@ -832,6 +832,17 @@
       header h1 { font-size: 18px; }
     }
   
+
+.sg{transition:width .2s ease,transform .2s ease}
+.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
+.sg.collapsed~.sp{margin-left:0}
+.sg-toggle{border-top:1px solid var(--sb0);padding:.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--st3);background:none;border-left:none;border-right:none;border-bottom:none;transition:color .13s;flex-shrink:0}
+.sg-toggle:hover{color:var(--st)}
+.sg-toggle svg{width:14px;height:14px}
+.sg-expand{position:fixed;top:.65rem;left:.65rem;z-index:1001;width:33px;height:33px;border-radius:6px;background:var(--sf);border:1px solid var(--sb1);color:var(--st2);cursor:pointer;display:none;align-items:center;justify-content:center}
+.sg-expand:hover{color:var(--st);border-color:var(--sb2)}
+.sg.collapsed~.sg-expand{display:flex}
+@media(max-width:760px){.sg-toggle{display:none}}
 </style>
 <style>
 /* ═══ SCNAT SHELL — injected into every page ═══ */
@@ -983,17 +994,10 @@ body{margin:0!important;padding:0!important}
 <a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
 <a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
 <a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
-<div class="sg-sec">System</div>
-<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
 </nav>
-<div class="sg-user">
-<div class="sg-av">SP</div>
-<div>
-<div class="sg-uname">Silvan Poltera</div>
-<div class="sg-urole">Admin</div>
-</div>
-</div>
+<button class="sg-toggle" onclick="toggleSidebar()" title="Sidebar einklappen"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg></button>
 </aside>
+<button class="sg-expand" onclick="toggleSidebar()" title="Sidebar ausklappen"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></button>
 <button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
 <svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
@@ -1557,5 +1561,6 @@ body{margin:0!important;padding:0!important}
   setTimeout(sync, 200);
 })();
 </script>
+<script>function toggleSidebar(){var s=document.getElementById("sg");var c=s.classList.toggle("collapsed");try{localStorage.setItem("sg-col",c?"1":"0")}catch(e){}}try{if(localStorage.getItem("sg-col")==="1")document.getElementById("sg").classList.add("collapsed")}catch(e){}</script>
 </body>
 </html>
