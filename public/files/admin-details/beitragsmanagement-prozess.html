@@ -33,7 +33,8 @@ a{color:inherit;text-decoration:none}
 /* Controls */
 .controls{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:2.5rem;flex-wrap:wrap}
 .btn{font-family:var(--mono);font-size:.7rem;padding:.45rem 1rem;border-radius:var(--r);cursor:pointer;transition:all .15s;border:1px solid var(--bd2);background:var(--sf);color:var(--text2)}
-.btn:hover{color:var(--text);border-color:var(--muted)}
+.btn:hover:not(:disabled){color:var(--text);border-color:var(--muted)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
 .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
 .btn.primary:hover{background:#f06570}
 .btn.active{border-color:var(--red);color:var(--red)}
@@ -119,11 +120,14 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <div class="controls">
+  <button class="btn" id="prevBtn" onclick="prevStep()" disabled>‹ Zurück</button>
   <button class="btn primary" id="playBtn" onclick="togglePlay()">▶ Abspielen</button>
+  <button class="btn" id="nextBtn" onclick="manualNext()">Weiter ›</button>
   <button class="btn" onclick="resetFlow()">↺ Reset</button>
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   <div class="step-count" id="stepCount">0 / 14</div>
 </div>
+<div style="text-align:center;margin-top:-1.5rem;margin-bottom:2rem"><span style="font-family:var(--mono);font-size:.58rem;color:var(--muted)">← → Pfeiltasten zum Navigieren</span></div>
 
 <div class="flow" id="flow">
   <div class="flow-line"><div class="flow-line-fill" id="flowLineFill"></div></div>
@@ -345,11 +349,19 @@ var fill=document.getElementById('flowLineFill');
 var prog=document.getElementById('progressFill');
 var countEl=document.getElementById('stepCount');
 var playBtn=document.getElementById('playBtn');
+var prevBtn=document.getElementById('prevBtn');
+var nextBtn=document.getElementById('nextBtn');
+
+function updateButtons(){
+  prevBtn.disabled=current<=0;
+  nextBtn.disabled=current>=TOTAL-1;
+}
 
 function show(i){
   items.forEach(function(el){
     var idx=parseInt(el.dataset.i);
     if(idx<=i){el.classList.add('visible')}
+    else{el.classList.remove('visible')}
     el.classList.toggle('active',idx===i);
   });
   var pct=Math.min(100,((i+1)/TOTAL)*100);
@@ -357,13 +369,24 @@ function show(i){
   prog.style.width=pct+'%';
   countEl.textContent=(i+1)+' / '+TOTAL;
   current=i;
-  var activeEl=document.querySelector('.step[data-i="'+i+'"],.bookend[data-i="'+i+'"]');
+  updateButtons();
+  var activeEl=document.querySelector('.step[data-i="'+i+'"],.bookend[data-i="'+i+'"],.phase[data-i="'+i+'"]');
   if(activeEl)activeEl.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function goTo(i){
   if(playing)togglePlay();
   show(i);
+}
+
+function prevStep(){
+  if(playing)togglePlay();
+  if(current>0)show(current-1);
+}
+
+function manualNext(){
+  if(playing)togglePlay();
+  if(current<TOTAL-1)show(current+1);
 }
 
 function nextStep(){
@@ -375,6 +398,7 @@ function togglePlay(){
   if(playing){
     clearInterval(timer);timer=null;playing=false;
     playBtn.textContent='▶ Abspielen';playBtn.classList.add('primary');
+    updateButtons();
   }else{
     playing=true;
     playBtn.textContent='❚❚ Pause';playBtn.classList.remove('primary');
@@ -390,8 +414,15 @@ function resetFlow(){
   items.forEach(function(el){el.classList.remove('visible','active')});
   fill.style.height='0%';prog.style.width='0%';
   countEl.textContent='0 / '+TOTAL;
+  updateButtons();
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();manualNext()}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();prevStep()}
+  else if(e.key===' '){e.preventDefault();togglePlay()}
+});
 </script>
 </body>
 </html>
