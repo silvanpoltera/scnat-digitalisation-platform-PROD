@@ -81,7 +81,7 @@ export default function CpAdminDetailsView() {
           src={iframeSrc}
           title={config.title}
           className="flex-1 w-full border-0 bg-bg-base"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
         />
       </div>
     );
@@ -103,7 +103,7 @@ export default function CpAdminDetailsView() {
         src={iframeSrc}
         title={config.title}
         className="flex-1 w-full border-0 bg-bg-base min-h-0"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
       />
     </div>
   );
