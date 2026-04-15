@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Übersicht – SCNAT Digitalisierungsplattform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0C0E10;--sf:#141618;--sfb:#1C1E22;--sb0:#1E2124;--sb1:#2A2D34;--sb2:#5A616B;--sr:#EA515A;--srdim:rgba(234,81,90,.08);--srm:rgba(234,81,90,.18);--st:#ECEEF1;--st2:#8A8F9B;--st3:#4E535D;--ok:#3DAA75;--okd:rgba(61,170,117,.1);--snav:220px}
+html,body{background:var(--bg);color:var(--st);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* hero */
+.hero{padding:3.5rem 2.5rem 2rem;border-bottom:1px solid var(--sb0)}
+.hero-eye{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sr);text-transform:uppercase;letter-spacing:.16em;margin-bottom:.9rem}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;line-height:1.1;margin-bottom:.65rem}
+.hero h1 em{color:var(--sr);font-style:normal}
+.hero p{font-size:.88rem;color:var(--st2);max-width:500px;line-height:1.75}
+
+/* stats */
+.stats{display:flex;border-bottom:1px solid var(--sb0)}
+.stat{flex:1;padding:1.1rem 2.5rem;border-right:1px solid var(--sb0)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:1.9rem;font-weight:700;line-height:1}
+.stat-l{font-size:.73rem;color:var(--st2);margin-top:.2rem}
+
+/* section header */
+.sh{display:flex;align-items:baseline;gap:.75rem;padding:1.5rem 2.5rem .5rem}
+.sh-t{font-size:.95rem;font-weight:600}
+.sh-c{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--st3)}
+
+/* filter */
+.fbar{display:flex;gap:.4rem;padding:.5rem 2.5rem 1rem;flex-wrap:wrap}
+.fc{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:4px 10px;border-radius:3px;border:1px solid var(--sb1);background:none;color:var(--st2);cursor:pointer;transition:all .13s}
+.fc:hover{border-color:var(--sb2);color:var(--st)}
+.fc.on{border-color:var(--sr);color:var(--sr);background:var(--srdim)}
+
+/* massnahmen cards */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.7rem;padding:0 2.5rem 2.5rem}
+.mc{background:var(--sf);border:1px solid var(--sb0);border-radius:8px;padding:1.1rem;display:flex;flex-direction:column;gap:.45rem;transition:border-color .14s,transform .14s;cursor:pointer}
+.mc:hover{border-color:var(--sb2);transform:translateY(-1px)}
+.mc-miss{opacity:.5;cursor:default}
+.mc-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.mc-num{font-family:'JetBrains Mono',monospace;font-size:9px;background:var(--sfb);color:var(--st3);padding:2px 7px;border-radius:3px}
+.mc-badge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px}
+.mc-ok{background:rgba(61,170,117,.1);color:#3DAA75}
+.mc-miss-b{background:var(--sb0);color:var(--st3)}
+.mc-title{font-size:.85rem;font-weight:600;line-height:1.3}
+.mc-cat{font-size:.71rem;color:var(--st3)}
+.mc-score{display:flex;align-items:center;gap:.55rem;margin-top:.15rem}
+.mc-bar{flex:1;height:3px;background:var(--sb1);border-radius:2px;overflow:hidden}
+.mc-fill{height:100%;border-radius:2px}
+.mc-val{font-family:'JetBrains Mono',monospace;font-size:9px}
+@media(max-width:600px){
+  .hero{padding:2rem 1.25rem 1.5rem}
+  .stats{flex-wrap:wrap}
+  .stat{padding:.85rem 1.25rem}
+  .mgrid{grid-template-columns:1fr;padding:0 1.25rem 1.5rem}
+  .sh,.fbar{padding-left:1.25rem;padding-right:1.25rem}
+}
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a on" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sc">
+<div class="hero">
+<div class="hero-eye">SCNAT Digitalisierungsplattform</div>
+<h1>Digitale Transformation<br/><em>im Überblick</em></h1>
+<p>Zentrale Anlaufstelle für alle 12 Digitalisierungsmassnahmen, Sprint-Planung, KI-Hub und strategische Grundlagen der SCNAT.</p>
+</div>
+<div class="stats">
+<div class="stat">
+<div class="stat-n" style="color:#3DAA75">10</div>
+<div class="stat-l">Seiten vorhanden</div>
+</div>
+<div class="stat">
+<div class="stat-n" style="color:var(--st2)">2</div>
+<div class="stat-l">Noch ausstehend</div>
+</div>
+<div class="stat">
+<div class="stat-n">12</div>
+<div class="stat-l">Massnahmen gesamt</div>
+</div>
+</div>
+<div class="sh" id="massnahmen">
+<div class="sh-t">Alle Massnahmen</div>
+<div class="sh-c">10 / 12 Seiten erstellt</div>
+</div>
+<div class="fbar">
+<button class="fc on" onclick="filter('all',this)">Alle</button>
+<button class="fc" onclick="filter('ok',this)">Vorhanden</button>
+<button class="fc" onclick="filter('miss',this)">Ausstehend</button>
+</div>
+<div class="mgrid" id="mgrid">
+<a class="mc" href="massnahme-kommunikation-digitale-transformation.html">
+<div class="mc-top">
+<span class="mc-num">01</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Kommunikation Digitale Transformation</div>
+<div class="mc-cat">Kommunikation &amp; Transparenz</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:83%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">8.33</span>
+</div>
+</a><a class="mc" href="massnahme-ressourcenabklaerung.html">
+<div class="mc-top">
+<span class="mc-num">02</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Ressourcenabklärung</div>
+<div class="mc-cat">Strategie &amp; Steuerung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:80%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">8.0</span>
+</div>
+</a><a class="mc" href="massnahme-change-agents.html">
+<div class="mc-top">
+<span class="mc-num">03</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Team Change Agents</div>
+<div class="mc-cat">Digitale Kultur &amp; Befähigung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:75%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">7.5</span>
+</div>
+</a><a class="mc" href="einfuehrung-digitalisierungsplattform.html">
+<div class="mc-top">
+<span class="mc-num">04</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Digitalisierungsplattform</div>
+<div class="mc-cat">Kommunikation &amp; Transparenz</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:85%;background:#3DAA75"></div></div>
+<span class="mc-val" style="color:#3DAA75">8.5</span>
+</div>
+</a><a class="mc" href="massnahme-tool-uebersicht.html">
+<div class="mc-top">
+<span class="mc-num">05</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Übersicht digitale Tools</div>
+<div class="mc-cat">Kommunikation &amp; Transparenz</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:81%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">8.1</span>
+</div>
+</a><div class="mc mc-miss">
+<div class="mc-top">
+<span class="mc-num">06</span>
+<span class="mc-badge mc-miss-b">○ Ausstehend</span>
+</div>
+<div class="mc-title">DB &amp; Portale Konzept</div>
+<div class="mc-cat">Daten &amp; Wissen</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:75%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">7.5</span>
+</div>
+</div><a class="mc" href="ki-strategie-befaehigung.html">
+<div class="mc-top">
+<span class="mc-num">07</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">KI-Strategie</div>
+<div class="mc-cat">Strategie &amp; Steuerung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:83%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">8.3</span>
+</div>
+</a><div class="mc mc-miss">
+<div class="mc-top">
+<span class="mc-num">08</span>
+<span class="mc-badge mc-miss-b">○ Ausstehend</span>
+</div>
+<div class="mc-title">KI Lernpfad</div>
+<div class="mc-cat">Digitale Kultur &amp; Befähigung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:88%;background:#3DAA75"></div></div>
+<span class="mc-val" style="color:#3DAA75">8.8</span>
+</div>
+</div><a class="mc" href="massnahme-analyse-tools-software.html">
+<div class="mc-top">
+<span class="mc-num">09</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Analyse Tools &amp; Software</div>
+<div class="mc-cat">Infrastruktur &amp; Beschaffung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:70%;background:#8A8F9B"></div></div>
+<span class="mc-val" style="color:#8A8F9B">7.0</span>
+</div>
+</a><a class="mc" href="massnahme-beschaffungsprozess.html">
+<div class="mc-top">
+<span class="mc-num">10</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Beschaffungsprozess</div>
+<div class="mc-cat">Infrastruktur &amp; Beschaffung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:78%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">7.8</span>
+</div>
+</a><a class="mc" href="prozessdigitalisierung-evergreens.html">
+<div class="mc-top">
+<span class="mc-num">11</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Prozessdigitalisierung</div>
+<div class="mc-cat">Prozesse &amp; Methoden</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:83%;background:#EA515A"></div></div>
+<span class="mc-val" style="color:#EA515A">8.3</span>
+</div>
+</a><a class="mc" href="massnahme-lead-applikationslandschaft.html">
+<div class="mc-top">
+<span class="mc-num">12</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
+</div>
+<div class="mc-title">Lead Applikationslandschaft</div>
+<div class="mc-cat">Infrastruktur &amp; Beschaffung</div>
+<div class="mc-score">
+<div class="mc-bar"><div class="mc-fill" style="width:88%;background:#3DAA75"></div></div>
+<span class="mc-val" style="color:#3DAA75">8.8</span>
+</div>
+</a>
+</div>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+function filter(mode, btn) {
+  document.querySelectorAll('.fc').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  document.querySelectorAll('.mc, .mc-miss').forEach(function(c){
+    var isOk = !c.classList.contains('mc-miss');
+    if (mode === 'all') c.style.display = '';
+    else if (mode === 'ok')   c.style.display = isOk  ? '' : 'none';
+    else if (mode === 'miss') c.style.display = !isOk ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

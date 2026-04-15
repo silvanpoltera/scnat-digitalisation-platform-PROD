@@ -1,0 +1,2474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Prozessdigitalisierung – Die drei Evergreens · SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── RESET & BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --base:       #0C0E10;
+  --surface:    #12161A;
+  --surface2:   #161B21;
+  --border:     #1E2530;
+  --border2:    #252E3A;
+  --red:        #EA515A;
+  --red-dim:    rgba(234,81,90,.12);
+  --red-glow:   rgba(234,81,90,.25);
+  --anthrazit:  #5A616B;
+  --muted:      #6B7280;
+  --text2:      #9CA3AF;
+  --text:       #E5E7EB;
+  --text-bright:#F9FAFB;
+  --font-body:  'DM Sans', sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+  --nav-w:      240px;
+  --r:          8px;
+  --r-sm:       5px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .9375rem;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── SIDEBAR NAV ───────────────────────────────────────────────────── */
+.layout {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.sidebar {
+  width: var(--nav-w);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-brand {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand .logo-mark {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .75rem;
+}
+
+.sidebar-brand .logo-dot {
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sidebar-brand .doc-title {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.nav-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-section-label {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--anthrazit);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 0 1.25rem .5rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .45rem 1.25rem;
+  font-size: .82rem;
+  color: var(--text2);
+  text-decoration: none;
+  transition: color .15s, background .15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-link:hover { color: var(--text); background: var(--border); }
+.nav-link.active { color: var(--red); background: var(--red-dim); }
+
+.nav-link .nav-num {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--anthrazit);
+  min-width: 18px;
+}
+
+.nav-link.active .nav-num { color: var(--red); opacity: .7; }
+
+.nav-footer {
+  margin-top: auto;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--anthrazit);
+  line-height: 1.6;
+}
+
+/* ─── MAIN CONTENT ──────────────────────────────────────────────────── */
+.main {
+  margin-left: var(--nav-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ────────────────────────────────────────────────────────── */
+.page-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 2.5rem 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red) 0%, rgba(234,81,90,0) 70%);
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  padding: .25rem .65rem;
+  border-radius: var(--r-sm);
+  background: var(--border);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  white-space: nowrap;
+}
+
+.badge-red {
+  background: var(--red-dim);
+  color: var(--red);
+  border-color: rgba(234,81,90,.3);
+}
+
+.badge-cluster {
+  background: rgba(90,97,107,.15);
+  color: var(--text2);
+  border-color: rgba(90,97,107,.3);
+}
+
+.badge-wirkung {
+  background: rgba(52,211,153,.1);
+  color: #34D399;
+  border-color: rgba(52,211,153,.25);
+}
+
+.badge-aufwand {
+  background: rgba(251,191,36,.1);
+  color: #FBBF24;
+  border-color: rgba(251,191,36,.25);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1.2;
+  margin-bottom: .75rem;
+  letter-spacing: -.02em;
+}
+
+.page-subtitle {
+  font-size: .9rem;
+  color: var(--muted);
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+.header-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--red);
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: .75rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+}
+
+/* ─── SECTIONS ──────────────────────────────────────────────────────── */
+.content {
+  padding: 0 3rem 4rem;
+  max-width: 900px;
+}
+
+.section {
+  padding: 2.75rem 0 0;
+}
+
+.section-anchor {
+  position: relative;
+  top: -80px;
+  visibility: hidden;
+  display: block;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--red);
+  opacity: .7;
+  min-width: 28px;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  letter-spacing: -.01em;
+}
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2.5rem 0 0;
+}
+
+p { color: var(--text2); line-height: 1.75; margin-bottom: 1rem; }
+p:last-child { margin-bottom: 0; }
+strong { color: var(--text); font-weight: 600; }
+em { color: var(--text); font-style: italic; }
+
+/* ─── CARDS ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+  position: relative;
+}
+
+.card-accent {
+  border-left: 3px solid var(--red);
+}
+
+.card-title {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: .5rem;
+}
+
+.card-label {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--red);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .6rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.option-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.option-card.recommended {
+  border-color: rgba(234,81,90,.4);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(234,81,90,.04) 100%);
+}
+
+.option-card .option-label {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.option-card.recommended .option-label { color: var(--red); }
+
+.rec-dot {
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+}
+
+.option-card .option-title {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.option-card p { font-size: .82rem; }
+
+.pro-con {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  margin-top: .5rem;
+}
+
+.pro, .con {
+  font-size: .78rem;
+  display: flex;
+  gap: .4rem;
+  align-items: flex-start;
+}
+
+.pro { color: #34D399; }
+.con { color: #F87171; }
+.pro::before { content: '+'; font-weight: 700; flex-shrink: 0; }
+.con::before { content: '−'; font-weight: 700; flex-shrink: 0; }
+
+/* ─── WORKSTREAM TABS ──────────────────────────────────────────────── */
+.workstream-tabs {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.ws-tab {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  padding: .4rem 1rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: .04em;
+}
+
+.ws-tab:hover, .ws-tab.active { 
+  background: var(--red-dim);
+  color: var(--red);
+  border-color: rgba(234,81,90,.35);
+}
+
+.ws-content { display: none; }
+.ws-content.active { display: block; }
+
+/* ─── TIMELINE ───────────────────────────────────────────────────────── */
+.sprint-grid {
+  display: grid;
+  grid-template-columns: 100px repeat(5, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.sg-header {
+  background: var(--surface2);
+  padding: .65rem .75rem;
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.sg-header:last-child { border-right: none; }
+
+.sg-row {
+  display: contents;
+}
+
+.sg-label {
+  background: var(--surface);
+  padding: .65rem .75rem;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.sg-label:last-child { border-bottom: none; }
+
+.sg-cell {
+  padding: .5rem .65rem;
+  font-size: .75rem;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.sg-cell:last-child { border-right: none; }
+.sg-row:last-child .sg-label,
+.sg-row:last-child .sg-cell { border-bottom: none; }
+
+.sg-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  padding: .15rem .5rem;
+  border-radius: 3px;
+  background: var(--red-dim);
+  color: var(--red);
+  margin-bottom: .3rem;
+  letter-spacing: .04em;
+}
+
+.sg-pill.green {
+  background: rgba(52,211,153,.1);
+  color: #34D399;
+}
+
+.sg-pill.yellow {
+  background: rgba(251,191,36,.1);
+  color: #FBBF24;
+}
+
+.sg-pill.blue {
+  background: rgba(99,179,237,.1);
+  color: #63B3ED;
+}
+
+/* ─── SPRINT DETAIL WEEKS ─────────────────────────────────────────── */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+
+.week-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+.week-label {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--red);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.week-title {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .6rem;
+}
+
+.week-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.week-list li {
+  font-size: .78rem;
+  color: var(--text2);
+  padding-left: .9rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+.week-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--anthrazit);
+}
+
+/* ─── CHECKLISTE ─────────────────────────────────────────────────────── */
+.checklist-section {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.check-group-title {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  color: var(--red);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 1.25rem 0 .5rem;
+  padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .6rem .75rem;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background .15s;
+  user-select: none;
+}
+
+.check-item:hover { background: var(--surface); }
+.check-item.done { opacity: .55; }
+
+.check-box {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border2);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: .15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+  background: transparent;
+}
+
+.check-item.done .check-box {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.check-box::after {
+  content: '';
+  width: 5px; height: 9px;
+  border: 2px solid transparent;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.check-item.done .check-box::after {
+  border-color: white;
+  opacity: 1;
+}
+
+.check-label {
+  font-size: .85rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.check-item.done .check-label {
+  text-decoration: line-through;
+  color: var(--anthrazit);
+}
+
+.checklist-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.progress-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 3px;
+  transition: width .3s ease;
+}
+
+.progress-label {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.progress-count {
+  font-family: var(--font-mono);
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--red);
+}
+
+/* ─── RISIKEN ────────────────────────────────────────────────────────── */
+.risk-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: .75rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .75rem 1rem;
+  align-items: start;
+}
+
+.risk-icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+
+.risk-icon.tech { background: rgba(99,179,237,.12); }
+.risk-icon.political { background: rgba(251,191,36,.1); }
+.risk-icon.change { background: rgba(234,81,90,.1); }
+.risk-icon.resource { background: rgba(167,139,250,.1); }
+
+.risk-body { }
+.risk-title {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .3rem;
+}
+
+.risk-text {
+  font-size: .82rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+
+/* ─── RESSOURCEN TABLE ───────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: .82rem;
+}
+
+.data-table th {
+  font-family: var(--font-mono);
+  font-size: .63rem;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .65rem .9rem;
+  text-align: left;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.data-table th:first-child { border-radius: var(--r-sm) 0 0 0; border-left: 1px solid var(--border); }
+.data-table th:last-child { border-radius: 0 var(--r-sm) 0 0; border-right: 1px solid var(--border); }
+
+.data-table td {
+  padding: .6rem .9rem;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.data-table td:first-child { border-left: 1px solid var(--border); }
+.data-table td:last-child { border-right: 1px solid var(--border); }
+.data-table tr:last-child td:first-child { border-radius: 0 0 0 var(--r-sm); }
+.data-table tr:last-child td:last-child { border-radius: 0 0 var(--r-sm) 0; }
+
+.data-table tr:hover td { background: rgba(255,255,255,.015); }
+
+.ok-tag {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: #34D399;
+  background: rgba(52,211,153,.1);
+  padding: .15rem .45rem;
+  border-radius: 3px;
+}
+
+/* ─── ERFOLGSMESSUNG ─────────────────────────────────────────────────── */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+}
+
+.metric-ws {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--red);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .75rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.metric-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-bottom: .5rem;
+  font-size: .8rem;
+  color: var(--text2);
+  line-height: 1.45;
+}
+
+.metric-item::before {
+  content: '→';
+  color: var(--red);
+  flex-shrink: 0;
+  font-size: .75rem;
+  margin-top: .05rem;
+}
+
+/* ─── BUDGET CALLOUT ──────────────────────────────────────────────────── */
+.budget-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r);
+  padding: 1.25rem 1.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.budget-range {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--red);
+}
+
+.budget-label {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+/* ─── INFO CALLOUT ───────────────────────────────────────────────────── */
+.callout {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-size: .85rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.callout strong { color: var(--red); }
+
+/* ─── FOOTER ─────────────────────────────────────────────────────────── */
+.page-footer {
+  margin-left: var(--nav-w);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--anthrazit);
+  line-height: 1.6;
+}
+
+.footer-right {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--anthrazit);
+}
+
+/* ─── PRINT ──────────────────────────────────────────────────────────── */
+@media print {
+  .sidebar { display: none; }
+  .main, .page-footer { margin-left: 0; }
+  body { background: white; color: #111; font-size: 11pt; }
+  .page-header { background: white; border-bottom: 2px solid #EA515A; }
+  .page-title { color: #111; }
+  .section-title { color: #111; }
+  .card, .option-card, .week-card, .risk-item { 
+    border: 1px solid #ddd; 
+    box-shadow: none; 
+    background: white;
+  }
+  .data-table th { background: #f5f5f5; }
+  .check-item.done { display: none; }
+  .checklist-progress { display: none; }
+  .callout { border-left: 3px solid #EA515A; background: #fff8f8; }
+  .badge-red { background: #ffe0e2; color: #c0392b; }
+  .section-divider { background: #e0e0e0; }
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .layout { flex-direction: column; }
+  .main, .page-footer { margin-left: 0; }
+  .content { padding: 0 1.25rem 3rem; }
+  .page-header { padding: 1.5rem 1.25rem 1.25rem; }
+  .sidebar { display: none; }
+  .options-grid { grid-template-columns: 1fr; }
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+  .metric-grid { grid-template-columns: 1fr; }
+  .sprint-grid { grid-template-columns: 80px repeat(3, 1fr); }
+  .page-title { font-size: 1.4rem; }
+}
+
+/* ─── SCROLL HIGHLIGHT ────────────────────────────────────────────────── */
+.section-highlight {
+  animation: flash .6s ease;
+}
+@keyframes flash {
+  0% { background: rgba(234,81,90,.05); }
+  100% { background: transparent; }
+}
+
+/* ─── IST-PROZESS MODAL ─────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(6,8,10,0.82);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: #12161A;
+  border: 1px solid #252E3A;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  animation: modal-in .2s ease;
+}
+
+@keyframes modal-in {
+  from { opacity:0; transform: translateY(12px) scale(.98); }
+  to   { opacity:1; transform: none; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px 28px;
+  border-bottom: 1px solid #1E2530;
+  flex-shrink: 0;
+}
+
+.modal-icon {
+  font-size: 22px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.modal-header-text { flex: 1; }
+
+.modal-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #EA515A;
+  margin-bottom: 3px;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #F9FAFB;
+  line-height: 1.25;
+}
+
+.modal-subtitle {
+  font-size: 12.5px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.modal-close {
+  background: #1E2530;
+  border: none;
+  color: #9CA3AF;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.modal-close:hover { background: rgba(234,81,90,.15); color: #EA515A; }
+
+.modal-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 12px 28px 0;
+  border-bottom: 1px solid #1E2530;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.015);
+}
+
+.modal-tab {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 7px 14px;
+  border-radius: 5px 5px 0 0;
+  border: 1px solid transparent;
+  border-bottom: none;
+  cursor: pointer;
+  color: #6B7280;
+  background: transparent;
+  transition: all .15s;
+  margin-bottom: -1px;
+}
+.modal-tab:hover { color: #E5E7EB; }
+.modal-tab.active {
+  color: #E5E7EB;
+  background: #12161A;
+  border-color: #1E2530;
+  border-bottom-color: #12161A;
+}
+
+.modal-body {
+  overflow-y: auto;
+  padding: 24px 28px 28px;
+  flex: 1;
+  scroll-behavior: smooth;
+}
+
+.modal-panel { display: none; }
+.modal-panel.active { display: block; }
+
+/* Modal content elements */
+.ist-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ist-kpi {
+  background: #161B21;
+  border: 1px solid #1E2530;
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.ist-kpi-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 600;
+  color: #EA515A;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.ist-kpi-label {
+  font-size: 11px;
+  color: #6B7280;
+  line-height: 1.35;
+}
+
+.ist-phase {
+  display: flex;
+  gap: 0;
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1E2530;
+}
+
+.ist-phase-step {
+  flex: 1;
+  padding: 12px 14px;
+  border-right: 1px solid #1E2530;
+  background: #161B21;
+  position: relative;
+}
+.ist-phase-step:last-child { border-right: none; }
+
+.ist-phase-month {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #EA515A;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 4px;
+}
+
+.ist-phase-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #E5E7EB;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.ist-phase-detail {
+  font-size: 11px;
+  color: #6B7280;
+  line-height: 1.45;
+}
+
+.ist-pain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.ist-pain-item {
+  background: #161B21;
+  border: 1px solid #1E2530;
+  border-left: 3px solid #EA515A;
+  border-radius: 0 7px 7px 0;
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ist-pain-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+.ist-pain-text {
+  font-size: 13px;
+  color: #E5E7EB;
+  line-height: 1.55;
+}
+
+.ist-pain-text strong { color: #F9FAFB; }
+
+.ist-opportunity {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.ist-opp-item {
+  background: rgba(52,211,153,.06);
+  border: 1px solid rgba(52,211,153,.15);
+  border-left: 3px solid #34D399;
+  border-radius: 0 7px 7px 0;
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ist-opp-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+.ist-opp-text {
+  font-size: 13px;
+  color: #E5E7EB;
+  line-height: 1.55;
+}
+.ist-opp-text strong { color: #F9FAFB; }
+
+.ist-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #6B7280;
+  margin: 20px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #1E2530;
+}
+
+.ist-ref-box {
+  background: rgba(96,165,250,.07);
+  border: 1px solid rgba(96,165,250,.18);
+  border-radius: 7px;
+  padding: 12px 16px;
+  font-size: 12.5px;
+  color: #93C5FD;
+  margin-top: 16px;
+  line-height: 1.6;
+}
+
+/* Trigger button */
+.ist-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: rgba(234,81,90,.10);
+  border: 1px solid rgba(234,81,90,.25);
+  border-radius: 5px;
+  color: #EA515A;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .15s;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.ist-trigger-btn:hover {
+  background: rgba(234,81,90,.18);
+  border-color: rgba(234,81,90,.4);
+}
+.ist-trigger-btn svg { width:13px; height:13px; }
+
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a on" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header class="page-header">
+<div class="header-meta">
+<span class="badge badge-red">M-04</span>
+<span class="badge badge-cluster">Prozessdigitalisierung</span>
+<span class="badge badge-cluster">Datenstrategie</span>
+<span class="badge badge-wirkung">Wirkung 8.3/10</span>
+<span class="badge badge-aufwand">Aufwand: Hoch · Multi-Sprint</span>
+</div>
+<h1 class="page-title">Prozessdigitalisierung<br/>Die drei Evergreens</h1>
+<p class="page-subtitle">Digitalisierung der drei meistgenannten, lange ausstehenden Prozessvorhaben: Archivstrategie, Beitragswesen und Eventmanagement. Jeder Workstream ist eigenständig, alle folgen demselben Muster.</p>
+<div class="header-stats">
+<div class="stat">
+<div class="stat-value">3</div>
+<div class="stat-label">Workstreams</div>
+</div>
+<div class="stat">
+<div class="stat-value">5+</div>
+<div class="stat-label">Sprints total</div>
+</div>
+<div class="stat">
+<div class="stat-value">8.3</div>
+<div class="stat-label">Wirkung / 10</div>
+</div>
+<div class="stat">
+<div class="stat-value">Aug</div>
+<div class="stat-label">Deadline Beitragswesen</div>
+</div>
+<div class="stat">
+<div class="stat-value">CHF 50–95k</div>
+<div class="stat-label">Budget-Schätzung</div>
+</div>
+</div>
+</header>
+<div class="content">
+<!-- 01 EINLEITUNG -->
+<div class="section-anchor" id="einleitung"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">01</span>
+<h2 class="section-title">Einleitung</h2>
+</div>
+<p>Diese Massnahme ist kein normaler Sprint – es ist ein Digitalisierungsprogramm mit drei eigenständigen Workstreams. Was sie verbindet: alle drei stehen seit Jahren auf der Liste, wurden immer wieder zurückgestellt, und der Erwartungsdruck in den betroffenen Abteilungen ist inzwischen messbar. Das ist keine Kritik an irgendjemand – es ist eine strukturelle Realität, die aus fehlenden Kapazitäten und fehlenden Priorisierungsentscheiden resultiert.</p>
+<p>Der konkrete Mehrwert: weniger manuelle Arbeit, bessere Datenqualität in der Masterdb, weniger Frustration in Abteilungen, die seit Jahren auf Lösungen warten – und ein klares Signal, dass Digitalisierung bei SCNAT wirklich passiert.</p>
+<div style="display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; margin-top:1.25rem;">
+<div class="card" id="ws-archiv">
+<div class="card-label">Workstream 1 · Archiv</div>
+<div class="card-title">Archivstrategie &amp; Lösung</div>
+<p style="font-size:.82rem">Kein übergreifendes Konzept, heterogene Ablageorte, keine Naming-Convention-Strategie – und kein Angebot an Fachgesellschaften, obwohl das Potenzial da wäre.</p>
+</div>
+<div class="card" id="ws-beitrag">
+<div class="card-label">Workstream 2 · Beitragswesen</div>
+<div class="card-title">Antragszyklus digitalisieren</div>
+<p style="font-size:.82rem">Jährlicher Antragszyklus (Start August) über mehrere Excel-Listen, abteilungsweise inkonsistent, kein Masterdb-Anschluss. KI-Automatisierung als Hebel.</p>
+<button class="ist-trigger-btn" onclick="openIstModal()">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 16 16"><circle cx="8" cy="8" r="6.5"></circle><path d="M8 7v4M8 5.2v.6"></path></svg>
+        IST-Prozess Analyse ansehen
+      </button>
+</div>
+<div class="card" id="ws-event">
+<div class="card-label">Workstream 3 · Eventmanagement</div>
+<div class="card-title">Eventplattform modernisieren</div>
+<p style="font-size:.82rem">Vorhandene Lösung mit PostFinance-Anbindung, technisch veraltet. IT hat Eigeninteresse signalisiert – Kapazität muss ehrlich eingeschätzt werden.</p>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- 02 BESCHREIBUNG -->
+<div class="section-anchor" id="beschreibung"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">02</span>
+<h2 class="section-title">Beschreibung</h2>
+</div>
+<p>Drei parallele (oder leicht versetzt gestartete) Workstreams, alle nach demselben Grundmuster: <strong>(1) Verstehen</strong> – Prozessaufnahme, Bedürfnisse, Stakeholder. <strong>(2) Spezifizieren</strong> – Anforderungen, Datenmodell, Schnittstellenklärung, Tool-Entscheid. <strong>(3) Umsetzen</strong> – Lösung bauen, testen, Change begleiten, live bringen.</p>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.25rem 0;">
+<div class="card">
+<div class="card-label">In Scope</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.4rem;">
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Archiv: Strategie, Konzept, Naming Convention, Ablagestruktur, Governance, Lösungswahl, Pilot intern, Angebot für Fachgesellschaften</li>
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Beitragswesen: Prozessanalyse, Formular-Digitalisierung, DB-Anbindung, OCR, KI-Vorausfüllung, Python-Workflows, Change Management</li>
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Eventmanagement: Systemaudit, Bedürfniserhebung, SaaS vs. Eigen-Entscheid, Spezifikation, Ablösung Altsystem</li>
+</ul>
+</div>
+<div class="card">
+<div class="card-label">Nicht in Scope</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.4rem;">
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F87171">✗</span> Wahlgeschäft, Publikationsentwicklung, Projektmanagement (folgen als spätere Sprints)</li>
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F87171">✗</span> IT-Infrastruktur-Migration (läuft parallel via Xojo-Projekt)</li>
+<li style="font-size:.82rem; color:var(--text2); padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F87171">✗</span> CMS-Ablösung</li>
+</ul>
+</div>
+</div>
+<div class="callout">
+<strong>Strategische Einbettung:</strong> Dieser Task ist der Kern von Cluster 3 (Prozessdigitalisierung) und liefert gleichzeitig die Datengrundlage für Cluster 2 (Datenstrategie). Saubere Prozesse → saubere Daten in der Masterdb. Ohne diesen Schritt hat jede Datenstrategie einen blinden Fleck.
+  </div>
+</section>
+<div class="section-divider"></div>
+<!-- 03 UMSETZUNGSIDEEN -->
+<div class="section-anchor" id="optionen"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">03</span>
+<h2 class="section-title">Umsetzungsideen</h2>
+</div>
+<div class="options-grid">
+<div class="option-card">
+<div class="option-label">Option A · Intern</div>
+<div class="option-title">Sequenziell, intern geführt</div>
+<p>Archiv → Beitragswesen → Eventmanagement, je 2-3 Sprints. Silvans Team führt, Change Agents übernehmen Abteilungsseite. IT nur für Freigaben.</p>
+<div class="pro-con">
+<div class="pro">Günstigste Option, intern vollständig steuerbar</div>
+<div class="pro">Kein Koordinationsoverhead</div>
+<div class="con">Gesamtdauer 12–18 Monate</div>
+<div class="con">Hohe Last auf Silvans Team</div>
+<div class="con">Letzte Abteilungen warten lang</div>
+</div>
+</div>
+<div class="option-card recommended">
+<div class="option-label"><span class="rec-dot"></span> Option B · Empfohlen</div>
+<div class="option-title">Parallel + Change Agents als Analyse-Lead</div>
+<p>Alle drei Workstreams mit 2-Wochen-Versatz. Change Agents und KI-Team führen Prozessanalyse und Specs intern. Archiv-Konzept mit Archivfachperson (einmalig). IT Intern für technische Abklärungen.</p>
+<div class="pro-con">
+<div class="pro">Gesamtdauer 6–9 Monate</div>
+<div class="pro">Wissen bleibt intern</div>
+<div class="pro">IT-politisch gut vermittelbar</div>
+<div class="con">Koordinationsaufwand über mehrere Workstreams</div>
+<div class="con">KI-Team braucht klaren Fokus je Sprint</div>
+</div>
+</div>
+<div class="option-card">
+<div class="option-label">Option C · Fallback</div>
+<div class="option-title">Gezielter externer Beizug bei Kapazitätsengpass</div>
+<p>Falls einzelne Workstreams intern nicht rechtzeitig umsetzbar sind (v.a. Eventmanagement), wird punktuell extern verstärkt – nicht als Programm-Lead, sondern als Ausführende unter interner Führung.</p>
+<div class="pro-con">
+<div class="pro">Flexibel einsetzbar</div>
+<div class="pro">Kein permanenter Vendor Lock-in</div>
+<div class="con">Nur wenn intern wirklich Engpass entsteht</div>
+<div class="con">Intensives Briefing nötig (Specs müssen stehen)</div>
+</div>
+</div>
+</div>
+<div class="callout">
+<strong>Gesamtempfehlung:</strong> Option B. Beitragswesen und Eventmanagement werden intern durch Change Agents, KI-Team und IT Intern geführt. Für das Archiv-Konzept wird einmalig eine Archivfachperson beigezogen – das ist die einzige Stelle, wo interne Kompetenz strukturell fehlt. Externer Beizug in anderen Bereichen nur bei konkretem Kapazitätsengpass, nicht als Default.
+  </div>
+</section>
+<div class="section-divider"></div>
+<!-- 04 VORBEREITUNG -->
+<div class="section-anchor" id="vorbereitung"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">04</span>
+<h2 class="section-title">Vorbereitung</h2>
+</div>
+<div class="workstream-tabs">
+<button class="ws-tab active" onclick="showTab(this,'prep-all')">Programm-übergreifend</button>
+<button class="ws-tab" onclick="showTab(this,'prep-archiv')">Archiv</button>
+<button class="ws-tab" onclick="showTab(this,'prep-beitrag')">Beitragswesen</button>
+<button class="ws-tab" onclick="showTab(this,'prep-event')">Eventmanagement</button>
+</div>
+<div class="ws-content active" id="prep-all">
+<div class="card">
+<div class="card-label">Programm · Alle Workstreams</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.5rem;">
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Workstream-Leads benennen: je eine interne Person pro Evergreen als fachlicher Lead</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Change Agents der betroffenen Abteilungen identifizieren und zum Kick-off einladen</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Externe Ressourcen anfragen: Prozessberater für Beitragswesen, Records Management Spezialist für Archiv</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Budget freigeben und Beschaffungsweg klären (Direktauftrag oder Mini-Ausschreibung)</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Programm-Dokumentationsstruktur auf der Digitalisierungsplattform anlegen</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Informationsgespräche mit betroffenen Abteilungen führen – keine Überraschungen im Rollout</li>
+</ul>
+</div>
+</div>
+<div class="ws-content" id="prep-archiv">
+<div class="card">
+<div class="card-label">Workstream 1 · Archiv</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.5rem;">
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Ist-Inventar: Welche Ablageorte existieren? (Netzlaufwerk, SharePoint, lokale PCs, E-Mail-Archiv, externe Datenträger)</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> IT-Abklärung mit IT Intern: Welche Systeme laufen? Welche DSG-relevanten Daten sind betroffen?</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Erste Abklärung Fachgesellschaften: Wie viele hätten grundsätzlich Interesse am gemeinsamen Angebot?</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Vorentscheid Lösungsrichtung: Schweizer Cloud (Infomaniak kDrive, Tresorit) vs. On-Premise vs. Hybrid – IT frühzeitig einbinden</li>
+</ul>
+</div>
+</div>
+<div class="ws-content" id="prep-beitrag">
+<div class="card">
+<div class="card-label">Workstream 2 · Beitragswesen</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.5rem;">
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Alle betroffenen Abteilungen identifizieren und je einen Prozess-Owner benennen</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Aktuell verwendete Formulare, Excel-Listen und E-Mail-Workflows sichten und sammeln</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Masterdb-Schema klären: Was ist vorhanden? Was fehlt? Rücksprache IT Intern – zwingend vor Entwicklungsstart</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Rechtliche Prüfung: Welche personenbezogenen Daten sind revDSG-relevant?</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Change-Risiko einschätzen: Informationsgespräch mit Abteilungen über geplante Richtung – Copy-Paste-Feature als KI-Vorausfüllung positionieren</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Automatisierungsoption grob skizzieren: OCR, RAG, Python-Workflows – KI-Team (Change Agent Netzwerk) einbinden</li>
+</ul>
+<div style="margin-top:14px; padding-top:12px; border-top:1px solid #1E2530; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+<span style="font-size:12px; color:#6B7280;">Dokumentierter IST-Prozess (Marc Türler, 08.10.2025) liegt vor →</span>
+<button class="ist-trigger-btn" onclick="openIstModal()">
+<svg fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px;" viewbox="0 0 16 16"><circle cx="8" cy="8" r="6.5"></circle><path d="M8 7v4M8 5.2v.6"></path></svg>
+          IST-Prozess Analyse &amp; Schmerzpunkte
+        </button>
+</div>
+</div>
+</div>
+<div class="ws-content" id="prep-event">
+<div class="card">
+<div class="card-label">Workstream 3 · Eventmanagement</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:.5rem;">
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Technisches Audit Altsystem: Formulare, PostFinance-Anbindung, Backend-Struktur, DB-Anbindung dokumentieren</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> IT-Meeting: Interesse und realistische Kapazität für Eigenentwicklung klären – ehrliche Einschätzung, kein Wunschdenken</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> Eventtypen kartieren: Symposium, Workshops, Jahrestagungen, Netzwerkanlässe – Anforderungen je Format</li>
+<li style="font-size:.84rem; color:var(--text2); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--red)">›</span> SaaS-Evaluation parallel starten: Pretix (self-hosted, Open Source), Eventfrog.ch (Schweizer Anbieter), PostFinance-Plugin vorhanden?</li>
+</ul>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- 05 RESSOURCEN -->
+<div class="section-anchor" id="ressourcen"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">05</span>
+<h2 class="section-title">Ressourcen</h2>
+</div>
+<div class="card-label" style="margin-bottom:.75rem;">Intern</div>
+<table class="data-table" style="margin-bottom:1.5rem;">
+<thead>
+<tr>
+<th>Rolle</th>
+<th>Workstream</th>
+<th>Aufwand (geschätzt)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Silvan Poltera</strong></td>
+<td>Programm-Steuerung, Stakeholder</td>
+<td>4–6 h/Woche</td>
+</tr>
+<tr>
+<td><strong>IT Intern</strong></td>
+<td>IT-Koordination alle Workstreams</td>
+<td>3–4 h/Woche</td>
+</tr>
+<tr>
+<td><strong>Change Agents inkl. KI-Team</strong></td>
+<td>Abteilungsseite führen, Bedürfnisse abholen, Feedback vermitteln. David, Anina &amp; Arber sind als KI-Spezialisten ins Change-Agent-Netzwerk integriert und übernehmen KI-Themen (OCR, RAG, Automatisierung) als Querschnittsfunktion im Team.</td>
+<td>~4 h/Woche je Person</td>
+</tr>
+</tbody>
+</table>
+<div class="card-label" style="margin-bottom:.75rem;">Externer Beizug – nur wo intern keine Kompetenz vorhanden</div>
+<table class="data-table" style="margin-bottom:1.5rem;">
+<thead>
+<tr>
+<th>Leistung</th>
+<th>Workstream</th>
+<th>Begründung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Records Management / Archivkonzept</td>
+<td>Archiv</td>
+<td>Informationswissenschaftliche Fachkompetenz fehlt intern. FH Graubünden / Uni Bern Netzwerk als Anlaufstelle. Einmalig für Konzeptphase.</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:.82rem; color:var(--muted); margin-bottom:1.5rem;">Beitragswesen (KI/OCR/Python) und Eventmanagement werden intern durch das KI-Team und IT umgesetzt. Externer Beizug nur wenn spezifische Kapazitätsengpässe auftreten – dann gezielt und zeitlich begrenzt.</p>
+<div class="card-label" style="margin-bottom:.75rem;">Tools &amp; Software (mit DSG-Einschätzung)</div>
+<table class="data-table">
+<thead>
+<tr>
+<th>Tool / System</th>
+<th>Zweck</th>
+<th>DSG/DSGVO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Infomaniak kDrive</strong></td>
+<td>Archiv-Ablage Schweizer Cloud</td>
+<td><span class="ok-tag">✓ CH · ISO 27001</span></td>
+</tr>
+<tr>
+<td><strong>Tresorit</strong></td>
+<td>Verschlüsselte Ablage, sensible Dokumente</td>
+<td><span class="ok-tag">✓ CH · E2E-verschlüsselt</span></td>
+</tr>
+<tr>
+<td><strong>Pretix (self-hosted)</strong></td>
+<td>Eventmanagement Open Source</td>
+<td><span class="ok-tag">✓ On-Premise möglich</span></td>
+</tr>
+<tr>
+<td><strong>Eventfrog.ch</strong></td>
+<td>Eventmanagement SaaS Schweiz</td>
+<td><span class="ok-tag">✓ CH-Anbieter</span></td>
+</tr>
+<tr>
+<td><strong>Python + Tesseract / LlamaParse</strong></td>
+<td>Dokumentenextraktion OCR</td>
+<td><span class="ok-tag">✓ Vollständig On-Premise</span></td>
+</tr>
+<tr>
+<td><strong>n8n (self-hosted)</strong></td>
+<td>Workflow-Automatisierung Beitragswesen</td>
+<td><span class="ok-tag">✓ Open Source · On-Premise</span></td>
+</tr>
+<tr>
+<td><strong>Ollama + lokales LLM</strong></td>
+<td>RAG-System für KI-Vorausfüllung</td>
+<td><span class="ok-tag">✓ 100% On-Premise</span></td>
+</tr>
+</tbody>
+</table>
+<div class="budget-box">
+<div>
+<div class="budget-range">CHF 10'000 – 25'000</div>
+<div class="budget-label">Programmtotal (hauptsächlich Archiv-Konzept extern, Rest intern)</div>
+</div>
+<div style="font-size:.8rem; color:var(--muted); max-width:420px; border-left:1px solid var(--border); padding-left:1.25rem;">
+      Archiv-Konzept (extern, einmalig): 8–15k · Tools / Lizenzen: 2–5k · Beitragswesen und Eventmanagement durch KI-Team und IT Intern abgedeckt. Externer Beizug nur bei konkreten Kapazitätsengpässen.
+    </div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- 06 SPRINT-ABLAUF -->
+<div class="section-anchor" id="sprint"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">06</span>
+<h2 class="section-title">Sprint-Ablauf</h2>
+</div>
+<p>Jeder Workstream benötigt 2–4 Sprints. Der August-Deadline für das Beitragswesen ist der härteste Zeitanker – Rückwärtsplanung ist Pflicht.</p>
+<div class="card-label" style="margin:.75rem 0 .75rem;">Programm-Roadmap (alle Workstreams)</div>
+<div class="sprint-grid">
+<div class="sg-header">Workstream</div>
+<div class="sg-header">Sprint 1 · Mo 1</div>
+<div class="sg-header">Sprint 2 · Mo 2</div>
+<div class="sg-header">Sprint 3 · Mo 3</div>
+<div class="sg-header">Sprint 4 · Mo 4</div>
+<div class="sg-header">Sprint 5+ · Mo 5+</div>
+<div class="sg-row">
+<div class="sg-label">Archiv</div>
+<div class="sg-cell"><span class="sg-pill">Ist-Inventar</span><br/>Ablageorte kartieren, Datenmengen</div>
+<div class="sg-cell"><span class="sg-pill yellow">Konzept</span><br/>Naming, Struktur, Lösungswahl</div>
+<div class="sg-cell"><span class="sg-pill blue">Pilot intern</span><br/>Ablage aufsetzen, Migration</div>
+<div class="sg-cell"><span class="sg-pill green">Rollout</span><br/>Alle Abteilungen</div>
+<div class="sg-cell"><span class="sg-pill green">Fachgesell.</span><br/>Angebot ausrollen</div>
+</div>
+<div class="sg-row">
+<div class="sg-label">Beitragswesen</div>
+<div class="sg-cell"><span class="sg-pill">Prozess-Interviews</span><br/>Alle Abteilungen, As-Is</div>
+<div class="sg-cell"><span class="sg-pill yellow">Spezifikation</span><br/>Formular, DB-Anbindung, KI</div>
+<div class="sg-cell"><span class="sg-pill blue">MVP Entwicklung</span><br/>Formular + Automation Pilot</div>
+<div class="sg-cell"><span class="sg-pill green">Rollout Pilot</span><br/>1-2 Abteilungen</div>
+<div class="sg-cell"><span class="sg-pill green">Vollrollout</span><br/>Alle + Optimierung</div>
+</div>
+<div class="sg-row">
+<div class="sg-label">Eventmgmt</div>
+<div class="sg-cell"><span class="sg-pill">Systemaudit</span><br/>Altsystem technisch dokumentieren</div>
+<div class="sg-cell"><span class="sg-pill yellow">Anforderungen</span><br/>Workshop + SaaS/Eigen-Entscheid</div>
+<div class="sg-cell"><span class="sg-pill blue">Spezifikation</span><br/>Entwicklungsstart</div>
+<div class="sg-cell"><span class="sg-pill green">Testbetrieb</span><br/>Change + Feedback</div>
+<div class="sg-cell"><span class="sg-pill green">Produktivbetrieb</span><br/>Altsystem abgelöst</div>
+</div>
+</div>
+<div class="callout" style="margin-bottom:1.5rem;">
+<strong>Achtung Beitragswesen:</strong> Produktiv-Start muss vor Ende Juli stehen. Falls das nicht realisierbar ist, läuft das Beitragswesen dieses Jahr nochmals im alten Modus – und der MVP kommt für den nächsten Antragszyklus. Das ist keine Niederlage, sondern realistische Planung.
+  </div>
+<div class="card-label" style="margin-bottom:.75rem;">Sprint 1 im Detail – Kick-off aller Workstreams</div>
+<div class="week-grid">
+<div class="week-card">
+<div class="week-label">Woche 1</div>
+<div class="week-title">Programm-Kick-off &amp; Setup</div>
+<ul class="week-list">
+<li>Kick-off mit Workstream-Leads, Change Agents inkl. KI-Team und IT Intern</li>
+<li>Programm-Seite auf digitalisierung.scnat.ch anlegen</li>
+<li>Externe Ressourcen beauftragen</li>
+<li>Kommunikation an Abteilungen: "Wir fangen an"</li>
+<li>Change Agent Briefing Sprint 1</li>
+</ul>
+</div>
+<div class="week-card">
+<div class="week-label">Woche 2</div>
+<div class="week-title">Ist-Analyse</div>
+<ul class="week-list">
+<li>Archiv: Bestandsaufnahme Ablageorte + Mengengerüst</li>
+<li>Beitragswesen: Prozessinterviews alle Abteilungen (Lead: KI-Team + Change Agents)</li>
+<li>Eventmanagement: IT-Meeting + technisches Audit Altsystem</li>
+<li>Excel-Listen und Formulare sammeln (Beitragswesen)</li>
+</ul>
+</div>
+<div class="week-card">
+<div class="week-label">Woche 3</div>
+<div class="week-title">Dokumentation &amp; Auswertung</div>
+<ul class="week-list">
+<li>As-Is-Prozessdiagramme alle drei Workstreams</li>
+<li>Schmerzpunkte identifizieren und priorisieren</li>
+<li>Quick Wins identifizieren (was sofort lösbar?)</li>
+<li>Erste Anforderungslisten je Workstream (roh)</li>
+<li>Masterdb-Schema mit IT Intern klären (Beitragswesen)</li>
+</ul>
+</div>
+<div class="week-card">
+<div class="week-label">Woche 4</div>
+<div class="week-title">Review &amp; Planung Sprint 2</div>
+<ul class="week-list">
+<li>Sprint-Review mit Stakeholdern und Change Agents</li>
+<li>Prios festlegen für Sprint 2</li>
+<li>Beitragswesen: Deadline-Check August-Rollout</li>
+<li>Change Agents briefen für Abteilungskommunikation</li>
+<li>Nächste Schritte kommunizieren</li>
+</ul>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- 07 CHECKLISTE -->
+<div class="section-anchor" id="checkliste"></div>
+<section class="section">
+<div class="section-header">
+<span class="section-num">07</span>
+<h2 class="section-title">Checkliste</h2>
+</div>
+<div class="checklist-progress">
+<div style="display:flex; flex-direction:column; gap:.2rem; min-width:70px;">
+<div class="progress-count" id="prog-count">0 / 30</div>
+<div class="progress-label">Erledigt</div>
+</div>
+<div class="progress-bar-wrap">
+<div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+</div>
+<button onclick="resetChecklist()" style="font-family:var(--font-mono); font-size:.65rem; color:var(--muted); background:none; border:1px solid var(--border); border-radius:4px; padding:.3rem .75rem; cursor:pointer; white-space:nowrap;">Reset</button>
+</div>
+<div class="checklist-section" id="checklist-container">
+<div class="check-group-title">Vorbereitung</div>
+<div class="check-item" data-id="c01" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Workstream-Leads für alle drei Evergreens benannt</div>
+</div>
+<div class="check-item" data-id="c02" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Change Agents (Archiv, Finanzen, Events) identifiziert und informiert</div>
+</div>
+<div class="check-item" data-id="c03" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Externe Prozessberatung Beitragswesen angefragt / beauftragt</div>
+</div>
+<div class="check-item" data-id="c04" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Archiv-Experte (Records Management) angefragt / beauftragt</div>
+</div>
+<div class="check-item" data-id="c05" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Budget für Programm freigegeben</div>
+</div>
+<div class="check-item" data-id="c06" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">IT-Abklärung (IT Intern): Systembestand und Kapazitäten</div>
+</div>
+<div class="check-item" data-id="c07" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Programm-Dokumentationsstruktur auf Plattform erstellt</div>
+</div>
+<div class="check-item" data-id="c08" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Vorentscheid Archivlösung (Cloud-Richtung oder On-Premise) getroffen</div>
+</div>
+<div class="check-item" data-id="c09" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Informationsgespräche mit betroffenen Abteilungen geführt</div>
+</div>
+<div class="check-group-title">Sprint-Durchführung · Analyse &amp; Konzept</div>
+<div class="check-item" data-id="c10" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Programm-Kick-off durchgeführt (alle Workstream-Leads, Change Agents inkl. KI-Team, IT Intern)</div>
+</div>
+<div class="check-item" data-id="c11" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Archiv: Ist-Inventar aller Ablageorte abgeschlossen und dokumentiert</div>
+</div>
+<div class="check-item" data-id="c12" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Beitragswesen: Prozessinterviews alle beteiligten Abteilungen abgeschlossen</div>
+</div>
+<div class="check-item" data-id="c13" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Beitragswesen: Alle Excel-Listen und Formulare gesammelt und inventarisiert</div>
+</div>
+<div class="check-item" data-id="c14" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Eventmanagement: Technisches Audit Altsystem abgeschlossen</div>
+</div>
+<div class="check-item" data-id="c15" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">As-Is-Prozessdiagramme für alle drei Workstreams erstellt</div>
+</div>
+<div class="check-item" data-id="c16" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Sprint-Review mit Stakeholdern und Change Agents durchgeführt</div>
+</div>
+<div class="check-group-title">Sprint-Durchführung · Spezifikation &amp; Entscheide</div>
+<div class="check-item" data-id="c17" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Archiv-Konzept fertig: Naming Convention, Ablagestruktur, Governance verabschiedet</div>
+</div>
+<div class="check-item" data-id="c18" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Archivlösung evaluiert und Entscheid getroffen (Anbieter, Modell)</div>
+</div>
+<div class="check-item" data-id="c19" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Beitragswesen: Spezifikation Formular und DB-Anbindung abgeschlossen</div>
+</div>
+<div class="check-item" data-id="c20" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Beitragswesen: KI-Vorausfüllung "aus Vorjahresantrag" konzeptioniert und als Feature positioniert</div>
+</div>
+<div class="check-item" data-id="c21" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Beitragswesen: Masterdb-Anbindung mit IT Intern spezifiziert</div>
+</div>
+<div class="check-item" data-id="c22" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Eventmanagement: Entscheid SaaS (Pretix/Eventfrog) vs. IT-Eigenentwicklung getroffen</div>
+</div>
+<div class="check-item" data-id="c23" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Change-Plan für Beitragswesen-Rollout erstellt (inkl. Umgang Copy-Paste-Gewohnheiten)</div>
+</div>
+<div class="check-group-title">Beitragswesen · KI &amp; Automatisierung</div>
+<div class="check-item" data-id="c24" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">OCR-Pilot für Dokumentenextraktion getestet (Tesseract oder LlamaParse)</div>
+</div>
+<div class="check-item" data-id="c25" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Python-Automatisierungsworkflow konzeptioniert und Freelancer/Agentur beauftragt</div>
+</div>
+<div class="check-item" data-id="c26" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">RAG-Konzept für Richtlinien-/Vergabekriterien-Abfrage spezifiziert</div>
+</div>
+<div class="check-item" data-id="c27" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">n8n-Workflow Antrag → Prüfung → Buchführung: Prototyp vorhanden</div>
+</div>
+<div class="check-group-title">Abschluss (je Workstream)</div>
+<div class="check-item" data-id="c28" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Pilotbetrieb abgeschlossen und ausgewertet</div>
+</div>
+<div class="check-item" data-id="c29" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Vollständige Dokumentation: Prozess, Technik, Benutzeranleitung
+    </div>
+<div class="check-item" data-id="c30" onclick="toggleCheck(this)">
+<div class="check-box"></div>
+<div class="check-label">Change-Agent-Abschluss-Briefing durchgeführt, Lessons Learned dokumentiert</div>
+</div>
+</div><!-- /.layout -->
+<!-- ─── IST-PROZESS MODAL ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="ist-modal" onclick="closeIstModalOnOverlay(event)">
+<div class="modal-box">
+<div class="modal-header">
+<span class="modal-icon">📋</span>
+<div class="modal-header-text">
+<div class="modal-eyebrow">IST-Analyse · Workstream 2 · Beitragswesen</div>
+<div class="modal-title">Prozessanalyse Beitragsgesuch-Zyklus</div>
+<div class="modal-subtitle">Quelle: Marc Türler, Chef Section Sciences · 08. Oktober 2025</div>
+</div>
+<button class="modal-close" onclick="closeIstModal()">✕</button>
+</div>
+<div class="modal-tabs">
+<button class="modal-tab active" onclick="switchModalTab(this, 'tab-kpi')">Kennzahlen</button>
+<button class="modal-tab" onclick="switchModalTab(this, 'tab-ablauf')">Ablauf IST</button>
+<button class="modal-tab" onclick="switchModalTab(this, 'tab-pain')">Schmerzpunkte</button>
+<button class="modal-tab" onclick="switchModalTab(this, 'tab-potential')">Potenzial TO-BE</button>
+</div>
+<div class="modal-body">
+<!-- TAB: KENNZAHLEN -->
+<div class="modal-panel active" id="tab-kpi">
+<div class="ist-section-label">Dimension des Prozesses</div>
+<div class="ist-kpi-row">
+<div class="ist-kpi">
+<div class="ist-kpi-val">106</div>
+<div class="ist-kpi-label">betroffene Entitäten (Gesellschaften, Kommissionen, Komitees)</div>
+</div>
+<div class="ist-kpi">
+<div class="ist-kpi-val">~1.5M</div>
+<div class="ist-kpi-label">CHF Fördermittel jährlich über 5 Plattformen</div>
+</div>
+<div class="ist-kpi">
+<div class="ist-kpi-val">16</div>
+<div class="ist-kpi-label">Dokumente pro Einladungsversand (2 Sprachen, 4 Formulare, Listen)</div>
+</div>
+<div class="ist-kpi">
+<div class="ist-kpi-val">~0.6</div>
+<div class="ist-kpi-label">FTE Gesamtaufwand SCNAT intern pro Zyklus</div>
+</div>
+</div>
+<div class="ist-kpi-row" style="grid-template-columns: repeat(3,1fr);">
+<div class="ist-kpi">
+<div class="ist-kpi-val">~24 Mon.</div>
+<div class="ist-kpi-label">Prozessdauer Antrag bis Abrechnung (Gesellschaften)</div>
+</div>
+<div class="ist-kpi">
+<div class="ist-kpi-val">~150k</div>
+<div class="ist-kpi-label">CHF nicht verwendete Mittel pro Zyklus (~10%)</div>
+</div>
+<div class="ist-kpi">
+<div class="ist-kpi-val">4</div>
+<div class="ist-kpi-label">unterschiedliche Word-Formulare je nach Projekttyp</div>
+</div>
+</div>
+<div class="ist-section-label">Beteiligte Einheiten</div>
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px;">
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:7px; padding:12px 14px;">
+<div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#EA515A; margin-bottom:6px; text-transform:uppercase; letter-spacing:.1em;">Sektionen</div>
+<div style="font-size:12.5px; color:#E5E7EB; line-height:1.5;">4 Plattformen (Bio, Chemie, Geowiss., MAP) + Plattform Science &amp; Regionen (NWR)</div>
+</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:7px; padding:12px 14px;">
+<div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#EA515A; margin-bottom:6px; text-transform:uppercase; letter-spacing:.1em;">Entitäten</div>
+<div style="font-size:12.5px; color:#E5E7EB; line-height:1.5;">43 Fachgesellschaften · 29 kantonale/regionale Gesellschaften · 15 Kommissionen · 19 nationale Komitees</div>
+</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:7px; padding:12px 14px;">
+<div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#EA515A; margin-bottom:6px; text-transform:uppercase; letter-spacing:.1em;">Interne Akteure</div>
+<div style="font-size:12.5px; color:#E5E7EB; line-height:1.5;">Sekretariat · Plattformleitung · Finanzdienst · Plattform-Präsidien</div>
+</div>
+</div>
+<div class="ist-section-label">Aufwandsverteilung intern</div>
+<div style="display:flex; flex-direction:column; gap:6px;">
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+<span style="font-size:13px; color:#E5E7EB;">Sekretariat</span>
+<span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#EA515A;">0.1 FTE</span>
+</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+<span style="font-size:13px; color:#E5E7EB;">Finanzdienst</span>
+<span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#EA515A;">0.2–0.3 FTE</span>
+</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+<span style="font-size:13px; color:#E5E7EB;">Plattformleitung (je Platform)</span>
+<span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#EA515A;">~0.1 FTE</span>
+</div>
+</div>
+</div>
+<!-- TAB: ABLAUF IST -->
+<div class="modal-panel" id="tab-ablauf">
+<div class="ist-section-label">Zeitlicher Ablauf – Antragszyklus IST</div>
+<div class="ist-phase">
+<div class="ist-phase-step">
+<div class="ist-phase-month">Mai</div>
+<div class="ist-phase-name">Einladungs-versand</div>
+<div class="ist-phase-detail">16 Dokumente per E-Mail: Brief, Leitfaden, Excel-Liste, 4 Word-Formulare (je 2 Sprachen). Deadline: Mitte August.</div>
+</div>
+<div class="ist-phase-step">
+<div class="ist-phase-month">Aug.</div>
+<div class="ist-phase-name">Einreich-ung</div>
+<div class="ist-phase-detail">Präsident:innen senden Excel + ausgefüllte Word-Formulare + Anhänge (Budgets, Programme) per E-Mail zurück.</div>
+</div>
+<div class="ist-phase-step">
+<div class="ist-phase-month">Aug.–Sep.</div>
+<div class="ist-phase-name">Kompila-tion Plattform</div>
+<div class="ist-phase-detail">Plattformleitung kompiliert alle Anträge in neues Excel – Basis: Vorjahrestabelle (copy-paste). Bewertung und Kürzungsvorschläge.</div>
+</div>
+<div class="ist-phase-step">
+<div class="ist-phase-month">Sep.</div>
+<div class="ist-phase-name">Präsidium-Beschluss</div>
+<div class="ist-phase-detail">Plattform-Präsidium genehmigt Budgetvorschläge in Sitzung (erste Septemberhälfte). Abacus-Eintrag Mitte September.</div>
+</div>
+</div>
+<div class="ist-phase" style="margin-top:8px;">
+<div class="ist-phase-step">
+<div class="ist-phase-month">Nov.</div>
+<div class="ist-phase-name">Offizielle Briefe</div>
+<div class="ist-phase-detail">Finanzdienst erstellt Förderbriefe manuell (Vorlage Vorjahr + Excel-Tabelle). Plattformleitung prüft Korrektheit Anfang Dezember.</div>
+</div>
+<div class="ist-phase-step">
+<div class="ist-phase-month">Dez.–Jan.</div>
+<div class="ist-phase-name">Akontozah-lungen</div>
+<div class="ist-phase-detail">Entitäten können bis 2/3 des bewilligten Betrags als Vorauszahlung anfordern.</div>
+</div>
+<div class="ist-phase-step">
+<div class="ist-phase-month">Jan.–Mär.</div>
+<div class="ist-phase-name">Abrechnung &amp; Proof</div>
+<div class="ist-phase-detail">Einreichung Abrechnung: Excel-Nutzungsnachweis + alle Belege + Jahresrechnung + Veranstaltungsbericht. Finanzdienst kontrolliert, Plattformleitung gibt Remboursement frei.</div>
+</div>
+<div class="ist-phase-step" style="background:rgba(234,81,90,.05);">
+<div class="ist-phase-month">Gesamt</div>
+<div class="ist-phase-name">~18–24 Monate</div>
+<div class="ist-phase-detail">Von Antragstellung bis abgeschlossener Abrechnung. Mehrere hundert Einzelprojekte pro Zyklus.</div>
+</div>
+</div>
+<div class="ist-section-label">Datenfluss IST</div>
+<div style="display:flex; flex-direction:column; gap:0; margin-bottom:16px;">
+<div style="display:flex; align-items:stretch; gap:0;">
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:6px 0 0 6px; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">Entität füllt Word-Formular aus + Excel-Liste</div>
+<div style="display:flex; align-items:center; padding:0 10px; color:#EA515A; font-size:16px; background:#12161A; border-top:1px solid #1E2530; border-bottom:1px solid #1E2530;">→</div>
+<div style="background:#161B21; border:1px solid #1E2530; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">E-Mail an Sekretariat → Ablage Cloud-Ordner (je Plattform)</div>
+<div style="display:flex; align-items:center; padding:0 10px; color:#EA515A; font-size:16px; background:#12161A; border-top:1px solid #1E2530; border-bottom:1px solid #1E2530;">→</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:0 6px 6px 0; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">Plattformleitung: Neue Excel-Tabelle (copy-paste Vorjahr)</div>
+</div>
+<div style="display:flex; justify-content:flex-end; margin:2px 0;">
+<div style="color:#EA515A; font-size:14px; padding-right:calc(33% + 10px);">↓</div>
+</div>
+<div style="display:flex; align-items:stretch; gap:0;">
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:6px 0 0 6px; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">Finanzdienst: Manuelle Erstellung Förderbriefe (Vorlage Vorjahr)</div>
+<div style="display:flex; align-items:center; padding:0 10px; color:#EA515A; font-size:16px; background:#12161A; border-top:1px solid #1E2530; border-bottom:1px solid #1E2530;">→</div>
+<div style="background:#161B21; border:1px solid #1E2530; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">Budgettool + Abacus-Import (separates Excel-Format nötig)</div>
+<div style="display:flex; align-items:center; padding:0 10px; color:#EA515A; font-size:16px; background:#12161A; border-top:1px solid #1E2530; border-bottom:1px solid #1E2530;">→</div>
+<div style="background:#161B21; border:1px solid #1E2530; border-radius:0 6px 6px 0; padding:10px 14px; flex:1; font-size:12.5px; color:#E5E7EB;">Abrechnungsprüfung + Freigabe → Remboursement</div>
+</div>
+</div>
+<div class="ist-ref-box">
+<strong>Referenzprojekt SAGW:</strong> Die SAGW verwendet für ihren analogen Prozess das Tool <strong>mySAGW</strong>. Laut Prozessdokument kann dies als Orientierung für Nutzen und Grenzen einer Digitalisierung dienen – nicht zwingend als Vorlage für eine identische Lösung.
+        </div>
+</div>
+<!-- TAB: SCHMERZPUNKTE -->
+<div class="modal-panel" id="tab-pain">
+<div class="ist-section-label">Dokumentierte Probleme im IST-Zustand</div>
+<div class="ist-pain">
+<div class="ist-pain-item">
+<span class="ist-pain-icon">📎</span>
+<div class="ist-pain-text"><strong>16 Dokumente pro Einladungsversand:</strong> Jedes Jahr werden 16 Dateien versendet – Brief, Leitfaden, Excel, 4 Word-Formulare, 2 Basisdokumente – je in Deutsch und Französisch. Enormer Verwaltungsaufwand auf beiden Seiten.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">📋</span>
+<div class="ist-pain-text"><strong>Copy-Paste als «Feature»:</strong> Plattformleitungen kopieren jedes Jahr die Vorjahresliste als Ausgangsbasis. Das ist keine Schlamperei, sondern eine strukturelle Antwort auf repetitive Anträge – muss digital abgebildet werden, nicht bekämpft.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">⚠️</span>
+<div class="ist-pain-text"><strong>Obligatorische Anhänge oft fehlend:</strong> Budgets und Veranstaltungsprogramme werden als Pflichtbeilage erwartet, aber praktisch nicht immer geliefert – da Veranstaltungen teils erst ein Jahr nach Einreichung stattfinden. Systemintelligenz fehlt.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">🔁</span>
+<div class="ist-pain-text"><strong>Manuelle Mehrfacheingabe:</strong> Daten werden sequenziell in Word-Formular → Zusammenfassung-Excel → Budgettool → Abacus-Importformat → Förderbrief (Vorlage Vorjahr) übertragen. Fehlerquelle und Zeitfresser.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">🗂️</span>
+<div class="ist-pain-text"><strong>Keine zentrale Datenbank:</strong> Antragshistorie, Bewilligungen und Abrechnungen sind fragmentiert über Cloud-Ordner und Excel-Dateien verteilt. Keine Möglichkeit zur Längsschnittanalyse oder automatischen Plausibilitätsprüfung.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">✉️</span>
+<div class="ist-pain-text"><strong>Statuskommunikation manuell:</strong> Erinnerungen nach Ablauf Deadline werden manuell verschickt. Antragsteller haben keinen Einblick in den aktuellen Bearbeitungsstand ihrer Gesuche.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">🏦</span>
+<div class="ist-pain-text"><strong>Abacus-Import als Bruch:</strong> Für den Import in das Finanztool Abacus muss die Plattformleitung ein speziell formatiertes Excel erstellen. Die Direktanbindung fehlt vollständig.</div>
+</div>
+<div class="ist-pain-item">
+<span class="ist-pain-icon">🌍</span>
+<div class="ist-pain-text"><strong>Zweisprachigkeit komplex:</strong> Alle Kommunikation und Formulare müssen in Deutsch und Französisch vorliegen und mit dem richtigen Geschlecht/Sprache der Empfangsperson angepasst werden – aktuell manuell und fehleranfällig.</div>
+</div>
+</div>
+</div>
+<!-- TAB: POTENZIAL TO-BE -->
+<div class="modal-panel" id="tab-potential">
+<div class="ist-section-label">Was eine digitale Lösung leisten muss</div>
+<div class="ist-opportunity">
+<div class="ist-opp-item">
+<span class="ist-opp-icon">🔄</span>
+<div class="ist-opp-text"><strong>Vorjahres-Antrag als Basis (KI-RAG):</strong> Antragsteller können einen bestehenden Antrag laden und erhalten einen vorausgefüllten neuen Entwurf – per KI oder einfachem Datenbankzugriff. Copy-Paste bleibt erhalten, wird aber digital und nachvollziehbar.</div>
+</div>
+<div class="ist-opp-item">
+<span class="ist-opp-icon">✅</span>
+<div class="ist-opp-text"><strong>Intelligente Pflichtfelder:</strong> Beilagen (Budget, Programm) werden erst dann als Pflichtfeld aktiviert, wenn sie tatsächlich verfügbar sein können – z.B. kein Pflichtprogramm bei Anlässen &gt; 12 Monate nach Einreichung.</div>
+</div>
+<div class="ist-opp-item">
+<span class="ist-opp-icon">🔗</span>
+<div class="ist-opp-text"><strong>Direkte DB-Anbindung:</strong> Alle Antragsdaten landen strukturiert in der SCNAT-Masterdatenbank. Abacus-Import wird automatisiert. Manuelle Mehrfacheingabe entfällt.</div>
+</div>
+<div class="ist-opp-item">
+<span class="ist-opp-icon">📊</span>
+<div class="ist-opp-text"><strong>Internes Bewertungs-Dashboard:</strong> Plattformleitungen bearbeiten und kommentieren Gesuche direkt im System. Vergleich mit Vorjahres-Bewilligungen automatisch. Kein Excel-Flickenteppich mehr.</div>
+</div>
+<div class="ist-opp-item">
+<span class="ist-opp-icon">🌐</span>
+<div class="ist-opp-text"><strong>Zweisprachigkeit systemisch:</strong> DE/FR wird auf Basis der Nutzersprache automatisch gesteuert. Anrede und Sprache aus der SCNAT-Masterdatenbank (Stammdaten der Präsident:innen).</div>
+</div>
+<div class="ist-opp-item">
+<span class="ist-opp-icon">📬</span>
+<div class="ist-opp-text"><strong>Automatisierte Kommunikation:</strong> Eingangsbestätigung, Erinnerungen, Statusupdates und Förderbriefe werden systemgestützt generiert und versandt – DSG-konform auf SCNAT-Infrastruktur oder Infomaniak.</div>
+</div>
+</div>
+<div class="ist-section-label" style="margin-top:20px;">Realistischer MVP-Scope (August-Deadline im Blick)</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+<div style="background:rgba(52,211,153,.06); border:1px solid rgba(52,211,153,.15); border-radius:7px; padding:14px 16px;">
+<div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#34D399; margin-bottom:8px; text-transform:uppercase; letter-spacing:.1em;">MVP – muss drin sein</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:5px;">
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Digitales Einreichungsformular (alle 4 Typen)</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Vorjahresantrag als Basis laden</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Daten in strukturierter DB speichern</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Internes Review-Interface Plattformleitung</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#34D399">✓</span> Abacus-Exportformat automatisch</li>
+</ul>
+</div>
+<div style="background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.15); border-radius:7px; padding:14px 16px;">
+<div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#F59E0B; margin-bottom:8px; text-transform:uppercase; letter-spacing:.1em;">Phase 2 – nach erstem Zyklus</div>
+<ul style="list-style:none; display:flex; flex-direction:column; gap:5px;">
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F59E0B">›</span> KI-RAG-Assistent (Vorjahresantrag → neuer Entwurf)</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F59E0B">›</span> Automatisierte Förderbrief-Generierung</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F59E0B">›</span> Abrechnungsmodul (Proof-Upload)</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F59E0B">›</span> Direkte Masterdb-Anbindung (Stammdaten)</li>
+<li style="font-size:12.5px; color:#E5E7EB; padding-left:.9rem; position:relative;"><span style="position:absolute;left:0;color:#F59E0B">›</span> Längsschnittanalyse / Reporting</li>
+</ul>
+</div>
+</div>
+<div class="ist-ref-box" style="margin-top:16px;">
+<strong>Wichtig für Specs:</strong> Die Direktiven für Beitragsgewährung («Richtlinien für die Ausrichtung von Beiträgen», 2007/2012) und die Kategoriendefinitionen (12 Leistungsdomänen × 11 Objekte/Aktivitäten = Matrix) müssen vor der Systementwicklung inhaltlich überprüft und ggf. aktualisiert werden. Das ist eine Aufgabe für Section Sciences, nicht für die IT.
+        </div>
+</div>
+</div><!-- /.modal-body -->
+</div><!-- /.modal-box -->
+</div><!-- /.modal-overlay -->
+<script>
+/* ─── MODAL ──────────────────────────────────────────────────────────── */
+function openIstModal() {
+  document.getElementById('ist-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeIstModal() {
+  document.getElementById('ist-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeIstModalOnOverlay(e) {
+  if (e.target === document.getElementById('ist-modal')) closeIstModal();
+}
+
+function switchModalTab(btn, panelId) {
+  btn.closest('.modal-box').querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.modal-box').querySelectorAll('.modal-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeIstModal();
+});
+
+/* ─── CHECKLIST (localStorage) ───────────────────────────────────────── */
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const id = el.dataset.id;
+  if (id) localStorage.setItem('check_' + id, el.classList.contains('checked') ? '1' : '0');
+  updateProgress();
+}
+
+function updateProgress() {
+  const items = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.checked').length;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  const bar = document.getElementById('progress-fill');
+  const txt = document.getElementById('progress-text');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = done + ' / ' + items.length + ' erledigt';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.check-item[data-id]').forEach(el => {
+    if (localStorage.getItem('check_' + el.dataset.id) === '1') el.classList.add('checked');
+  });
+  updateProgress();
+});
+
+/* ─── ACTIVE NAV LINK ────────────────────────────────────────────────── */
+const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
+</script>
+</div></section></div>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+<a class="rtoc-a" href="#ws-archiv">WS1Archiv</a>
+<a class="rtoc-a" href="#ws-beitrag">WS2Beitragswesen</a>
+<a class="rtoc-a" href="#ws-event">WS3Eventmanagement</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 30 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 30;
+  var DONE_CLS = 'checked';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+/* ─── MODAL ──────────────────────────────────────────────────────────── */
+function openIstModal() {
+  document.getElementById('ist-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeIstModal() {
+  document.getElementById('ist-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeIstModalOnOverlay(e) {
+  if (e.target === document.getElementById('ist-modal')) closeIstModal();
+}
+
+function switchModalTab(btn, panelId) {
+  btn.closest('.modal-box').querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.modal-box').querySelectorAll('.modal-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeIstModal();
+});
+
+/* ─── CHECKLIST (localStorage) ───────────────────────────────────────── */
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const id = el.dataset.id;
+  if (id) localStorage.setItem('check_' + id, el.classList.contains('checked') ? '1' : '0');
+  updateProgress();
+}
+
+function updateProgress() {
+  const items = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.checked').length;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  const bar = document.getElementById('progress-fill');
+  const txt = document.getElementById('progress-text');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = done + ' / ' + items.length + ' erledigt';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.check-item[data-id]').forEach(el => {
+    if (localStorage.getItem('check_' + el.dataset.id) === '1') el.classList.add('checked');
+  });
+  updateProgress();
+});
+
+/* ─── ACTIVE NAV LINK ────────────────────────────────────────────────── */
+const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

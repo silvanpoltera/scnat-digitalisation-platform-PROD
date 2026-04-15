@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Kommunikation Digitale Transformation – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0E10;--primary:#EA515A;--anthrazit:#5A616B;
+  --card:#12161A;--border:#1E2530;--muted:#6B7280;
+  --text:#E5E7EB;--bright:#F9FAFB;
+  --green:#34D399;--yellow:#FBBF24;--red:#F87171;
+  --sw:260px;
+  --font:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.65;min-height:100vh}
+.layout{display:grid;grid-template-columns:var(--sw) 1fr;grid-template-rows:auto 1fr auto;min-height:100vh}
+
+/* HEADER */
+header{grid-column:1/-1;border-bottom:1px solid var(--border);padding:36px 48px 28px;background:var(--card)}
+.eyebrow{font-family:var(--mono);font-size:11px;color:var(--primary);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';display:inline-block;width:28px;height:2px;background:var(--primary);border-radius:1px}
+header h1{font-size:28px;font-weight:600;color:var(--bright);margin-bottom:18px;letter-spacing:-.02em;line-height:1.15}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:var(--border);color:var(--text)}
+.badge.red{background:rgba(234,81,90,.12);border-color:rgba(234,81,90,.35);color:var(--primary)}
+.badge.green{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:var(--green)}
+.badge.yellow{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.25);color:var(--yellow)}
+
+/* SIDEBAR */
+aside{grid-row:2/3;border-right:1px solid var(--border);padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--card)}
+.nav-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding:0 20px 12px}
+nav a{display:block;padding:8px 20px;color:var(--muted);text-decoration:none;font-size:13px;border-left:2px solid transparent;transition:all .15s}
+nav a:hover,nav a.active{color:var(--text);border-left-color:var(--primary);background:rgba(234,81,90,.05)}
+.nnum{font-family:var(--mono);font-size:10px;color:var(--muted);margin-right:6px}
+nav a.active .nnum{color:var(--primary)}
+
+/* MAIN */
+main{grid-row:2/3;padding:44px 52px;max-width:920px}
+section{margin-bottom:64px;scroll-margin-top:28px}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.snum{font-family:var(--mono);font-size:11px;color:var(--primary);background:rgba(234,81,90,.1);border:1px solid rgba(234,81,90,.2);padding:3px 8px;border-radius:4px;min-width:32px;text-align:center}
+section h2{font-size:20px;font-weight:600;color:var(--bright)}
+.div{height:1px;background:var(--border);margin-bottom:24px}
+
+/* PROSE */
+.prose p{margin-bottom:12px;color:var(--text);font-size:14px}
+.prose ul{list-style:none;margin:6px 0 14px 0}
+.prose ul li{padding:4px 0 4px 18px;position:relative;font-size:14px;color:var(--text)}
+.prose ul li::before{content:'–';position:absolute;left:0;color:var(--primary)}
+.prose strong{color:var(--bright);font-weight:600}
+.infobox{background:rgba(234,81,90,.05);border:1px solid rgba(234,81,90,.15);border-left:3px solid var(--primary);border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--text)}
+.infobox.neutral{background:rgba(30,37,48,.5);border-color:var(--border);border-left-color:var(--anthrazit)}
+.infobox.platform{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.2);border-left-color:var(--green)}
+
+/* OPTIONS */
+.opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.opt-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.opt-card.rec{border-color:rgba(234,81,90,.4);box-shadow:0 0 0 1px rgba(234,81,90,.1),0 4px 16px rgba(0,0,0,.4)}
+.opt-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.opt-card.rec .opt-label{color:var(--primary)}
+.opt-card h3{font-size:14px;font-weight:600;color:var(--bright);margin-bottom:10px}
+.opt-card p{font-size:13px;color:var(--text);line-height:1.55;flex-grow:1}
+.pc{margin-top:12px;font-size:12px}
+.pro{color:var(--green);margin-bottom:4px}
+.con{color:var(--red)}
+.rec-tag{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:10px;padding:3px 8px;background:rgba(234,81,90,.15);color:var(--primary);border-radius:4px}
+.future-tag{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:10px;padding:3px 8px;background:rgba(52,211,153,.1);color:var(--green);border-radius:4px}
+
+/* SPRINT */
+.sprint-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.sw-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.sw-week{font-family:var(--mono);font-size:10px;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.sw-card h3{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:10px;line-height:1.3}
+.sw-card ul{list-style:none;padding:0}
+.sw-card ul li{font-size:12px;color:var(--text);padding:3px 0 3px 12px;position:relative;line-height:1.45}
+.sw-card ul li::before{content:'›';position:absolute;left:0;color:var(--primary)}
+
+/* CHECKLISTE */
+.cl-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.pb-wrap{flex-grow:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.pb-fill{height:100%;background:var(--primary);border-radius:2px;transition:width .3s ease}
+.pb-text{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.cl-group{margin-bottom:24px}
+.cl-group h3{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.cl-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:background .1s}
+.cl-item:hover{background:#161B22}
+.cl-item input[type=checkbox]{appearance:none;-webkit-appearance:none;width:16px;height:16px;min-width:16px;border:2px solid var(--anthrazit);border-radius:3px;background:transparent;cursor:pointer;margin-top:2px;transition:all .15s;position:relative}
+.cl-item input[type=checkbox]:checked{background:var(--primary);border-color:var(--primary)}
+.cl-item input[type=checkbox]:checked::after{content:'';position:absolute;left:3px;top:0;width:6px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+.cl-item label{font-size:14px;color:var(--text);cursor:pointer;flex-grow:1;line-height:1.5}
+.cl-item.done label{color:var(--muted);text-decoration:line-through}
+
+/* RESSOURCEN */
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px}
+.res-card h3{font-family:var(--mono);font-size:10px;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.res-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);gap:10px}
+.res-row:last-child{border-bottom:none}
+.res-name{font-size:13px;color:var(--text)}
+.res-val{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* RISIKEN */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.risk-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;border-left:3px solid var(--border)}
+.risk-card.m{border-left-color:var(--yellow)}
+.risk-card.l{border-left-color:var(--green)}
+.risk-type{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.risk-card h3{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px}
+.risk-card p{font-size:13px;color:var(--text);line-height:1.55}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center}
+.kpi-icon{font-size:22px;margin-bottom:8px}
+.kpi-card h3{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px}
+.kpi-card p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* FOOTER */
+footer{grid-column:1/-1;border-top:1px solid var(--border);padding:18px 48px;display:flex;align-items:center;justify-content:space-between;background:var(--card)}
+.footer-brand{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.footer-brand span{color:var(--primary)}
+.footer-meta{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* PRINT */
+@media print{
+  body{background:#fff;color:#111}
+  aside,footer{display:none}
+  .layout{grid-template-columns:1fr}
+  header{background:#fff;border-bottom:2px solid #EA515A}
+  header h1{color:#111}
+  .opt-card,.sw-card,.risk-card,.kpi-card,.res-card,.cl-item{background:#fff;border:1px solid #ddd;box-shadow:none}
+  main{max-width:100%;padding:20pt}
+  .opt-grid,.sprint-grid,.kpi-grid{grid-template-columns:1fr;gap:6pt}
+  .risk-grid,.res-grid{grid-template-columns:1fr}
+  section{page-break-inside:avoid;margin-bottom:20pt}
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  aside{display:none}
+  main{padding:28px 20px}
+  .opt-grid,.sprint-grid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .risk-grid,.res-grid{grid-template-columns:1fr}
+}
+
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a on" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header>
+<div class="eyebrow">SCNAT Digitalisierung · Massnahmen-Briefing</div>
+<h1>Kommunikation Digitale Transformation</h1>
+<div class="badges">
+<span class="badge red">Information &amp; Transparenz</span>
+<span class="badge red">Kommunikation &amp; Kollaboration</span>
+<span class="badge green">Wirkung: 8.3 / 10 – Hoch</span>
+<span class="badge yellow">Aufwand: Gering</span>
+<span class="badge">Infrastruktur: bereits vorhanden ✓</span>
+</div>
+</header>
+<main>
+<!-- 01 EINLEITUNG -->
+<section id="einleitung">
+<div class="sh"><span class="snum">01</span><h2>Einleitung</h2></div>
+<div class="div"></div>
+<div class="prose">
+<p>Digitale Transformation scheitert selten an Technologie – sie scheitert an Kommunikation. Mitarbeitende, die nicht wissen, was sich verändert, warum und an wen sie sich wenden können, entwickeln Skepsis oder warten passiv ab. In einer öffentlich finanzierten, wissenschaftlich geprägten Organisation wie SCNAT ist proaktive, regelmässige Kommunikation keine Kür, sondern Pflicht.</p>
+<div class="infobox platform">
+<strong>Starke Ausgangslage:</strong> Die technische Infrastruktur existiert bereits vollständig. Die Plattform digitalisierung.scnat.ch verfügt über eine strukturierte Neuigkeiten-Sektion mit Kategorisierung, Timeline und Tags, einen aktiven News Ticker sowie In-App Notifications. Der Kanal steht – er muss nur konsequent und strategisch bespielt werden.
+    </div>
+<p><strong>Was noch fehlt:</strong> Ein klarer Redaktionsprozess, ein definierter Rhythmus und eine sichtbare Ansprechperson. Diese Massnahme schliesst genau diese Lücke.</p>
+<p><strong>Mehrwert:</strong></p>
+<ul>
+<li>Silvan Poltera wird als zentrale Ansprechperson der Digitalisierung sichtbar und greifbar</li>
+<li>Die bestehende Infrastruktur (Neuigkeiten, News Ticker, In-App Notification) wird erstmals systematisch als Push-Kanal genutzt</li>
+<li>Mitarbeitende werden früh eingebunden statt nachträglich informiert</li>
+<li>Grundlage für die geplante Mailserver-Integration gelegt: Artikel publizieren → automatisch E-Mail + In-App Notification raus</li>
+<li>Vertrauen in den Digitalisierungsprozess steigt durch Regelmässigkeit und Transparenz</li>
+</ul>
+</div>
+</section>
+<!-- 02 BESCHREIBUNG -->
+<section id="beschreibung">
+<div class="sh"><span class="snum">02</span><h2>Beschreibung</h2></div>
+<div class="div"></div>
+<div class="prose">
+<p><strong>Was wird gemacht?</strong></p>
+<ul>
+<li><strong>Redaktionsprozess:</strong> Klare Regelung wer was wann kommuniziert; Redaktionsplan für min. 3 Monate mit fixen Rubriken und Verantwortlichkeiten</li>
+<li><strong>Regelmässige Updates:</strong> Monatliche Neuigkeiten-Artikel auf der Plattform, ausgespielt via News Ticker und In-App Notification; manuelles E-Mail als Übergangskanal bis zur Mailserver-Integration</li>
+<li><strong>Sichtbarkeit der Ansprechperson:</strong> Silvans Profil auf der Plattform live – klar erkennbar, direkt erreichbar</li>
+</ul>
+<div class="infobox"><strong>In Scope:</strong> Redaktionsprozess, Update-Formate, Bespielen der Neuigkeiten-Sektion, Sichtbarkeit Silvans, Nutzung aller bestehenden Push-Kanäle (News Ticker, In-App Notification), manuelles E-Mail als Übergang</div>
+<div class="infobox neutral"><strong>Out of Scope:</strong> Mailserver-Anbindung (eigene Folgemassnahme), externe Kommunikation und Medienarbeit, technische Umbauten der Plattform, massnahmenspezifische Kommunikation einzelner Projekte</div>
+<p><strong>Technische Ausgangslage:</strong> Da Neuigkeiten-Sektion, News Ticker und In-App Notification bereits live sind, entfällt jeglicher technischer Setup-Aufwand. Der Sprint fokussiert zu 100% auf Inhalt, Prozess und organisatorische Verankerung.</p>
+<p><strong>Geplante Erweiterung – Mailserver-Integration:</strong> In einem späteren Schritt wird die Plattform an den SCNAT-Mailserver angebunden. Damit läuft der Workflow vollautomatisch: Artikel auf Hub erstellen → In-App Notification + automatisches E-Mail an alle. Eigene Infrastruktur, kein Drittanbieter, vollständig DSG-konform. Kein Newsletter-Tool, keine DSGVO-Grauzone, keine IT-Diskussion.</p>
+</div>
+</section>
+<!-- 03 OPTIONEN -->
+<section id="optionen">
+<div class="sh"><span class="snum">03</span><h2>Umsetzungsideen</h2></div>
+<div class="div"></div>
+<div class="opt-grid">
+<div class="opt-card">
+<div class="opt-label">Option A · Sofortstart</div>
+<h3>Plattform bespielen + manuelles E-Mail</h3>
+<p>Neuigkeiten-Sektion direkt bespielen, parallel manuelles E-Mail von Silvan als Übergangskanal. Feste Rubriken, monatlicher Rhythmus. Kein Setup, kein Vorlauf.</p>
+<div class="pc">
+<div class="pro">✓ Null Vorlaufzeit, sofort sichtbar</div>
+<div class="con">✗ E-Mail ist manuell und fehleranfällig</div>
+</div>
+</div>
+<div class="opt-card rec">
+<div class="opt-label">Option B · Empfohlen</div>
+<h3>Strukturierter Redaktionsplan</h3>
+<p>Vollständiger Redaktionsplan für 3 Monate, feste Rubriken, Verantwortlichkeiten definiert, Silvans Profil live. Jeden Artikel via News Ticker und In-App Notification ausspielen. E-Mail manuell als Ergänzung.</p>
+<div class="pc">
+<div class="pro">✓ Nachhaltig, verlässlicher Rhythmus, alle Kanäle genutzt</div>
+<div class="con">✗ Erfordert redaktionelle Disziplin</div>
+</div>
+<span class="rec-tag">★ Zielzustand dieses Sprints</span>
+</div>
+<div class="opt-card">
+<div class="opt-label">Option C · Folgemassnahme</div>
+<h3>Mailserver-Integration</h3>
+<p>Plattform an SCNAT-Mailserver anbinden. Artikel publizieren → automatisch In-App Notification und E-Mail raus. Vollautomatisch, eigene Infrastruktur, kein Drittanbieter, DSG-konform by design.</p>
+<div class="pc">
+<div class="pro">✓ Maximale Reichweite, null Mehraufwand, ideal</div>
+<div class="con">✗ Eigenes technisches Projekt – zu gross für diesen Sprint</div>
+</div>
+<span class="future-tag">→ Backlog: Folgemassnahme</span>
+</div>
+</div>
+<div class="infobox" style="margin-top:18px"><strong>Gesamtempfehlung:</strong> Option A als Sofortstart in Woche 1, Option B als Zielzustand bis Sprint-Ende. Option C jetzt konzeptionell vorbereiten und als priorisierte Folgemassnahme ins Backlog aufnehmen.</div>
+</section>
+<!-- 04 VORBEREITUNG -->
+<section id="vorbereitung">
+<div class="sh"><span class="snum">04</span><h2>Vorbereitung</h2></div>
+<div class="div"></div>
+<div class="prose">
+<p><strong>Abklärungen (vor Sprint-Start):</strong></p>
+<ul>
+<li>Wer übernimmt die Redaktionskoordination neben Silvan? (Vorschlag: aus dem Change Agent Team)</li>
+<li>Gibt es bestehende Kommunikationsrichtlinien bei SCNAT zu Tonalität und Freigabeprozessen?</li>
+<li>Sind alle Mitarbeitenden aktive Nutzerinnen und Nutzer der Plattform, oder braucht es parallel E-Mail?</li>
+<li>In-App Notification: Wer löst sie aus, und gibt es technische Einschränkungen bei der Zielgruppe? (Abklärung mit IT Intern)</li>
+</ul>
+<p><strong>Stakeholder:</strong></p>
+<ul>
+<li><strong>Kommunikationsverantwortliche SCNAT</strong> – Einbinden zur Tonalität und Kanalnutzung; nicht übergehen</li>
+<li><strong>Geschäftsleitung</strong> – Silvans Rolle offiziell mandatieren; erster Update kann von GL inhaltlich abgestützt werden</li>
+<li><strong>Change Agent Team</strong> – Erste Zielgruppe und Feedback-Geber; Vorab-Review neuer Artikel vor Publikation; KI-Spezialisten (David Jezdimirovic, Anina Steinlin, Arber Aziri) sind Teil dieses Teams und können bei der inhaltlichen Aufbereitung unterstützen</li>
+<li><strong>IT Intern</strong> – Technische Abklärung In-App Notification; konzeptionelle Vorbereitung Mailserver-Integration</li>
+</ul>
+<p><strong>Change Agent Briefing:</strong></p>
+<ul>
+<li>Im nächsten Monthly Meeting: Kommunikationsplan vorstellen und Rolle der Agents im Review-Prozess klären</li>
+<li>KI-Spezialisten im Team können bei der Erstellung und Aufbereitung von Inhalten direkt mitwirken</li>
+<li>Sie sind das erste Lektorat für neue Artikel (kurzes Review vor Publikation – Aufwand max. 20 Min.)</li>
+<li>Sie verbreiten Neuigkeiten aktiv in ihrer Abteilung und melden Reaktionen zurück</li>
+<li>Ihr Feedback fliesst direkt in den nächsten Redaktionszyklus ein</li>
+</ul>
+<p><strong>Entscheidungen vorab:</strong></p>
+<ul>
+<li>Freigabeprozess definieren: Silvan alleine oder Abnahme GL?</li>
+<li>Feste Rubriken festlegen (Vorschlag: «Was läuft / Was kommt / Fragen &amp; Antworten»)</li>
+<li>Wer aus dem Change Agent Team übernimmt die Redaktionskoordination?</li>
+<li>Offiziellen Titel Silvans für die interne Kommunikation festlegen</li>
+</ul>
+</div>
+</section>
+<!-- 05 RESSOURCEN -->
+<section id="ressourcen">
+<div class="sh"><span class="snum">05</span><h2>Ressourcen</h2></div>
+<div class="div"></div>
+<div class="res-grid">
+<div class="res-card">
+<h3>Interne Rollen</h3>
+<div class="res-row"><span class="res-name">Silvan Poltera – Inhalt &amp; Freigabe</span><span class="res-val">2–3h / Monat</span></div>
+<div class="res-row"><span class="res-name">IT Intern – Abklärung In-App Notification</span><span class="res-val">1h einmalig</span></div>
+<div class="res-row"><span class="res-name">Change Agent Team – Review, Koordination, Verbreitung</span><span class="res-val">1–2h / Monat</span></div>
+<div class="res-row"><span class="res-name">KI-Spezialisten (im Change Agent Team) – Inhaltsunterstützung</span><span class="res-val">nach Bedarf</span></div>
+</div>
+<div class="res-card">
+<h3>Externe Leistungen</h3>
+<div class="res-row"><span class="res-name">Kein externer Bedarf – alles intern umsetzbar</span><span class="res-val">–</span></div>
+</div>
+<div class="res-card">
+<h3>Tools &amp; Software</h3>
+<div class="res-row"><span class="res-name">Neuigkeiten-Sektion – digitalisierung.scnat.ch</span><span class="res-val">vorhanden ✓</span></div>
+<div class="res-row"><span class="res-name">News Ticker</span><span class="res-val">vorhanden ✓</span></div>
+<div class="res-row"><span class="res-name">In-App Notification</span><span class="res-val">vorhanden ✓</span></div>
+<div class="res-row"><span class="res-name">Microsoft Outlook – Übergangskanal</span><span class="res-val">vorhanden ✓</span></div>
+<div class="res-row"><span class="res-name">Newsletter-Tool (Drittanbieter)</span><span class="res-val">nicht benötigt</span></div>
+</div>
+<div class="res-card">
+<h3>Budget</h3>
+<div class="res-row"><span class="res-name">Dieser Sprint (Setup)</span><span class="res-val">~CHF 0</span></div>
+<div class="res-row"><span class="res-name">Laufend monatlich</span><span class="res-val">~CHF 0</span></div>
+<div class="res-row"><span class="res-name">Mailserver-Integration (intern, Folgemassnahme)</span><span class="res-val">IT-Kapazität</span></div>
+</div>
+</div>
+</section>
+<!-- 06 SPRINT -->
+<section id="sprint">
+<div class="sh"><span class="snum">06</span><h2>Sprint-Ablauf (4 Wochen)</h2></div>
+<div class="div"></div>
+<div class="sprint-grid">
+<div class="sw-card">
+<div class="sw-week">Woche 1</div>
+<h3>Kick-off &amp; Redaktionsplan</h3>
+<ul>
+<li>Redaktionsplan für 3 Monate erstellen</li>
+<li>Rubriken und Freigabeprozess abstimmen</li>
+<li>Change Agents im Meeting briefen</li>
+<li>Silvans Profil auf Plattform vorbereiten</li>
+<li>Erstes Update-Thema definieren</li>
+<li>Artikel-Entwurf starten</li>
+</ul>
+</div>
+<div class="sw-card">
+<div class="sw-week">Woche 2</div>
+<h3>Erster Artikel &amp; Review</h3>
+<ul>
+<li>Ersten Neuigkeiten-Artikel fertigstellen</li>
+<li>Vorab-Review durch Change Agents</li>
+<li>Feedback einarbeiten</li>
+<li>Freigabe einholen</li>
+<li>Artikel technisch einpflegen</li>
+<li>Manuelles E-Mail vorbereiten</li>
+</ul>
+</div>
+<div class="sw-card">
+<div class="sw-week">Woche 3</div>
+<h3>Publikation &amp; alle Kanäle</h3>
+<ul>
+<li>Artikel auf Neuigkeiten-Sektion publizieren</li>
+<li>News Ticker aktivieren</li>
+<li>In-App Notification auslösen</li>
+<li>Manuelles E-Mail versenden</li>
+<li>Silvans Profil live schalten</li>
+<li>Reaktionen beobachten</li>
+</ul>
+</div>
+<div class="sw-card">
+<div class="sw-week">Woche 4</div>
+<h3>Review &amp; Verstetigung</h3>
+<ul>
+<li>Feedback systematisch auswerten</li>
+<li>Redaktionsplan finalisieren</li>
+<li>Mailserver-Integration ins Backlog</li>
+<li>Prozess dokumentieren</li>
+<li>Sprint-Retrospektive abhalten</li>
+<li>Next Steps definieren</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 07 CHECKLISTE -->
+<section id="checkliste">
+<div class="sh"><span class="snum">07</span><h2>Checkliste</h2></div>
+<div class="div"></div>
+<div class="cl-progress">
+<span class="pb-text" id="pb-label">0 / 17 erledigt</span>
+<div class="pb-wrap"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+</div>
+<div class="cl-group">
+<h3>Vorbereitung</h3>
+<div class="cl-item" onclick="tog('c1')"><input id="c1" onclick="event.stopPropagation()" type="checkbox"/><label for="c1">Redaktionsverantwortung klären – wer aus dem Change Agent Team übernimmt Koordination?</label></div>
+<div class="cl-item" onclick="tog('c2')"><input id="c2" onclick="event.stopPropagation()" type="checkbox"/><label for="c2">Update-Rhythmus und feste Rubriken festlegen (Empfehlung: monatlich)</label></div>
+<div class="cl-item" onclick="tog('c3')"><input id="c3" onclick="event.stopPropagation()" type="checkbox"/><label for="c3">Erstes Update-Thema bestimmen</label></div>
+<div class="cl-item" onclick="tog('c4')"><input id="c4" onclick="event.stopPropagation()" type="checkbox"/><label for="c4">Change Agents im Monthly Meeting über Kommunikationsplan briefen</label></div>
+<div class="cl-item" onclick="tog('c5')"><input id="c5" onclick="event.stopPropagation()" type="checkbox"/><label for="c5">Kommunikationsverantwortliche SCNAT einbinden und abstimmen</label></div>
+</div>
+<div class="cl-group">
+<h3>Sprint-Durchführung</h3>
+<div class="cl-item" onclick="tog('c6')"><input id="c6" onclick="event.stopPropagation()" type="checkbox"/><label for="c6">Ersten Neuigkeiten-Artikel inhaltlich ausarbeiten (Was läuft / Was kommt / Wie mitmachen)</label></div>
+<div class="cl-item" onclick="tog('c7')"><input id="c7" onclick="event.stopPropagation()" type="checkbox"/><label for="c7">Vorab-Review durch 2–3 Change Agents durchführen</label></div>
+<div class="cl-item" onclick="tog('c8')"><input id="c8" onclick="event.stopPropagation()" type="checkbox"/><label for="c8">Freigabe für Publikation einholen</label></div>
+<div class="cl-item" onclick="tog('c9')"><input id="c9" onclick="event.stopPropagation()" type="checkbox"/><label for="c9">Artikel auf Plattform publizieren (Neuigkeiten-Sektion)</label></div>
+<div class="cl-item" onclick="tog('c10')"><input id="c10" onclick="event.stopPropagation()" type="checkbox"/><label for="c10">News Ticker mit Update aktivieren</label></div>
+<div class="cl-item" onclick="tog('c11')"><input id="c11" onclick="event.stopPropagation()" type="checkbox"/><label for="c11">In-App Notification auslösen</label></div>
+<div class="cl-item" onclick="tog('c12')"><input id="c12" onclick="event.stopPropagation()" type="checkbox"/><label for="c12">Silvans Kontaktprofil auf der Plattform live schalten</label></div>
+<div class="cl-item" onclick="tog('c13')"><input id="c13" onclick="event.stopPropagation()" type="checkbox"/><label for="c13">Manuelles E-Mail-Update als Übergangskanal versenden</label></div>
+</div>
+<div class="cl-group">
+<h3>Abschluss</h3>
+<div class="cl-item" onclick="tog('c14')"><input id="c14" onclick="event.stopPropagation()" type="checkbox"/><label for="c14">Feedback auswerten und dokumentieren</label></div>
+<div class="cl-item" onclick="tog('c15')"><input id="c15" onclick="event.stopPropagation()" type="checkbox"/><label for="c15">Redaktionsplan für nächste 3 Monate finalisieren</label></div>
+<div class="cl-item" onclick="tog('c16')"><input id="c16" onclick="event.stopPropagation()" type="checkbox"/><label for="c16">Mailserver-Integration als priorisierte Folgemassnahme ins Backlog aufnehmen</label></div>
+<div class="cl-item" onclick="tog('c17')"><input id="c17" onclick="event.stopPropagation()" type="checkbox"/><label for="c17">Sprint-Retrospektive abhalten – Prozess und Vorlagen dokumentieren</label></div>
+</div>
+</section>
+<!-- 08 RISIKEN -->
+<section id="risiken">
+<div class="sh"><span class="snum">08</span><h2>Risiken &amp; Abhängigkeiten</h2></div>
+<div class="div"></div>
+<div class="risk-grid">
+<div class="risk-card m">
+<div class="risk-type">Plattform-Reichweite · Mittel</div>
+<h3>Push-Kanäle werden nicht wahrgenommen</h3>
+<p>Wenn Mitarbeitende die Plattform noch nicht regelmässig nutzen, verpufft der Push via News Ticker und In-App Notification. Gegenmassnahme: E-Mail bleibt als aktiver Parallelkanal bis Nutzungsrate gesichert ist.</p>
+</div>
+<div class="risk-card m">
+<div class="risk-type">Redaktionsdisziplin · Mittel</div>
+<h3>Unregelmässige Updates</h3>
+<p>Fehlende Regelmässigkeit beschädigt Vertrauen schneller als gar kein Update. Klarer Redaktionsplan mit fixen Terminen und klar zugewiesener Koordinationsverantwortung im Change Agent Team reduziert das Risiko stark.</p>
+</div>
+<div class="risk-card l">
+<div class="risk-type">Freigabeprozess · Niedrig</div>
+<h3>Unklare Freigabeinstanz</h3>
+<p>Ohne definierte Freigabeinstanz entstehen Verzögerungen. Vorab klären: Silvan alleine oder Abnahme GL – und das schriftlich im Redaktionsplan festhalten.</p>
+</div>
+<div class="risk-card l">
+<div class="risk-type">Rollenklarheit · Niedrig</div>
+<h3>Fehlende GL-Mandatierung</h3>
+<p>Ohne offizielles Mandat wirkt die Kommunikation informell. Silvans Rolle und Titel müssen von der GL aktiv kommuniziert werden, damit Inhalte die nötige organisatorische Autorität erhalten.</p>
+</div>
+<div class="risk-card l">
+<div class="risk-type">Datenschutz · Niedrig</div>
+<h3>DSG-Konformität</h3>
+<p>Da keine Drittanbieter-Tools eingesetzt werden und alles über die eigene Plattform-Infrastruktur läuft, sind DSG-Risiken minimal. Bei manuellem E-Mail: kein Tracking, kein Problem.</p>
+</div>
+<div class="risk-card m">
+<div class="risk-type">Abhängigkeit · Mittel</div>
+<h3>Mailserver-Integration</h3>
+<p>Bis die Anbindung steht, bleibt E-Mail manuell. Das ist handhabbar, muss aber als laufende Aufgabe eingeplant werden. Integration sollte als nächste priorisierte Massnahme gestartet werden.</p>
+</div>
+</div>
+</section>
+<!-- 09 ERFOLGSMESSUNG -->
+<section id="erfolgsmessung">
+<div class="sh"><span class="snum">09</span><h2>Erfolgsmessung</h2></div>
+<div class="div"></div>
+<div class="kpi-grid">
+<div class="kpi-card">
+<div class="kpi-icon">📅</div>
+<h3>Planungstreue</h3>
+<p>Wurde der Monatsrhythmus nach 3 Monaten eingehalten? 0 / 1 / 2 / 3 Artikel publiziert.</p>
+</div>
+<div class="kpi-card">
+<div class="kpi-icon">💬</div>
+<h3>Direkte Anfragen</h3>
+<p>Werden Fragen direkt an Silvan gestellt, die vorher nicht gestellt wurden? (qualitativ, nach 1 Monat)</p>
+</div>
+<div class="kpi-card">
+<div class="kpi-icon">🔔</div>
+<h3>Notification-Rate</h3>
+<p>Wie viele Nutzerinnen und Nutzer öffnen die In-App Notification? (Plattform-interne Metrik, DSG-konform)</p>
+</div>
+<div class="kpi-card">
+<div class="kpi-icon">📈</div>
+<h3>Plattform-Zugriffe</h3>
+<p>Steigen die Zugriffe auf digitalisierung.scnat.ch nach Publikation eines Updates messbar an?</p>
+</div>
+<div class="kpi-card">
+<div class="kpi-icon">🔄</div>
+<h3>Change Agent Feedback</h3>
+<p>Wie nehmen Abteilungen die Updates auf? Systematisch nach je 3 Artikeln erfassen und auswerten.</p>
+</div>
+<div class="kpi-card">
+<div class="kpi-icon">📊</div>
+<h3>Skepsis-Reduktion</h3>
+<p>Sinkende Skepsis gegenüber Digitalisierung – qualitative Einschätzung der Change Agents nach 6 Monaten.</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolgsmessung"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+const PFX = 'scnat_komm_dt_';
+const TOTAL = 17;
+
+function updateProgress() {
+  let n = 0;
+  for (let i = 1; i <= TOTAL; i++) {
+    if (localStorage.getItem(PFX + 'c' + i) === '1') n++;
+  }
+  document.getElementById('pb-fill').style.width = Math.round(n / TOTAL * 100) + '%';
+  document.getElementById('pb-label').textContent = n + ' / ' + TOTAL + ' erledigt';
+}
+
+function tog(id) {
+  const cb = document.getElementById(id);
+  cb.checked = !cb.checked;
+  localStorage.setItem(PFX + id, cb.checked ? '1' : '0');
+  cb.closest('.cl-item').classList.toggle('done', cb.checked);
+  updateProgress();
+}
+
+// Restore saved state
+for (let i = 1; i <= TOTAL; i++) {
+  const id = 'c' + i;
+  const cb = document.getElementById(id);
+  if (cb && localStorage.getItem(PFX + id) === '1') {
+    cb.checked = true;
+    cb.closest('.cl-item').classList.add('done');
+  }
+}
+updateProgress();
+
+// Active nav highlight on scroll
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('#sidenav a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(a => a.classList.remove('active'));
+      const a = document.querySelector('#sidenav a[href="#' + e.target.id + '"]');
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

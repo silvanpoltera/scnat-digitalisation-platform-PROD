@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Einführung Digitalisierungsplattform – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root {
+      --bg-base: #0C0E10;
+      --bg-card: #12161A;
+      --bg-card-hover: #161C22;
+      --color-primary: #EA515A;
+      --color-primary-dim: rgba(234, 81, 90, 0.12);
+      --color-primary-border: rgba(234, 81, 90, 0.3);
+      --color-anthrazit: #5A616B;
+      --color-border: #1E2530;
+      --color-muted: #6B7280;
+      --color-text: #E5E7EB;
+      --color-text-dim: #9CA3AF;
+      --color-green: #4ade80;
+      --color-green-dim: rgba(74, 222, 128, 0.1);
+      --color-yellow: #fbbf24;
+      --color-yellow-dim: rgba(251, 191, 36, 0.1);
+      --color-red-light: #f87171;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-w: 230px;
+      --header-h: 90px;
+      --radius: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.68;
+      min-height: 100vh;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      background: var(--color-border);
+      color: var(--color-primary);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--color-border);
+      padding: 20px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-left { display: flex; flex-direction: column; gap: 8px; }
+
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--color-primary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    header h1 {
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.25;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: var(--color-border);
+      color: var(--color-muted);
+      border: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .badge.primary {
+      background: var(--color-primary-dim);
+      color: var(--color-primary);
+      border-color: var(--color-primary-border);
+    }
+
+    .badge.green {
+      background: var(--color-green-dim);
+      color: var(--color-green);
+      border-color: rgba(74, 222, 128, 0.25);
+    }
+
+    .badge.yellow {
+      background: var(--color-yellow-dim);
+      color: var(--color-yellow);
+      border-color: rgba(251, 191, 36, 0.25);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+    }
+
+    /* ─── SIDEBAR ─── */
+    nav.sidebar {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      padding: 28px 0 28px 40px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border) transparent;
+    }
+
+    .nav-label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-muted);
+      padding: 0 12px;
+      margin-bottom: 10px;
+    }
+
+    nav.sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 1px; }
+
+    nav.sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--color-muted);
+      font-size: 13px;
+      font-weight: 400;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    nav.sidebar ul li a:hover {
+      color: var(--color-text);
+      background: rgba(255,255,255,0.035);
+      border-left-color: var(--color-border);
+    }
+
+    nav.sidebar ul li a.active {
+      color: var(--color-primary);
+      background: var(--color-primary-dim);
+      border-left-color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-border);
+      min-width: 18px;
+      transition: color 0.15s;
+    }
+
+    nav.sidebar ul li a.active .nav-num { color: rgba(234,81,90,0.45); }
+
+    /* ─── MAIN ─── */
+    main {
+      border-left: 1px solid var(--color-border);
+      padding: 44px 44px 100px 44px;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    section {
+      margin-bottom: 64px;
+      scroll-margin-top: 108px;
+    }
+
+    section h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-primary);
+      background: var(--color-primary-dim);
+      border: 1px solid var(--color-primary-border);
+      padding: 2px 9px;
+      border-radius: 4px;
+    }
+
+    p { color: var(--color-text); margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    .card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 14px;
+    }
+
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-20 { margin-bottom: 20px; }
+
+    /* ─── BULLET LIST ─── */
+    ul.bl {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    ul.bl li {
+      font-size: 14px;
+      color: var(--color-text-dim);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.55;
+    }
+
+    ul.bl li::before {
+      content: '—';
+      color: var(--color-primary);
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+
+    /* ─── SCOPE GRID ─── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .highlight-box {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .highlight-box.muted {
+      border-left-color: var(--color-anthrazit);
+    }
+
+    .highlight-box h4 {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-muted);
+      margin-bottom: 12px;
+    }
+
+    .highlight-box:not(.muted) h4 { color: var(--color-primary); }
+
+    /* ─── OPTION CARDS ─── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .opt-card {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .opt-card.rec {
+      border-color: var(--color-primary-border);
+      box-shadow: 0 0 28px rgba(234,81,90,0.09), 0 2px 8px rgba(0,0,0,0.25);
+      background: linear-gradient(150deg, #12161A 0%, #150f10 100%);
+    }
+
+    .opt-label {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--color-muted);
+    }
+
+    .opt-card.rec .opt-label { color: var(--color-primary); }
+
+    .opt-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .opt-desc {
+      font-size: 13px;
+      color: var(--color-text-dim);
+      line-height: 1.6;
+    }
+
+    .pro-contra { display: flex; flex-direction: column; gap: 7px; }
+
+    .pc-item {
+      font-size: 12.5px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .pc-item.pro { color: var(--color-green); }
+    .pc-item.con { color: var(--color-red-light); }
+
+    .pc-icon { flex-shrink: 0; font-style: normal; }
+
+    .rec-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--color-primary);
+      background: var(--color-primary-dim);
+      border: 1px solid var(--color-primary-border);
+      padding: 5px 12px;
+      border-radius: 4px;
+      margin-top: auto;
+      width: fit-content;
+    }
+
+    .opt-footnote {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-muted);
+      margin-top: auto;
+    }
+
+    /* ─── TABLE ─── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+    thead th {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-muted);
+      text-align: left;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--bg-base);
+    }
+
+    tbody td {
+      padding: 13px 16px;
+      border-bottom: 1px solid rgba(30,37,48,0.5);
+      color: var(--color-text-dim);
+      vertical-align: top;
+    }
+
+    tbody td:first-child { color: var(--color-text); font-weight: 500; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255,255,255,0.015); }
+
+    .status-ok { color: var(--color-green); font-family: var(--font-mono); font-size: 12px; }
+    .status-warn { color: var(--color-yellow); font-family: var(--font-mono); font-size: 12px; }
+
+    /* ─── BUDGET STATS ─── */
+    .budget-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .budget-stat {
+      text-align: center;
+      padding: 18px;
+      background: var(--bg-base);
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+    }
+
+    .budget-val {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-primary);
+      display: block;
+    }
+
+    .budget-val.green { color: var(--color-green); }
+
+    .budget-label {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-top: 5px;
+    }
+
+    /* ─── SPRINT TIMELINE ─── */
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .sprint-w {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sprint-w::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--color-border);
+    }
+
+    .sprint-w.launch::before { background: var(--color-primary); }
+    .sprint-w.launch { border-color: var(--color-primary-border); }
+
+    .sprint-w-num {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--color-muted);
+    }
+
+    .sprint-w.launch .sprint-w-num { color: var(--color-primary); }
+
+    .sprint-w-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-top: 2px;
+    }
+
+    .sprint-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .sprint-items li {
+      font-size: 12.5px;
+      color: var(--color-text-dim);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .sprint-items li::before {
+      content: '→';
+      color: var(--color-primary);
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-family: var(--font-mono);
+    }
+
+    /* ─── CHECKLIST ─── */
+    .checklist-progress {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+    }
+
+    .prog-label { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); white-space: nowrap; }
+
+    .prog-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prog-bar {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .prog-count { font-family: var(--font-mono); font-size: 11px; color: var(--color-muted); white-space: nowrap; }
+
+    .cl-group { margin-bottom: 26px; }
+
+    .cl-group h3 {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-muted);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 10px;
+    }
+
+    .cl-items { display: flex; flex-direction: column; gap: 3px; }
+
+    .cl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 9px 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.12s;
+      user-select: none;
+    }
+
+    .cl-item:hover { background: rgba(255,255,255,0.028); }
+    .cl-item.done { opacity: 0.5; }
+
+    .cl-item input[type="checkbox"] { display: none; }
+
+    .custom-cb {
+      width: 17px;
+      height: 17px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 4px;
+      background: transparent;
+      flex-shrink: 0;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .cl-item.done .custom-cb {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .custom-cb::after {
+      content: '';
+      display: none;
+      width: 4px;
+      height: 8px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .cl-item.done .custom-cb::after { display: block; }
+
+    .cl-label {
+      font-size: 13.5px;
+      color: var(--color-text);
+      line-height: 1.55;
+    }
+
+    .cl-item.done .cl-label {
+      text-decoration: line-through;
+      color: var(--color-muted);
+    }
+
+    /* ─── RISKS ─── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .risk-card {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .risk-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .risk-icon { font-size: 18px; }
+
+    .risk-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-muted);
+    }
+
+    .risk-item {
+      font-size: 13px;
+      color: var(--color-text-dim);
+      padding-left: 12px;
+      border-left: 2px solid var(--color-border);
+      margin-bottom: 12px;
+      line-height: 1.55;
+    }
+
+    .risk-item:last-child { margin-bottom: 0; }
+
+    .risk-fix {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-primary);
+      margin-top: 4px;
+    }
+
+    /* ─── METRICS ─── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .metric-phase {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-primary-border);
+    }
+
+    .metric-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--color-text-dim);
+      margin-bottom: 9px;
+      line-height: 1.5;
+    }
+
+    .metric-item:last-child { margin-bottom: 0; }
+
+    .metric-item::before {
+      content: '◆';
+      font-size: 7px;
+      color: var(--color-primary);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--color-border);
+      padding: 20px 40px;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-muted);
+    }
+
+    footer span { color: var(--color-primary); }
+
+    /* ─── PRINT ─── */
+    @media print {
+      body { background: white; color: #111; font-size: 13px; }
+      header { background: white; border-bottom: 2px solid #ccc; position: static; box-shadow: none; }
+      nav.sidebar { display: none; }
+      main { border-left: none; padding: 20px 0; }
+      footer { display: none; }
+      .page-wrap { display: block; }
+      .card, .opt-card, .sprint-w, .risk-card, .metric-card, .highlight-box {
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+        box-shadow: none;
+      }
+      section { break-inside: avoid; margin-bottom: 30px; }
+      .options-grid, .sprint-grid { grid-template-columns: 1fr; gap: 10px; }
+      .scope-grid, .risk-grid, .metrics-grid { grid-template-columns: 1fr; gap: 10px; }
+      .badge { background: #eee; color: #555; border-color: #ccc; }
+      p, li { color: #333; }
+      code { background: #eee; color: #c0392b; }
+      .checklist-progress { background: #eee; border: 1px solid #ccc; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      nav.sidebar {
+        position: static;
+        height: auto;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--color-border);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      nav.sidebar ul {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 3px;
+        width: max-content;
+      }
+      nav.sidebar ul li a {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+      nav.sidebar ul li a.active {
+        border-bottom-color: var(--color-primary);
+        border-left: none;
+        background: none;
+      }
+      main { border-left: none; padding: 24px 20px 60px; }
+      header { padding: 16px 20px; }
+      .header-inner { flex-direction: column; }
+    }
+
+    @media (max-width: 700px) {
+      .options-grid, .sprint-grid { grid-template-columns: 1fr; }
+      .scope-grid, .risk-grid, .metrics-grid { grid-template-columns: 1fr; }
+      .budget-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 18px; }
+    }
+  
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a on" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header>
+<div class="header-inner">
+<div class="header-left">
+<div class="header-eyebrow">SCNAT Digitalisierung · Massnahmen-Briefing</div>
+<h1>Einführung Digitalisierungsplattform</h1>
+<div class="badges">
+<span class="badge primary">Information &amp; Transparenz</span>
+<span class="badge primary">Kommunikation &amp; Kollaboration</span>
+<span class="badge green">Wirkung: Hoch  8.5</span>
+<span class="badge yellow">Aufwand: Mittel  5</span>
+<span class="badge">Sprint: 4 Wochen</span>
+<span class="badge">Product Launch</span>
+</div>
+</div>
+</div>
+</header>
+<main>
+<!-- 01 EINLEITUNG -->
+<section id="einleitung">
+<h2><span class="sec-num">01</span>Einleitung</h2>
+<p>Die Plattform <code>digitalisierung.scnat.ch</code> steht – Toolübersicht, Massnahmentracking, KI-Hub, Schulungskalender, FAQ. Das Problem: Wer nichts davon weiss, nutzt es nicht. Und eine Plattform mit null Traffic bringt null Wert, egal wie gut sie gebaut ist.</p>
+<p>Bei SCNAT ist Informationsverbreitung strukturell anspruchsvoll: verschiedene Abteilungen, wissenschaftliche Fachstellen, ein breites Spektrum an digitaler Affinität. Ein Intranet-Post ist keine Option – er wird gesehen, weggeklickt, vergessen. Es braucht einen Launch-Moment, der hängenbleibt.</p>
+<div class="card mt-20">
+<h3>Konkreter Mehrwert dieser Massnahme</h3>
+<ul class="bl mt-16">
+<li>Awareness für die Plattform in der gesamten Belegschaft – nicht nur bei den Technikaffinen</li>
+<li>Verständnis fürs Warum: Digitalisierung als gemeinsames Projekt, nicht als IT-Diktat</li>
+<li>Klarer Einstiegspunkt für alle Digitalisierungsthemen an einem Ort</li>
+<li>Erste Nutzungsimpulse, die sich durch Change Agents in die Abteilungen tragen</li>
+<li>Fundament für alle weiteren plattformbasierten Massnahmen (KI-Hub, Schulungskalender, Software-Anträge etc.)</li>
+</ul>
+</div>
+</section>
+<!-- 02 BESCHREIBUNG -->
+<section id="beschreibung">
+<h2><span class="sec-num">02</span>Beschreibung</h2>
+<p>Eine koordinierte interne Launch-Kampagne für die Digitalisierungsplattform – kein grosses Budget, kein externer Event-Dienstleister, aber ein durchdachter Ablauf mit echtem Moment-Charakter. Die Kommunikationsabteilung als Partnerin, Change Agents als Multiplikatoren, GL als Legitimationsgeber.</p>
+<div class="scope-grid">
+<div class="highlight-box">
+<h4>✅ Im Scope</h4>
+<ul class="bl">
+<li>Launch-Kommunikationsstrategie (Konzept, Timing, Kanäle)</li>
+<li>Launch-Event: All-Staff-Präsentation, ca. 30–45 Min., mit Live-Demo</li>
+<li>Begleitende Materialien: 1-Pager, Walkthrough-Video (max. 5 Min.), FAQ</li>
+<li>Koordination mit Kommunikationsabteilung</li>
+<li>Change Agent Briefing als „Erste Nutzende"</li>
+<li>Kurzfristige Folge-Kommunikation (Nachfass-Mail + Video-Link)</li>
+</ul>
+</div>
+<div class="highlight-box muted">
+<h4>🚫 Nicht im Scope</h4>
+<ul class="bl">
+<li>Weiterentwicklung der Plattform selbst</li>
+<li>Schulungen zu einzelnen Inhalten (KI-Hub – separate Massnahme)</li>
+<li>Langfristige Content-Strategie oder -Pflege</li>
+<li>IT-Infrastruktur (kein IT-Involvement nötig)</li>
+</ul>
+</div>
+</div>
+<div class="card mt-16">
+<h3>Strategische Einbettung</h3>
+<p style="font-size:14px;color:var(--color-text-dim);">Der Launch ist der Enabler für alle anderen Massnahmen. Ohne Bekanntheit der Plattform sind Schulungskalender, Toolübersicht und KI-Hub tote Investitionen. Diese Massnahme schafft die Sichtbarkeit, auf der alle folgenden Massnahmen aufbauen – sie ist kein Nice-to-have, sondern die Voraussetzung dafür, dass der Rest der Strategie wirkt.</p>
+</div>
+</section>
+<!-- 03 UMSETZUNGSIDEEN -->
+<section id="umsetzung">
+<h2><span class="sec-num">03</span>Umsetzungsideen</h2>
+<div class="options-grid">
+<div class="opt-card">
+<div>
+<div class="opt-label">Option A · Schnell &amp; intern</div>
+<div class="opt-title">Ankündigungs-Mail + Intranet-Post</div>
+</div>
+<div class="opt-desc">E-Mail von Silvan (oder GL) an alle, ergänzt durch einen Intranet-Eintrag mit Screenshot und Kurzbeschreibung der Plattform.</div>
+<div class="pro-contra">
+<div class="pc-item pro"><span class="pc-icon">+</span> Sehr schnell umsetzbar (unter 1 Woche)</div>
+<div class="pc-item pro"><span class="pc-icon">+</span> Kein Koordinationsaufwand</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Kaum Wirkung – gelesen, vergessen, nicht genutzt</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Kein Moment, keine Interaktion, keine Emotion</div>
+</div>
+<div class="opt-footnote">→ Nur als Ergänzung, nie als Hauptkanal</div>
+</div>
+<div class="opt-card">
+<div>
+<div class="opt-label">Option B · Mittlerer Aufwand</div>
+<div class="opt-title">All-Staff-Kurzpräsentation + Erklärvideo</div>
+</div>
+<div class="opt-desc">20–30-minütige Live-Demo (Zoom oder vor Ort), ergänzt durch ein 5-minütiges Walkthrough-Video, das im Anschluss geteilt wird. Komm-Abteilung gibt Feedback auf Messaging.</div>
+<div class="pro-contra">
+<div class="pc-item pro"><span class="pc-icon">+</span> Interaktiv, Fragen möglich</div>
+<div class="pc-item pro"><span class="pc-icon">+</span> Video bleibt als dauerhafte Ressource</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Kein strategisches Messaging, kein Teaser</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Kein Spannungsaufbau vor dem Event</div>
+</div>
+<div class="opt-footnote">→ Gut wenn All-Staff-Meeting bereits im Kalender existiert</div>
+</div>
+<div class="opt-card rec">
+<div>
+<div class="opt-label">Option C · Strukturiert &amp; skalierbar</div>
+<div class="opt-title">Product Launch Event + Komm-Abteilung + Change Agent Rollout</div>
+</div>
+<div class="opt-desc">Inszenierter interner Launch in drei Phasen: Vorab-Teaser (1–2 Wochen), professionell vorbereiteter All-Staff Launch-Event mit Live-Demo und Q&amp;A, anschliessend Change Agent Rollout in die Abteilungen und Nachfass-Mail.</div>
+<div class="pro-contra">
+<div class="pc-item pro"><span class="pc-icon">+</span> Schafft einen echten Moment, der hängenbleibt</div>
+<div class="pc-item pro"><span class="pc-icon">+</span> Komm-Abteilung bringt professionelles Messaging</div>
+<div class="pc-item pro"><span class="pc-icon">+</span> Change Agents sorgen für Nachhaltigkeit</div>
+<div class="pc-item pro"><span class="pc-icon">+</span> Top-down + Bottom-up = stärkste Methode</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Mehr Koordinationsaufwand</div>
+<div class="pc-item con"><span class="pc-icon">–</span> Braucht 3–4 Wochen Vorlauf</div>
+</div>
+<div class="rec-tag">⭐ EMPFEHLUNG</div>
+</div>
+</div>
+<div class="card mt-16">
+<h3>Begründung Empfehlung Option C</h3>
+<p style="font-size:14px;color:var(--color-text-dim);">Der höhere Aufwand zahlt sich aus – ein mittelmässig kommunizierter Launch ist eine verpasste Chance, und die gibt es bei einem Erstlaunch nur einmal. Die Kombination aus Top-down (Event) und Bottom-up (Change Agents) ist die nachweislich wirkungsvollste Methode. Die Einbindung der Komm-Abteilung signalisiert ausserdem, dass Digitalisierung eine organisationsweite Priorität ist – kein IT-Projekt.</p>
+</div>
+</section>
+<!-- 04 VORBEREITUNG -->
+<section id="vorbereitung">
+<h2><span class="sec-num">04</span>Vorbereitung</h2>
+<p style="color:var(--color-muted);margin-bottom:20px;">Alles, was vor Sprint-Start erledigt sein muss.</p>
+<div class="highlight-box mb-16">
+<h4>🔍 Plattform-Readiness prüfen</h4>
+<ul class="bl">
+<li>Ist der Inhalt „launch-würdig"? KI-Hub, Toolübersicht, Massnahmentracking – grundlegend vorhanden und für Nicht-Techis verständlich?</li>
+<li>Bekannte Fehler oder Baustellen bereinigt – oder explizit als „In Aufbau" markiert? Baustellen sind ok, versteckte Baustellen nicht.</li>
+<li>Gibt es einen klaren „First Visit"-Pfad? Was soll jemand als Erstes tun, wenn er auf der Plattform landet?</li>
+</ul>
+</div>
+<div class="highlight-box mb-16">
+<h4>👥 Stakeholder &amp; Koordination</h4>
+<ul class="bl">
+<li>Kommunikationsabteilung kontaktieren – Rolle klären: Co-Produzent (Messaging, Grafikvorlage) oder reines Review? Aufwand kommunizieren: Messaging-Review sind 2–3h, Vollproduktion wäre mehr.</li>
+<li>GL oder Geschäftsführung einbinden: Ein kurzes GL-Statement zu Beginn des Events gibt dem Launch das nötige Gewicht.</li>
+<li>Termin für Launch-Event koordinieren: Bestehenden All-Staff-Slot prüfen oder separaten Termin setzen.</li>
+</ul>
+</div>
+<div class="highlight-box mb-16">
+<h4>🔗 Change Agent Briefing</h4>
+<ul class="bl">
+<li>Change Agents vor der öffentlichen Ankündigung informieren – sie sollen den Launch kennen, bevor er passiert.</li>
+<li>Als „Erste Nutzende" positionieren: Sie kennen die Plattform, können Fragen in ihrer Abteilung beantworten.</li>
+<li>Feedback-Kanal nach Launch definieren: Was fragen Kolleginnen? Was ist unklar? Welche Inhalte fehlen?</li>
+</ul>
+</div>
+<div class="highlight-box">
+<h4>⚡ Entscheidungen vor Sprint-Start</h4>
+<ul class="bl">
+<li>Format des Launch-Events: Zoom / vor Ort / hybrid?</li>
+<li>Wird die GL aktiv eingebunden (Statement oder Co-Moderation)?</li>
+<li>Kommunikationsabteilung als Co-Produzent oder nur Reviewer?</li>
+<li>Wird ein separates Erklärvideo produziert, oder reicht die Aufzeichnung des Events?</li>
+</ul>
+</div>
+</section>
+<!-- 05 RESSOURCEN -->
+<section id="ressourcen">
+<h2><span class="sec-num">05</span>Ressourcen</h2>
+<div class="table-wrap mb-16">
+<table>
+<thead>
+<tr>
+<th>Rolle</th>
+<th>Aufgabe</th>
+<th>Zeitaufwand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Silvan Poltera</td>
+<td>Konzept, Hauptpräsentation, Gesamtkoordination, Logistik &amp; Terminkoordination</td>
+<td><code>10–14h</code></td>
+</tr>
+<tr>
+<td>Change Agent Team (inkl. KI-Spezialisten)</td>
+<td>Demo-Vorbereitung, Erklärvideo, Rollout in Abteilungen, Vorab-Briefing</td>
+<td><code>3–4h / Person</code></td>
+</tr>
+<tr>
+<td>Kommunikationsabteilung</td>
+<td>Messaging-Review, ggf. Grafik / Design</td>
+<td><code>4–8h</code></td>
+</tr>
+<tr>
+<td>IT Intern</td>
+<td>Technische Freigabe, Sicherstellung Plattform-Erreichbarkeit zum Launch</td>
+<td><code>1–2h</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="card mb-16" style="border-left: 3px solid var(--color-primary);">
+<h3>Hinweis: Vollständig intern umsetzbar</h3>
+<p style="font-size:13.5px;color:var(--color-text-dim);">Diese Massnahme erfordert keine externen Dienstleister. Das Change Agent Team (inkl. KI-Spezialisten) bringt alle nötigen Kompetenzen für Demo, Video und Rollout mit. Die Kommunikationsabteilung ist interner Partner.</p>
+</div>
+<div class="table-wrap mb-16">
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Zweck</th>
+<th>DSG / DSGVO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OBS Studio (Open Source)</td>
+<td>Screen-Recording Erklärvideo</td>
+<td><span class="status-ok">✓ Lokal, kein Problem</span></td>
+</tr>
+<tr>
+<td>Loom (Alternative)</td>
+<td>Screen-Recording cloudbasiert</td>
+<td><span class="status-warn">⚠ US-basiert – nur für nicht-personenbezogene Inhalte</span></td>
+</tr>
+<tr>
+<td>Zoom / Teams</td>
+<td>Launch-Event (Live)</td>
+<td><span class="status-ok">✓ Gemäss bestehendem SCNAT-Vertrag</span></td>
+</tr>
+<tr>
+<td>PowerPoint / Keynote</td>
+<td>Präsentation</td>
+<td><span class="status-ok">✓ Lokal, kein Problem</span></td>
+</tr>
+<tr>
+<td>digitalisierung.scnat.ch</td>
+<td>Live-Demo während Event</td>
+<td><span class="status-ok">✓ Intern</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="card">
+<h3>Budget-Schätzung</h3>
+<div class="budget-grid">
+<div class="budget-stat">
+<span class="budget-val">25–35h</span>
+<div class="budget-label">Interner Personalaufwand</div>
+</div>
+<div class="budget-stat">
+<span class="budget-val">CHF 0</span>
+<div class="budget-label">Externer Aufwand (intern umsetzbar)</div>
+</div>
+<div class="budget-stat">
+<span class="budget-val green">Sehr tief</span>
+<div class="budget-label">Gesamteinschätzung</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 06 SPRINT-ABLAUF -->
+<section id="sprint">
+<h2><span class="sec-num">06</span>Sprint-Ablauf</h2>
+<div class="sprint-grid">
+<div class="sprint-w">
+<div>
+<div class="sprint-w-num">Woche 1</div>
+<div class="sprint-w-title">Vorbereitung &amp; Koordination</div>
+</div>
+<ul class="sprint-items">
+<li>Kommunikationsabteilung briefen, Rolle klären</li>
+<li>Launch-Termin fixieren</li>
+<li>Change Agents vorab informieren</li>
+<li>Plattform-Readiness-Check durchführen</li>
+<li>Konzept der Launch-Kommunikation festlegen</li>
+<li>Entscheid Erklärvideo: ja oder nein?</li>
+</ul>
+</div>
+<div class="sprint-w">
+<div>
+<div class="sprint-w-num">Woche 2</div>
+<div class="sprint-w-title">Produktion &amp; Teaser</div>
+</div>
+<ul class="sprint-items">
+<li>Teaser-Kommunikation vorbereiten</li>
+<li>Präsentation ausarbeiten (Use Cases, Demo-Flow, Q&amp;A)</li>
+<li>Walkthrough-Video aufnehmen (Change Agent Team)</li>
+<li>Teaser-Mail versenden (Ende Woche 2)</li>
+<li>Change Agent Meeting: Detailbriefing und Rollout-Rolle klären</li>
+</ul>
+</div>
+<div class="sprint-w launch">
+<div>
+<div class="sprint-w-num">Woche 3 · Launch</div>
+<div class="sprint-w-title">Launch-Event</div>
+</div>
+<ul class="sprint-items">
+<li>Technischer Probe-Durchlauf 1 Tag vorher</li>
+<li>Launch-Event: GL-Statement, Präsentation, Live-Demo</li>
+<li>Q&amp;A und erstes Feedback sammeln</li>
+<li>Video-Aufzeichnung bereitstellen</li>
+<li>Change Agents starten Rollout in Abteilungen</li>
+</ul>
+</div>
+<div class="sprint-w">
+<div>
+<div class="sprint-w-num">Woche 4</div>
+<div class="sprint-w-title">Nachfass &amp; Review</div>
+</div>
+<ul class="sprint-items">
+<li>Nachfass-Mail: Video-Link, Direktlink, Ansprechperson</li>
+<li>Feedback von Change Agents sammeln</li>
+<li>Erste Nutzungszahlen auswerten</li>
+<li>Plattform-Content ggf. anpassen</li>
+<li>Retrospektive und Dokumentation</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 07 CHECKLISTE -->
+<section id="checkliste">
+<h2><span class="sec-num">07</span>Checkliste</h2>
+<div class="checklist-progress">
+<span class="prog-label">Fortschritt</span>
+<div class="prog-bar-wrap"><div class="prog-bar" id="progBar"></div></div>
+<span class="prog-count" id="progCount">0 / 22</span>
+</div>
+<!-- Vorbereitung -->
+<div class="cl-group">
+<h3>Vorbereitung</h3>
+<div class="cl-items">
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Plattform-Readiness-Check abgeschlossen (Inhalte vorhanden und verständlich?)</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Bekannte Fehler bereinigt – oder explizit als „In Aufbau" markiert</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Kommunikationsabteilung kontaktiert und Rolle geklärt (Co-Produzent oder Reviewer?)</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">GL oder Geschäftsführung für Launch-Statement oder Co-Moderation angefragt</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Launch-Termin im Kalender gesperrt und kommuniziert</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Format des Events entschieden: Zoom / vor Ort / hybrid</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Change Agents vorab informiert und individuell gebrieft</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Feedback-Kanal für Change Agents nach Launch definiert</span></label>
+</div>
+</div>
+<!-- Sprint-Durchführung -->
+<div class="cl-group">
+<h3>Sprint-Durchführung</h3>
+<div class="cl-items">
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Konzept der Launch-Kommunikation fertig (Teaser, Event, Nachfass)</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Präsentation ausgearbeitet (Use Cases, Demo-Flow, Q&amp;A-Vorbereitung)</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Teaser-Mail versendet (ca. 10–14 Tage vor Launch)</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Erklärvideo durch Change Agent Team aufgenommen und bereitgestellt</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Technischer Probe-Durchlauf 1 Tag vor Launch durchgeführt</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Launch-Event erfolgreich durchgeführt</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Video-Aufzeichnung für Abwesende bereitgestellt</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Change Agents haben Rollout in ihren Abteilungen gestartet</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Nachfass-Mail versendet (Video-Link + Direktlink zur Plattform)</span></label>
+</div>
+</div>
+<!-- Abschluss -->
+<div class="cl-group">
+<h3>Abschluss</h3>
+<div class="cl-items">
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Nutzungszahlen 1 Woche nach Launch ausgewertet</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Qualitatives Feedback von Change Agents eingeholt und dokumentiert</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Plattform-Content basierend auf Feedback angepasst</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Retrospektive durchgeführt und Erkenntnisse festgehalten</span></label>
+<label class="cl-item"><input type="checkbox"/><div class="custom-cb"></div><span class="cl-label">Nächste Kommunikations-Massnahme definiert (z.B. monatlicher Update-Newsletter)</span></label>
+</div>
+</div>
+</section>
+<!-- 08 RISIKEN -->
+<section id="risiken">
+<h2><span class="sec-num">08</span>Risiken &amp; Abhängigkeiten</h2>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-header">
+<span class="risk-icon">🔧</span>
+<span class="risk-type">Technische Risiken</span>
+</div>
+<div class="risk-item">
+            Plattform hat zum Launch-Zeitpunkt sichtbare Baustellen oder Fehler
+            <div class="risk-fix">→ Readiness-Check Woche 1; im Zweifelsfall Launch verschieben</div>
+</div>
+<div class="risk-item">
+            Demo funktioniert live nicht (VPN, Browser, Ladezeit)
+            <div class="risk-fix">→ Probe-Durchlauf 1 Tag vorher; Fallback-Screenshots bereithalten</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-header">
+<span class="risk-icon">🏛</span>
+<span class="risk-type">Strukturelle Beobachtungen IT</span>
+</div>
+<div class="risk-item">
+            Die IT ist aktuell durch laufende Projekte stark ausgelastet, weshalb kurzfristige Infrastruktur-Unterstützung (z.B. interner Stream) möglicherweise nicht verfügbar ist
+            <div class="risk-fix">→ Event so gestalten, dass kein IT-Involvement nötig ist – ein Zoom-Link genügt</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-header">
+<span class="risk-icon">👤</span>
+<span class="risk-type">Ressourcenrisiken</span>
+</div>
+<div class="risk-item">
+            Kommunikationsabteilung hat kurzfristig keine Kapazität
+            <div class="risk-fix">→ Früh anfragen; Aufwand klar begrenzen (Messaging-Review ≠ Vollproduktion)</div>
+</div>
+<div class="risk-item">
+            Termin-Koordination für All-Staff schwierig
+            <div class="risk-fix">→ Aufzeichnung sicherstellen; Event nicht von 100%-Attendance abhängig machen</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-header">
+<span class="risk-icon">🔗</span>
+<span class="risk-type">Abhängigkeiten</span>
+</div>
+<div class="risk-item">
+            Plattform-Content muss ausreichend befüllt sein
+            <div class="risk-fix">→ Bei Lücken: Baustellen sichtbar machen, nicht verstecken – Transparenz schafft Vertrauen</div>
+</div>
+<div class="risk-item">
+            Diese Massnahme ist logische Voraussetzung für alle weiteren plattformbasierten Massnahmen
+            <div class="risk-fix">→ Zeitlich als Erstes einplanen, vor Schulungskalender, KI-Hub-Kampagne etc.</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 09 ERFOLGSMESSUNG -->
+<section id="erfolgsmessung">
+<h2><span class="sec-num">09</span>Erfolgsmessung</h2>
+<div class="metrics-grid">
+<div class="metric-card">
+<div class="metric-phase">Unmittelbar · Woche 1 nach Launch</div>
+<div class="metric-item">Unique Besucher auf der Plattform: Vergleich vor Launch vs. Woche 1</div>
+<div class="metric-item">Teilnehmerzahl am Launch-Event (Ziel: über 50% der Belegschaft live oder via Aufzeichnung)</div>
+<div class="metric-item">Klickrate auf den Direktlink in der Nachfass-Mail</div>
+</div>
+<div class="metric-card">
+<div class="metric-phase">Kurzfristig · 4 Wochen nach Launch</div>
+<div class="metric-item">Wiederkehrende Nutzer (Ziel: min. 30% der Belegschaft nach 4 Wochen mind. 1× besucht)</div>
+<div class="metric-item">Qualitatives Feedback via Change Agents: Werden Fragen zur Plattform in Abteilungen gestellt?</div>
+<div class="metric-item">Anzahl eingegangener Feedback-Einträge (zeigt aktive Auseinandersetzung)</div>
+</div>
+<div class="metric-card">
+<div class="metric-phase">Mittelfristig · 3 Monate nach Launch</div>
+<div class="metric-item">Ist die Plattform zum natürlichen Anlaufpunkt für Digitalisierungsthemen geworden?</div>
+<div class="metric-item">Werden Links zur Plattform in internen Kanälen organisch geteilt?</div>
+<div class="metric-item">Steigen Nutzungszahlen kontinuierlich oder stagnieren sie nach dem Launch-Peak?</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#umsetzung"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolgsmessung"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+  const STORAGE_KEY = 'scnat_checklist_v1_digitalisierungsplattform';
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function saveState() {
+    const items = document.querySelectorAll('.cl-item');
+    const state = {};
+    items.forEach((item, i) => { state[i] = item.querySelector('input').checked; });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.cl-item');
+    const total = items.length;
+    let checked = 0;
+    items.forEach(item => { if (item.querySelector('input').checked) checked++; });
+    const pct = total > 0 ? (checked / total) * 100 : 0;
+    document.getElementById('progBar').style.width = pct + '%';
+    document.getElementById('progCount').textContent = checked + ' / ' + total;
+  }
+
+  function initChecklist() {
+    const state = loadState();
+    const items = document.querySelectorAll('.cl-item');
+    items.forEach((item, i) => {
+      if (state[i]) {
+        item.querySelector('input').checked = true;
+        item.classList.add('done');
+      }
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cb = item.querySelector('input');
+        cb.checked = !cb.checked;
+        item.classList.toggle('done', cb.checked);
+        saveState();
+        updateProgress();
+      });
+    });
+    updateProgress();
+  }
+
+  function initScrollSpy() {
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('nav.sidebar a');
+    if (!links.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initChecklist();
+    initScrollSpy();
+  });
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

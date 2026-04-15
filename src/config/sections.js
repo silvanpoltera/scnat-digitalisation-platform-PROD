@@ -4,6 +4,7 @@ import {
   CalendarRange,
   LayoutDashboard, FileText, Calendar, Inbox, GitPullRequest,
   MessageSquare, Radio, Newspaper, Megaphone, FolderOpen, Eye,
+  ClipboardList,
 } from 'lucide-react';
 
 const ALL_SECTIONS = {
@@ -36,6 +37,7 @@ const ALL_SECTIONS = {
   'cp-scnat-db':       { label: 'SCNAT DB',           icon: Database,        path: '/cp/scnat-db' },
   'cp-sichtbarkeit':   { label: 'Sichtbarkeit',       icon: Eye,             path: '/cp/sichtbarkeit' },
   'cp-admin-stuff':    { label: 'Admin Stuff',        icon: FolderOpen,      path: '/cp/admin-stuff' },
+  'cp-admin-details':  { label: 'Admin Details',      icon: ClipboardList,   path: '/cp/admin-details' },
 };
 
 export const CP_BADGE_KEYS = {

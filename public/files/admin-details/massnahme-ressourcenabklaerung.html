@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Ressourcenabklärung mit klarem Konzept – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --base:     #0C0E10;
+    --surface:  #12161A;
+    --elevated: #181C20;
+    --border:   #1E2530;
+    --border2:  #2A3140;
+    --red:      #EA515A;
+    --red-dim:  rgba(234,81,90,0.12);
+    --red-glow: rgba(234,81,90,0.06);
+    --muted:    #6B7280;
+    --sub:      #4B5563;
+    --light:    #E5E7EB;
+    --mid:      #9CA3AF;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --nav-w: 220px;
+    --radius: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--base);
+    color: var(--light);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ─── LAYOUT ─── */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ─── SIDEBAR NAV ─── */
+  .sidenav {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 0 40px;
+  }
+
+  .sidenav-brand {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .sidenav-brand-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .sidenav-brand-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  .sidenav-section {
+    padding: 0 12px;
+  }
+  .sidenav-group-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--sub);
+    padding: 0 8px 6px;
+    margin-top: 16px;
+  }
+  .sidenav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    color: var(--mid);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.15s;
+    margin-bottom: 1px;
+  }
+  .sidenav a:hover, .sidenav a.active {
+    background: var(--red-glow);
+    color: var(--light);
+  }
+  .sidenav a.active { color: var(--red); }
+  .sidenav a .nav-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  .sidenav-progress {
+    padding: 20px 20px 0;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+  }
+  .progress-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 99px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 99px;
+    transition: width 0.3s;
+  }
+  .progress-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── HEADER ─── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 52px 32px;
+  }
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .header-meta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .header-meta-sep { color: var(--sub); font-size: 11px; }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--light);
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    max-width: 640px;
+  }
+
+  .header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: var(--elevated);
+    color: var(--mid);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .badge-red {
+    background: var(--red-dim);
+    border-color: rgba(234,81,90,0.3);
+    color: var(--red);
+  }
+  .badge-green {
+    background: rgba(34,197,94,0.08);
+    border-color: rgba(34,197,94,0.25);
+    color: #4ade80;
+  }
+  .badge-blue {
+    background: rgba(59,130,246,0.08);
+    border-color: rgba(59,130,246,0.25);
+    color: #60a5fa;
+  }
+  .badge-orange {
+    background: rgba(249,115,22,0.08);
+    border-color: rgba(249,115,22,0.25);
+    color: #fb923c;
+  }
+
+  .score-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 5px;
+  }
+  .score-wirkung {
+    background: rgba(34,197,94,0.10);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: #4ade80;
+  }
+  .score-aufwand {
+    background: rgba(234,81,90,0.10);
+    border: 1px solid rgba(234,81,90,0.25);
+    color: var(--red);
+  }
+  .score-val {
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .score-dots {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+  }
+  .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .dot-on { background: currentColor; }
+  .dot-off { background: currentColor; opacity: 0.2; }
+
+  /* ─── CONTENT AREA ─── */
+  .content {
+    padding: 48px 52px;
+    max-width: 860px;
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    margin-bottom: 64px;
+    scroll-margin-top: 32px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid rgba(234,81,90,0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--light);
+    letter-spacing: -0.01em;
+  }
+
+  p { margin-bottom: 14px; color: var(--mid); }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--light); font-weight: 600; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card:hover { border-color: var(--border2); }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 10px;
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .option-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .option-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .option-card:hover { border-color: var(--border2); }
+  .option-card.recommended { border-color: rgba(234,81,90,0.35); }
+  .option-card.recommended .option-header { background: var(--red-dim); border-bottom-color: rgba(234,81,90,0.2); }
+
+  .option-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .option-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .option-rec-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid rgba(234,81,90,0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .option-body { padding: 20px; }
+  .option-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 10px;
+  }
+  .option-desc { color: var(--mid); font-size: 14px; margin-bottom: 16px; }
+
+  .pro-con {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .pro-block, .con-block {
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .pro-block { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); }
+  .con-block { background: rgba(234,81,90,0.06); border: 1px solid rgba(234,81,90,0.15); }
+  .pc-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .pro-block .pc-label { color: #4ade80; }
+  .con-block .pc-label { color: var(--red); }
+  .pc-item {
+    font-size: 12.5px;
+    color: var(--mid);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  /* ─── RESSOURCEN ─── */
+  .res-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .res-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .res-icon { font-size: 20px; margin-bottom: 10px; }
+  .res-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .res-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    gap: 12px;
+  }
+  .res-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .res-name { color: var(--light); font-weight: 500; }
+  .res-val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .res-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--elevated);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .res-tag-green { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); color: #4ade80; }
+  .res-tag-blue  { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.2); color: #60a5fa; }
+
+  /* ─── SPRINT TIMELINE ─── */
+  .sprint-timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .sprint-week {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .sprint-week-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--elevated);
+  }
+  .sprint-week-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+  }
+  .sprint-week-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--light);
+  }
+  .sprint-week-body {
+    padding: 14px 16px;
+  }
+  .sprint-task {
+    font-size: 12.5px;
+    color: var(--mid);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+  }
+  .sprint-task:last-child { border-bottom: none; padding-bottom: 0; }
+  .sprint-task::before {
+    content: '›';
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  /* ─── CHECKLIST ─── */
+  .checklist-group { margin-bottom: 28px; }
+  .checklist-group-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .checklist-item:hover { background: var(--surface); border-color: var(--border); }
+  .checklist-item.checked {
+    background: rgba(34,197,94,0.05);
+    border-color: rgba(34,197,94,0.12);
+  }
+
+  .custom-cb {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: var(--elevated);
+  }
+  .checklist-item.checked .custom-cb {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .custom-cb::after {
+    content: '';
+    display: none;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .checklist-item.checked .custom-cb::after { display: block; }
+
+  .checklist-text {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.5;
+    transition: color 0.15s;
+  }
+  .checklist-item.checked .checklist-text {
+    color: var(--sub);
+    text-decoration: line-through;
+    text-decoration-color: var(--sub);
+  }
+
+  .checklist-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .btn-ghost {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 5px;
+    background: var(--elevated);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover { border-color: var(--mid); color: var(--light); }
+
+  /* ─── RISIKEN ─── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .risk-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .risk-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .risk-item {
+    font-size: 13px;
+    color: var(--mid);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .risk-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .risk-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+
+  /* ─── ERFOLG ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .kpi-val {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 56px;
+  }
+  .kpi-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 4px;
+  }
+  .kpi-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+  /* ─── VORBEREITUNG ─── */
+  .prep-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .prep-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .prep-item:last-child { border-bottom: none; }
+  .prep-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 600;
+  }
+  .cat-klärung { background: rgba(59,130,246,0.1); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+  .cat-stake   { background: rgba(249,115,22,0.1); color: #fb923c; border: 1px solid rgba(249,115,22,0.2); }
+  .cat-entscheid { background: rgba(234,81,90,0.1); color: var(--red); border: 1px solid rgba(234,81,90,0.2); }
+  .cat-change  { background: rgba(168,85,247,0.1); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+  .prep-text { color: var(--mid); line-height: 1.5; }
+  .prep-text strong { color: var(--light); }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    background: var(--red-glow);
+    border: 1px solid rgba(234,81,90,0.2);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--mid);
+  }
+  .info-box-icon { color: var(--red); flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--sub);
+  }
+  .footer-brand {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    display: inline-block;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    .sidenav { width: 100%; height: auto; position: relative; flex-direction: row; overflow-x: auto; padding: 16px; flex-wrap: nowrap; }
+    .sidenav-brand { display: none; }
+    .sidenav-progress { display: none; }
+    .sidenav a { white-space: nowrap; }
+    .content { padding: 28px 20px; }
+    .page-header { padding: 24px 20px; }
+    .sprint-timeline { grid-template-columns: 1fr 1fr; }
+    .res-grid { grid-template-columns: 1fr; }
+    .pro-con { grid-template-columns: 1fr; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 8px; padding: 20px; text-align: center; }
+  }
+
+  @media (max-width: 580px) {
+    .sprint-timeline { grid-template-columns: 1fr; }
+    .page-title { font-size: 22px; }
+  }
+
+  /* ─── PRINT ─── */
+  @media print {
+    body { background: #fff; color: #111; }
+    .sidenav { display: none; }
+    .page-header { background: #fff; border: none; }
+    .page-title { color: #111; }
+    .content { padding: 0; max-width: 100%; }
+    .card, .option-card, .risk-card, .kpi-card, .prep-list, .sprint-week {
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: none;
+    }
+    .badge { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+    footer { border-top: 1px solid #e5e7eb; }
+  }
+
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a on" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header class="page-header">
+<div class="header-meta">
+<span class="header-meta-label" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">SCNAT</span>
+<span class="header-meta-sep">›</span>
+<span class="header-meta-label" style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">Massnahmen</span>
+<span class="header-meta-sep">›</span>
+<span class="header-meta-label" style="font-family:var(--font-mono);font-size:11px;color:var(--red);">Ressourcenabklärung</span>
+</div>
+<h1 class="page-title">Ressourcenabklärung<br/>mit klarem Konzept</h1>
+<p class="page-subtitle">Systematische Abklärung von Motivation und Kapazität für das Change-Agent-Netzwerk – mit Entlastungskonzept.</p>
+<div class="header-badges">
+<span class="badge"><span>🗂</span> Strategie &amp; Steuerung</span>
+<span class="badge badge-orange"><span>⚡</span> Skills &amp; Change</span>
+<span class="score-pill score-wirkung">
+<span>Wirkung</span>
+<span class="score-val">8</span>
+<span class="score-dots">
+<span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-off"></span><span class="dot dot-off"></span>
+</span>
+</span>
+<span class="score-pill score-aufwand">
+<span>Aufwand</span>
+<span class="score-val">4</span>
+<span class="score-dots">
+<span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-on"></span><span class="dot dot-off"></span><span class="dot dot-off"></span><span class="dot dot-off"></span><span class="dot dot-off"></span><span class="dot dot-off"></span><span class="dot dot-off"></span>
+</span>
+</span>
+<span class="badge badge-green"><span>●</span> 4-Wochen-Sprint</span>
+</div>
+</header>
+<div class="content">
+<!-- 01 EINLEITUNG -->
+<section class="section" id="einleitung">
+<div class="section-header">
+<span class="section-num">01</span>
+<h2 class="section-title">Einleitung</h2>
+</div>
+<div class="info-box">
+<span class="info-box-icon">◈</span>
+<span>Das Change-Agent-Netzwerk ist konzipiert – aber noch nicht mit konkreten Personen besetzt. Diese Massnahme schafft das Fundament, ohne das alle operativen Folgemassnahmen auf Sand gebaut wären. Das KI-Spezialistenteam ist dabei von Anfang an eingebunden – als integrierter Teil des Change Agent Teams, nicht als separates Kernteam.</span>
+</div>
+<p>Das Change-Agent-Netzwerk ist der zentrale operative Hebel der SCNAT-Digitalisierungsstrategie. Seine Wirksamkeit steht und fällt mit drei Faktoren: den richtigen Personen, echter Motivation und realistisch verfügbaren Kapazitäten. Diese Massnahme klärt alle drei Faktoren – strukturiert, GL-verankert und mit einem belastbaren Entlastungskonzept für die nominierten Personen.</p>
+<p><strong>Auslöser:</strong> Aktuell fehlt Klarheit darüber, wer in welchen Abteilungen interessiert und verfügbar ist. Ohne diese Grundlage riskiert man überforderte Change Agents, pro-forma-Nominierungen oder eine schleichende Demotivation kurz nach dem Kickoff.</p>
+<p><strong>Konkreter Mehrwert:</strong> Abteilungsleitende übernehmen durch die strukturierte Nominierung aktiv Verantwortung. Motivation wird früh und ehrlich erhoben – keine bösen Überraschungen im Netzwerkbetrieb. Das Entlastungskonzept macht das Engagement organisatorisch glaubwürdig und schützt die Agents vor Doppelbelastung.</p>
+</section>
+<!-- 02 BESCHREIBUNG -->
+<section class="section" id="beschreibung">
+<div class="section-header">
+<span class="section-num">02</span>
+<h2 class="section-title">Beschreibung</h2>
+</div>
+<p>Diese Massnahme besteht aus drei aufeinander aufbauenden Schritten:</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+<div class="card" style="border-left:3px solid var(--red);">
+<div class="card-label">Schritt 01</div>
+<div class="card-title">GL-Abfrage</div>
+<p style="font-size:13px;">Abteilungsleitende melden 1–2 Personen mit digitaler Affinität, inkl. Zeitbudget-Einschätzung (~10% / 4h/Woche) und Begründung.</p>
+</div>
+<div class="card" style="border-left:3px solid var(--red);">
+<div class="card-label">Schritt 02</div>
+<div class="card-title">Motivationscheck</div>
+<p style="font-size:13px;">Kurze, ehrliche Selbsteinschätzung der nominierten Personen: Interesse, Erwartungen, Bedenken, verfügbare Zeit. Freiwilligkeit explizit betont.</p>
+</div>
+<div class="card" style="border-left:3px solid var(--red);">
+<div class="card-label">Schritt 03</div>
+<div class="card-title">Entlastungskonzept</div>
+<p style="font-size:13px;">Klare Regelung pro Abteilung: Wie werden ~4h/Woche kompensiert? Aufgabenreduktion, Priorisierungsverschiebung, Teamabsprache – dokumentiert.</p>
+</div>
+</div>
+<div class="card">
+<div class="card-label">Scope</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+<div>
+<p style="font-family:var(--font-mono);font-size:11px;color:#4ade80;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">✓ Gehört dazu</p>
+<p style="font-size:13px;margin-bottom:5px;">GL-Abfrage mit standardisiertem Formular</p>
+<p style="font-size:13px;margin-bottom:5px;">Motivationscheck an Nominierte</p>
+<p style="font-size:13px;margin-bottom:5px;">Entlastungskonzept-Template + Adaptation</p>
+<p style="font-size:13px;">Strukturierte Ergebnisübersicht</p>
+</div>
+<div>
+<p style="font-family:var(--font-mono);font-size:11px;color:var(--red);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">✗ Nicht dazu</p>
+<p style="font-size:13px;margin-bottom:5px;">Rollenausbildung der Agents</p>
+<p style="font-size:13px;margin-bottom:5px;">Kickoff-Meeting des Netzwerks</p>
+<p style="font-size:13px;">Operative Aufgabenplanung der Agents</p>
+</div>
+</div>
+</div>
+<p style="margin-top:16px;">Diese Massnahme ist <strong>harte Voraussetzung</strong> für alle operativen Folgemassnahmen im Cluster «Skills &amp; Change». Ohne abgeklärte Personen und geregelte Kapazitäten kann das Netzwerk nicht operativ werden.</p>
+</section>
+<!-- 03 UMSETZUNGSIDEEN -->
+<section class="section" id="optionen">
+<div class="section-header">
+<span class="section-num">03</span>
+<h2 class="section-title">Umsetzungsideen</h2>
+</div>
+<div class="option-cards">
+<!-- Option A -->
+<div class="option-card">
+<div class="option-header">
+<span class="option-label">Option A · Schnell &amp; direkt</span>
+</div>
+<div class="option-body">
+<div class="option-name">Informell – Direktabfrage durch Silvan</div>
+<p class="option-desc">Silvan fragt Abteilungsleitende direkt per E-Mail oder in bilateralen Gesprächen. Kein Tool-Overhead, keine Formulare.</p>
+<div class="pro-con">
+<div class="pro-block">
+<div class="pc-label">Pro</div>
+<div class="pc-item">Schnell umsetzbar</div>
+<div class="pc-item">Kein Tool-Aufwand</div>
+<div class="pc-item">Persönliche Note</div>
+</div>
+<div class="con-block">
+<div class="pc-label">Contra</div>
+<div class="pc-item">Kein strukturiertes Format</div>
+<div class="pc-item">Ergebnisse schwer vergleichbar</div>
+<div class="pc-item">Motivationscheck fehlt</div>
+<div class="pc-item">Verbindlichkeit unklar</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Option B RECOMMENDED -->
+<div class="option-card recommended">
+<div class="option-header">
+<span class="option-label">Option B · Strukturiert &amp; pragmatisch</span>
+<span class="option-rec-badge">★ Empfohlen</span>
+</div>
+<div class="option-body">
+<div class="option-name">Formulare + kurzer GL-Briefing-Call (30min)</div>
+<p class="option-desc">GL-Memo mit klaren Erwartungen, zwei separate Nextcloud-Forms (GL-Nominierung + Motivationscheck der Nominierten), Entlastungskonzept als adaptierbares Template. Briefing nicht als Workshop, sondern als 30-minütiger Call.</p>
+<div class="pro-con">
+<div class="pro-block">
+<div class="pc-label">Pro</div>
+<div class="pc-item">Strukturiert und auswertbar</div>
+<div class="pc-item">Nextcloud = DSG/DSGVO-konform</div>
+<div class="pc-item">Wenig Aufwand, schnell umsetzbar</div>
+<div class="pc-item">Klare Dokumentation</div>
+</div>
+<div class="con-block">
+<div class="pc-label">Contra</div>
+<div class="pc-item">Nextcloud muss verfügbar sein</div>
+<div class="pc-item">Rücklaufquote nicht garantiert</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Option C -->
+<div class="option-card">
+<div class="option-header">
+<span class="option-label">Option C · Strukturiert &amp; formal</span>
+</div>
+<div class="option-body">
+<div class="option-name">GL-Workshop + strukturiertes Kurzinterview + HR-verankertes Konzept</div>
+<p class="option-desc">90-minütiger GL-Workshop zur Erwartungsklärung, Motivationscheck als Kurzinterview (15–20min, geführt durch Change Agent Team), Entlastungskonzept gemeinsam mit HR erarbeitet und formal verabschiedet.</p>
+<div class="pro-con">
+<div class="pro-block">
+<div class="pc-label">Pro</div>
+<div class="pc-item">Höchste Verbindlichkeit</div>
+<div class="pc-item">GL aktiv involviert</div>
+<div class="pc-item">Fundiertes Konzeptpapier</div>
+</div>
+<div class="con-block">
+<div class="pc-label">Contra</div>
+<div class="pc-item">Erheblich mehr Aufwand</div>
+<div class="pc-item">Terminplanung schwierig</div>
+<div class="pc-item">Langsamer</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="info-box" style="margin-top:20px;">
+<span class="info-box-icon">→</span>
+<span><strong>Empfehlung:</strong> Option B mit einem Element aus C – formulargestützte Abfrage via Nextcloud, kombiniert mit einem kurzen GL-Briefing-Call (kein Workshop). Das Entlastungskonzept als adaptierbares Template. Verbindlichkeit entsteht durch klares GL-Mandat und Deadline – nicht durch Workshop-Aufwand.</span>
+</div>
+</section>
+<!-- 04 VORBEREITUNG -->
+<section class="section" id="vorbereitung">
+<div class="section-header">
+<span class="section-num">04</span>
+<h2 class="section-title">Vorbereitung</h2>
+</div>
+<p style="margin-bottom:20px;">Folgendes muss vor Sprint-Start abgeklärt und entschieden sein:</p>
+<div class="prep-list">
+<div class="prep-item">
+<span class="prep-cat cat-klärung">Abklärung</span>
+<span class="prep-text"><strong>Nextcloud Forms:</strong> Verfügbarkeit und Zugänglichkeit für alle Mitarbeitenden mit IT Intern bestätigen lassen. Fallback definieren falls nötig: Word/PDF per E-Mail.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-klärung">Abklärung</span>
+<span class="prep-text"><strong>HR-Konsultation:</strong> Muss die Agent-Rolle formal im Funktionsbeschrieb verankert werden, oder reicht eine informelle Teamabsprache? Antwort beeinflusst den Aufbau des Entlastungskonzepts direkt.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-stake">Stakeholder</span>
+<span class="prep-text"><strong>GL / Abteilungsleitende:</strong> Sind die zentralen Adressaten. Briefing-Call vorbereiten: Klare Erwartungshaltung, Zeitrahmen, Fristen. Framing: Befähigung, nicht Belastung.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-stake">Stakeholder</span>
+<span class="prep-text"><strong>Change Agent Team (KI-Spezialisten):</strong> Briefing für Formular-Setup und Koordinationsrolle. Eine Person aus dem Team übernimmt Reminder und Rückmeldungstracking – passt gut zur Netzwerk-Rolle, die das Team künftig einnimmt.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-change">Change Agents</span>
+<span class="prep-text"><strong>Bestehende informelle Kontakte:</strong> Sofern bereits erste Kontakte zu potenziellen Agents bestehen, werden diese über den bevorstehenden Prozess informiert – ohne Vorabzusagen zu machen.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-entscheid">Entscheid</span>
+<span class="prep-text"><strong>Tool-Wahl:</strong> Nextcloud Forms vs. E-Mail-Template. Entscheid hängt von Nextcloud-Verfügbarkeit ab – muss vor Formular-Erstellung feststehen.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-entscheid">Entscheid</span>
+<span class="prep-text"><strong>Zeitbudget kommunizieren:</strong> Ist das 10%-Zeitbudget (~4h/Woche) verhandelbar oder als Fixgrösse kommuniziert? Beeinflusst Erwartungsmanagement in der GL-Abfrage.</span>
+</div>
+<div class="prep-item">
+<span class="prep-cat cat-entscheid">Entscheid</span>
+<span class="prep-text"><strong>Deadline GL-Rückmeldung:</strong> Empfehlung: 10 Arbeitstage nach Briefing-Call. Wird vorab kommuniziert – mit Reminder nach 5 Arbeitstagen.</span>
+</div>
+</div>
+</section>
+<!-- 05 RESSOURCEN -->
+<section class="section" id="ressourcen">
+<div class="section-header">
+<span class="section-num">05</span>
+<h2 class="section-title">Benötigte Ressourcen</h2>
+</div>
+<div class="res-grid">
+<div class="res-card">
+<div class="res-icon">👥</div>
+<div class="res-title">Interne Rollen</div>
+<div class="res-item">
+<div>
+<div class="res-name">Silvan Poltera</div>
+<div style="margin-top:3px;"><span class="res-tag">Konzept</span> <span class="res-tag">GL-Komm.</span> <span class="res-tag">Auswertung</span></div>
+</div>
+<div class="res-val">~10–14h</div>
+</div>
+<div class="res-item">
+<div>
+<div class="res-name">KI-Spezialist/in (Change Agent Team)</div>
+<div style="margin-top:3px;"><span class="res-tag">Formulare</span> <span class="res-tag">Koordination</span></div>
+</div>
+<div class="res-val">~6–8h</div>
+</div>
+<div class="res-item">
+<div>
+<div class="res-name">IT Intern</div>
+<div style="margin-top:3px;"><span class="res-tag">Nextcloud</span></div>
+</div>
+<div class="res-val">~1–2h</div>
+</div>
+<div class="res-item">
+<div>
+<div class="res-name">HR (Konsultation)</div>
+<div style="margin-top:3px;"><span class="res-tag">Entlastungsregelung</span></div>
+</div>
+<div class="res-val">~1h</div>
+</div>
+</div>
+<div class="res-card">
+<div class="res-icon">🛠</div>
+<div class="res-title">Tools &amp; Compliance</div>
+<div class="res-item">
+<div>
+<div class="res-name">Nextcloud Forms</div>
+<div style="margin-top:3px;"><span class="res-tag res-tag-green">DSG-konform</span> <span class="res-tag res-tag-green">On-Premise</span></div>
+</div>
+<div class="res-val">intern</div>
+</div>
+<div class="res-item">
+<div>
+<div class="res-name">Fallback: Word/PDF</div>
+<div style="margin-top:3px;"><span class="res-tag res-tag-green">DSG-konform</span></div>
+</div>
+<div class="res-val">kein Overhead</div>
+</div>
+<div class="res-item">
+<div>
+<div class="res-name">Digitalisierungsplattform</div>
+<div style="margin-top:3px;"><span class="res-tag res-tag-blue">Dokumentation</span></div>
+</div>
+<div class="res-val">intern</div>
+</div>
+<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+<div class="res-title" style="margin-bottom:10px;">Budget</div>
+<div class="res-item">
+<div class="res-name">Vollständig intern umsetzbar</div>
+<div class="res-val" style="color:#4ade80;font-weight:600;">0 CHF</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 06 SPRINT -->
+<section class="section" id="sprint">
+<div class="section-header">
+<span class="section-num">06</span>
+<h2 class="section-title">Sprint-Ablauf (4 Wochen)</h2>
+</div>
+<div class="sprint-timeline">
+<div class="sprint-week">
+<div class="sprint-week-header">
+<div class="sprint-week-num">Woche 01</div>
+<div class="sprint-week-title">Konzept &amp; Vorbereitung</div>
+</div>
+<div class="sprint-week-body">
+<div class="sprint-task">Entlastungskonzept-Template erstellen (Silvan + Change Agent Team)</div>
+<div class="sprint-task">GL-Briefing-Unterlagen aufbereiten</div>
+<div class="sprint-task">Formular «GL-Nominierung» erstellen (Nextcloud)</div>
+<div class="sprint-task">Formular «Motivationscheck» erstellen</div>
+<div class="sprint-task">Nextcloud-Abklärung mit IT Intern</div>
+<div class="sprint-task">HR-Konsultation Entlastungsregelung</div>
+<div class="sprint-task">GL-Briefing-Call durchführen (30 min)</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-week-header">
+<div class="sprint-week-num">Woche 02</div>
+<div class="sprint-week-title">Abfrage läuft</div>
+</div>
+<div class="sprint-week-body">
+<div class="sprint-task">GL-Abfrage offiziell geöffnet</div>
+<div class="sprint-task">Deadline: Ende Woche 2 für GL-Rückmeldungen</div>
+<div class="sprint-task">Erster Reminder nach 5 Arbeitstagen</div>
+<div class="sprint-task">Rückmeldungen laufend dokumentieren</div>
+<div class="sprint-task">Fehlende Abteilungen aktiv nachfassen</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-week-header">
+<div class="sprint-week-num">Woche 03</div>
+<div class="sprint-week-title">Check &amp; Auswertung</div>
+</div>
+<div class="sprint-week-body">
+<div class="sprint-task">Motivationscheck an Nominierte versenden</div>
+<div class="sprint-task">Deadline: Ende Woche 3</div>
+<div class="sprint-task">Entlastungskonzept-Templates an Abteilungen</div>
+<div class="sprint-task">Zwischenauswertung: Lücken identifizieren</div>
+<div class="sprint-task">Change Agent Team bereitet Ergebnismatrix vor</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-week-header">
+<div class="sprint-week-num">Woche 04</div>
+<div class="sprint-week-title">Dokumentation &amp; Übergabe</div>
+</div>
+<div class="sprint-week-body">
+<div class="sprint-task">Finale Auswertung Ergebnismatrix</div>
+<div class="sprint-task">Entscheid: Wer ist offiziell dabei?</div>
+<div class="sprint-task">Lücken: Nachfassstrategie definieren</div>
+<div class="sprint-task">Ergebnisbericht erstellen</div>
+<div class="sprint-task">Übergabe an Change-Agent-Kickoff-Sprint</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 07 CHECKLISTE -->
+<section class="section" id="checkliste">
+<div class="section-header">
+<span class="section-num">07</span>
+<h2 class="section-title">Checkliste</h2>
+</div>
+<div class="checklist-actions">
+<button class="btn-ghost" onclick="resetAll()">Alle zurücksetzen</button>
+<button class="btn-ghost" onclick="checkAll()">Alle abhaken</button>
+</div>
+<!-- VORBEREITUNG -->
+<div class="checklist-group">
+<div class="checklist-group-title">Vorbereitung</div>
+<div class="checklist-item" data-id="v1" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Entlastungskonzept-Template erstellt</span>
+</div>
+<div class="checklist-item" data-id="v2" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">GL-Briefing-Unterlagen aufbereitet (Erwartungen, Fristen, Ablauf)</span>
+</div>
+<div class="checklist-item" data-id="v3" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Formular «GL-Nominierung» erstellt (Nextcloud Forms)</span>
+</div>
+<div class="checklist-item" data-id="v4" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Formular «Motivationscheck» erstellt</span>
+</div>
+<div class="checklist-item" data-id="v5" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Nextcloud-Verfügbarkeit mit IT Intern geklärt (inkl. Fallback definiert)</span>
+</div>
+<div class="checklist-item" data-id="v6" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">HR konsultiert: formale vs. informale Entlastungsregelung</span>
+</div>
+<div class="checklist-item" data-id="v7" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Zeitplan und Deadline an GL kommuniziert</span>
+</div>
+<div class="checklist-item" data-id="v8" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">GL-Briefing-Call durchgeführt (30 min)</span>
+</div>
+</div>
+<!-- SPRINT -->
+<div class="checklist-group">
+<div class="checklist-group-title">Sprint-Durchführung</div>
+<div class="checklist-item" data-id="s1" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">GL-Abfrage versendet</span>
+</div>
+<div class="checklist-item" data-id="s2" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Erster Reminder nach 5 Arbeitstagen versendet</span>
+</div>
+<div class="checklist-item" data-id="s3" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Rückmeldungen aller Abteilungen erhalten und dokumentiert</span>
+</div>
+<div class="checklist-item" data-id="s4" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Motivationscheck an Nominierte versendet</span>
+</div>
+<div class="checklist-item" data-id="s5" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Rückmeldungen Motivationscheck dokumentiert und ausgewertet</span>
+</div>
+<div class="checklist-item" data-id="s6" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Entlastungskonzept-Templates an Abteilungen versendet</span>
+</div>
+<div class="checklist-item" data-id="s7" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Rückmeldungen Entlastungskonzept dokumentiert</span>
+</div>
+</div>
+<!-- ABSCHLUSS -->
+<div class="checklist-group">
+<div class="checklist-group-title">Abschluss</div>
+<div class="checklist-item" data-id="a1" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Ergebnismatrix finalisiert: Person, Abteilung, Kapazität, Motivation, Entlastung</span>
+</div>
+<div class="checklist-item" data-id="a2" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Offene Lücken (Abteilungen ohne Kandidat/in) identifiziert und Nachfassstrategie definiert</span>
+</div>
+<div class="checklist-item" data-id="a3" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Entscheid über finale Change-Agent-Liste dokumentiert</span>
+</div>
+<div class="checklist-item" data-id="a4" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Ergebnisbericht erstellt</span>
+</div>
+<div class="checklist-item" data-id="a5" onclick="toggle(this)">
+<div class="custom-cb"></div>
+<span class="checklist-text">Übergabe an Change-Agent-Kickoff-Sprint vorbereitet (Einladungsliste, Profile, Entlastungsstatus)</span>
+</div>
+</div>
+</section>
+<!-- 08 RISIKEN -->
+<section class="section" id="risiken">
+<div class="section-header">
+<span class="section-num">08</span>
+<h2 class="section-title">Risiken &amp; Abhängigkeiten</h2>
+</div>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-type" style="color:#60a5fa;">🔧 Technisch</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>Nextcloud Forms möglicherweise nicht für alle vertraut → Kurze Anleitung beifügen oder Fallback auf E-Mail-Template aktivieren</span>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-type" style="color:#fb923c;">🏛 Organisatorisch</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>10%-Zeitbudget wird als Belastung eingeordnet → Entlastungskonzept ist die entscheidende Antwort; ohne dieses fehlt dem Briefing Überzeugungskraft</span>
+</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>Nominierungen könnten pro-forma ausfallen → Framing entscheidend: Befähigung, nicht Mehrbelastung. Klares GL-Mandat nötig</span>
+</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>Motivationscheck wird als «Test» wahrgenommen → Explizit kommunizieren: Freiwilligkeit und Passung stehen im Vordergrund, kein Selektionsverfahren</span>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-type" style="color:var(--red);">📊 Ressourcen</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>Geringe Rücklaufquote ohne klare Deadline und Reminder → Nachfassstrategie von Anfang an einplanen (automatisch in Woche 2)</span>
+</div>
+<div class="risk-item">
+<span class="risk-icon">⚠</span>
+<span>Abteilungen ohne geeignete Person → Lücken dokumentieren, nicht kaschieren; in Kickoff-Sprint berücksichtigen</span>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-type" style="color:#c084fc;">🔗 Abhängigkeiten</div>
+<div class="risk-item">
+<span class="risk-icon">→</span>
+<span>Harte Voraussetzung für: Change-Agent-Kickoff, Agent-Ausbildung, alle operativen Netzwerkmassnahmen</span>
+</div>
+<div class="risk-item">
+<span class="risk-icon">→</span>
+<span>HR-Abklärung zur Entlastungsregelung muss parallel in Woche 1 starten – nicht sequenziell</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 09 ERFOLGSMESSUNG -->
+<section class="section" id="erfolg">
+<div class="section-header">
+<span class="section-num">09</span>
+<h2 class="section-title">Erfolgsmessung</h2>
+</div>
+<p style="margin-bottom:20px;">Am Ende des Sprints ist klar, ob das Fundament des Netzwerks trägt. Konkrete Indikatoren:</p>
+<div class="kpi-grid">
+<div class="kpi-card">
+<div class="kpi-val">100%</div>
+<div>
+<div class="kpi-label">GL-Rücklaufquote</div>
+<div class="kpi-desc">Alle Abteilungen haben eine Nominierung eingereicht bis Ende Sprint</div>
+</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-val">1+</div>
+<div>
+<div class="kpi-label">Nominierung pro Abteilung</div>
+<div class="kpi-desc">Mindestens eine geeignete Person mit dokumentiertem Zeitbudget pro Bereich</div>
+</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-val">80%</div>
+<div>
+<div class="kpi-label">Motivationscheck positiv</div>
+<div class="kpi-desc">Mindestens 80% der nominierten Personen zeigen klare Bereitschaft</div>
+</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-val">80%</div>
+<div>
+<div class="kpi-label">Entlastung dokumentiert</div>
+<div class="kpi-desc">Für mind. 80% der Abteilungen liegt eine klare Entlastungsregelung vor</div>
+</div>
+</div>
+</div>
+<div class="info-box" style="margin-top:20px;">
+<span class="info-box-icon">✓</span>
+<span><strong>Netzwerk-Startbereitschaft:</strong> Am Ende des Sprints liegt eine vollständige, abgestimmte Kandidatenliste vor – klar, wer dabei ist, unter welchen Konditionen und wo noch Lücken bestehen. Diese Liste ist der direkte Input für den Kickoff-Sprint.</span>
+</div>
+</section>
+</div>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 20 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 20;
+  var DONE_CLS = 'done';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+  const STORAGE_KEY = 'scnat_checklist_ressourcenabklaerung';
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function renderChecklist() {
+    const state = getState();
+    const items = document.querySelectorAll('.checklist-item');
+    items.forEach(item => {
+      const id = item.dataset.id;
+      if (state[id]) item.classList.add('checked');
+      else item.classList.remove('checked');
+    });
+    updateProgress();
+  }
+
+  function toggle(el) {
+    const id = el.dataset.id;
+    const state = getState();
+    state[id] = !el.classList.contains('checked');
+    saveState(state);
+    renderChecklist();
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.checklist-item');
+    const checked = document.querySelectorAll('.checklist-item.checked');
+    const total = items.length;
+    const done = checked.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const bar = document.getElementById('progress-bar');
+    const count = document.getElementById('progress-count');
+    if (bar) bar.style.width = pct + '%';
+    if (count) count.textContent = done + ' / ' + total + ' erledigt';
+  }
+
+  function resetAll() {
+    localStorage.removeItem(STORAGE_KEY);
+    renderChecklist();
+  }
+
+  function checkAll() {
+    const state = {};
+    document.querySelectorAll('.checklist-item').forEach(el => { state[el.dataset.id] = true; });
+    saveState(state);
+    renderChecklist();
+  }
+
+  // Active nav link on scroll
+  function updateNav() {
+    const sections = document.querySelectorAll('.section');
+    const links = document.querySelectorAll('.sidenav a.nav-link');
+    let current = '';
+    sections.forEach(section => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= 80) current = section.id;
+    });
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+
+  renderChecklist();
+  updateNav();
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Lead Applikationslandschaft – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0C0E10;
+      --bg-card: #12161A;
+      --border: #1E2530;
+      --primary: #EA515A;
+      --anthrazit: #5A616B;
+      --muted: #6B7280;
+      --text: #E5E7EB;
+      --text-light: #F9FAFB;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-width: 236px;
+      --header-height: 72px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(12,14,16,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-left { display: flex; flex-direction: column; gap: 3px; }
+
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .header-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid #2A3340;
+      white-space: nowrap;
+    }
+
+    .badge-primary {
+      background: rgba(234, 81, 90, 0.12);
+      color: var(--primary);
+      border-color: rgba(234, 81, 90, 0.3);
+    }
+
+    .badge-warn {
+      background: rgba(234, 177, 81, 0.1);
+      color: #EAB151;
+      border-color: rgba(234, 177, 81, 0.25);
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: calc(100vh - var(--header-height)); }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      padding: 28px 0 24px;
+      border-right: 1px solid var(--border);
+    }
+
+    .sidebar-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0 20px;
+      margin-bottom: 10px;
+    }
+
+    .nav-list { list-style: none; }
+
+    .nav-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 7px 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      border-left: 2px solid transparent;
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+
+    .nav-list a:hover {
+      color: var(--text);
+      border-left-color: #2A3340;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .nav-list a.active {
+      color: var(--primary);
+      border-left-color: var(--primary);
+      background: rgba(234, 81, 90, 0.05);
+    }
+
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--anthrazit);
+      flex-shrink: 0;
+    }
+
+    .nav-list a.active .nav-num { color: rgba(234,81,90,0.7); }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 20px;
+    }
+
+    .sidebar-meta {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-meta-item {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--anthrazit);
+      line-height: 1.4;
+    }
+
+    .sidebar-meta-item span {
+      color: var(--muted);
+    }
+
+    /* ── Main Content ── */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 52px 52px 80px;
+      max-width: 860px;
+    }
+
+    /* ── Sections ── */
+    section {
+      margin-bottom: 72px;
+      scroll-margin-top: calc(var(--header-height) + 28px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 600;
+      background: rgba(234, 81, 90, 0.1);
+      border: 1px solid rgba(234, 81, 90, 0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin: 24px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: var(--font-mono);
+    }
+
+    p { color: var(--text); margin-bottom: 12px; line-height: 1.72; }
+    p:last-child { margin-bottom: 0; }
+
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 6px; color: var(--text); line-height: 1.6; }
+    li:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text-light); font-weight: 600; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+    /* ── Arbeitslinie Cards ── */
+    .arbeitslinie {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 10px;
+    }
+
+    .arbeitslinie-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .arbeitslinie strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .arbeitslinie p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* ── Scope Grid ── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .scope-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .scope-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .scope-label.yes { color: #5CB88A; }
+    .scope-label.no  { color: #E88B6A; }
+
+    .scope-card ul { padding-left: 16px; margin: 0; }
+    .scope-card li { font-size: 13px; color: var(--text); margin-bottom: 5px; }
+
+    /* ── Highlight Box ── */
+    .highlight-box {
+      background: rgba(234, 81, 90, 0.05);
+      border: 1px solid rgba(234, 81, 90, 0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 20px;
+    }
+
+    .highlight-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .highlight-box p { font-size: 13px; color: var(--text); }
+
+    /* ── Option Cards ── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .option-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .option-card.recommended { border-color: rgba(234, 81, 90, 0.4); }
+
+    .rec-badge {
+      position: absolute;
+      top: -1px;
+      right: 14px;
+      background: var(--primary);
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 0 0 4px 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .opt-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .opt-label.rec { color: var(--primary); }
+
+    .opt-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+
+    .opt-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .pro-con { display: flex; flex-direction: column; gap: 6px; }
+
+    .pc-item {
+      font-size: 12px;
+      display: flex;
+      gap: 7px;
+      align-items: flex-start;
+      line-height: 1.4;
+    }
+
+    .pc-icon { flex-shrink: 0; font-weight: 700; font-family: var(--font-mono); font-size: 11px; }
+    .pc-icon.pro { color: #5CB88A; }
+    .pc-icon.con { color: #E88B6A; }
+    .pc-text.pro { color: #8FCFAF; }
+    .pc-text.con { color: #D4907A; }
+
+    /* ── Sprint Timeline ── */
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .sprint-week {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .week-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .week-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(234, 81, 90, 0.1);
+      border: 1px solid rgba(234, 81, 90, 0.2);
+      padding: 2px 7px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .week-title { font-size: 12px; font-weight: 600; color: var(--text-light); line-height: 1.3; }
+
+    .sprint-items { list-style: none; padding: 0; margin: 0; }
+
+    .sprint-items li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(30, 37, 48, 0.6);
+      line-height: 1.4;
+      display: flex;
+      gap: 6px;
+    }
+
+    .sprint-items li:last-child { border-bottom: none; }
+
+    .sprint-items li::before {
+      content: '→';
+      color: var(--anthrazit);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Checklist ── */
+    .checklist-wrap { display: flex; flex-direction: column; gap: 16px; }
+
+    .cl-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .cl-group-header {
+      padding: 11px 20px;
+      background: rgba(30, 37, 48, 0.5);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cl-progress { font-family: var(--font-mono); font-size: 11px; color: var(--primary); }
+
+    .cl-items { padding: 6px 0; }
+
+    .cl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      user-select: none;
+    }
+
+    .cl-item:hover { background: rgba(255, 255, 255, 0.018); }
+
+    .cl-item input[type="checkbox"] { display: none; }
+
+    .cl-box {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--anthrazit);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .cl-item.checked .cl-box {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .cl-item.checked .cl-box::after {
+      content: '';
+      width: 8px;
+      height: 5px;
+      border-left: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(-45deg) translateY(-1px);
+      display: block;
+    }
+
+    .cl-item.checked .cl-text {
+      color: var(--anthrazit);
+      text-decoration: line-through;
+    }
+
+    .cl-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+    /* ── Risk Grid ── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .risk-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .risk-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .risk-items { list-style: none; padding: 0; margin: 0; }
+
+    .risk-items li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(30, 37, 48, 0.5);
+      line-height: 1.5;
+      display: flex;
+      gap: 8px;
+    }
+
+    .risk-items li:last-child { border-bottom: none; }
+
+    .risk-items li::before {
+      content: '!';
+      color: #E8B86A;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── KPI Grid ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .kpi-q {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .kpi-m {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      line-height: 1.5;
+    }
+
+    /* ── Resource Table ── */
+    .res-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .res-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .res-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid rgba(30, 37, 48, 0.4);
+      line-height: 1.4;
+      vertical-align: top;
+    }
+
+    .res-table tr:last-child td { border-bottom: none; }
+    .res-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: var(--sidebar-width);
+    }
+
+    .footer-text { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+    .footer-logo { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--primary); }
+
+    /* ── Print ── */
+    @media print {
+      .sidebar, .site-header { display: none; }
+      .layout { display: block; }
+      .main-content { padding: 20px; max-width: 100%; }
+      footer { margin-left: 0; }
+      body { background: white; color: #111; }
+      :root {
+        --bg: white; --bg-card: #f5f5f5; --border: #ddd;
+        --text: #222; --text-light: #000; --muted: #555;
+        --primary: #c0373f; --anthrazit: #666;
+      }
+      section { page-break-inside: avoid; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 900px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .sprint-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { padding: 28px 20px 60px; max-width: 100%; }
+      .scope-grid, .risk-grid, .kpi-grid { grid-template-columns: 1fr; }
+      footer { margin-left: 0; flex-direction: column; gap: 6px; padding: 16px 20px; }
+      .site-header { padding: 0 16px; }
+      .header-badges { display: none; }
+    }
+
+    @media (max-width: 500px) {
+      .sprint-grid { grid-template-columns: 1fr; }
+    }
+  
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a on" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header class="site-header">
+<div class="header-left">
+<span class="header-eyebrow">SCNAT Digitalisierung  ·  Massnahmen-Briefing</span>
+<span class="header-title">Lead Applikationslandschaft</span>
+</div>
+<div class="header-badges">
+<span class="badge">Infrastruktur &amp; IT</span>
+<span class="badge">Beschaffung</span>
+<span class="badge badge-primary">Wirkung: Hoch</span>
+<span class="badge badge-warn">Aufwand: Mittel–Hoch</span>
+</div>
+</header>
+<main class="main-content">
+<!-- ── 01 EINLEITUNG ── -->
+<section id="einleitung">
+<div class="section-header">
+<span class="section-num">01</span>
+<h2>Einleitung</h2>
+</div>
+<p>SCNAT betreibt eine historisch gewachsene Applikationslandschaft. Im Zentrum stehen zwei betriebskritische Systeme: das <strong>CMS (Portal)</strong> als zentrale Informations- und Publikationsplattform sowie die <strong>SCNAT-DB</strong> als Backend für Stammdaten, Listenexporte und administrative Prozesse. Beide sind unverzichtbar für den laufenden Betrieb – und genau deshalb ist es problematisch, dass Betriebsverantwortlichkeiten unklar sind, Betriebskonzepte zwar existieren, aber nicht aktiv eingesetzt werden, und die Weiterentwicklung beider Systeme über zwei parallele Kanäle läuft, ohne klare Triage-Logik.</p>
+<p>Das führt in der Praxis zu konkreten Reibungsverlusten: Anforderungen aus den Fachstellen landen ungefiltert und in unterschiedlichem Format bei der IT. Es fehlt ein definierter Prozess, was danach passiert – wann wird priorisiert, wann umgesetzt, wann abgelehnt, wer kommuniziert das zurück? Beschaffungsentscheide für Erweiterungen laufen ohne gemeinsamen Rahmen. Das bestehende Betriebskonzept ist vorhanden, wird aber nicht als lebendiges Steuerungsinstrument genutzt.</p>
+<p>Diese Massnahme schafft hier Ordnung: klare Betriebsverantwortlichkeiten, aktualisierte Betriebskonzepte für CMS und DB, ein einheitlicher Anforderungsprozess mit definierten Rollen – und eine klare Antwort auf die Triage-Frage.</p>
+</section>
+<!-- ── 02 BESCHREIBUNG ── -->
+<section id="beschreibung">
+<div class="section-header">
+<span class="section-num">02</span>
+<h2>Beschreibung</h2>
+</div>
+<p>Die Massnahme bearbeitet drei zusammenhängende Arbeitslinien, die sich gegenseitig bedingen:</p>
+<div class="arbeitslinie">
+<div class="arbeitslinie-label">Arbeitslinie 1</div>
+<strong>Betriebskonzept CMS und DB</strong>
+<p>Das bestehende Konzept wird gesichtet, auf Aktualität geprüft und mit fehlenden Teilen ergänzt. Was nicht genutzt wird, wird auf Ursachen untersucht. Ziel: ein zugängliches, genutztes Betriebsdokument für beide Systeme.</p>
+</div>
+<div class="arbeitslinie">
+<div class="arbeitslinie-label">Arbeitslinie 2</div>
+<strong>Change- und Feature-Request-Prozess</strong>
+<p>Ein einheitlicher Prozess wird definiert: Eingangskanal, Kategorisierung, Triage, Priorisierung, Übergabe an IT, Feedback-Schlaufe. Die parallele Nutzung von Bugtracker und Jira Service Desk wird bereinigt. Rollenzuweisungen werden dokumentiert.</p>
+</div>
+<div class="arbeitslinie">
+<div class="arbeitslinie-label">Arbeitslinie 3</div>
+<strong>Einbettung in Beschaffungsprozess</strong>
+<p>Für Erweiterungen von CMS und DB wird ein einfaches Rahmenwerk skizziert: wann Direktkauf, wann Offerten-Einholung, wann formelle Ausschreibung – angepasst an SCNAT-Grösse und geltende Schwellenwerte.</p>
+</div>
+<div class="scope-grid">
+<div class="scope-card">
+<div class="scope-label yes">✓ Scope – gehört dazu</div>
+<ul>
+<li>Betriebskonzept CMS (Portal): Review, Lücken schliessen</li>
+<li>Betriebskonzept SCNAT-DB: Zugriffsrechte, Exportprozesse</li>
+<li>Anforderungsprozess: Eingang bis IT-Übergabe</li>
+<li>Tool-Konsolidierung: Bugtracker vs. Jira Service Desk</li>
+<li>Beschaffungsrahmen für CMS/DB-Erweiterungen</li>
+<li>Rollenbeschreibungen (Triage, IT, Fachstellen)</li>
+</ul>
+</div>
+<div class="scope-card">
+<div class="scope-label no">✗ Scope – gehört nicht dazu</div>
+<ul>
+<li>Umsetzung konkreter Change Requests</li>
+<li>Ablösung oder Neukonzeption von CMS oder DB</li>
+<li>Applikationen ausserhalb CMS und DB</li>
+<li>Xojo-Konsolidierungsprojekt</li>
+<li>Vollständiges ALM-Framework (→ Folgemassnahme)</li>
+</ul>
+</div>
+</div>
+<div class="highlight-box">
+<div class="highlight-title">Strategische Einbettung</div>
+<p>Diese Massnahme ist Grundvoraussetzung für nahezu alle weiteren Digitalisierungsmassnahmen auf technischer Infrastruktur. Ohne klare Betriebsverantwortung und Anforderungsprozesse läuft jede Folgeinvestition ins Leere. Mit Blick auf die Infrastruktur-Modernisierung nach Abschluss des Xojo-Projekts 2026 schafft diese Massnahme genau die Grundordnung, die dann gebraucht wird.</p>
+</div>
+</section>
+<!-- ── 03 OPTIONEN ── -->
+<section id="optionen">
+<div class="section-header">
+<span class="section-num">03</span>
+<h2>Umsetzungsideen</h2>
+</div>
+<div class="options-grid">
+<div class="option-card recommended">
+<div class="rec-badge">Empfehlung</div>
+<div class="opt-label rec">Option A</div>
+<div class="opt-title">Vollständig intern</div>
+<div class="opt-body">Silvan leitet Workshop-Reihe mit IT und 2–3 Change Agents (inkl. KI-Spezialisten). Ergebnis: dokumentierter Prozess mit Rollenzuweisungen, Jira als einziger fachlicher Kanal, Betriebskonzepte CMS und DB vollständig aktualisiert. Jira-Konfiguration durch IT Intern.</div>
+<div class="pro-con">
+<div class="pc-item">
+<span class="pc-icon pro">↑</span>
+<span class="pc-text pro">Kein Zusatzbudget, keine Abhängigkeit von Dritten</span>
+</div>
+<div class="pc-item">
+<span class="pc-icon pro">↑</span>
+<span class="pc-text pro">KI-Team bringt Prozess- und Tool-Kompetenz intern ein</span>
+</div>
+<div class="pc-item">
+<span class="pc-icon con">↓</span>
+<span class="pc-text con">Braucht formales GL-Mandat für Silvans Triage-Rolle</span>
+</div>
+</div>
+</div>
+<div class="option-card">
+<div class="opt-label">Option B</div>
+<div class="opt-title">Intern + externe Moderation</div>
+<div class="opt-body">Wie Option A, aber mit externer Moderationsperson für die Workshop-Reihe (1–2 Tage) oder externer Jira-Konfigurationsunterstützung, falls IT-Kapazität nicht reicht. Nur in Betracht ziehen, wenn IT-Verfügbarkeit ein echtes Bottleneck ist.</div>
+<div class="pro-con">
+<div class="pc-item">
+<span class="pc-icon pro">↑</span>
+<span class="pc-text pro">Neutraler Dritter kann Workshops bei Konfliktstellen entlasten</span>
+</div>
+<div class="pc-item">
+<span class="pc-icon con">↓</span>
+<span class="pc-text con">Zusatzkosten CHF 3'000–6'000; nur wenn wirklich nötig</span>
+</div>
+</div>
+</div>
+<div class="option-card">
+<div class="opt-label">Option C</div>
+<div class="opt-title">Volles ALM-Framework</div>
+<div class="opt-body">Formaler Application Lifecycle Management Prozess für die gesamte Applikationslandschaft inkl. Governance-Framework und Beschaffungsreglement. Mehrere Sprints, breite Stakeholder-Abstimmung – als Folgemassnahme nach Abschluss von A.</div>
+<div class="pro-con">
+<div class="pc-item">
+<span class="pc-icon pro">↑</span>
+<span class="pc-text pro">Skalierbar und zukunftssicher für post-Xojo-Phase</span>
+</div>
+<div class="pc-item">
+<span class="pc-icon con">↓</span>
+<span class="pc-text con">Zu komplex für einen Sprint; jetzt nicht der richtige Zeitpunkt</span>
+</div>
+</div>
+</div>
+</div>
+<div class="highlight-box">
+<div class="highlight-title">Zur Triage-Frage: Klare Empfehlung</div>
+<p>Silvan sollte die Triage definitiv übernehmen. Er hat die strategische Übersicht und den Fachstellen-Kontakt, den IT nicht hat. IT bekommt dadurch nur noch aufbereitete, strukturierte Anforderungen – das ist Entlastung, keine Kontrolle. IT behält die technische Entscheidungshoheit vollständig. Der Framing-Satz für die Kommunikation mit IT: <strong>«Anforderungen kommen IT-ready an, bevor sie euch erreichen.»</strong> Diese Rollenklärung muss gemeinsam mit der IT-Führung vereinbart werden, nicht einfach dekretiert.</p>
+</div>
+<div class="highlight-box" style="margin-top:12px; background: rgba(90,97,107,0.08); border-color: rgba(90,97,107,0.25);">
+<div class="highlight-title" style="color: var(--muted);">Externe Unterstützung</div>
+<p>Für diese Massnahme ist externe Unterstützung <strong>keine Voraussetzung</strong>. Die Prozessdefinition und das Betriebskonzept-Review können intern geführt werden. Externe Beratung kommt nur in Frage, wenn die IT-Kapazität für die Jira-Konfiguration nicht reicht oder ein neutraler Moderator für die Workshop-Reihe sinnvoll ist.</p>
+</div>
+</section>
+<!-- ── 04 VORBEREITUNG ── -->
+<section id="vorbereitung">
+<div class="section-header">
+<span class="section-num">04</span>
+<h2>Vorbereitung</h2>
+</div>
+<div class="card">
+<h3 style="margin-top:0">Abklärungen</h3>
+<ul>
+<li>Wo liegt das bestehende Betriebskonzept für CMS und DB? Wer hat es zuletzt bearbeitet und wann?</li>
+<li>Wie ist der Jira Service Desk heute konfiguriert? Kategorien, Workflows, Zugriffsrechte?</li>
+<li>Was wird im Bugtracker erfasst? Gibt es klare Überschneidungen mit Jira?</li>
+<li>Gibt es interne Beschaffungsrichtlinien oder Schwellenwerte für IT-Lösungen bei SCNAT?</li>
+<li>Liegen die Ergebnisse der SCNAT-DB-Analyse vor und sind auswertbar?</li>
+</ul>
+<div class="divider"></div>
+<h3 style="margin-top:0">Stakeholder</h3>
+<ul>
+<li><strong>IT-Lead:</strong> Frühzeitig als Mitgestalter einbinden, nicht als Betroffenen. Formulierung: «Wir wollen IT entlasten und Anforderungen IT-ready aufbereiten.»</li>
+<li><strong>IT Intern:</strong> Operative Koordination IT-seitig, zuständig für Jira-Konfiguration</li>
+<li><strong>KI-Team (David, Anina, Arber):</strong> Als Change Agents integriert – bringen Tool- und Prozess-Kompetenz in Workshops ein, unterstützen im Pilotlauf</li>
+<li><strong>2–3 Fachstellen-Vertreter:</strong> Idealerweise bestehende Change Agents; repräsentieren die Anforderungsseite</li>
+<li><strong>Geschäftsleitung:</strong> Kurzer Entscheid für formales Mandat der Triage-Rolle</li>
+</ul>
+<div class="divider"></div>
+<h3 style="margin-top:0">Change Agent Briefing &amp; KI-Team</h3>
+<ul>
+<li>Change Agents müssen den neuen Prozess verstehen: Wo melde ich Anforderungen? In welchem Format? Was passiert danach?</li>
+<li>Die <strong>KI-Spezialisten (David Jezdimirovic, Anina Steinlin, Arber Aziri)</strong> sind als vollwertige Change Agents im Team integriert – sie nehmen an den Change Agent Meetings teil, bringen Tool- und Prozess-Kompetenz ein und unterstützen Fachstellen aktiv bei der Anforderungsformulierung</li>
+<li>Im Pilotlauf (Woche 3) übernehmen Change Agents inkl. KI-Team die Rolle der ersten Testnutzer – echte Anforderungen durch den neuen Prozess schicken</li>
+<li>Nach dem Rollout sind sie die erste Anlaufstelle in ihren Abteilungen und Multiplikatoren für den neuen Eingangskanal</li>
+</ul>
+<div class="divider"></div>
+<h3 style="margin-top:0">Vorab-Entscheidungen</h3>
+<ul>
+<li><strong>Mandat Triage-Rolle:</strong> Wer entscheidet formal? → Geschäftsleitungsentscheid</li>
+<li><strong>Single Point of Entry:</strong> Jira Service Desk als einziger fachlicher Kanal – bestätigen</li>
+<li><strong>Bugtracker-Zukunft:</strong> Weiterführen für technische Bugs oder vollständig in Jira konsolidieren?</li>
+<li><strong>Externer Berater:</strong> Wer gibt Beauftragung frei?</li>
+</ul>
+</div>
+</section>
+<!-- ── 05 RESSOURCEN ── -->
+<section id="ressourcen">
+<div class="section-header">
+<span class="section-num">05</span>
+<h2>Ressourcen</h2>
+</div>
+<h3 style="margin-top:0">Intern</h3>
+<div class="card">
+<table class="res-table">
+<thead>
+<tr>
+<th>Rolle</th>
+<th>Person</th>
+<th>Aufwand</th>
+<th>Aufgaben</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verantwortlicher Digitalisierung</td>
+<td>Silvan</td>
+<td>~40% Sprint</td>
+<td>Konzeption, Stakeholder-Abstimmung, Entscheide, Triage-Definition, Workshop-Leitung</td>
+</tr>
+<tr>
+<td>IT Intern</td>
+<td>IT Abteilung</td>
+<td>8–12 Stunden</td>
+<td>2 Workshops, Jira-Konfiguration, Prozess-Review, formale Bestätigung</td>
+</tr>
+<tr>
+<td>Change Agents (2–3)</td>
+<td>Aus Netzwerk</td>
+<td>~2h je Person</td>
+<td>Briefing + Pilotlauf; repräsentieren Fachstellen-Anforderungsseite</td>
+</tr>
+<tr>
+<td>KI-Spezialisten (als Change Agents)</td>
+<td>David, Anina, Arber</td>
+<td>~3h gesamt</td>
+<td>Pilotlauf, Anforderungsformulierung unterstützen, Tool-Input einbringen</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Externe Unterstützung</h3>
+<div class="card" style="border-color: rgba(90,97,107,0.3);">
+<p style="font-size:13px; color: var(--muted); margin-bottom: 12px;"><strong style="color:var(--text)">Nur bei Bedarf</strong> – diese Massnahme ist intern umsetzbar. Externe Unterstützung kommt in Frage, wenn:</p>
+<ul>
+<li>IT-Kapazität für Jira-Konfiguration nicht reicht → externe Jira-Konfigurationshilfe (1–2 Tage)</li>
+<li>Workshops bei Konfliktstellen einen neutralen Moderator brauchen (1 Tag)</li>
+</ul>
+<p style="font-size:12px; color: var(--muted); margin-top:10px; margin-bottom:0;">Budget wenn nötig: CHF 3'000–6'000. Bevorzugt Schweizer Anbieter, Direktauftrag.</p>
+</div>
+<h3>Tools</h3>
+<div class="card">
+<ul>
+<li><strong>Jira Service Desk:</strong> Bereits im Einsatz, Konfigurationsanpassung nötig. Jira Cloud läuft auf AWS EU-Rechenzentren – für On-Premise-First wäre Jira Data Center die bevorzugte Variante. Mit IT abstimmen.</li>
+<li><strong>Betriebskonzept-Dokumentation:</strong> Bevorzugt auf bestehender Plattform (digitalisierung.scnat.ch) oder On-Premise. DSG-konform, kein Neukauf notwendig.</li>
+</ul>
+</div>
+<h3>Budget (Schätzung)</h3>
+<div class="card">
+<table class="res-table">
+<thead>
+<tr><th>Position</th><th>Schätzung</th><th>Anmerkung</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Interne Ressourcen</td>
+<td>CHF 0</td>
+<td>Silvan, IT Intern, Change Agents, KI-Team</td>
+</tr>
+<tr>
+<td>Externe Moderation / Jira-Support (nur bei Bedarf)</td>
+<td>CHF 0–6'000</td>
+<td>1–2 Tage, Direktauftrag CH-Anbieter</td>
+</tr>
+<tr>
+<td>Dokumentationstool (falls nötig)</td>
+<td>CHF 0–2'000</td>
+<td>Nur wenn neues Tool benötigt</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>CHF 0–8'000</strong></td>
+<td>Je nach Bedarf externer Unterstützung</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- ── 06 SPRINT ── -->
+<section id="sprint">
+<div class="section-header">
+<span class="section-num">06</span>
+<h2>Sprint-Ablauf</h2>
+</div>
+<div class="sprint-grid">
+<div class="sprint-week">
+<div class="week-header">
+<span class="week-num">W1</span>
+<span class="week-title">Kick-off &amp; Bestandsaufnahme</span>
+</div>
+<ul class="sprint-items">
+<li>Kick-off: Silvan, IT Intern, KI-Team</li>
+<li>Review Betriebskonzept CMS</li>
+<li>Review Betriebskonzept DB</li>
+<li>Audit Jira Service Desk</li>
+<li>Audit Bugtracker (Überschneidungen)</li>
+<li>Change Agents inkl. KI-Team briefen</li>
+</ul>
+</div>
+<div class="sprint-week">
+<div class="week-header">
+<span class="week-num">W2</span>
+<span class="week-title">Prozess­definition</span>
+</div>
+<ul class="sprint-items">
+<li>Workshop: Anforderungsprozess Ist/Soll</li>
+<li>Triage-Logik definieren</li>
+<li>Rollenbeschreibungen erstellen</li>
+<li>Ticket-Templates definieren</li>
+<li>Beschaffungsrahmen skizzieren</li>
+</ul>
+</div>
+<div class="sprint-week">
+<div class="week-header">
+<span class="week-num">W3</span>
+<span class="week-title">Konfiguration &amp; Pilot</span>
+</div>
+<ul class="sprint-items">
+<li>Jira Service Desk konfigurieren</li>
+<li>Betriebskonzept CMS finalisieren</li>
+<li>Betriebskonzept DB finalisieren</li>
+<li>Pilotlauf mit Change Agents</li>
+<li>Feedback → Anpassungen</li>
+</ul>
+</div>
+<div class="sprint-week">
+<div class="week-header">
+<span class="week-num">W4</span>
+<span class="week-title">Review &amp; Übergabe</span>
+</div>
+<ul class="sprint-items">
+<li>Sprint-Retrospektive</li>
+<li>Dokumentation finalisieren</li>
+<li>IT bestätigt Prozess formal</li>
+<li>Kommunikation an alle MA</li>
+<li>Change Agents aktivieren</li>
+<li>Nächste Schritte definieren</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- ── 07 CHECKLISTE ── -->
+<section id="checkliste">
+<div class="section-header">
+<span class="section-num">07</span>
+<h2>Checkliste</h2>
+</div>
+<div class="checklist-wrap">
+<div class="cl-group" id="cl-group-vorbereitung">
+<div class="cl-group-header">
+<span>Vorbereitung</span>
+<span class="cl-progress" id="cl-prog-vorbereitung">0 / 10</span>
+</div>
+<div class="cl-items" id="cl-items-vorbereitung"></div>
+</div>
+<div class="cl-group" id="cl-group-sprint">
+<div class="cl-group-header">
+<span>Sprint-Durchführung</span>
+<span class="cl-progress" id="cl-prog-sprint">0 / 15</span>
+</div>
+<div class="cl-items" id="cl-items-sprint"></div>
+</div>
+<div class="cl-group" id="cl-group-abschluss">
+<div class="cl-group-header">
+<span>Abschluss</span>
+<span class="cl-progress" id="cl-prog-abschluss">0 / 6</span>
+</div>
+<div class="cl-items" id="cl-items-abschluss"></div>
+</div>
+</div>
+</section>
+<!-- ── 08 RISIKEN ── -->
+<section id="risiken">
+<div class="section-header">
+<span class="section-num">08</span>
+<h2>Risiken &amp; Abhängigkeiten</h2>
+</div>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-type">Technische Risiken</div>
+<ul class="risk-items">
+<li>Betriebskonzept könnte so lückenhaft sein, dass ein Sprint nicht für vollständige Überarbeitung reicht → Scope eng auf CMS und DB begrenzen</li>
+<li>Jira-Konfiguration erfordert IT-Kapazität → Timing mit Xojo-Projektphasen abstimmen</li>
+<li>DB-Review könnte technische Überraschungen offenbaren, die ausserhalb des Sprint-Scopes liegen</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-type">IT-politische Rahmenbedingungen</div>
+<ul class="risk-items">
+<li>Prozessveränderung als Entlastung formulieren: «Anforderungen kommen IT-ready an» – nicht als neue Hierarchieebene</li>
+<li>Bereinigung Bugtracker/Jira ist sachlicher Werkzeug-Entscheid, kein Urteil über bestehende Praktiken</li>
+<li>Triage-Rolle klar als fachliche Vorprüfung definieren; IT behält technische Entscheidungshoheit vollständig</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-type">Ressourcenrisiken</div>
+<ul class="risk-items">
+<li>IT-Kapazität durch Xojo stark gebunden → Sprint-Start-Timing mit IT-Führung abstimmen; Jira-Konfiguration früh einplanen</li>
+<li>Ohne formales GL-Mandat bleibt Silvans Triage-Rolle unklar und angreifbar</li>
+<li>KI-Team-Einbindung als Change Agents braucht klares gemeinsames Verständnis der Rolle – kurzes Onboarding einplanen</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-type">Abhängigkeiten</div>
+<ul class="risk-items">
+<li><strong>SCNAT-DB-Analyse:</strong> Ergebnisse sollten vor Betriebskonzept-DB-Review vorliegen</li>
+<li><strong>Infrastruktur-Modernisierung (post-Xojo 2026):</strong> Baut direkt auf diesen Betriebskonzepten und Prozessen auf</li>
+<li><strong>Change Agent Netzwerk:</strong> Muss operativ sein für Pilotlauf und Kommunikation</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- ── 09 ERFOLGSMESSUNG ── -->
+<section id="erfolg">
+<div class="section-header">
+<span class="section-num">09</span>
+<h2>Erfolgsmessung</h2>
+</div>
+<div class="kpi-grid">
+<div class="kpi-card">
+<div class="kpi-q">Gibt es ein aktuelles Betriebskonzept für CMS und DB?</div>
+<div class="kpi-m">→ Ja/Nein — Ende Sprint W4</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-q">Gibt es einen dokumentierten Anforderungsprozess mit Rollenzuweisungen?</div>
+<div class="kpi-m">→ Ja/Nein — Ende Sprint W4</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-q">Wird Jira Service Desk als einziger fachlicher Eingangskanal genutzt?</div>
+<div class="kpi-m">→ Messung: Eingänge pro Kanal<br/>4 Wochen nach Rollout<br/>Ziel: 100% fachliche Anforderungen via Jira</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-q">Wie lange dauert Anforderungseingang bis IT-Übergabe?</div>
+<div class="kpi-m">→ Baseline jetzt messen<br/>Ziel: &lt; 5 Arbeitstage (Standard)<br/>Ziel: &lt; 2 Arbeitstage (eskaliert)</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-q">Kennen Fachstellen den richtigen Eingangskanal?</div>
+<div class="kpi-m">→ Umfrage via Change Agents<br/>6 Wochen nach Rollout<br/>Ziel: &gt; 80% kennen den Prozess</div>
+</div>
+<div class="kpi-card">
+<div class="kpi-q">Hat sich die Anforderungsqualität für IT verbessert?</div>
+<div class="kpi-m">→ Qualitatives Feedback IT-Lead<br/>8 Wochen nach Rollout</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+(function() {
+  const STORAGE_KEY = 'scnat_cl_lead_applandschaft_v1';
+
+  const DATA = {
+    vorbereitung: [
+      'Bestehendes Betriebskonzept CMS lokalisiert und gesichtet',
+      'Bestehendes Betriebskonzept DB lokalisiert und gesichtet',
+      'Jira Service Desk-Konfiguration dokumentiert',
+      'Bugtracker-Nutzung dokumentiert, Überschneidungen identifiziert',
+      'IT-Lead für Mitarbeit gewonnen, Termin fixiert',
+      'Mandat für Triage-Rolle formal eingeholt (Geschäftsleitung)',
+      'Externer Berater evaluiert und beauftragt',
+      'Change Agents für Sprint nominiert',
+      'Kick-off-Termin mit allen Beteiligten fixiert',
+      'SCNAT-DB-Analyse-Ergebnisse eingeholt (falls vorhanden)'
+    ],
+    sprint: [
+      'Kick-off durchgeführt',
+      'Bestandsaufnahme Betriebskonzept CMS abgeschlossen',
+      'Bestandsaufnahme Betriebskonzept DB abgeschlossen',
+      'Audit Jira Service Desk abgeschlossen',
+      'Audit Bugtracker abgeschlossen',
+      'Workshop Anforderungsprozess Ist/Soll durchgeführt',
+      'Triage-Logik dokumentiert',
+      'Rollenbeschreibungen erstellt',
+      'Ticket-Templates für Jira definiert (Bug / CR / FR / Frage)',
+      'Beschaffungsrahmen skizziert',
+      'Jira Service Desk konfiguriert',
+      'Betriebskonzept CMS finalisiert',
+      'Betriebskonzept DB finalisiert',
+      'Pilotlauf mit Change Agents durchgeführt',
+      'Feedback ausgewertet und Anpassungen gemacht'
+    ],
+    abschluss: [
+      'Sprint-Retrospektive durchgeführt',
+      'Dokumentation finalisiert und abgelegt',
+      'IT hat neuen Prozess formal bestätigt',
+      'Kommunikation an Mitarbeitende versandt',
+      'Change Agents aktiviert und informiert',
+      'Nächste Schritte / Folgeprojekte definiert'
+    ]
+  };
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch(e) { return {}; }
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch(e) {}
+  }
+
+  function updateProgress(groupId, items) {
+    var checked = items.filter(function(el) { return el.classList.contains('checked'); }).length;
+    var total = items.length;
+    var el = document.getElementById('cl-prog-' + groupId);
+    if (el) el.textContent = checked + ' / ' + total;
+  }
+
+  function renderGroup(groupId, texts, state) {
+    var container = document.getElementById('cl-items-' + groupId);
+    if (!container) return;
+    container.innerHTML = '';
+    var rendered = [];
+
+    texts.forEach(function(text, idx) {
+      var id = groupId + '__' + idx;
+      var isChecked = !!state[id];
+
+      var label = document.createElement('label');
+      label.className = 'cl-item' + (isChecked ? ' checked' : '');
+
+      var inp = document.createElement('input');
+      inp.type = 'checkbox';
+      inp.checked = isChecked;
+
+      var box = document.createElement('div');
+      box.className = 'cl-box';
+
+      var span = document.createElement('span');
+      span.className = 'cl-text';
+      span.textContent = text;
+
+      label.appendChild(inp);
+      label.appendChild(box);
+      label.appendChild(span);
+
+      (function(lbl, itemId) {
+        lbl.addEventListener('click', function(e) {
+          var wasChecked = lbl.classList.contains('checked');
+          lbl.classList.toggle('checked', !wasChecked);
+          inp.checked = !wasChecked;
+          var s = loadState();
+          s[itemId] = !wasChecked;
+          saveState(s);
+          updateProgress(groupId, rendered);
+        });
+      })(label, id);
+
+      container.appendChild(label);
+      rendered.push(label);
+    });
+
+    updateProgress(groupId, rendered);
+  }
+
+  function init() {
+    var state = loadState();
+    Object.keys(DATA).forEach(function(groupId) {
+      renderGroup(groupId, DATA[groupId], state);
+    });
+  }
+
+  // Active nav on scroll
+  function setupNav() {
+    var sections = document.querySelectorAll('section[id]');
+    var links = document.querySelectorAll('.nav-list a');
+    if (!sections.length || !links.length) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          links.forEach(function(a) { a.classList.remove('active'); });
+          var active = document.querySelector('.nav-list a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -75% 0px' });
+
+    sections.forEach(function(s) { observer.observe(s); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { init(); setupNav(); });
+  } else {
+    init(); setupNav();
+  }
+})();
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

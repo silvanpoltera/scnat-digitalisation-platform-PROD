@@ -113,6 +113,10 @@
     {
       "key": "cp-admin-stuff",
       "visible": true
+    },
+    {
+      "key": "cp-admin-details",
+      "visible": true
     }
   ]
 }

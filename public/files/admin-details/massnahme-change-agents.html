@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Team Change Agents – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --base:#0C0E10;--surface:#12161A;--elevated:#171C21;--border:#1E2530;--border-hi:#2A3340;
+  --red:#EA515A;--red-dim:rgba(234,81,90,0.12);--red-glow:rgba(234,81,90,0.25);
+  --anthrazit:#5A616B;--muted:#6B7280;--text2:#9CA3AF;--text:#E5E7EB;--white:#F9FAFB;
+  --green:#34D399;--green-dim:rgba(52,211,153,0.1);
+  --amber:#FBBF24;--amber-dim:rgba(251,191,36,0.1);
+  --blue:#60A5FA;--blue-dim:rgba(96,165,250,0.1);
+  --nav-w:240px;--font-body:'DM Sans',sans-serif;--font-mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--base);color:var(--text);min-height:100vh;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,0.018) 1px,transparent 0);background-size:28px 28px;pointer-events:none;z-index:0;}
+.layout{display:grid;grid-template-columns:var(--nav-w) 1fr;grid-template-rows:auto 1fr auto;min-height:100vh;}
+header,nav,main,footer{position:relative;z-index:1;}
+/* HEADER */
+header{grid-column:1/-1;background:var(--surface);border-bottom:1px solid var(--border);padding:0 2.5rem;}
+.header-inner{max-width:1100px;margin:0 auto;padding:2rem 0 1.75rem;}
+.header-eyebrow{font-family:var(--font-mono);font-size:.7rem;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem;}
+.header-title{font-size:2rem;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:1.1rem;letter-spacing:-.02em;}
+.header-title span{color:var(--red);}
+.badge-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+.badge{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--border);background:var(--elevated);color:var(--text2);white-space:nowrap;}
+.badge.w{background:var(--green-dim);border-color:rgba(52,211,153,.25);color:var(--green);}
+.badge.a{background:var(--amber-dim);border-color:rgba(251,191,36,.25);color:var(--amber);}
+.badge.t{background:var(--red-dim);border-color:var(--red-glow);color:var(--red);}
+/* NAV */
+nav{grid-column:1;grid-row:2;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 0;}
+nav::-webkit-scrollbar{width:3px;}
+nav::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px;}
+.nl{font-family:var(--font-mono);font-size:.62rem;color:var(--anthrazit);letter-spacing:.12em;text-transform:uppercase;padding:.5rem 1.25rem .3rem;margin-top:.75rem;}
+nav a{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.25rem;font-size:.82rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.3;}
+nav a:hover{color:var(--text);background:var(--elevated);border-left-color:var(--border-hi);}
+nav a.active{color:var(--red);border-left-color:var(--red);background:var(--red-dim);}
+nav a .nn{font-family:var(--font-mono);font-size:.62rem;color:var(--anthrazit);min-width:1.2rem;}
+/* MAIN */
+main{grid-column:2;grid-row:2;padding:3rem 3rem 5rem;max-width:860px;}
+.sec{margin-bottom:4rem;scroll-margin-top:2rem;}
+.sl{font-family:var(--font-mono);font-size:.68rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+.scnat-rtoc{font-size:1.35rem;font-weight:600;color:var(--white);margin-bottom:1rem;letter-spacing:-.015em;}
+.slead{color:var(--text2);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem;border-left:2px solid var(--border);padding-left:1rem;}
+p{color:var(--text2);line-height:1.75;margin-bottom:.8rem;}
+p strong{color:var(--text);font-weight:600;}
+p:last-child{margin-bottom:0;}
+hr{border:none;border-top:1px solid var(--border);margin:3.5rem 0;}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,.3);transition:border-color .2s;}
+.card:hover{border-color:var(--border-hi);}
+.ct{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:.6rem;}
+.card p{font-size:.88rem;}
+/* TEAM GRID */
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0;}
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:border-color .2s;}
+.tc:hover{border-color:var(--border-hi);}
+.tc.anchor{border-color:var(--red-glow);background:linear-gradient(150deg,rgba(234,81,90,.04),var(--surface));grid-column:1/-1;}
+.tc.ki{border-color:rgba(96,165,250,.25);background:linear-gradient(150deg,var(--blue-dim),var(--surface));}
+.tcl{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+.anchor .tcl{color:var(--red);}
+.ki .tcl{color:var(--blue);}
+.tc:not(.anchor):not(.ki) .tcl{color:var(--muted);}
+.tcn{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:.4rem;}
+.tcd{font-size:.8rem;color:var(--text2);line-height:1.55;margin-bottom:0;}
+.tct{display:inline-block;font-family:var(--font-mono);font-size:.6rem;padding:.15rem .5rem;border-radius:3px;background:var(--border);color:var(--text2);margin-top:.5rem;margin-right:.3rem;}
+.ki .tct{background:rgba(96,165,250,.12);color:var(--blue);}
+.anchor .tct{background:var(--red-dim);color:var(--red);}
+/* OPTIONS */
+.og{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;}
+.oc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.3);position:relative;transition:border-color .2s;}
+.oc.rec{border-color:var(--red);background:linear-gradient(160deg,rgba(234,81,90,.04),var(--surface) 60%);}
+.oc:hover{border-color:var(--border-hi);}
+.oc.rec:hover{border-color:var(--red);}
+.ol{font-family:var(--font-mono);font-size:.65rem;font-weight:600;letter-spacing:.08em;color:var(--anthrazit);margin-bottom:.4rem;}
+.rec .ol{color:var(--red);}
+.rtag{position:absolute;top:-1px;right:-1px;background:var(--red);color:#fff;font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;padding:.2rem .55rem;border-radius:0 8px 0 4px;font-weight:600;}
+.on{font-size:.88rem;font-weight:600;color:var(--white);margin-bottom:.75rem;line-height:1.3;}
+.oc p{font-size:.82rem;margin-bottom:.5rem;}
+.pc{margin-top:.6rem;display:flex;flex-direction:column;gap:.3rem;}
+.pc span{font-size:.78rem;font-family:var(--font-mono);display:flex;gap:.4rem;align-items:flex-start;line-height:1.45;}
+.pc .pro{color:var(--green);}
+.pc .con{color:#F87171;}
+/* TABLE */
+.tw{overflow-x:auto;margin:1rem 0;border-radius:8px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:.84rem;}
+th{background:var(--elevated);color:var(--text);font-weight:600;font-size:.76rem;text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--border);font-family:var(--font-mono);letter-spacing:.04em;}
+td{padding:.65rem 1rem;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.015);}
+td strong{color:var(--text);font-weight:500;}
+/* SPRINT */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;}
+.sw{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem;box-shadow:0 2px 12px rgba(0,0,0,.25);}
+.swn{font-family:var(--font-mono);font-size:.6rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+.swt{font-size:.82rem;font-weight:600;color:var(--white);margin-bottom:.75rem;line-height:1.3;}
+.si{font-size:.76rem;color:var(--text2);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.4;display:flex;gap:.4rem;}
+.si:last-child{border-bottom:none;}
+.sd{width:4px;height:4px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:.45em;}
+/* CHECKLIST */
+.cg{margin-bottom:1.5rem;}
+.cgt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+.ci{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem .75rem;margin-bottom:.3rem;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent;}
+.ci:hover{background:var(--elevated);}
+.ci.done{background:var(--green-dim);border-color:rgba(52,211,153,.12);}
+.ci.done .cl{color:var(--muted);text-decoration:line-through;}
+.cc{width:17px;height:17px;flex-shrink:0;border-radius:4px;border:1.5px solid var(--border-hi);margin-top:.12em;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ci.done .cc{background:var(--red);border-color:var(--red);}
+.cc svg{opacity:0;transition:opacity .15s;}
+.ci.done .cc svg{opacity:1;}
+.cl{font-size:.85rem;color:var(--text2);line-height:1.5;user-select:none;}
+.cp{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.pb{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pbf{height:100%;background:var(--red);border-radius:2px;transition:width .3s;}
+.pt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);white-space:nowrap;}
+.rb{font-family:var(--font-mono);font-size:.65rem;color:var(--anthrazit);background:none;border:1px solid var(--border);border-radius:4px;padding:.25rem .6rem;cursor:pointer;transition:all .15s;}
+.rb:hover{color:var(--text2);border-color:var(--border-hi);}
+/* RISKS */
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:.75rem;border-left:3px solid var(--border);}
+.rc.h{border-left-color:#F87171;}
+.rc.m{border-left-color:var(--amber);}
+.rc.l{border-left-color:var(--green);}
+.rtype{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
+.rc.h .rtype{color:#F87171;}
+.rc.m .rtype{color:var(--amber);}
+.rc.l .rtype{color:var(--green);}
+.rtit{font-size:.88rem;font-weight:600;color:var(--white);margin-bottom:.5rem;}
+.rc p{font-size:.84rem;margin-bottom:0;}
+/* METRICS */
+.mg{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.mh{background:var(--elevated);padding:.75rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+.mhl{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+.tb{font-family:var(--font-mono);font-size:.62rem;padding:.15rem .5rem;border-radius:3px;background:var(--border);color:var(--text2);}
+.mi{padding:.8rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:.75rem;}
+.mi:last-child{border-bottom:none;}
+.md{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:.5em;}
+.mi p{margin-bottom:0;font-size:.84rem;}
+/* INFO BOX */
+.ib{background:var(--red-dim);border:1px solid var(--red-glow);border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;display:flex;gap:.75rem;align-items:flex-start;}
+.ii{color:var(--red);font-size:1rem;flex-shrink:0;margin-top:.1em;}
+.ib p{margin-bottom:0;font-size:.84rem;color:var(--text2);}
+.ib p strong{color:var(--red);}
+/* FOOTER */
+footer{grid-column:1/-1;background:var(--surface);border-top:1px solid var(--border);padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.fl{font-family:var(--font-mono);font-size:.65rem;color:var(--anthrazit);letter-spacing:.06em;}
+.fr{font-family:var(--font-mono);font-size:.65rem;color:var(--anthrazit);}
+.fr span{color:var(--red);}
+@media print{
+  nav{display:none;}
+  .layout{grid-template-columns:1fr;}
+  main{grid-column:1;padding:1rem 2rem;max-width:100%;}
+  footer{display:none;}
+  body{background:#fff;color:#111;font-size:11pt;}
+  .card,.oc,.rc,.mg,.tc{border:1px solid #ddd;box-shadow:none;background:#f9f9f9;}
+  .st,.header-title{color:#000;}
+  .badge{border:1px solid #ccc;color:#444;background:#eee;}
+  .sl{color:#EA515A;}
+  .sg,.og,.tg{grid-template-columns:1fr 1fr;}
+  .tc.anchor{grid-column:1/-1;}
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  nav{display:none;}
+  main{grid-column:1;padding:2rem 1.25rem;max-width:100%;}
+  .og{grid-template-columns:1fr;}
+  .sg{grid-template-columns:1fr 1fr;}
+  header{padding:0 1.25rem;}
+}
+@media(max-width:560px){
+  .sg,.tg{grid-template-columns:1fr;}
+  .tc.anchor{grid-column:1;}
+  .header-title{font-size:1.4rem;}
+}
+
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a on" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header>
+<div class="header-inner">
+<div class="header-eyebrow">SCNAT Digitalisierung · Massnahmen-Briefing</div>
+<h1 class="header-title">Team <span>Change Agents</span> aufbauen</h1>
+<div class="badge-row">
+<span class="badge t">Digitale Kultur &amp; Befähigung</span>
+<span class="badge">Skills &amp; Change</span>
+<span class="badge">Kommunikation &amp; Kollaboration</span>
+<span class="badge w">▲ Wirkung 7.5 / 10</span>
+<span class="badge a">▶ Aufwand 4 / 10</span>
+</div>
+</div>
+</header>
+<main>
+<section class="sec" id="einleitung">
+<div class="sl">01 · Einleitung</div>
+<h2 class="st">Warum diese Massnahme – und warum jetzt?</h2>
+<p class="slead">Das Change Agent Netzwerk ist kein nettes Add-on. Es ist die operative Grundlage dafür, dass Digitalisierung bei SCNAT in den Abteilungen ankommt.</p>
+<p>SCNAT hat eine dezentrale Struktur mit Fachgesellschaften, Kommissionen und Geschäftsstellen mit unterschiedlichen Arbeitsweisen und digitalen Reifegraden. Keine zentrale Rollout-Kampagne kann das abdecken. Was es braucht: Menschen, die von innen heraus wirken, die Sprache ihrer Abteilung sprechen und Silvans Anliegen übersetzen können.</p>
+<p>Der Auslöser ist konkret: Massnahmen werden ohne lokale Anker schlecht angenommen. Feedback kommt kaum. Best Practices entstehen in Silos und verbreiten sich nicht.</p>
+<div class="ib"><span class="ii">→</span><p><strong>Kernargument:</strong> Ein funktionierendes Change Agent Netzwerk multipliziert die Wirkung jeder anderen Massnahme – weniger Widerstand, schnellere Adoption, besseres Feedback. Wirkung 7.5 bei Aufwand 4: dieser Hebel macht andere Hebel wirksam.</p></div>
+</section>
+<hr/>
+<section class="sec" id="netzwerk">
+<div class="sl">02 · Netzwerk-Struktur</div>
+<h2 class="st">Wer ist dabei – und in welcher Rolle?</h2>
+<p class="slead">Silvan als Ankerpunkt, David / Anina / Arber als integrierte Change Agents mit KI-Fokus, und die abteilungseigenen Change Agents als dezentrale Antennen. Alles in einem Netzwerk.</p>
+<div class="tg">
+<div class="tc anchor">
+<div class="tcl">Ankerpunkt · Steuerung</div>
+<div class="tcn">Silvan Poltera</div>
+<div class="tcd">Verantwortlicher Digitalisierung. Koordiniert das Netzwerk, leitet die monatlichen Meetings, priorisiert Themen und hält den Überblick. Erste Anlaufstelle bei strukturellen Fragen.</div>
+<span class="tct">Strategie</span><span class="tct">Steuerung</span><span class="tct">Monatliches Meeting</span>
+</div>
+<div class="tc ki">
+<div class="tcl">KI-Spezialist · Change Agent</div>
+<div class="tcn">David Jezdimirovic</div>
+<div class="tcd">Integriertes Mitglied im Change Agent Netzwerk. Bringt KI-Fachkompetenz direkt ein, begleitet abteilungseigene Change Agents bei KI-Fragen und übersetzt technische Konzepte in Abteilungsrealität.</div>
+<span class="tct">KI-Kompetenz</span><span class="tct">Begleitung</span>
+</div>
+<div class="tc ki">
+<div class="tcl">KI-Spezialistin · Change Agent</div>
+<div class="tcn">Anina Steinlin</div>
+<div class="tcd">Integriertes Mitglied im Change Agent Netzwerk. Bringt KI-Fachkompetenz direkt ein, begleitet abteilungseigene Change Agents bei KI-Fragen und übersetzt technische Konzepte in Abteilungsrealität.</div>
+<span class="tct">KI-Kompetenz</span><span class="tct">Begleitung</span>
+</div>
+<div class="tc ki">
+<div class="tcl">KI-Spezialist · Change Agent</div>
+<div class="tcn">Arber Aziri</div>
+<div class="tcd">Integriertes Mitglied im Change Agent Netzwerk. Bringt KI-Fachkompetenz direkt ein, begleitet abteilungseigene Change Agents bei KI-Fragen und übersetzt technische Konzepte in Abteilungsrealität.</div>
+<span class="tct">KI-Kompetenz</span><span class="tct">Begleitung</span>
+</div>
+<div class="tc" style="grid-column:1/-1;border-style:dashed;border-color:var(--border-hi);">
+<div class="tcl">Pro Abteilung · dezentral</div>
+<div class="tcn" style="color:var(--text2);">Abteilungseigene Change Agents</div>
+<div class="tcd">Min. 1 Person pro Abteilung mit hoher digitaler Affinität. Zeitbudget ca. 10% (~4h/Woche), schriftlich durch Abteilungsleitung bestätigt. Feedback sammeln, Massnahmen begleiten, monatliches Meeting. Weder IT-Support noch Vorgesetzte.</div>
+<span class="tct">Antenne</span><span class="tct">Multiplikator</span><span class="tct">Feedback-Kanal</span><span class="tct">10% Zeitbudget</span>
+</div>
+</div>
+<div class="card" style="margin-top:.5rem;">
+<div class="ct">▶ Meeting-Rhythmus</div>
+<p><strong>1x pro Monat:</strong> Alle abteilungseigenen Change Agents + Silvan + David / Anina / Arber. Erfahrungsaustausch, Alignment, Feedbacklauf. Das KI-Team bringt direkt fachlichen Input ein – kein separates Briefing nötig.</p>
+<p><strong>Bilateral zwischen Meetings:</strong> Beobachtungen kommen über den gemeinsamen Kanal. David / Anina / Arber sind für KI-Fragen direkt erreichbar.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="beschreibung">
+<div class="sl">03 · Beschreibung</div>
+<h2 class="st">Was genau wird gemacht?</h2>
+<p class="slead">Pro Abteilung eine Person identifizieren, einbinden, befähigen. Klar definierte Rolle, festes Zeitbudget, monatlicher Rhythmus – KI-Kompetenz direkt im Netzwerk verankert.</p>
+<div class="card">
+<div class="ct">■ Im Scope</div>
+<p>Systematische Identifikation und Rekrutierung der abteilungseigenen Change Agents. Schriftliche Zeitbudget-Bestätigung (10% / ~4h/Woche) durch Abteilungsleitungen. Kick-off-Workshop halber Tag mit allen Change Agents und dem KI-Team. Aufbau des monatlichen Meeting-Rhythmus. Bereitstellung von Arbeitsmitteln: Rollenprofil, Plattform-Zugang, Feedback-Kanal.</p>
+</div>
+<div class="card">
+<div class="ct">□ Explizit nicht im Scope</div>
+<p>IT-Support oder technische Administrationsaufgaben – weder Aufgabe der abteilungseigenen Change Agents noch des KI-Teams in dieser Rolle. Verantwortung für Massnahmen-Umsetzung (das bleibt bei Silvan und dem KI-Team). Dopplung mit Linienverantwortung.</p>
+</div>
+<div class="card">
+<div class="ct">◆ Einbettung in die Gesamtstrategie</div>
+<p>Das Netzwerk ist das horizontale Rückgrat aller Cluster-Massnahmen. Die Integration des KI-Teams schafft einen direkten Kurzschluss zwischen Fachkompetenz und Abteilungsrealität – ohne Umwege. Das beschleunigt KI-Adoption erheblich.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="optionen">
+<div class="sl">04 · Umsetzungsoptionen</div>
+<h2 class="st">Drei Wege – eine Empfehlung</h2>
+<p class="slead">Alle drei Optionen setzen auf interne Ressourcen. Diese Massnahme braucht keine externen Dienstleister.</p>
+<div class="og">
+<div class="oc">
+<div class="ol">OPTION A</div>
+<div class="on">Schnell / informell / intern</div>
+<p>Silvan spricht gezielt bekannte digital-affine Personen an. Kein formeller Prozess. KI-Team informell eingebunden.</p>
+<div class="pc">
+<span class="pro">+ Sofort umsetzbar, null Overhead</span>
+<span class="con">- Zufällige Abteilungsabdeckung</span>
+<span class="con">- Kein Rückhalt durch Linie</span>
+<span class="con">- Nicht skalierbar</span>
+</div>
+<p style="margin-top:.75rem;font-size:.76rem;color:var(--muted);">Als Übergang ok. Als Zielzustand ungeeignet.</p>
+</div>
+<div class="oc rec">
+<div class="rtag">EMPFEHLUNG</div>
+<div class="ol">OPTION B</div>
+<div class="on">Strukturierter Aufruf + schlankes Onboarding</div>
+<p>Kommunikation an Abteilungsleitungen mit 1-seitigem Rollenprofil. Schriftliche Zeitbudget-Bestätigung. Kick-off mit KI-Team als integrierten Mitgliedern.</p>
+<div class="pc">
+<span class="pro">+ Klare Erwartungen, durch Linie legitimiert</span>
+<span class="pro">+ KI-Kompetenz direkt eingebettet</span>
+<span class="pro">+ Schlanker Prozess, 2–3 Wochen Vorlauf</span>
+<span class="con">- Abhängig von Kooperation der Linie</span>
+</div>
+<p style="margin-top:.75rem;font-size:.76rem;color:var(--muted);">Pragmatisch zum Starten. Strukturiert zum Halten.</p>
+</div>
+<div class="oc">
+<div class="ol">OPTION C</div>
+<div class="on">Vollständiges Framework (Ziel 6–12 Monate)</div>
+<p>Formale Vereinbarungen, Onboarding-Handbuch, Reporting im Steering Committee, Anerkennungsmechanismus.</p>
+<div class="pc">
+<span class="pro">+ Institutionell verankert, nachhaltig</span>
+<span class="pro">+ Robust bei Personalwechseln</span>
+<span class="con">- Mehr Governanceaufwand</span>
+<span class="con">- Buy-in auf mehreren Ebenen</span>
+</div>
+<p style="margin-top:.75rem;font-size:.76rem;color:var(--muted);">Richtiges Zielbild. Nicht als Einstieg.</p>
+</div>
+</div>
+<div class="ib" style="margin-top:1.25rem;">
+<span class="ii">⚠</span>
+<p><strong>Kritischer Punkt:</strong> Unabhängig von der Option muss die <strong>schriftliche Zeitbudget-Bestätigung durch die Abteilungsleitung</strong> von Anfang an dabei sein. Die meisten informellen Netzwerke sterben genau hier. Dieses Dokument ist kein Bürokratieakt – es ist Selbstschutz für den Change Agent.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="vorbereitung">
+<div class="sl">05 · Vorbereitung</div>
+<h2 class="st">Was vor dem Sprint erledigt sein muss</h2>
+<p class="slead">Diese Punkte sind Voraussetzung. Ohne sie startet kein Sprint – oder er startet schlecht.</p>
+<div class="card">
+<div class="ct">▸ Abklärungen</div>
+<p>Welche Abteilungen in Scope für Runde 1? Empfehlung 4–6 Pilot-Abteilungen. Gibt es Personen, die informell schon diese Rolle einnehmen? Direkt einbinden. Kommunikationsweg klären: optimaler Mix: Leitung informiert, Person meldet sich freiwillig. Welcher Kanal für Kommunikation zwischen Meetings? Bestehendes Tool nutzen – kein neues einführen.</p>
+</div>
+<div class="card">
+<div class="ct">▸ Stakeholder einbinden</div>
+<p><strong>Abteilungsleitungen:</strong> Frühzeitig informieren, Zeitbudget thematisieren, Nominierung oder Freiwilligenmeldung erbitten.</p>
+<p><strong>HR:</strong> Proaktiv informieren – keine Stellenbeschreibungsänderung, sondern eine Zusatzfunktion mit freigelegtem Zeitbudget.</p>
+<p><strong>IT-Koordination:</strong> Plattform-Zugang frühzeitig klären – damit keine Ad-hoc-Anfragen in einem ressourcenknappen Umfeld entstehen.</p>
+<p><strong>David / Anina / Arber:</strong> Gemeinsam klären, wie sie im Kick-off auftreten. Sie sind integrierte Mitglieder – kein separates Briefing-Format.</p>
+</div>
+<div class="card">
+<div class="ct">▸ Entscheidungen vorab treffen</div>
+<p>Prio-Liste Pilot-Abteilungen. Freiwillig oder mit Linienunterstützung? Anerkennungsmechanismus definieren. Thematische Schwerpunkte pro Abteilung klären, damit das KI-Team gezielt eingebunden werden kann.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="ressourcen">
+<div class="sl">06 · Ressourcen</div>
+<h2 class="st">Wer macht was – und was kostet es?</h2>
+<p class="slead">Primär Zeitaufwand intern. Externe Dienstleister braucht es für diese Massnahme nicht.</p>
+<div class="tw">
+<table>
+<thead><tr><th>Person / Rolle</th><th>Aufgabe</th><th>Aufwand</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>Silvan Poltera</strong></td>
+<td>Gesamtkoordination, Kommunikation an Abteilungsleitungen, Kick-off moderieren, Rollenprofil erstellen, laufende Netzwerkpflege, Meeting-Leitung</td>
+<td>~5h Vorbereitung, ~3h Kick-off, ~1–2h/Woche laufend</td>
+</tr>
+<tr>
+<td><strong>David / Anina / Arber</strong></td>
+<td>Als integrierte Change Agents am Kick-off und monatlichen Meetings teilnehmen. KI-Fragen der abteilungseigenen Change Agents begleiten. Themenimpulse einbringen.</td>
+<td>~3h Kick-off, ~1–2h/Monat Meeting, bilateral nach Bedarf</td>
+</tr>
+<tr>
+<td><strong>IT-Koordination (intern)</strong></td>
+<td>Plattform-Zugänge für Change Agents einrichten, technisches Onboarding</td>
+<td>~2h einmalig</td>
+</tr>
+<tr>
+<td><strong>Change Agents (Abteilungen)</strong></td>
+<td>Feedback sammeln, Multiplikator-Funktion, monatliches Meeting</td>
+<td>~4h/Woche (10%) – schriftlich durch Linie bestätigt</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="card" style="margin-top:1.25rem;">
+<div class="ct">▶ Tools &amp; Software · DSG/DSGVO</div>
+<p><strong>Interne Plattform:</strong> Keine DSG/DSGVO-Problematik – Daten bleiben in der SCNAT-Infrastruktur.</p>
+<p><strong>Kommunikation:</strong> Bestehendes Tool (Teams-Kanal oder E-Mail-Verteiler) – kein neues Tool, keine IT-Mehrbelastung.</p>
+<p><strong>Dokumentenablage:</strong> Bestehende interne Infrastruktur – kein externer Dienst.</p>
+</div>
+<div class="card">
+<div class="ct">▶ Budget</div>
+<p>Primär Zeitaufwand intern – kein Einkauf nötig. Diese Massnahme kommt vollständig ohne externe Dienstleister aus. Budget: nahe null ausser interner Arbeitszeit.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="sprint">
+<div class="sl">07 · Sprint-Ablauf</div>
+<h2 class="st">4-Wochen-Plan</h2>
+<p class="slead">Woche 1 bereitet vor, Woche 2 rekrutiert, Woche 3 kickt off, Woche 4 setzt den Betrieb auf.</p>
+<div class="sg">
+<div class="sw">
+<div class="swn">Woche 1</div>
+<div class="swt">Vorbereitung &amp; Kommunikation</div>
+<div class="si"><div class="sd"></div>Rollenprofil Change Agent erstellen</div>
+<div class="si"><div class="sd"></div>Vorlage Zeitbudget-Bestätigung erstellen</div>
+<div class="si"><div class="sd"></div>Prio-Liste Pilot-Abteilungen festlegen</div>
+<div class="si"><div class="sd"></div>Kick-off intern mit KI-Team vorbereiten</div>
+<div class="si"><div class="sd"></div>Kommunikation an Abteilungsleitungen</div>
+<div class="si"><div class="sd"></div>Kick-off-Termin Woche 3 fixieren</div>
+<div class="si"><div class="sd"></div>IT-Koordination: Plattform-Zugänge klären</div>
+</div>
+<div class="sw">
+<div class="swn">Woche 2</div>
+<div class="swt">Rekrutierung &amp; Gespräche</div>
+<div class="si"><div class="sd"></div>Rückmeldungen von Abteilungsleitungen</div>
+<div class="si"><div class="sd"></div>Direktkontakt zu zögerlichen Abteilungen</div>
+<div class="si"><div class="sd"></div>Einzel-Gespräche Silvan mit Kandidierenden (30 Min.)</div>
+<div class="si"><div class="sd"></div>Finale Liste Change Agents erstellen</div>
+<div class="si"><div class="sd"></div>Zeitbudget-Bestätigungen schriftlich</div>
+<div class="si"><div class="sd"></div>Kick-off-Agenda finalisieren</div>
+</div>
+<div class="sw">
+<div class="swn">Woche 3</div>
+<div class="swt">Kick-off-Workshop</div>
+<div class="si"><div class="sd"></div>Kontext Digitalisierungsstrategie (20 Min.)</div>
+<div class="si"><div class="sd"></div>Rolle klären inkl. KI-Team-Integration (20 Min.)</div>
+<div class="si"><div class="sd"></div>Erwartungen klären (15 Min.)</div>
+<div class="si"><div class="sd"></div>Frustrationen sammeln (40 Min.)</div>
+<div class="si"><div class="sd"></div>Plattform-Demo + Zugänge (15 Min.)</div>
+<div class="si"><div class="sd"></div>Erstes monatliches Meeting terminieren</div>
+</div>
+<div class="sw">
+<div class="swn">Woche 4</div>
+<div class="swt">Nachbereitung &amp; Betrieb</div>
+<div class="si"><div class="sd"></div>Kick-off dokumentieren (Silvan)</div>
+<div class="si"><div class="sd"></div>Change Agent Verzeichnis auf Plattform</div>
+<div class="si"><div class="sd"></div>Feedback-Kanal definieren</div>
+<div class="si"><div class="sd"></div>Team-Retro Silvan + KI-Team (30 Min.)</div>
+<div class="si"><div class="sd"></div>Agenda erstes monatliches Meeting</div>
+<div class="si"><div class="sd"></div>Meeting in alle Kalender eintragen</div>
+</div>
+</div>
+</section>
+<hr/>
+<section class="sec" id="checkliste">
+<div class="sl">08 · Checkliste</div>
+<h2 class="st">Umsetzungs-Checkliste</h2>
+<p class="slead">Fortschritt wird lokal gespeichert – Häkchen bleiben erhalten.</p>
+<div class="cp">
+<div class="pb"><div class="pbf" id="pbf" style="width:0%"></div></div>
+<div class="pt" id="pt">0 / 21 erledigt</div>
+<button class="rb" onclick="reset()">Zurücksetzen</button>
+</div>
+<div class="cg">
+<div class="cgt">Vorbereitung</div>
+<div class="ci" data-id="c01" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Pilot-Abteilungen für Runde 1 festgelegt (4–6 Abteilungen)</label></div>
+<div class="ci" data-id="c02" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Rollenprofil Change Agent erstellt (max. 1 Seite, klar und einladend)</label></div>
+<div class="ci" data-id="c03" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Vorlage Zeitbudget-Bestätigung durch Abteilungsleitung erstellt</label></div>
+<div class="ci" data-id="c04" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off intern mit David / Anina / Arber vorbereitet</label></div>
+<div class="ci" data-id="c05" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kommunikation an Abteilungsleitungen versendet</label></div>
+<div class="ci" data-id="c06" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off-Termin reserviert (mind. 2 Wochen Vorlauf, halber Tag)</label></div>
+<div class="ci" data-id="c07" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">IT-Koordination: Plattform-Zugänge für Change Agents abgeklärt</label></div>
+</div>
+<div class="cg">
+<div class="cgt">Sprint-Durchführung</div>
+<div class="ci" data-id="c08" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Rückmeldungen von allen Pilot-Abteilungen eingeholt</label></div>
+<div class="ci" data-id="c09" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Einzel-Gespräche Silvan mit allen Kandidierenden (je 30 Min.)</label></div>
+<div class="ci" data-id="c10" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Finale Liste abteilungseigene Change Agents steht</label></div>
+<div class="ci" data-id="c11" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Zeitbudget-Bestätigungen schriftlich von allen Abteilungsleitungen erhalten</label></div>
+<div class="ci" data-id="c12" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off-Agenda finalisiert und reviewed</label></div>
+<div class="ci" data-id="c13" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off-Workshop durchgeführt (David / Anina / Arber als integrierte Mitglieder)</label></div>
+<div class="ci" data-id="c14" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Plattform-Zugänge für alle Change Agents eingerichtet</label></div>
+<div class="ci" data-id="c15" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Erstes monatliches Meeting terminiert (alle Change Agents + Silvan + KI-Team)</label></div>
+</div>
+<div class="cg">
+<div class="cgt">Abschluss</div>
+<div class="ci" data-id="c16" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off dokumentiert: Ergebnisse, Themen, Frustrationen (Silvan)</label></div>
+<div class="ci" data-id="c17" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agent Verzeichnis auf Plattform live (Name, Abteilung, KI-Ansprechperson)</label></div>
+<div class="ci" data-id="c18" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Feedback-Kanal zwischen Meetings definiert und kommuniziert</label></div>
+<div class="ci" data-id="c19" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Team-Retro durchgeführt (Silvan + David / Anina / Arber, 30 Min.)</label></div>
+<div class="ci" data-id="c20" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Agenda erstes monatliches Meeting steht</label></div>
+<div class="ci" data-id="c21" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Nächste Schritte kommuniziert: Runde 2 Abteilungen, Abstimmung KI-Lernpfad</label></div>
+</div>
+</section>
+<hr/>
+<section class="sec" id="risiken">
+<div class="sl">09 · Risiken &amp; Abhängigkeiten</div>
+<h2 class="st">Was man im Blick behalten muss</h2>
+<p class="slead">Formuliert als sachliche Beobachtungen – nicht als Kritik.</p>
+<div class="rc h">
+<div class="rtype">Risiko · Hoch</div>
+<div class="rtit">Zeitbudget wird im Alltag wegpriorisiert</div>
+<p>Das grösste Risiko ist nicht die Rekrutierung, sondern das Halten. Ohne schriftliche Bestätigung der Abteilungsleitung verschwindet das 10% beim ersten Lieferdruck. Diese Bestätigung muss aktiv eingeholt werden.</p>
+</div>
+<div class="rc h">
+<div class="rtype">Risiko · Hoch</div>
+<div class="rtit">Rollenverwässerung: Change Agent wird zu IT-Support</div>
+<p>Sehr häufige Fehlentwicklung. Klare Abgrenzung beim Kick-off ist entscheidend – und muss in den ersten monatlichen Meetings aufgefrischt werden. Gilt auch für das KI-Team: ihre Netzwerkrolle ist kein technischer Support.</p>
+</div>
+<div class="rc m">
+<div class="rtype">Risiko · Mittel</div>
+<div class="rtit">Keine geeignete Person in kleinen Abteilungen</div>
+<p>Plan B vorbereiten: Zusammenlegen mit Nachbar-Abteilung oder in Runde 2 einbinden. Lieber ehrlich damit umgehen als jemanden zu rekrutieren, der überfordert wird.</p>
+</div>
+<div class="rc m">
+<div class="rtype">Risiko · Mittel</div>
+<div class="rtit">Koordinationsaufwand bei Silvan unterschätzt</div>
+<p>Monatliche Meetings, laufende Kommunikation und Themenpriorisierung laufen bei Silvan zusammen. Die Integration des KI-Teams reduziert diesen Aufwand – aber er muss im Wochenplan fix eingeplant sein.</p>
+</div>
+<div class="rc l">
+<div class="rtype">Abhängigkeit</div>
+<div class="rtit">KI-Lernpfad: Grundbefähigung der Change Agents</div>
+<p>Damit abteilungseigene Change Agents KI-Themen multiplizieren können, brauchen sie selbst eine Basis. KI-Lernpfad und Change Agent Netzwerk sollten zeitlich abgestimmt sein.</p>
+</div>
+<div class="rc l">
+<div class="rtype">Abhängigkeit · IT</div>
+<div class="rtit">Plattform-Zugänge frühzeitig abklären</div>
+<p>Frühzeitige Abstimmung mit der IT-Koordination verhindert Ad-hoc-Anfragen in einem ressourcenknappen Umfeld. Keine neuen Tools geplant – das entlastet die IT vollständig.</p>
+</div>
+</section>
+<hr/>
+<section class="sec" id="erfolg">
+<div class="sl">10 · Erfolgsmessung</div>
+<h2 class="st">Woran erkennt man, dass es wirkt?</h2>
+<p class="slead">Konkrete Indikatoren auf drei Zeithorizonten.</p>
+<div class="mg">
+<div class="mh"><div class="mhl">Kurzfristig</div><div class="tb">Ende Sprint · Woche 4</div></div>
+<div class="mi"><div class="md"></div><p>Anzahl Change Agents: <strong>min. 1 pro Pilot-Abteilung</strong>, alle schriftlich bestätigt</p></div>
+<div class="mi"><div class="md"></div><p>Zeitbudget-Bestätigungen schriftlich: <strong>100% der beteiligten Abteilungen</strong></p></div>
+<div class="mi"><div class="md"></div><p>Kick-off mit KI-Team als integrierten Mitgliedern durchgeführt: <strong>Ja / Nein</strong></p></div>
+<div class="mi"><div class="md"></div><p>Erstes monatliches Meeting terminiert: <strong>Ja / Nein</strong></p></div>
+<div class="mi"><div class="md"></div><p>Change Agent Verzeichnis auf Plattform live: <strong>Ja / Nein</strong></p></div>
+</div>
+<div class="mg">
+<div class="mh"><div class="mhl">Mittelfristig</div><div class="tb">Nach 3 Monaten</div></div>
+<div class="mi"><div class="md"></div><p>Monatliche Meetings: Ziel <strong>3/3 stattgefunden</strong>, Quorum &gt;80%</p></div>
+<div class="mi"><div class="md"></div><p>Mindestens <strong>3 konkrete Rückmeldungen</strong> aus Abteilungen, die in eine Massnahme eingeflossen sind</p></div>
+<div class="mi"><div class="md"></div><p>Mindestens <strong>1 Massnahme</strong> durch Change Agent Feedback angepasst oder beschleunigt</p></div>
+<div class="mi"><div class="md"></div><p>Pulse-Umfrage (3 Fragen, anonym): Fühlen sich Change Agents gut begleitet? Zeitbudget realistisch?</p></div>
+</div>
+<div class="mg">
+<div class="mh"><div class="mhl">Langfristig</div><div class="tb">Nach 12 Monaten</div></div>
+<div class="mi"><div class="md"></div><p>Alle Abteilungen im Netzwerk: <strong>Runden 2 und 3 abgeschlossen</strong></p></div>
+<div class="mi"><div class="md"></div><p>Change Agents begleiten kleinere Massnahmen <strong>eigenständig</strong></p></div>
+<div class="mi"><div class="md"></div><p>Qualitativ: Hat sich die digitale Gesprächskultur verändert? Kommen mehr Impulse aus den Teams?</p></div>
+<div class="mi"><div class="md"></div><p>David / Anina / Arber sind als <strong>bekannte KI-Ansprechpersonen</strong> in den Abteilungen wirkungsvoll eingebunden</p></div>
+</div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#netzwerk"><span class="rtoc-num">02</span>Netzwerk-Struktur</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">03</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">04</span>Umsetzungsoptionen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">05</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">06</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">07</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">08</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">09</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">10</span>Erfolgsmessung</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 21 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 21;
+  var DONE_CLS = 'done';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+const K='scnat-ca-v2';const T=21;
+function ls(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}}
+function ss(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
+function tc(el){const id=el.dataset.id;const s=ls();if(el.classList.contains('done')){el.classList.remove('done');delete s[id]}else{el.classList.add('done');s[id]=true}ss(s);up()}
+function up(){const d=Object.keys(ls()).length;const p=Math.round(d/T*100);document.getElementById('pbf').style.width=p+'%';document.getElementById('pt').textContent=d+' / '+T+' erledigt'}
+function reset(){if(!confirm('Checkliste zurücksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(e=>e.classList.remove('done'));up()}
+function sa(el){document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));el.classList.add('active')}
+function uns(){const ss2=document.querySelectorAll('.sec');const ls2=document.querySelectorAll('nav a');let c='';ss2.forEach(s=>{if(s.getBoundingClientRect().top<120)c='#'+s.id});ls2.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')===c)a.classList.add('active')})}
+window.addEventListener('scroll',uns,{passive:true});
+document.addEventListener('DOMContentLoaded',()=>{const s=ls();document.querySelectorAll('.ci').forEach(e=>{if(s[e.dataset.id])e.classList.add('done')});up();uns()});
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

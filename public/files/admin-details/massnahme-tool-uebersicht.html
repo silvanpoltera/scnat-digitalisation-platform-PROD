@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Übersicht digitale Tools – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0C0E10;
+      --card:    #12161A;
+      --border:  #1E2530;
+      --red:     #EA515A;
+      --anthraz: #5A616B;
+      --muted:   #6B7280;
+      --text:    #E5E7EB;
+      --bright:  #F9FAFB;
+      --green:   #34D399;
+      --yellow:  #FBBF24;
+      --purple:  #818CF8;
+      --orange:  #FB923C;
+      --body:    'DM Sans', system-ui, sans-serif;
+      --mono:    'JetBrains Mono', monospace;
+      --nav-w:   248px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--nav-w);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sb-brand {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sb-eyebrow {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 5px;
+    }
+
+    .sb-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--bright);
+      line-height: 1.35;
+    }
+
+    .sb-group-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 16px 20px 6px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      border-left: 2px solid transparent;
+      transition: color 0.12s, background 0.12s, border-color 0.12s;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(234,81,90,0.05);
+    }
+
+    .nav-link.active {
+      color: var(--red);
+      border-left-color: var(--red);
+      background: rgba(234,81,90,0.07);
+      font-weight: 500;
+    }
+
+    .nav-num {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--anthraz);
+      width: 18px;
+      flex-shrink: 0;
+    }
+
+    .sb-footer-note {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--anthraz);
+      line-height: 1.5;
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      margin-left: var(--nav-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── PAGE HEADER ── */
+    .pg-header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 64px 40px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 11px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .b-default { background: var(--border); color: var(--muted); }
+    .b-red     { background: rgba(234,81,90,0.12); color: var(--red); border: 1px solid rgba(234,81,90,0.25); }
+    .b-green   { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.22); }
+    .b-yellow  { background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.22); }
+    .b-purple  { background: rgba(129,140,248,0.1); color: var(--purple); border: 1px solid rgba(129,140,248,0.22); }
+    .b-orange  { background: rgba(251,146,60,0.1); color: var(--orange); border: 1px solid rgba(251,146,60,0.22); }
+
+    h1 {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .pg-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 720px;
+      line-height: 1.65;
+    }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      padding: 56px 64px;
+      max-width: 960px;
+    }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 84px; }
+
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding-bottom: 18px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sec-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+      background: rgba(234,81,90,0.1);
+      border: 1px solid rgba(234,81,90,0.22);
+      padding: 3px 9px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    h2 {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--bright);
+      margin: 22px 0 10px;
+    }
+
+    h3:first-child { margin-top: 0; }
+
+    p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 500; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.22);
+      margin-bottom: 12px;
+    }
+
+    .card:last-child { margin-bottom: 0; }
+
+    .card-head {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-head-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+    }
+
+    .card p { font-size: 13.5px; }
+
+    /* ── HIGHLIGHT ── */
+    .highlight {
+      border-left: 3px solid var(--red);
+      background: var(--card);
+      border-radius: 0 7px 7px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── SCOPE GRID ── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .scope-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .scope-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin-bottom: 13px;
+    }
+
+    .scope-title.in  { color: var(--green); }
+    .scope-title.out { color: #F87171; }
+
+    .scope-list { list-style: none; }
+
+    .scope-list li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 6px 0 6px 18px;
+      position: relative;
+      border-bottom: 1px solid rgba(30,37,48,0.6);
+      line-height: 1.55;
+    }
+
+    .scope-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .scope-list.in  li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-size: 11px; top: 7px; }
+    .scope-list.out li::before { content: '✕'; position: absolute; left: 0; color: #F87171; font-size: 11px; top: 7px; }
+
+    /* ── OPTION CARDS ── */
+    .options { display: flex; flex-direction: column; gap: 16px; }
+
+    .opt-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 26px 28px;
+      position: relative;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.22);
+    }
+
+    .opt-card.rec {
+      border-color: rgba(234,81,90,0.38);
+      box-shadow: 0 2px 22px rgba(234,81,90,0.09);
+    }
+
+    .opt-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .opt-letter {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .ol-a { background: rgba(129,140,248,0.12); color: var(--purple); border: 1px solid rgba(129,140,248,0.22); }
+    .ol-b { background: rgba(234,81,90,0.12); color: var(--red); border: 1px solid rgba(234,81,90,0.25); }
+    .ol-c { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.22); }
+
+    .rec-pill {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--red);
+      background: rgba(234,81,90,0.1);
+      border: 1px solid rgba(234,81,90,0.25);
+      padding: 4px 11px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .opt-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--bright);
+      margin: 11px 0 11px;
+    }
+
+    .opt-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.72;
+      margin-bottom: 18px;
+    }
+
+    .dsg-note {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      margin-bottom: 16px;
+    }
+
+    .procon {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .pc-box {
+      background: rgba(0,0,0,0.18);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+
+    .pc-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .pc-label.pro { color: var(--green); }
+    .pc-label.con { color: #F87171; }
+
+    .pc-list { list-style: none; }
+
+    .pc-list li {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+      padding-left: 13px;
+      position: relative;
+      margin-bottom: 5px;
+    }
+
+    .pc-list li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--anthraz);
+      font-size: 18px;
+      line-height: 1;
+      top: 0px;
+    }
+
+    /* ── RESOURCE LIST ── */
+    .res-list { list-style: none; }
+
+    .res-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: baseline;
+    }
+
+    .res-row:last-child { border-bottom: none; }
+
+    .res-role {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bright);
+    }
+
+    .res-detail {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── SPRINT TIMELINE ── */
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .wk-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 18px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.22);
+    }
+
+    .wk-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .wk-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bright);
+      line-height: 1.35;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wk-tasks { list-style: none; }
+
+    .wk-tasks li {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.52;
+      padding: 5px 0 5px 16px;
+      position: relative;
+      border-bottom: 1px solid rgba(30,37,48,0.45);
+    }
+
+    .wk-tasks li:last-child { border-bottom: none; }
+
+    .wk-tasks li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--red);
+      font-size: 10px;
+      top: 7px;
+    }
+
+    /* ── CHECKLIST ── */
+    .cl-phase { margin-bottom: 36px; }
+
+    .cl-phase-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .cl-phase-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .cl-phase-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .cl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.1s ease, border-color 0.1s ease;
+      user-select: none;
+      margin-bottom: 4px;
+    }
+
+    .cl-item:hover {
+      background: rgba(234,81,90,0.04);
+      border-color: var(--border);
+    }
+
+    .cl-item.done { opacity: 0.42; }
+
+    .cl-item.done .cl-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .cl-box {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 1.5px solid var(--anthraz);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      transition: background 0.12s ease, border-color 0.12s ease;
+      font-size: 10px;
+      color: transparent;
+    }
+
+    .cl-item.done .cl-box {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+
+    .cl-text {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.52;
+    }
+
+    /* ── RISK CARDS ── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .risk-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    }
+
+    .risk-type {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 7px;
+    }
+
+    .risk-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .risk-body {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .risk-mit {
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--red);
+      line-height: 1.55;
+    }
+
+    .risk-mit::before { content: '→ '; }
+
+    /* ── METRICS ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    }
+
+    .metric-val {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+
+    .metric-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 7px;
+      line-height: 1.35;
+    }
+
+    .metric-body {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    /* ── DECISIONS TABLE ── */
+    .dec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .dec-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .dec-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+      margin-bottom: 6px;
+    }
+
+    .dec-q {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 6px;
+    }
+
+    .dec-hint {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ft-l { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+    .ft-r { font-family: var(--mono); font-size: 10px; color: var(--anthraz); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      .wrapper { margin-left: 0; }
+      .pg-header { padding: 28px 24px; }
+      main { padding: 32px 24px; }
+      .sprint-grid { grid-template-columns: 1fr 1fr; }
+      .risk-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .scope-grid { grid-template-columns: 1fr; }
+      .procon { grid-template-columns: 1fr; }
+      .dec-grid { grid-template-columns: 1fr; }
+      footer { padding: 18px 24px; flex-direction: column; gap: 6px; align-items: flex-start; }
+    }
+
+    @media (max-width: 520px) {
+      .sprint-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; color: #111; font-size: 12px; }
+      .sidebar { display: none; }
+      .wrapper { margin-left: 0; }
+      .pg-header { background: #fff; border-bottom: 1px solid #ddd; padding: 20px 24px; }
+      main { padding: 20px 24px; max-width: 100%; }
+      .card, .opt-card, .wk-card, .risk-card, .metric-card, .scope-box, .dec-card, .pc-box {
+        background: #fff; border: 1px solid #ddd; box-shadow: none;
+        break-inside: avoid;
+      }
+      .section { margin-bottom: 32px; break-inside: avoid; }
+      .sprint-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+      footer { margin-left: 0; border-top: 1px solid #ddd; padding: 14px 24px; }
+      .highlight { background: #f5f5f5; border-left-color: #EA515A; }
+    }
+  
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a on" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header class="pg-header">
+<div class="badge-row">
+<span class="badge b-red">Kommunikation &amp; Kollaboration</span>
+<span class="badge b-red">Information &amp; Transparenz</span>
+<span class="badge b-green">Wirkung 8.1 / 10</span>
+<span class="badge b-yellow">Aufwand 3 / 10</span>
+<span class="badge b-default">M-06 · Sprint 03</span>
+</div>
+<h1>Übersicht digitale Tools</h1>
+<p class="pg-subtitle">Erweiterung der bestehenden Systemlandschaft um interaktiven Nutzungs-Toggle und Feedback-Tags – kombiniert mit geführten Change Agent Workshops, die valide Daten direkt aus den Abteilungen liefern. Basis für strategische Konsolidierungs-Entscheidungen.</p>
+</header>
+<main>
+<!-- 01 EINLEITUNG -->
+<section class="section" id="einleitung">
+<div class="sec-head">
+<span class="sec-tag">01</span>
+<h2>Einleitung</h2>
+</div>
+<p>Die Systemlandschaft auf der Digitalisierungsplattform (<code style="font-family:var(--mono);font-size:12px;background:var(--border);padding:2px 6px;border-radius:3px;color:var(--text)">/systemlandschaft</code>) existiert bereits: Tool-Karten, Filterung, Radar-Chart im Software-Drawer, Ranking nach Zufriedenheit – und technisch sogar schon ein Vote-Backend mit <code style="font-family:var(--mono);font-size:12px;background:var(--border);padding:2px 6px;border-radius:3px;color:var(--text)">software-votes.json</code>. Das ist eine solide Basis.</p>
+<p>Was fehlt, ist die <strong>Nutzungsrealität</strong>: Wer setzt ein Tool aktiv ein? Wer kennt es, meidet es aber bewusst? Wo gibt es Wünsche, die nie aufgetaucht sind, weil niemand strukturiert gefragt hat? Die vorhandene Abstimmung (Zufrieden/Unzufrieden/Interesse) gibt Richtung, aber keine Handlungsgrundlage.</p>
+<div class="highlight">
+          Das Problem ist kein technisches – es ist ein Aktivierungsproblem. Die Daten sind dünn, weil zu wenige die Plattform aktiv nutzen. Das Change Agent Netzwerk ist der ideale Hebel: die Tool-Review wird zur gemeinsamen Abteilungsübung – mit direktem Mehrwert für die Mitarbeitenden und strategisch verwertbaren Daten als Ergebnis.
+        </div>
+<div class="card">
+<div class="card-head">Konkreter Mehrwert dieser Massnahme</div>
+<p>Entscheidungsgrundlage für Konsolidierungen und Neubeschaffungen auf Basis echter Nutzungsdaten · Transparenz über tatsächliche vs. offiziell vorhandene Tool-Nutzung · Strukturierte Erfassung von Wünschen und Lücken pro Abteilung · Aktivierung des Change Agent Netzwerks in einer greifbaren, niederschwelligen Übung · Grundlage für eine strategische Tool-Governance ab 2026</p>
+</div>
+</section>
+<!-- 02 BESCHREIBUNG -->
+<section class="section" id="beschreibung">
+<div class="sec-head">
+<span class="sec-tag">02</span>
+<h2>Beschreibung</h2>
+</div>
+<p>Die bestehende Systemlandschaft wird um zwei gezielte Funktionen erweitert – aufbauend auf der bereits vorhandenen Vote-Infrastruktur:</p>
+<div class="card">
+<div class="card-head"><span class="card-head-num">①</span> Nutzungs-Toggle (neu)</div>
+<p>Pro Tool kann jede Person ihren Status direkt im Software-Drawer angeben: <em style="color:var(--text)">"Ich nutze es aktiv"</em> / <em style="color:var(--text)">"Ich kenne es, nutze es nicht"</em> / <em style="color:var(--text)">"Kenne ich nicht"</em>. Diese drei Zustände liefern Nutzungsrealität – etwas, das das bisherige Voting (Zufrieden/Unzufrieden) nicht leisten kann.</p>
+</div>
+<div class="card">
+<div class="card-head"><span class="card-head-num">②</span> Erweitertes Feedback / Tags (Ergänzung)</div>
+<p>Das bestehende Voting wird um strukturierte Feedback-Tags ergänzt: <em style="color:var(--text)">"Spart Zeit"</em>, <em style="color:var(--text)">"Zu komplex"</em>, <em style="color:var(--text)">"Ersatz nötig"</em>, <em style="color:var(--text)">"Empfehlenswert"</em>. Optional ein kurzes Freitext-Feld für Wünsche und Lücken. Die Tags sind auswertbarer als Freitext und schneller auszufüllen.</p>
+</div>
+<div class="card">
+<div class="card-head"><span class="card-head-num">③</span> Admin-Aggregationsansicht (neu, in /cp)</div>
+<p>Eine neue Ansicht im Control Panel zeigt aggregierte Nutzungsraten, Bewertungsverteilungen, Top-Tags und offene Wünsche pro Tool und pro Abteilung. Das ist der strategische Output – die Basis für Konsolidierungs-Entscheidungen.</p>
+</div>
+<div class="card">
+<div class="card-head"><span class="card-head-num">④</span> Change Agent Workshops</div>
+<p>In einem geführten Format (45–60 Min. pro Abteilung) spielen Change Agents mit ihren Teams die Tool-Liste gemeinsam durch und erfassen direkt auf der Plattform. Das erzeugt nicht nur Daten, sondern schafft Bewusstsein, fördert Austausch und bringt Wünsche ans Licht, die sonst ungehört bleiben.</p>
+</div>
+<div class="scope-grid">
+<div class="scope-box">
+<div class="scope-title in">Im Scope</div>
+<ul class="scope-list in">
+<li>Nutzungs-Toggle in Software-Drawer integrieren</li>
+<li>Feedback-Tags als Ergänzung zum bestehenden Voting</li>
+<li>Admin-Aggregationsansicht in /cp</li>
+<li>Change Agent Workshop-Konzept &amp; Facilitation-Script</li>
+<li>Auswertung + Konsolidierungsempfehlungen</li>
+</ul>
+</div>
+<div class="scope-box">
+<div class="scope-title out">Ausserhalb Scope</div>
+<ul class="scope-list out">
+<li>Vollständiger Neuaufbau der Systemlandschaft</li>
+<li>Account-Anbindung oder Identifizierung</li>
+<li>Datenschutz-Audit der gelisteten Tools</li>
+<li>Beschaffungsprozesse / Ausschreibungen</li>
+<li>Integration in externe Systeme</li>
+</ul>
+</div>
+</div>
+<div class="highlight" style="margin-top:20px;">
+          Einbettung in die Gesamtstrategie: Diese Massnahme ist M-06 im Sprint 03 – Kommunikation, zugewiesen an IT Intern. Sie schafft die Datenbasis für Konsolidierungsentscheidungen in Infrastruktur &amp; IT und Datenstrategie. Gleichzeitig ist sie der erste greifbare Einsatz des Change Agent Netzwerks – damit auch für Skills &amp; Change relevant.
+        </div>
+</section>
+<!-- 03 OPTIONEN -->
+<section class="section" id="optionen">
+<div class="sec-head">
+<span class="sec-tag">03</span>
+<h2>Umsetzungsideen</h2>
+</div>
+<div class="options">
+<!-- Option A -->
+<div class="opt-card">
+<div class="opt-top">
+<span class="opt-letter ol-a">Option A · Schnell</span>
+</div>
+<div class="opt-title">Externe Survey-Lösung parallel zur Plattform</div>
+<div class="opt-desc">Tally.so (Schweiz-Hosting, DSGVO-konform) wird als Befragungsinstrument eingesetzt – ein Survey pro Tool-Gruppe oder als Gesamt-Erhebung. Change Agents teilen den Link direkt in ihren Abteilungs-Sessions. Ergebnisse laufen als CSV in eine manuelle Auswertung (Notion, Tabelle). Kein Entwicklungsaufwand, sofort einsatzbereit.</div>
+<div class="procon">
+<div class="pc-box">
+<div class="pc-label pro">Pro</div>
+<ul class="pc-list">
+<li>In 1–2 Tagen einsatzbereit</li>
+<li>Kein Entwicklungsaufwand</li>
+<li>Tally.so: CH-konform, kein Google-Problem</li>
+<li>Gut als sofortiger Pilot</li>
+</ul>
+</div>
+<div class="pc-box">
+<div class="pc-label con">Contra</div>
+<ul class="pc-list">
+<li>Kein Medienbruch-freies Erlebnis</li>
+<li>Keine persistenten Ratings auf Tool-Karten</li>
+<li>Manuelle Aggregation nötig</li>
+<li>Kein Beitrag zur Plattform-Stärke</li>
+<li>Kein nachhaltiger Ansatz</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Option B – empfohlen -->
+<div class="opt-card rec">
+<div class="opt-top">
+<span class="opt-letter ol-b">Option B · Mittlerer Aufwand</span>
+<span class="rec-pill">✦ Empfohlen</span>
+</div>
+<div class="opt-title">Erweiterung des bestehenden Hubs</div>
+<div class="opt-desc">Nutzungs-Toggle und Feedback-Tags werden direkt in die bestehende React-Systemlandschaft integriert. Wichtig: Das Vote-Backend (<code style="font-family:var(--mono);font-size:12px">software-votes.json</code> + API-Endpunkte) existiert bereits – der tatsächliche Entwicklungsaufwand ist deshalb deutlich geringer als vermutet. Schätzung: 1–3 Tage. Admin-View in /cp als einfaches Aggregations-Dashboard.</div>
+<div class="dsg-note">✓ DSG/DSGVO: Vollständig unter SCNAT-Kontrolle · Kein externer Anbieter · Bestehende Infrastruktur</div>
+<div class="procon">
+<div class="pc-box">
+<div class="pc-label pro">Pro</div>
+<ul class="pc-list">
+<li>Nahtlose UX – kein Medienbruch</li>
+<li>Vote-Backend existiert bereits</li>
+<li>Aufwand geringer als auf den ersten Blick</li>
+<li>Daten vollständig unter SCNAT-Kontrolle</li>
+<li>Stärkt den Hub als Plattform</li>
+<li>Account-Anbindung nachrüstbar (Option C)</li>
+</ul>
+</div>
+<div class="pc-box">
+<div class="pc-label con">Contra</div>
+<ul class="pc-list">
+<li>1–3 Tage Entwicklungsaufwand nötig</li>
+<li>IT-Koordination für Deployment</li>
+<li>Ohne Account: keine Abteilungs-Zuordnung per Default</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Option C -->
+<div class="opt-card">
+<div class="opt-top">
+<span class="opt-letter ol-c">Option C · Strukturiert</span>
+</div>
+<div class="opt-title">Vollständige User-Account-Anbindung</div>
+<div class="opt-desc">Votes und Nutzungs-Status werden mit Nutzer-Accounts verknüpft. Vollständige Zuordenbarkeit nach Person, Abteilung und Zeitraum. Export-Funktion für strategische Berichte. Historisierbare Auswertungen. Erfordert ein durchgehendes Account-System und eine vollständige Datenbankanbindung an die Plattform.</div>
+<div class="procon">
+<div class="pc-box">
+<div class="pc-label pro">Pro</div>
+<ul class="pc-list">
+<li>Maximale Datenqualität und Segmentierbarkeit</li>
+<li>Auswertung nach Abteilung, Rolle, Zeit</li>
+<li>Langfristig die skalierbarste Lösung</li>
+</ul>
+</div>
+<div class="pc-box">
+<div class="pc-label con">Contra</div>
+<ul class="pc-list">
+<li>Account-System heute noch nicht vollständig</li>
+<li>Intensivste IT-Abstimmung</li>
+<li>Im nächsten Sprint nicht realistisch</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 04 VORBEREITUNG -->
+<section class="section" id="vorbereitung">
+<div class="sec-head">
+<span class="sec-tag">04</span>
+<h2>Vorbereitung</h2>
+</div>
+<h3>Technisch</h3>
+<div class="card">
+<p>Bestehendes Datenmodell analysieren: Welche Felder gibt es in <code style="font-family:var(--mono);font-size:12px;background:var(--border);padding:2px 5px;border-radius:3px">software-votes.json</code>? Was muss für den Nutzungs-Toggle ergänzt werden – neues Feld oder separater Datensatz? Welche API-Endpunkte existieren bereits und können wiederverwendet werden?</p>
+<p style="margin-top:10px;">Anonymität klären: Werden Votes anonym gespeichert (kein Account nötig) oder session-basiert (wiederholtes Abstimmen verhindern, keine Identifizierung)? Empfehlung: Session-Token ohne Account für den Sprint-Piloten.</p>
+</div>
+<h3>Stakeholder</h3>
+<div class="card">
+<p>IT via IT Intern informieren: Framing als Feature-Update der bestehenden Plattform – kein neues System, kein neues Cloud-Exposure, kein zusätzlicher Drittanbieter. Deployment-Prozess und Timeline klären.</p>
+<p style="margin-top:10px;">Change Agent Team (David/Arber) committen: Kapazität für 1–3 Entwicklungstage in Woche 2 des Sprints sichern. Gleichzeitig nehmen sie die Workshop-Koordination mit ihren Abteilungen wahr.</p>
+</div>
+<h3>Change Agents</h3>
+<div class="card">
+<p>Am nächsten monatlichen Change Agent Meeting briefen: Was ist die Massnahme, was ist ihre Rolle (Facilitation, nicht Umfrage-Verteiler), was bringt es ihrer Abteilung? Facilitation-Script und Workshop-Material rechtzeitig liefern.</p>
+<p style="margin-top:10px;"><strong>Kritischer Pfad:</strong> Alle Abteilungstermine für die Workshops müssen in Sprint-Woche 1 fixiert sein – nicht erst in Woche 3 suchen. Das ist der häufigste Grund für Verzögerungen bei ähnlichen Formaten.</p>
+</div>
+<h3>Entscheidungen vorab</h3>
+<div class="dec-grid" style="margin-top:4px;">
+<div class="dec-card">
+<div class="dec-num">Entscheid 01</div>
+<div class="dec-q">Feedback-System: Tags vs. Freitext vs. beides?</div>
+<div class="dec-hint">Empfehlung: Strukturierte Tags (auswertbarer, schneller), plus optionales Freitext-Feld für Wünsche.</div>
+</div>
+<div class="dec-card">
+<div class="dec-num">Entscheid 02</div>
+<div class="dec-q">Anonymität oder Abteilungs-Zuordnung?</div>
+<div class="dec-hint">Kompromiss: Abteilung wird beim Workshop-Einstieg gesetzt (kein Account), aber keine Identifizierung einzelner Personen.</div>
+</div>
+<div class="dec-card">
+<div class="dec-num">Entscheid 03</div>
+<div class="dec-q">Sichtbarkeit der aggregierten Ergebnisse?</div>
+<div class="dec-hint">Empfehlung: Aggregationen für alle sichtbar (stärkt das kollektive Bewusstsein), Rohdata nur im /cp-Admin.</div>
+</div>
+<div class="dec-card">
+<div class="dec-num">Entscheid 04</div>
+<div class="dec-q">Wunsch-Feld: strukturiert oder Freitext?</div>
+<div class="dec-hint">Empfehlung: Freitext plus Pflicht-Kategorie (z.B. "Beschaffung", "Support", "Schulung") für auswertbare Zuweisung.</div>
+</div>
+</div>
+</section>
+<!-- 05 RESSOURCEN -->
+<section class="section" id="ressourcen">
+<div class="sec-head">
+<span class="sec-tag">05</span>
+<h2>Ressourcen</h2>
+</div>
+<h3>Interne Rollen</h3>
+<ul class="res-list">
+<li class="res-row">
+<span class="res-role">Change Agent Team (David J. / Arber A.)</span>
+<span class="res-detail">Frontend-Entwicklung: Nutzungs-Toggle, Feedback-Tags, Admin-Aggregationsansicht. Schätzung: 1–3 Entwicklungstage. Dank vorhandenem Vote-Backend deutlich effizienter als von Grund auf. Zusätzlich: Workshop-Koordination und Facilitation-Unterstützung im Change Agent Netzwerk.</span>
+</li>
+<li class="res-row">
+<span class="res-role">IT Intern</span>
+<span class="res-detail">IT-Koordination: Deployment-Abstimmung, Infrastructure-Freigabe, Monitoring nach Go-Live. Bereits als M-06-Verantwortlicher erfasst. Schätzung: 0.5 Tage.</span>
+</li>
+<li class="res-row">
+<span class="res-role">Silvan Poltera</span>
+<span class="res-detail">Entscheidungen (4 Vorab-Entscheide), Stakeholder-Kommunikation, Sprint-Review, Ergebnis-Bericht. Schätzung: 0.5 Tage.</span>
+</li>
+<li class="res-row">
+<span class="res-role">Change Agents</span>
+<span class="res-detail">Workshop-Vorbereitung (30 Min. Lesen des Scripts) + Durchführung mit Abteilung (45–60 Min.). Schätzung: je ca. 2–3h innerhalb des 10%-Zeitbudgets.</span>
+</li>
+</ul>
+<h3>Tools &amp; Software</h3>
+<div class="card">
+<p>Bestehende Plattform (React, Express.js, JSON-File-Storage). Kein neues Tool, kein externer Dienst, kein zusätzlicher Cloud-Anbieter. Alle Daten bleiben auf SCNAT-eigener Infrastruktur.</p>
+<p style="margin-top:8px; font-family:var(--mono); font-size:10px; color:var(--green);">✓ DSG/DSGVO-Status: Vollständig konform – SCNAT-eigene Infrastruktur, kein Drittanbieter.</p>
+</div>
+<h3>Budget</h3>
+<div class="card">
+<p>Intern: CHF 0 Zusatzbudget (vorhandene Ressourcen und bestehende Plattform-Infrastruktur).<br/>
+          Workshops: CHF 0 – Change Agents im Rahmen ihres 10%-Zeitbudgets.</p>
+</div>
+</section>
+<!-- 06 SPRINT -->
+<section class="section" id="sprint">
+<div class="sec-head">
+<span class="sec-tag">06</span>
+<h2>Sprint-Ablauf (4 Wochen)</h2>
+</div>
+<div class="sprint-grid">
+<div class="wk-card">
+<div class="wk-label">Woche 1</div>
+<div class="wk-title">Kick-off &amp; Konzept</div>
+<ul class="wk-tasks">
+<li>Datenmodell und API analysieren</li>
+<li>4 Vorab-Entscheide treffen</li>
+<li>IT informieren (IT Intern)</li>
+<li>Entwicklungskapazität fixieren</li>
+<li>Change Agents briefen</li>
+<li>Facilitation-Script erstellen</li>
+<li>Alle Abteilungstermine Woche 3 fixieren</li>
+</ul>
+</div>
+<div class="wk-card">
+<div class="wk-label">Woche 2</div>
+<div class="wk-title">Entwicklung &amp; Test</div>
+<ul class="wk-tasks">
+<li>Nutzungs-Toggle implementieren</li>
+<li>Feedback-Tags entwickeln</li>
+<li>Admin-Aggregationsansicht in /cp</li>
+<li>Interne Tests mit Silvans Team</li>
+<li>Bugs dokumentieren und fixen</li>
+<li>Edge Cases abdecken</li>
+</ul>
+</div>
+<div class="wk-card">
+<div class="wk-label">Woche 3</div>
+<div class="wk-title">Change Agent Workshops</div>
+<ul class="wk-tasks">
+<li>Alle Abteilungs-Sessions durchführen</li>
+<li>Nutzungsstatus live auf Plattform erfassen</li>
+<li>Wünsche und Lücken dokumentieren</li>
+<li>Laufende Rückmeldungen an Entwicklung</li>
+<li>Erste Datensichtung</li>
+</ul>
+</div>
+<div class="wk-card">
+<div class="wk-label">Woche 4</div>
+<div class="wk-title">Auswertung &amp; Übergabe</div>
+<ul class="wk-tasks">
+<li>Aggregierte Daten auswerten</li>
+<li>Ergebnis-Bericht erstellen</li>
+<li>Min. 3 Empfehlungen formulieren</li>
+<li>Präsentation im CA-Meeting</li>
+<li>Plattform-Doku aktualisieren</li>
+<li>Nächste Massnahme priorisieren</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 07 CHECKLISTE -->
+<section class="section" id="checkliste">
+<div class="sec-head">
+<span class="sec-tag">07</span>
+<h2>Checkliste</h2>
+</div>
+<!-- Vorbereitung -->
+<div class="cl-phase">
+<div class="cl-phase-head">
+<span class="cl-phase-label">Vorbereitung</span>
+<span class="cl-phase-count" id="cnt-v">0 / 6</span>
+</div>
+<div class="cl-item" data-id="v1" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Bestehendes Datenmodell und API-Endpunkte analysiert – Erweiterungsbedarf für Nutzungs-Toggle dokumentiert</span></div>
+<div class="cl-item" data-id="v2" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Alle 4 Vorab-Entscheide getroffen: Feedback-System, Anonymität, Sichtbarkeit, Wunsch-Feld</span></div>
+<div class="cl-item" data-id="v3" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">IT informiert (IT Intern): Framing als Feature-Update, kein neues System, Deployment-Prozess und Timeline geklärt</span></div>
+<div class="cl-item" data-id="v4" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Entwicklungskapazität gesichert: David/Arber (Change Agent Team) für Woche 2 bestätigt</span></div>
+<div class="cl-item" data-id="v5" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Change Agents gebrieft: Rolle erklärt, Facilitation-Script übergeben, Fragen beantwortet</span></div>
+<div class="cl-item" data-id="v6" data-phase="v" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Alle Abteilungstermine für Workshops in Sprint-Woche 3 fixiert – keine offenen Slots</span></div>
+</div>
+<!-- Sprint-Durchführung -->
+<div class="cl-phase">
+<div class="cl-phase-head">
+<span class="cl-phase-label">Sprint-Durchführung</span>
+<span class="cl-phase-count" id="cnt-s">0 / 6</span>
+</div>
+<div class="cl-item" data-id="s1" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Nutzungs-Toggle im Software-Drawer implementiert und intern getestet</span></div>
+<div class="cl-item" data-id="s2" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Feedback-Tags entwickelt und in bestehendes Voting-UI integriert</span></div>
+<div class="cl-item" data-id="s3" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Admin-Aggregationsansicht in /cp live: Nutzungsraten, Ratings, Tags, Wünsche sichtbar</span></div>
+<div class="cl-item" data-id="s4" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Alle Abteilungs-Workshops mit Change Agents durchgeführt, Daten vollständig erfasst</span></div>
+<div class="cl-item" data-id="s5" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Wünsche und Lücken aus allen Workshops dokumentiert und kategorisiert</span></div>
+<div class="cl-item" data-id="s6" data-phase="s" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Bugs behoben, Plattform stabil – kein bekanntes Issue zum Sprint-Ende</span></div>
+</div>
+<!-- Abschluss -->
+<div class="cl-phase">
+<div class="cl-phase-head">
+<span class="cl-phase-label">Abschluss</span>
+<span class="cl-phase-count" id="cnt-a">0 / 5</span>
+</div>
+<div class="cl-item" data-id="a1" data-phase="a" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Ergebnis-Bericht erstellt: Nutzungsraten, Ratings, Top-Wünsche, blinde Flecken pro Tool und Abteilung</span></div>
+<div class="cl-item" data-id="a2" data-phase="a" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Mind. 3 konkrete Konsolidierungs- oder Beschaffungsempfehlungen formuliert</span></div>
+<div class="cl-item" data-id="a3" data-phase="a" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Ergebnisse im Change Agent Meeting präsentiert und diskutiert</span></div>
+<div class="cl-item" data-id="a4" data-phase="a" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Plattform-Dokumentation aktualisiert: Toggle, Tags, Admin-View erklärt</span></div>
+<div class="cl-item" data-id="a5" data-phase="a" onclick="toggle(this)"><div class="cl-box">✓</div><span class="cl-text">Folgemassnahme (Tool-Konsolidierung) im Sprint-Backlog priorisiert</span></div>
+</div>
+</section>
+<!-- 08 RISIKEN -->
+<section class="section" id="risiken">
+<div class="sec-head">
+<span class="sec-tag">08</span>
+<h2>Risiken &amp; Abhängigkeiten</h2>
+</div>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-type">Technisch</div>
+<div class="risk-title">Datenmodell schwerer erweiterbar als erwartet</div>
+<div class="risk-body">Das bestehende <code style="font-family:var(--mono);font-size:11px">software-votes.json</code>-Schema könnte für den Nutzungs-Toggle eine aufwändigere Umstrukturierung erfordern als erwartet – z.B. fehlende Foreign-Key-Beziehung zwischen Tool-ID und Vote.</div>
+<div class="risk-mit">Datenmodell-Analyse ist explizites Gate in Woche 1. Aufwand neu bewerten bevor Entwicklung startet.</div>
+</div>
+<div class="risk-card">
+<div class="risk-type">Technisch</div>
+<div class="risk-title">Session-basiertes Voting durch Browser-Verhalten kompromittiert</div>
+<div class="risk-body">Ohne Account kann ein und dieselbe Person mehrfach abstimmen (neuer Browser, Inkognito, Cache-Leerung). Die Datenqualität leidet – besonders bei kleinen Teams.</div>
+<div class="risk-mit">In den Workshops ist der Change Agent anwesend – dort wird realistischerweise nicht mehrfach abgestimmt. Für den Sprint-Piloten ausreichend. Account-Anbindung als Ausbaustufe planen.</div>
+</div>
+<div class="risk-card">
+<div class="risk-type">IT-politische Rahmenbedingungen</div>
+<div class="risk-title">Deployment-Prozess verlangsamt den Rollout</div>
+<div class="risk-body">Die Erweiterung einer bestehenden Plattform ist technisch weniger aufwändig abzustimmen als neue Infrastruktur. Dennoch können interne Freigabeprozesse den Zeitplan belasten – besonders wenn mehrere Deployment-Zyklen nötig sind.</div>
+<div class="risk-mit">IT Intern in Woche 1 einbinden. Framing konsequent: Feature-Update, kein neues System, kein neues Exposure. Deployment-Fenster frühzeitig reservieren.</div>
+</div>
+<div class="risk-card">
+<div class="risk-type">Ressourcen</div>
+<div class="risk-title">Change Agent Team-Kapazität nicht verfügbar</div>
+<div class="risk-body">David und Arber könnten durch parallele Projekte (KI-Hub, andere Sprints) ausgelastet sein und den Entwicklungsaufwand nicht in Woche 2 leisten können.</div>
+<div class="risk-mit">Kapazität explizit in Woche 1 abklären und schriftlich bestätigen lassen. Sprint-Scope bei Bedarf reduzieren – Toggle priorisieren, Tags als zweite Iteration.</div>
+</div>
+<div class="risk-card">
+<div class="risk-type">Change &amp; Adoption</div>
+<div class="risk-title">Workshops werden als Pflicht und nicht als Diskussion erlebt</div>
+<div class="risk-body">Wenn Mitarbeitende die Session als Umfrage-Pflicht statt als echten Austausch erleben, sind die Daten oberflächlich und die Stimmung negativ. Das schadet sowohl der Datenqualität als auch der Change Agent Rolle.</div>
+<div class="risk-mit">Facilitation-Script auf echten Austausch ausrichten: "Was nervt euch am meisten?" ist besser als "Bitte bewerten Sie Tool X." Change Agents als Peers positionieren, nicht als Umfrage-Verteiler.</div>
+</div>
+<div class="risk-card">
+<div class="risk-type">Abhängigkeiten</div>
+<div class="risk-title">Systemlandschaft parallel im Umbau</div>
+<div class="risk-body">Falls an der Systemlandschaft während des Sprints andere Änderungen vorgenommen werden, entstehen Merge-Konflikte und Deployment-Komplikationen, die den Zeitplan direkt gefährden.</div>
+<div class="risk-mit">Status der Systemlandschaft in Woche 1 klären. Parallel-Arbeiten ausschliessen oder explizit koordinieren. Feature-Branch verwenden.</div>
+</div>
+</div>
+</section>
+<!-- 09 ERFOLGSMESSUNG -->
+<section class="section" id="messung">
+<div class="sec-head">
+<span class="sec-tag">09</span>
+<h2>Erfolgsmessung</h2>
+</div>
+<div class="metrics-grid">
+<div class="metric-card">
+<div class="metric-val">≥ 80%</div>
+<div class="metric-name">Tool-Abdeckungsrate</div>
+<div class="metric-body">Mind. 80% der im Hub gelisteten Tools wurden von mind. einer Person mit Nutzungsstatus versehen.</div>
+</div>
+<div class="metric-card">
+<div class="metric-val">≥ 60%</div>
+<div class="metric-name">Mitarbeiter-Beteiligung</div>
+<div class="metric-body">Mind. 60% der Mitarbeitenden haben ihren Nutzungsstatus für mind. 3 Tools angegeben.</div>
+</div>
+<div class="metric-card">
+<div class="metric-val">100%</div>
+<div class="metric-name">Abteilungs-Abdeckung</div>
+<div class="metric-body">Für jede Abteilung liegt nach Sprint-Ende eine vollständige Auswertung vor – kein blinder Fleck.</div>
+</div>
+<div class="metric-card">
+<div class="metric-val">≥ 3</div>
+<div class="metric-name">Entscheidungsgrundlagen</div>
+<div class="metric-body">Mind. 3 konkrete Konsolidierungs- oder Beschaffungsempfehlungen können nach Sprint-Ende formuliert werden.</div>
+</div>
+<div class="metric-card">
+<div class="metric-val">≥ 5</div>
+<div class="metric-name">Abweichende Tools</div>
+<div class="metric-body">Mind. 5 Tools identifiziert, bei denen Nutzungsrealität stark von offizieller Verfügbarkeit abweicht.</div>
+</div>
+<div class="metric-card">
+<div class="metric-val">+1</div>
+<div class="metric-name">Folgemassnahme definiert</div>
+<div class="metric-body">Aus den Ergebnissen wird mind. eine konkrete Folgemassnahme direkt abgeleitet und im Backlog priorisiert.</div>
+</div>
+</div>
+<div class="highlight" style="margin-top:24px;">
+<strong>Qualitativer Indikator:</strong> Change Agents berichten, dass ihre Abteilungs-Session echtes Engagement und unerwartete Diskussionen ausgelöst hat – und dass mindestens eine Erkenntnis dabei war, die ohne den Workshop nie aufgetaucht wäre.
+        </div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#messung"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 17 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 17;
+  var DONE_CLS = 'done';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+    // ── CHECKLIST mit localStorage ──
+    const KEY = 'scnat-m06-tool-uebersicht-v1';
+
+    function load() {
+      try { return JSON.parse(localStorage.getItem(KEY) || '{}'); }
+      catch { return {}; }
+    }
+
+    function save(s) {
+      try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {}
+    }
+
+    function toggle(el) {
+      el.classList.toggle('done');
+      const s = load();
+      s[el.dataset.id] = el.classList.contains('done');
+      save(s);
+      updateCounts();
+    }
+
+    function updateCounts() {
+      ['v', 's', 'a'].forEach(phase => {
+        const all  = document.querySelectorAll(`.cl-item[data-phase="${phase}"]`).length;
+        const done = document.querySelectorAll(`.cl-item[data-phase="${phase}"].done`).length;
+        const el   = document.getElementById(`cnt-${phase}`);
+        if (el) el.textContent = `${done} / ${all}`;
+      });
+    }
+
+    function restore() {
+      const s = load();
+      document.querySelectorAll('.cl-item').forEach(el => {
+        if (s[el.dataset.id]) el.classList.add('done');
+      });
+      updateCounts();
+    }
+
+    // ── SCROLL SPY für aktive Nav ──
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('.section[id]');
+      const links    = document.querySelectorAll('.nav-link');
+
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+            if (a) a.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+      sections.forEach(s => io.observe(s));
+    }
+
+    restore();
+    initScrollSpy();
+  </script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

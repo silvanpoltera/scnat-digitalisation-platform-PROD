@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>KI-Strategie &amp; Befähigungsprogramm – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root {
+      --bg-base: #0C0E10;
+      --bg-card: #12161A;
+      --bg-elevated: #161B21;
+      --border: #1E2530;
+      --border-hover: #2A3542;
+      --primary: #EA515A;
+      --primary-hover: #D94550;
+      --primary-subtle: rgba(234,81,90,0.10);
+      --primary-border: rgba(234,81,90,0.28);
+      --anthrazit: #5A616B;
+      --muted: #6B7280;
+      --text-light: #E5E7EB;
+      --text-mid: #9CA3AF;
+      --green: #4ADE80;
+      --green-subtle: rgba(74,222,128,0.10);
+      --yellow: #FBBF24;
+      --yellow-subtle: rgba(251,191,36,0.10);
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-light);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 22px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1260px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 5px;
+    }
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+    .header-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-base);
+      color: var(--text-mid);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .badge-red {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .badge-green {
+      background: var(--green-subtle);
+      border-color: rgba(74,222,128,0.25);
+      color: var(--green);
+    }
+    .scnat-mark {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+      line-height: 1.6;
+    }
+    .scnat-mark strong {
+      display: block;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1260px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 210px 1fr;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky;
+      top: 85px;
+      height: calc(100vh - 85px);
+      overflow-y: auto;
+      padding: 32px 0 32px 40px;
+      border-right: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .nav-section-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-left: 10px;
+    }
+    .nav-list { list-style: none; }
+    .nav-list li { margin-bottom: 1px; }
+    .nav-list a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text-mid);
+      font-size: 12.5px;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+    .nav-list a:hover {
+      background: var(--bg-card);
+      color: var(--text-light);
+      border-color: var(--border);
+    }
+    .nav-list a.active {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      min-width: 18px;
+    }
+    .nav-list a.active .nav-num { color: var(--primary); opacity: 0.7; }
+
+    /* ── MAIN ── */
+    .main-content {
+      padding: 44px 48px 100px 48px;
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 72px;
+      scroll-margin-top: 110px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--primary);
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    h2 {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    h4 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    p {
+      color: var(--text-mid);
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text-light); font-weight: 500; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 24px;
+      margin-bottom: 14px;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: var(--border-hover); }
+    .card-accent {
+      border-left: 3px solid var(--primary);
+    }
+
+    /* ── INTRO HIGHLIGHT ── */
+    .intro-highlight {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 22px 24px;
+      margin-bottom: 22px;
+    }
+    .intro-highlight p { font-size: 14.5px; color: var(--text-mid); }
+
+    /* ── 2-COL GRID ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 14px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+    }
+
+    /* ── INFO ITEM ── */
+    .info-item {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .info-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .info-value {
+      font-size: 13.5px;
+      color: var(--text-light);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .info-value.muted { color: var(--text-mid); font-weight: 400; }
+
+    /* ── OPTION CARDS ── */
+    .option-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 22px 18px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s;
+    }
+    .option-card:hover { border-color: var(--border-hover); }
+    .option-card.recommended {
+      border-color: var(--primary-border);
+      background: linear-gradient(145deg, var(--bg-card) 0%, rgba(234,81,90,0.04) 100%);
+    }
+    .option-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .recommended-pill {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      background: var(--primary);
+      color: white;
+      padding: 3px 9px;
+      border-radius: 3px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pro-con {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .pro-box, .con-box {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 10px 12px;
+    }
+    .pro-box-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 7px;
+    }
+    .con-box-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 7px;
+    }
+    .pro-box ul, .con-box ul { list-style: none; }
+    .pro-box ul li, .con-box ul li {
+      font-size: 11.5px;
+      color: var(--text-mid);
+      padding: 3px 0 3px 14px;
+      position: relative;
+      line-height: 1.4;
+    }
+    .pro-box ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-size: 10px; top: 4px; }
+    .con-box ul li::before { content: '✗'; position: absolute; left: 0; color: var(--primary); font-size: 10px; top: 4px; }
+    .option-verdict {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .option-card.recommended .option-verdict { color: var(--primary); }
+
+    /* ── LEVEL CARDS ── */
+    .level-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 20px 18px;
+    }
+    .level-num {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--primary);
+      opacity: 0.30;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .level-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .level-topics { list-style: none; }
+    .level-topics li {
+      font-size: 12px;
+      color: var(--text-mid);
+      padding: 3px 0 3px 13px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.4;
+    }
+    .level-topics li:last-child { border-bottom: none; }
+    .level-topics li::before { content: '·'; position: absolute; left: 0; color: var(--primary); }
+
+    /* ── SCOPE GRID ── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .scope-list { list-style: none; }
+    .scope-list li {
+      font-size: 12.5px;
+      color: var(--text-mid);
+      padding: 5px 0 5px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+    .scope-list li:last-child { border-bottom: none; }
+    .scope-list.in li::before { content: '✓'; position: absolute; left: 0; color: var(--green); }
+    .scope-list.out li::before { content: '✗'; position: absolute; left: 0; color: var(--primary); }
+
+    /* ── STAKE ITEM ── */
+    .stake-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stake-item:last-child { border-bottom: none; }
+    .stake-arrow {
+      color: var(--primary);
+      font-size: 13px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .stake-body { flex: 1; }
+    .stake-title { font-size: 13px; font-weight: 500; color: var(--text-light); margin-bottom: 3px; }
+    .stake-desc { font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+
+    /* ── TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+    }
+    .data-table td {
+      font-size: 12.5px;
+      color: var(--text-mid);
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+    /* ── TIER PILLS ── */
+    .tier {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+    .tier-caution { background: var(--yellow-subtle); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+    .tier-good { background: var(--green-subtle); color: var(--green); border: 1px solid rgba(74,222,128,0.22); }
+    .tier-neutral { background: var(--bg-base); color: var(--text-mid); border: 1px solid var(--border); }
+
+    /* ── BUDGET ITEMS ── */
+    .budget-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .budget-row:last-child { border-bottom: none; }
+    .budget-label { color: var(--text-mid); }
+    .budget-value { font-family: var(--font-mono); font-size: 12px; color: var(--text-light); }
+    .budget-row.total { background: var(--primary-subtle); border-radius: 0 0 6px 6px; }
+    .budget-row.total .budget-label { color: var(--primary); font-weight: 500; }
+    .budget-row.total .budget-value { color: var(--primary); font-size: 13px; }
+
+    /* ── SPRINT TIMELINE ── */
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 10px;
+    }
+    .sprint-week {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .sprint-head {
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 13px 16px;
+    }
+    .sprint-wn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+    .sprint-wt {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    .sprint-body { padding: 12px 14px; flex: 1; }
+    .sprint-item {
+      font-size: 11.5px;
+      color: var(--text-mid);
+      padding: 5px 0 5px 14px;
+      position: relative;
+      border-bottom: 1px dotted var(--border);
+      line-height: 1.4;
+    }
+    .sprint-item:last-child { border-bottom: none; }
+    .sprint-item::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 10px;
+      top: 5px;
+    }
+
+    /* ── CHECKLIST ── */
+    .checklist-progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .progress-outer {
+      flex: 1;
+      height: 3px;
+      background: var(--bg-base);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-inner {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+    .progress-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-mid);
+      white-space: nowrap;
+    }
+    .reset-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: var(--border-hover); color: var(--text-mid); }
+
+    .checklist-group { margin-bottom: 28px; }
+    .cl-group-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      padding: 7px 14px;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cl-count { color: var(--primary); }
+
+    .cl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .cl-item:hover { border-color: var(--border-hover); }
+    .cl-item.done {
+      opacity: 0.48;
+      background: var(--bg-base);
+    }
+    .cl-item.done .cl-text { text-decoration: line-through; color: var(--muted); }
+
+    .cl-box {
+      width: 17px;
+      height: 17px;
+      min-width: 17px;
+      border: 1.5px solid var(--border-hover);
+      border-radius: 4px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      background: var(--bg-base);
+      position: relative;
+    }
+    .cl-item.done .cl-box {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .cl-item.done .cl-box::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-0.5px,-1px);
+    }
+
+    .cl-text {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    /* ── RISK CARDS ── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .risk-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 22px;
+    }
+    .risk-cat {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .risk-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .risk-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .risk-title { font-size: 12.5px; font-weight: 500; color: var(--text-light); margin-bottom: 4px; }
+    .risk-desc { font-size: 11.5px; color: var(--text-mid); line-height: 1.5; }
+
+    /* ── METRICS ── */
+    .metric-group { margin-bottom: 26px; }
+    .metric-group-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+    .metric-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .metric-icon {
+      color: var(--primary);
+      font-size: 13px;
+      font-family: var(--font-mono);
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .metric-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .metric-text strong { color: var(--text-light); }
+
+    /* ── PREQUISITE LIST ── */
+    .prereq-list { list-style: none; }
+    .prereq-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .prereq-item:last-child { border-bottom: none; }
+    .prereq-arrow { color: var(--primary); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+    .prereq-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .prereq-text strong { color: var(--text-light); }
+
+    /* ── DECISION LIST ── */
+    .decision-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .decision-item:last-child { border-bottom: none; }
+    .decision-bang {
+      font-family: var(--font-mono);
+      color: var(--primary);
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .decision-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .decision-text strong { color: var(--text-light); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 18px 40px;
+    }
+    .footer-inner {
+      max-width: 1260px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .footer-text span { color: var(--primary); }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: white; color: #111; }
+      .sidebar, .site-header { display: none !important; }
+      .layout { grid-template-columns: 1fr; }
+      .main-content { padding: 24px; }
+      section { page-break-inside: avoid; margin-bottom: 40px; }
+      .card, .option-card, .risk-card, .sprint-week, .metric-item { border: 1px solid #ddd !important; background: white !important; }
+      p, .cl-text, .stake-desc, .risk-desc, .metric-text { color: #444 !important; }
+      h2, h3, strong, .info-value { color: #111 !important; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 24px 20px 60px; }
+      .grid-3, .sprint-grid, .grid-4 { grid-template-columns: 1fr; }
+      .grid-2, .pro-con, .scope-grid, .risk-grid { grid-template-columns: 1fr; }
+      .site-header { padding: 14px 20px; }
+      .header-title { font-size: 16px; }
+      .scnat-mark { display: none; }
+    }
+  
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a on" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc"><header class="site-header">
+<div class="header-inner">
+<div>
+<div class="header-eyebrow">SCNAT Digitalisierung · Massnahme</div>
+<div class="header-title">KI-Strategie &amp; Befähigungsprogramm</div>
+<div class="header-badges">
+<span class="badge badge-red">Wirkung: Hoch (8.8)</span>
+<span class="badge">Aufwand: Mittel–Hoch (9)</span>
+<span class="badge badge-green">Empfohlen: Option B</span>
+<span class="badge">Strategie &amp; Steuerung</span>
+<span class="badge">Skills &amp; Change</span>
+<span class="badge">Compliance</span>
+<span class="badge">4-Wochen-Sprint</span>
+</div>
+</div>
+<div class="scnat-mark">
+<strong>SCNAT</strong>
+      digitalisierung.scnat.ch
+    </div>
+</div>
+</header>
+<main class="main-content">
+<!-- ══ 01 EINLEITUNG ══ -->
+<section id="einleitung">
+<div class="section-header">
+<span class="section-num-tag">01</span>
+<h2>Einleitung</h2>
+</div>
+<div class="intro-highlight">
+<p><strong>SCNAT steht an einem Wendepunkt.</strong> KI-Tools – allen voran ChatGPT Team – sind bereits im Einsatz. Die Speech-to-Text-Analyse läuft auf der Plattform. KI ist keine Zukunftstheorie mehr, sondern gelebte Praxis. Was fehlt, ist der strukturelle Rahmen: Wer darf was, mit welchem Tool, unter welchen Bedingungen?</p>
+</div>
+<div class="grid-2">
+<div class="info-item">
+<div class="info-label">Auslöser</div>
+<div class="info-value muted">KI-Tools im produktiven Einsatz ohne koordinierte Governance – natürliche Phase jeder Digitalisierung, Adoption läuft Struktur voraus</div>
+</div>
+<div class="info-item">
+<div class="info-label">Strategische Bedeutung</div>
+<div class="info-value muted">Fundament für alle weiteren Digitalisierungsmassnahmen – ohne diesen Rahmen fehlt die gemeinsame Sprache</div>
+</div>
+<div class="info-item">
+<div class="info-label">Bestehende Signale</div>
+<div class="info-value muted">STT-Analyse aktiv auf Plattform, KI-Hub bereits vorhanden, Schulungskalender bereit – Infrastruktur ist da</div>
+</div>
+<div class="info-item">
+<div class="info-label">Zielrichtung</div>
+<div class="info-value muted">Von Cloud-KI mit Einschränkungen (ChatGPT Team) zu souveränen lokalen LLMs (super mini pai / Qwen2.5) – schrittweise, glaubwürdig</div>
+</div>
+</div>
+<div class="card card-accent" style="margin-top: 16px;">
+<h3>Warum Datensouveränität das stärkste Argument ist</h3>
+<p>Als öffentlich finanzierte Schweizer Institution ist Vertrauen in den Umgang mit Daten kein Bonus, sondern Voraussetzung für das Mandat. Eine KI-Governance, die Souveränität, Transparenz und Verlässlichkeit abbildet, ist gegenüber Geldgebern und Partnern kommunizierbar – und gleichzeitig das überzeugendste Argument gegenüber einer On-Premise-orientierten IT-Abteilung, weil es ihre Philosophie spricht.</p>
+</div>
+</section>
+<!-- ══ 02 BESCHREIBUNG ══ -->
+<section id="beschreibung">
+<div class="section-header">
+<span class="section-num-tag">02</span>
+<h2>Beschreibung</h2>
+</div>
+<p>Diese Massnahme ist <strong>zweilagig</strong> konzipiert – beide Schichten hängen voneinander ab: Die Strategie definiert den Rahmen, der Lernpfad lehrt, wie man sich darin bewegt.</p>
+<div class="card">
+<h3>Lage 1 – KI-Strategie &amp; Governance</h3>
+<p>Bestandsaufnahme aller genutzten KI-Tools (offiziell und inoffiziell), Definition von Einsatzgebieten mit echtem Mehrwert (Recherche, Protokollierung, Texterstellung, Archivdurchsuchung), Datenkategorisierungs-Schema (was geht in welchen Tier), formelle Governance-Regeln mit Verantwortlichkeiten und Freigabeprozessen, Pilotprojekte priorisieren – insbesondere lokaler LLM mit RAG und STT-Ausbau.</p>
+</div>
+<div class="card">
+<h3>Lage 2 – KI-Befähigungsprogramm (Lernpfad)</h3>
+<p>Strukturierter Lernpfad mit drei Stufen auf der bestehenden Plattform-Infrastruktur. KI-Spezialisten (Teil des Change Agent Teams) für Plattform-Content. Change Agents als erste Lernende und Multiplikatoren in ihren Abteilungen.</p>
+<div class="grid-3" style="margin-top: 16px;">
+<div class="level-card">
+<div class="level-num">L1</div>
+<div class="level-title">Grundlagen</div>
+<ul class="level-topics">
+<li>Was ist KI / LLM?</li>
+<li>Was darf ich bei SCNAT?</li>
+<li>Risiken und Grenzen</li>
+<li>Datenschutz bei KI-Tools</li>
+</ul>
+</div>
+<div class="level-card">
+<div class="level-num">L2</div>
+<div class="level-title">Anwendung</div>
+<ul class="level-topics">
+<li>ChatGPT Team regelkonform nutzen</li>
+<li>Prompting-Methoden</li>
+<li>STT für Meetingprotokolle</li>
+<li>KI-Hub als Werkzeug</li>
+</ul>
+</div>
+<div class="level-card">
+<div class="level-num">L3</div>
+<div class="level-title">Fortgeschritten</div>
+<ul class="level-topics">
+<li>Lokale LLMs verstehen</li>
+<li>RAG-Konzepte</li>
+<li>super mini pai Live-Demo</li>
+<li>Agenten-Workflows (Ausblick)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="card">
+<h3>Scope-Abgrenzung</h3>
+<div class="scope-grid">
+<div>
+<h4 style="color: var(--green);">Gehört dazu</h4>
+<ul class="scope-list in">
+<li>Alle Mitarbeitenden SCNAT</li>
+<li>Alle geprüften KI-Tools (Tier 1–3)</li>
+<li>Lokaler LLM-Pilot (super mini pai / Qwen2.5)</li>
+<li>STT-Ausbau auf bestehendem Feature</li>
+<li>KI-Hub-Ausbau auf bestehender Plattform</li>
+</ul>
+</div>
+<div>
+<h4 style="color: var(--primary);">Explizit nicht dazu</h4>
+<ul class="scope-list out">
+<li>IT-Infrastruktur-Modernisierung (nach Xojo-Abschluss)</li>
+<li>Agenten-Workflows (Folgemassnahme)</li>
+<li>Entwicklung eigener KI-Modelle</li>
+<li>Abteilungsspezifische Tool-Integrationen</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- ══ 03 UMSETZUNGSIDEEN ══ -->
+<section id="umsetzung">
+<div class="section-header">
+<span class="section-num-tag">03</span>
+<h2>Umsetzungsideen</h2>
+</div>
+<div class="grid-3">
+<!-- Option A -->
+<div class="option-card">
+<div class="option-label">Option A</div>
+<h3>Quick Start</h3>
+<p style="font-size: 12.5px;">KI-Hub ausbauen, Leitplanken-PDF erstellen, 2–3 interne Lunch-Sessions mit David, Anina und Arber als Referenten.</p>
+<div class="pro-con" style="grid-template-columns: 1fr;">
+<div class="pro-box">
+<div class="pro-box-label">Pro</div>
+<ul>
+<li>Sofort startbar, keine externe Abhängigkeit</li>
+<li>Nutzt vorhandene Ressourcen</li>
+<li>Kein Beschaffungsaufwand</li>
+</ul>
+</div>
+<div class="con-box" style="margin-top: 8px;">
+<div class="con-box-label">Contra</div>
+<ul>
+<li>Keine strukturierte Governance</li>
+<li>Limitierte Tiefe, keine externe Perspektive</li>
+<li>Change Agents nicht systematisch eingebunden</li>
+</ul>
+</div>
+</div>
+<div class="option-verdict">→ Nur als Überbrückung (erste 2–3 Wochen)</div>
+</div>
+<!-- Option B – EMPFOHLEN -->
+<div class="option-card recommended">
+<div class="recommended-pill">Empfohlen</div>
+<div class="option-label">Option B</div>
+<h3>Change Agent Team als interne Trainer</h3>
+<p style="font-size: 12.5px;">David, Anina und Arber entwickeln und halten die Schulungsmodule selbst – als Teil des Change Agent Teams. KI-Hub wird Wissensbase. Change Agents aus den Abteilungen multiplizieren intern weiter. Lokaler LLM-Pilot (super mini pai) als Praxis-Demo.</p>
+<div class="pro-con" style="grid-template-columns: 1fr;">
+<div class="pro-box">
+<div class="pro-box-label">Pro</div>
+<ul>
+<li>Vollständig intern, kein Vendor Lock-in</li>
+<li>SCNAT-spezifisch, kein generisches Schulungsmaterial</li>
+<li>KI-Kompetenz bleibt in der Organisation</li>
+<li>Schulungskalender auf Plattform direkt bespielt</li>
+<li>Change Agents als erste Lernende und Feedbackgeber</li>
+<li>Lokaler LLM macht Datensouveränität greifbar</li>
+</ul>
+</div>
+<div class="con-box" style="margin-top: 8px;">
+<div class="con-box-label">Contra</div>
+<ul>
+<li>Hohe Auslastung von David, Anina, Arber</li>
+<li>Kein externer Blickwinkel, Inhalte müssen intern qualitätsgeprüft werden</li>
+<li>Governance-Aufwand nicht unterschätzen</li>
+</ul>
+</div>
+</div>
+<div class="option-verdict">→ Diese Option umsetzen</div>
+</div>
+<!-- Option C -->
+<div class="option-card">
+<div class="option-label">Option C</div>
+<h3>Externe Unterstützung (nur wenn intern nicht machbar)</h3>
+<p style="font-size: 12.5px;">Falls die interne Kapazität des Change Agent Teams nicht ausreicht: gezielte externe Unterstützung für spezifische Module oder die Governance-Erarbeitung – nicht als Standardweg, sondern als Fallback.</p>
+<div class="pro-con" style="grid-template-columns: 1fr;">
+<div class="pro-box">
+<div class="pro-box-label">Pro</div>
+<ul>
+<li>Entlastet internes Team bei Kapazitätsengpass</li>
+<li>Externe Validierung für Governance gegenüber Direktion</li>
+</ul>
+</div>
+<div class="con-box" style="margin-top: 8px;">
+<div class="con-box-label">Contra</div>
+<ul>
+<li>Zusätzliche Kosten und Koordinationsaufwand</li>
+<li>Inhalte sind nicht SCNAT-spezifisch, müssen angepasst werden</li>
+<li>Wissen bleibt nicht in der Organisation</li>
+</ul>
+</div>
+</div>
+<div class="option-verdict">→ Nur bei nachgewiesenem Kapazitätsengpass</div>
+</div>
+</div>
+</section>
+<!-- ══ 04 VORBEREITUNG ══ -->
+<section id="vorbereitung">
+<div class="section-header">
+<span class="section-num-tag">04</span>
+<h2>Vorbereitung</h2>
+</div>
+<div class="card">
+<h3>Interne Abklärungen vor Sprint-Start</h3>
+<ul class="prereq-list">
+<li class="prereq-item">
+<span class="prereq-arrow">→</span>
+<span class="prereq-text"><strong>KI-Tool-Inventar:</strong> Welche Tools werden offiziell und inoffiziell genutzt? Silvan koordiniert via Change Agents. Ohne dieses Wissen ist Governance blind.</span>
+</li>
+<li class="prereq-item">
+<span class="prereq-arrow">→</span>
+<span class="prereq-text"><strong>DSG-Status ChatGPT Team:</strong> OpenAI Enterprise-Vertrag prüfen – Trainingsoptout aktiv? Speicherort der Daten? Verantwortlich: IT Intern, IT-Koordination.</span>
+</li>
+<li class="prereq-item">
+<span class="prereq-arrow">→</span>
+<span class="prereq-text"><strong>KI-Hub Bestandsaufnahme:</strong> Was ist bereits vorhanden? Was fehlt für Level 1–3? David und Arber können das in einem halben Tag erheben.</span>
+</li>
+<li class="prereq-item">
+<span class="prereq-arrow">→</span>
+<span class="prereq-text"><strong>Schulungskalender-Bereitschaft:</strong> Ist die Funktion auf der Plattform technisch bereit für Schulungsevents? Klärung mit David (KI-Spezialist / Change Agent).</span>
+</li>
+<li class="prereq-item">
+<span class="prereq-arrow">→</span>
+<span class="prereq-text"><strong>super mini pai Datenquellen:</strong> Welche Archive oder Ablagen werden initial angebunden? Datenqualität vorab prüfen – schlechte Eingabedaten produzieren schlechte RAG-Ergebnisse und beschädigen intern das Vertrauen.</span>
+</li>
+</ul>
+</div>
+<div class="card">
+<h3>Stakeholder einbinden</h3>
+<div class="stake-item">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">Direktion / Geschäftsleitung</div>
+<div class="stake-desc">Mandat für KI-Strategie formell einholen. Einseitiges Briefing-Dokument erstellen (Ziel, Scope, Output, Budget-Rahmen). Ohne Mandat ist das Governance-Dokument intern schwer durchsetzbar.</div>
+</div>
+</div>
+<div class="stake-item">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">IT-Abteilung</div>
+<div class="stake-desc">Frühzeitig informieren, nicht übergehen. Framing: «Klare KI-Governance entlastet die IT strukturell, weil weniger unkontrollierte Ausnahmen entstehen.» IT wird informiert und bei DSG-Fragen einbezogen – nicht mit Umsetzungsaufwand belastet.</div>
+</div>
+</div>
+<div class="stake-item">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">HR / Personalstelle</div>
+<div class="stake-desc">Schulungen müssen in bestehende Weiterbildungsrahmen passen. Koordination vorab verhindert Reibung bei der Kommunikation.</div>
+</div>
+</div>
+<div class="stake-item">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">Fachstellen-Vertreter</div>
+<div class="stake-desc">Bedarfserhebung: Welche abteilungsspezifischen KI-Anwendungen sind besonders relevant? Input direkt in die Einsatzgebiete-Definition der Strategie.</div>
+</div>
+</div>
+</div>
+<div class="card">
+<h3>Change Agent Briefing</h3>
+<p>Change Agents sind die erste Zielgruppe des Lernpfads – sie absolvieren Level 1 und 2 vor allen anderen. Gleichzeitig werden sie zu Multiplikatoren der KI-Governance in ihrer Abteilung. Auftrag vor Sprint-Start: Welche KI-Fragen stellen Kolleginnen und Kollegen? Was ist die grösste Unsicherheit rund um KI in der Abteilung? Dieses Feedback fliesst direkt in die Priorisierung der Lernpfad-Inhalte.</p>
+</div>
+<div class="card">
+<h3>Vorab-Entscheidungen</h3>
+<div class="decision-item">
+<span class="decision-bang">!</span>
+<div class="decision-text"><strong>Datenkategorisierungs-Schema:</strong> Was geht in welchen Cloud-Tier? Grundlage des gesamten Governance-Dokuments – muss vorab entschieden werden.</div>
+</div>
+<div class="decision-item">
+<span class="decision-bang">!</span>
+<div class="decision-text"><strong>Formelle KI-Verantwortlichkeit:</strong> Wer ist offiziell KI-Verantwortliche/r bei SCNAT? Schriftlich verankern für Haftung, externe Kommunikation und Glaubwürdigkeit des Governance-Dokuments.</div>
+</div>
+<div class="decision-item">
+<span class="decision-bang">!</span>
+<div class="decision-text"><strong>Trainingspartner-Beschaffung:</strong> Direktvergabe oder Offerten? Mindestens 2–3 Anbieter aus dem Raum Bern anfragen (BFH, Digitalswitzerland-Partner, KI-Consultants).</div>
+</div>
+<div class="decision-item">
+<span class="decision-bang">!</span>
+<div class="decision-text"><strong>super mini pai Freigabe:</strong> Soll das Tool offiziell als Pilot-Tool gelistet werden? Entscheid beeinflusst, wie offen es in Schulungen und auf dem KI-Hub kommuniziert werden kann.</div>
+</div>
+</div>
+</section>
+<!-- ══ 05 RESSOURCEN ══ -->
+<section id="ressourcen">
+<div class="section-header">
+<span class="section-num-tag">05</span>
+<h2>Ressourcen</h2>
+</div>
+<div class="card">
+<h3>Interne Rollen</h3>
+<table class="data-table" style="margin-top: 8px;">
+<thead>
+<tr>
+<th>Rolle</th>
+<th>Person</th>
+<th>Aufwand / Sprint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gesamtleitung Massnahme</td>
+<td><strong>Silvan Poltera</strong></td>
+<td>~20%</td>
+</tr>
+<tr>
+<td>Change Agent Team (KI)</td>
+<td><strong>David Jezdimirovic, Anina Steinlin, Arber Aziri</strong><br/><span style="font-size:11px;color:#6B7280;">Change Agent Team (KI)</span></td>
+<td>~30% geteilt</td>
+</tr>
+<tr>
+<td>IT-Koordination / DSG-Klärung</td>
+<td><strong>IT Intern</strong></td>
+<td>~10%</td>
+</tr>
+<tr>
+<td>Change Agents (alle Abteilungen)</td>
+<td>Je 1 Person pro Abteilung</td>
+<td>~4h/Woche</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="card">
+<h3>Externe Leistungen <span style="font-size:11px; color:var(--muted); font-weight:400; font-family:var(--font-mono);">nur bei nachgewiesenem Kapazitätsengpass</span></h3>
+<div class="stake-item">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">Trainingsunterstützung (Fallback) <span style="font-family: var(--font-mono); font-size: 11px; color: var(--primary); float: right;">CHF 5k – 15k</span></div>
+<div class="stake-desc">Nur wenn das interne Change Agent Team (KI) die Schulungsmodule zeitlich nicht schafft: gezielte externe Unterstützung für 1–2 Module. Keine Vollauslagerung. Mögliche Anbieter falls nötig: BFH Digital, lokale KI-Consultants. Primär: intern selbst machen.</div>
+</div>
+</div>
+<div class="stake-item" style="border-bottom: none;">
+<span class="stake-arrow">→</span>
+<div class="stake-body">
+<div class="stake-title">Rechtsberatung DSG (optional, empfohlen) <span style="font-family: var(--font-mono); font-size: 11px; color: var(--primary); float: right;">CHF 2k – 5k</span></div>
+<div class="stake-desc">Einmalige Prüfung des Governance-Frameworks durch datenschutzspezialisierte Kanzlei oder kantonalen Datenschutzbeauftragten (~5–10h). Macht das Dokument wasserdicht und erleichtert interne Kommunikation erheblich.</div>
+</div>
+</div>
+</div>
+<div class="card">
+<h3>Tools &amp; DSG/DSGVO-Einschätzung</h3>
+<table class="data-table" style="margin-top: 8px;">
+<thead>
+<tr>
+<th>Tool</th>
+<th>DSG/DSGVO-Status</th>
+<th>Kategorie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ChatGPT Team</strong> (OpenAI)</td>
+<td><span class="tier tier-caution">Bedingt konform</span> – US-Hyperscaler, Enterprise-Vertrag und Trainingsoptout prüfen</td>
+<td>Erlaubt mit Einschränkungen (Tier 1)</td>
+</tr>
+<tr>
+<td><strong>Qwen2.5 lokal</strong> (super mini pai)</td>
+<td><span class="tier tier-good">Vollständig souverän</span> – On-Premise, keine Datenweitergabe</td>
+<td>Bevorzugt für sensible Daten (Tier 3)</td>
+</tr>
+<tr>
+<td><strong>SCNAT Plattform / KI-Hub</strong></td>
+<td><span class="tier tier-good">DSGVO-konform</span> – eigene Infrastruktur</td>
+<td>Standard-Kanal (Tier 3)</td>
+</tr>
+<tr>
+<td><strong>STT-Analyse</strong> (auf Plattform)</td>
+<td><span class="tier tier-caution">Status klären</span> – Sprachdaten besonders schützenswert</td>
+<td>Pilot aktiv, DSG-Review erforderlich</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="card">
+<h3>Budget-Schätzung</h3>
+<div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-top: 8px;">
+<div class="budget-row">
+<span class="budget-label">Externe Schulungsunterstützung (nur Fallback)</span>
+<span class="budget-value">CHF 0 – 15'000</span>
+</div>
+<div class="budget-row">
+<span class="budget-label">Rechtsberatung DSG (optional)</span>
+<span class="budget-value">CHF 2'000 – 5'000</span>
+</div>
+<div class="budget-row">
+<span class="budget-label">LLM-Infrastruktur falls Hardware nötig</span>
+<span class="budget-value">CHF 1'000 – 5'000</span>
+</div>
+<div class="budget-row total">
+<span class="budget-label">Gesamtrahmen</span>
+<span class="budget-value">CHF 3'000 – 25'000</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ══ 06 SPRINT-ABLAUF ══ -->
+<section id="sprint">
+<div class="section-header">
+<span class="section-num-tag">06</span>
+<h2>Sprint-Ablauf (4 Wochen)</h2>
+</div>
+<div class="sprint-grid">
+<div class="sprint-week">
+<div class="sprint-head">
+<div class="sprint-wn">Woche 1</div>
+<div class="sprint-wt">Grundlagen &amp; Kick-off</div>
+</div>
+<div class="sprint-body">
+<div class="sprint-item">Kick-off: Silvan + Change Agent Team (inkl. KI-Spezialisten) + IT Intern</div>
+<div class="sprint-item">KI-Tool-Inventar erstellen</div>
+<div class="sprint-item">Datenkategorisierungs-Workshop</div>
+<div class="sprint-item">Change Agent Briefing + Feedback-Auftrag</div>
+<div class="sprint-item">Governance-Dokument Rohfassung starten</div>
+<div class="sprint-item">Trainingspartner Bern kontaktieren, Offerten einholen</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-head">
+<div class="sprint-wn">Woche 2</div>
+<div class="sprint-wt">Strategie &amp; Lernpfad</div>
+</div>
+<div class="sprint-body">
+<div class="sprint-item">Governance-Dokument finalisieren (IT-Review via IT Intern)</div>
+<div class="sprint-item">Lernpfad-Struktur L1–L3 definieren</div>
+<div class="sprint-item">KI-Hub: Governance-Inhalte und L1 aufschalten</div>
+<div class="sprint-item">super mini pai: Erste Datenquelle anbinden</div>
+<div class="sprint-item">Schulungskalender mit internen Schulungsterminen befüllen</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-head">
+<div class="sprint-wn">Woche 3</div>
+<div class="sprint-wt">Pilotierung &amp; Training</div>
+</div>
+<div class="sprint-body">
+<div class="sprint-item">Change Agent Training L1+L2 (~3h, intern)</div>
+<div class="sprint-item">Feedback aus Training sammeln</div>
+<div class="sprint-item">Change Agent Team (KI): Erste Schulungssession (L1)</div>
+<div class="sprint-item">super mini pai Live-Demo für Change Agents</div>
+<div class="sprint-item">STT: DSG-Status dokumentieren</div>
+<div class="sprint-item">Prompt-Tipps &amp; Best Practices auf Plattform</div>
+</div>
+</div>
+<div class="sprint-week">
+<div class="sprint-head">
+<div class="sprint-wn">Woche 4</div>
+<div class="sprint-wt">Review &amp; Übergabe</div>
+</div>
+<div class="sprint-body">
+<div class="sprint-item">Change Agent Meeting: Feedback-Runde</div>
+<div class="sprint-item">Governance-Dokument: Finale Freigabe</div>
+<div class="sprint-item">Lernpfad vollständig auf Plattform publizieren</div>
+<div class="sprint-item">Rollout-Plan alle Mitarbeitenden erstellen</div>
+<div class="sprint-item">Interne Kommunikation vorbereiten</div>
+<div class="sprint-item">Sprint-Retro, Learnings dokumentieren</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ══ 07 CHECKLISTE ══ -->
+<section id="checkliste">
+<div class="section-header">
+<span class="section-num-tag">07</span>
+<h2>Checkliste</h2>
+</div>
+<div class="checklist-progress-bar">
+<span class="progress-label" id="prog-label">0 / 27 erledigt</span>
+<div class="progress-outer">
+<div class="progress-inner" id="prog-bar" style="width:0%"></div>
+</div>
+<button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+<!-- Vorbereitung -->
+<div class="checklist-group">
+<div class="cl-group-label">
+          Vorbereitung
+          <span class="cl-count" id="cnt-vor"></span>
+</div>
+<div class="cl-item" data-group="vor" data-id="v1" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">KI-Tool-Inventar erstellt (offiziell und inoffiziell genutzte Tools erfasst)</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v2" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">DSG/DSGVO-Status ChatGPT Team mit IT Intern geklärt (OpenAI Enterprise-Vertrag, Trainingsoptout, Speicherort geprüft)</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v3" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">KI-Hub Bestandsaufnahme: Was ist vorhanden, was fehlt für L1–L3?</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v4" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Schulungskalender-Funktion auf Plattform technisch bereit für Schulungsevents geprüft</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v5" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Trainingspartner aus Raum Bern identifiziert – mindestens 2 Kandidaten, Offerten angefragt</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v6" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Mandat für KI-Strategie von Direktion eingeholt (Briefing-Dokument erstellt und präsentiert)</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v7" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">super mini pai: Ziel-Datenquellen definiert, Datenqualität geprüft</div>
+</div>
+<div class="cl-item" data-group="vor" data-id="v8" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Change Agents benannt und gebrieft, Feedback-Auftrag für Abteilungen erteilt</div>
+</div>
+</div>
+<!-- Sprint-Durchführung -->
+<div class="checklist-group">
+<div class="cl-group-label">
+          Sprint-Durchführung
+          <span class="cl-count" id="cnt-spr"></span>
+</div>
+<div class="cl-item" data-group="spr" data-id="s1" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Kick-off mit Kernteam durchgeführt</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s2" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Datenkategorisierungs-Schema definiert und dokumentiert (was geht in welchen Tier)</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s3" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Governance-Dokument Rohfassung erstellt</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s4" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">IT-Feedback zu Governance-Dokument eingeholt (via IT Intern – IT nicht übergangen)</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s5" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Lernpfad L1–L3 Struktur und Inhaltsübersicht pro Stufe definiert</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s6" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">KI-Hub mit Governance-Inhalten und L1-Content aktualisiert und publiziert</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s7" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">super mini pai: Erste Datenquelle angebunden, Testabfragen durchgeführt und bewertet</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s8" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Change Agent Training L1+L2 durchgeführt (intern, ~3 Stunden)</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s9" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Feedback aus Change Agent Training gesammelt und für Lernpfad-Anpassungen ausgewertet</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s10" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">super mini pai Live-Demo mit interessierten Change Agents durchgeführt</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s11" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Change Agent Team (KI): Erste interne Schulungssession durchgeführt oder terminiert</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s12" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">STT-Analyse: DSG-Status dokumentiert, Nutzungsregeln im Governance-Dokument ergänzt</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s13" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Prompt-Tipps und Best Practices auf KI-Hub publiziert</div>
+</div>
+<div class="cl-item" data-group="spr" data-id="s14" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Schulungskalender auf Plattform mit internen Schulungsterminen befüllt</div>
+</div>
+</div>
+<!-- Abschluss -->
+<div class="checklist-group">
+<div class="cl-group-label">
+          Abschluss
+          <span class="cl-count" id="cnt-abs"></span>
+</div>
+<div class="cl-item" data-group="abs" data-id="a1" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Change Agent Meeting durchgeführt: Feedback aus Pilot, Anpassungen beschlossen</div>
+</div>
+<div class="cl-item" data-group="abs" data-id="a2" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Governance-Dokument final durch Silvan freigegeben (+ Direktion falls nötig)</div>
+</div>
+<div class="cl-item" data-group="abs" data-id="a3" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Vollständiger Lernpfad L1–L3 auf Plattform publiziert und end-to-end getestet</div>
+</div>
+<div class="cl-item" data-group="abs" data-id="a4" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Rollout-Plan für alle Mitarbeitenden erstellt (Zeitplan, Kommunikationskanäle, Verantwortliche)</div>
+</div>
+<div class="cl-item" data-group="abs" data-id="a5" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Interne Kommunikation zu KI-Strategie und Lernpfad vorbereitet und abgestimmt</div>
+</div>
+<div class="cl-item" data-group="abs" data-id="a6" onclick="toggle(this)">
+<div class="cl-box"></div>
+<div class="cl-text">Sprint-Retro durchgeführt, Learnings dokumentiert, Folgemassnahmen als Backlog definiert</div>
+</div>
+</div>
+</section>
+<!-- ══ 08 RISIKEN ══ -->
+<section id="risiken">
+<div class="section-header">
+<span class="section-num-tag">08</span>
+<h2>Risiken &amp; Abhängigkeiten</h2>
+</div>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-cat">Technische Risiken</div>
+<div class="risk-item">
+<div class="risk-title">Shadow IT / unkontrollierte Tool-Nutzung</div>
+<div class="risk-desc">Das Ausmass der inoffiziellen Tool-Nutzung ist unbekannt. Das Inventar in Woche 1 ist deshalb kritisch – ohne dieses Wissen ist Governance blind und greift nicht an den richtigen Stellen.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">RAG-Datenqualität (super mini pai)</div>
+<div class="risk-desc">RAG liefert nur dann gute Ergebnisse, wenn die angebundenen Quellen sauber strukturiert sind. Schlechte Ausgabedaten beschädigen intern das Vertrauen in die Lösung, bevor sie eine Chance hatte.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">STT-Deployment &amp; DSG</div>
+<div class="risk-desc">Sprachdaten aus Meetings gelten als besonders schützenswert. Status des STT-Deployments (lokal vs. Cloud-API) beeinflusst die DSG-Anforderungen erheblich – vorab klären.</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-cat">IT-politische Rahmenbedingungen</div>
+<div class="risk-item">
+<div class="risk-title">Strukturelle Auslastung der IT-Abteilung</div>
+<div class="risk-desc">Das laufende Konsolidierungsprojekt bindet fast alle IT-Ressourcen. Diese Massnahme ist bewusst so gestaltet, dass die IT nur informiert, nicht belastet wird – Umsetzung über Silvans Team und Change Agents, IT-Einbindung via IT Intern.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">Cloud vs. On-Premise Spannung</div>
+<div class="risk-desc">ChatGPT Team (US-basiert) kann IT-intern kritisch gesehen werden. Das Datenkategorisierungs-Framework und die parallele Pilotierung von super mini pai sind das stärkste Argument: Wir arbeiten aktiv auf Souveränität hin – das spricht die IT-Philosophie an.</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-cat">Ressourcenrisiken</div>
+<div class="risk-item">
+<div class="risk-title">Change Agent Auslastung (KI-Spezialisten)</div>
+<div class="risk-desc">David, Anina und Arber werden in dieser Massnahme stark gefordert. Parallelaufgaben müssen priorisiert werden – sonst entsteht ein interner Flaschenhals, der den Sprint verzögert.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">Kapazität Change Agent Team (KI)</div>
+<div class="risk-desc">Kapazität des Change Agent Teams (David, Anina, Arber) für Schulungsmodule zu Beginn des Sprints prüfen. Falls intern nicht machbar, externes Fallback frühzeitig klären – externe Trainer sind oft mehrere Wochen im Voraus ausgebucht.</div>
+</div>
+</div>
+<div class="risk-card">
+<div class="risk-cat">Abhängigkeiten</div>
+<div class="risk-item">
+<div class="risk-title">Governance-Dokument ↔ Schulungsrollout</div>
+<div class="risk-desc">Schulungen können erst nach finalem Governance-Dokument breit ausgerollt werden – ohne klare Regeln entstehen falsche Erwartungen in der Belegschaft.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">Plattform-Bereitschaft</div>
+<div class="risk-desc">KI-Hub und Schulungskalender müssen technisch bereit sein, bevor Schulungstermine kommuniziert werden. David bestätigt diesen Status zu Beginn von Woche 2 bestätigen.</div>
+</div>
+<div class="risk-item">
+<div class="risk-title">super mini pai Datenqualität</div>
+<div class="risk-desc">Ist die Datenqualität der angebundenen Quellen ungenügend, verschiebt sich der RAG-Pilot in den nächsten Sprint – ohne das Gesamtprogramm zu blockieren.</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ══ 09 ERFOLGSMESSUNG ══ -->
+<section id="messung">
+<div class="section-header">
+<span class="section-num-tag">09</span>
+<h2>Erfolgsmessung</h2>
+</div>
+<div class="metric-group">
+<div class="metric-group-label">Kurzfristig – nach Sprint (Woche 4)</div>
+<div class="metric-item">
+<span class="metric-icon">✓</span>
+<div class="metric-text"><strong>Governance-Dokument</strong> existiert und ist durch die Direktion freigegeben</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">✓</span>
+<div class="metric-text"><strong>Lernpfad L1–L3</strong> ist auf der Plattform publiziert und zugänglich</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">✓</span>
+<div class="metric-text"><strong>Change Agents</strong> haben Level 1+L2 absolviert – Ziel: 100%</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">✓</span>
+<div class="metric-text">Mindestens <strong>eine interne Schulungssession</strong> (L1 oder L2) durch Change Agent Team (KI) hat stattgefunden</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">✓</span>
+<div class="metric-text"><strong>super mini pai:</strong> Mindestens eine Datenquelle angebunden, Live-Demo mit Change Agents durchgeführt</div>
+</div>
+</div>
+<div class="metric-group">
+<div class="metric-group-label">Mittelfristig – 3 Monate nach Sprint</div>
+<div class="metric-item">
+<span class="metric-icon">→</span>
+<div class="metric-text"><strong>Mehr als 60% der Mitarbeitenden</strong> haben Level 1 des Lernpfads abgeschlossen</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">→</span>
+<div class="metric-text">Mindestens <strong>3–5 KI-Use-Cases</strong> wurden formal über den Governance-Prozess freigegeben</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">→</span>
+<div class="metric-text">Change Agent Meeting-Beobachtung: <strong>Qualitativ andere Fragen</strong> aus Abteilungen – von «Darf ich das?» zu «Wie mache ich das besser?»</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">→</span>
+<div class="metric-text"><strong>super mini pai:</strong> Regelmässige Nutzung durch Pilotgruppe, erste qualitative Feedbacks zum Nutzen und zur Suchqualität vorhanden</div>
+</div>
+</div>
+<div class="metric-group">
+<div class="metric-group-label">Langfristig – 6+ Monate</div>
+<div class="metric-item">
+<span class="metric-icon">◎</span>
+<div class="metric-text"><strong>Rückgang ungeregelter Tool-Nutzung</strong> – messbar über IT-Beobachtung und Change Agent Feedback</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">◎</span>
+<div class="metric-text"><strong>Qualitative Zeitersparnisse</strong> durch KI-Einsatz: Rückmeldungen aus Abteilungen via Change Agents</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">◎</span>
+<div class="metric-text"><strong>Lokaler LLM im regulären Betrieb</strong> einer Pilotgruppe – positives Feedback zur Datensouveränität intern und extern kommunizierbar</div>
+</div>
+<div class="metric-item">
+<span class="metric-icon">◎</span>
+<div class="metric-text"><strong>KI-Strategie wird referenziert:</strong> In anderen SCNAT-Planungsdokumenten und Entscheidungsprozessen – das ist der stärkste Indikator für echte strategische Verankerung</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#umsetzung"><span class="rtoc-num">03</span>Umsetzungsideen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#messung"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 28 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 28;
+  var DONE_CLS = 'done';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+  const STORE = 'scnat_ki_strategie_v1';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORE) || '{}'); }
+    catch { return {}; }
+  }
+  function save(s) {
+    try { localStorage.setItem(STORE, JSON.stringify(s)); } catch {}
+  }
+
+  function toggle(el) {
+    el.classList.toggle('done');
+    const s = load();
+    s[el.dataset.id] = el.classList.contains('done');
+    save(s);
+    updateAll();
+  }
+
+  function updateAll() {
+    const all = document.querySelectorAll('.cl-item');
+    const done = document.querySelectorAll('.cl-item.done');
+    const pct = all.length ? Math.round(done.length / all.length * 100) : 0;
+    document.getElementById('prog-label').textContent = `${done.length} / ${all.length} erledigt`;
+    document.getElementById('prog-bar').style.width = pct + '%';
+
+    ['vor','spr','abs'].forEach(g => {
+      const gAll = document.querySelectorAll(`.cl-item[data-group="${g}"]`);
+      const gDone = document.querySelectorAll(`.cl-item[data-group="${g}"].done`);
+      const el = document.getElementById(`cnt-${g}`);
+      if (el) el.textContent = `${gDone.length}/${gAll.length}`;
+    });
+  }
+
+  function resetAll() {
+    if (!confirm('Alle Häkchen zurücksetzen?')) return;
+    document.querySelectorAll('.cl-item').forEach(el => el.classList.remove('done'));
+    save({});
+    updateAll();
+  }
+
+  // Init
+  (function init() {
+    const s = load();
+    document.querySelectorAll('.cl-item').forEach(el => {
+      if (s[el.dataset.id]) el.classList.add('done');
+    });
+    updateAll();
+  })();
+
+  // Active nav on scroll
+  const secs = document.querySelectorAll('section[id]');
+  const navAs = document.querySelectorAll('.nav-list a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => a.classList.remove('active'));
+        const a = document.querySelector(`.nav-list a[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  secs.forEach(s => obs.observe(s));
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

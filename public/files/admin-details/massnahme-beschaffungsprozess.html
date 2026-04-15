@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Beschaffungsprozess digitalisieren – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0C0E10;
+      --panel:     #12161A;
+      --border:    #1E2530;
+      --red:       #EA515A;
+      --red-dim:   rgba(234,81,90,0.12);
+      --anthrazit: #5A616B;
+      --muted:     #6B7280;
+      --text:      #E5E7EB;
+      --text-dim:  #9CA3AF;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+      --nav-w:     240px;
+      --radius:    8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── LAYOUT ───────────────────────────────────────── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR NAV ──────────────────────────────────── */
+    .sidenav {
+      width: var(--nav-w);
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: var(--panel);
+      padding: 28px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidenav-logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidenav-logo .wordmark {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .sidenav-logo .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .nav-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0 20px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      flex: 1;
+    }
+
+    .nav-list a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      text-decoration: none;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 400;
+      transition: color 0.15s, background 0.15s;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-list a:hover,
+    .nav-list a.active {
+      color: var(--text);
+      background: rgba(234,81,90,0.06);
+      border-left-color: var(--red);
+    }
+
+    .nav-list a .num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+      min-width: 18px;
+    }
+
+    /* ── MAIN CONTENT ─────────────────────────────────── */
+    .content {
+      flex: 1;
+      min-width: 0;
+      padding: 0 48px 80px;
+      max-width: 900px;
+    }
+
+    /* ── HEADER ───────────────────────────────────────── */
+    .page-header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .breadcrumb span { color: var(--anthrazit); margin: 0 4px; }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .page-title em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #1E2530;
+      color: var(--text-dim);
+    }
+
+    .badge.red {
+      background: var(--red-dim);
+      border-color: rgba(234,81,90,0.3);
+      color: var(--red);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .meta-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .meta-card .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .meta-card .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .score-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 2px;
+    }
+
+    /* ── SECTIONS ─────────────────────────────────────── */
+    .section {
+      margin-bottom: 56px;
+      scroll-margin-top: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+    }
+
+    .section-title {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    p { color: var(--text-dim); margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text); font-weight: 500; }
+
+    /* ── CARDS ────────────────────────────────────────── */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--border);
+      color: var(--muted);
+    }
+
+    .card-title .tag.rec {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(234,81,90,0.25);
+    }
+
+    .pro-contra {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .pro-contra div {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .pro-contra .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .pro-contra .pro .label { color: #4ADE80; }
+    .pro-contra .contra .label { color: #F87171; }
+
+    /* ── TIMELINE ─────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .tl-week {
+      position: relative;
+      margin-bottom: 28px;
+    }
+
+    .tl-week::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      top: 10px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--red);
+    }
+
+    .tl-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .tl-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .tl-items {
+      list-style: none;
+    }
+
+    .tl-items li {
+      font-size: 13px;
+      color: var(--text-dim);
+      padding: 4px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .tl-items li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--anthrazit);
+    }
+
+    /* ── CHECKLIST ────────────────────────────────────── */
+    .checklist-group {
+      margin-bottom: 28px;
+    }
+
+    .checklist-group-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(30,37,48,0.5);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .check-item:hover { background: rgba(234,81,90,0.03); }
+
+    .check-item input[type="checkbox"] {
+      display: none;
+    }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--anthrazit);
+      border-radius: 3px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .check-item.done .check-box {
+      background: var(--red);
+      border-color: var(--red);
+    }
+
+    .check-item.done .check-box::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 8px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .check-item.done .check-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .check-text {
+      font-size: 13.5px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── TABLE ────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin-bottom: 20px;
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid rgba(30,37,48,0.6);
+      color: var(--text-dim);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    td:first-child { color: var(--text); font-weight: 500; }
+
+    /* ── RISK CARDS ───────────────────────────────────── */
+    .risk-card {
+      border-left: 3px solid var(--anthrazit);
+      padding: 16px 20px;
+      background: var(--panel);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 14px;
+    }
+
+    .risk-card.medium { border-left-color: #FBBF24; }
+    .risk-card.low { border-left-color: #4ADE80; }
+
+    .risk-type {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .risk-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* ── CALLOUT ──────────────────────────────────────── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      background: var(--red-dim);
+      border: 1px solid rgba(234,81,90,0.2);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .callout-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+
+    /* ── FOOTER ───────────────────────────────────────── */
+    footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-left span { color: var(--red); }
+
+    .footer-right {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── PRINT ────────────────────────────────────────── */
+    @media print {
+      .sidenav { display: none; }
+      .content { padding: 20px; max-width: 100%; }
+      .page-header { padding: 0 0 20px; }
+      body { background: white; color: #111; }
+      .card, .risk-card { border: 1px solid #ddd; }
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidenav { display: none; }
+      .content { padding: 0 20px 60px; }
+      .meta-grid { grid-template-columns: 1fr 1fr; }
+      .pro-contra { grid-template-columns: 1fr; }
+      .page-title { font-size: 24px; }
+    }
+
+    /* ── SCOPE LIST ───────────────────────────────────── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .scope-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .scope-box .scope-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .scope-box.in .scope-label { color: #4ADE80; }
+    .scope-box.out .scope-label { color: #F87171; }
+
+    .scope-box ul {
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .scope-box ul li {
+      padding: 4px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .scope-box.in ul li::before { content: '+'; position: absolute; left: 0; color: #4ADE80; }
+    .scope-box.out ul li::before { content: '–'; position: absolute; left: 0; color: #F87171; }
+
+    /* Progress indicator */
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), rgba(234,81,90,0.4));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+  
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a on" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc">
+<div class="content">
+<!-- HEADER -->
+<header class="page-header">
+<div class="header-meta">
+<span class="breadcrumb">SCNAT Digitalisierung <span>›</span> Massnahmen <span>›</span> Infrastruktur &amp; Beschaffung</span>
+</div>
+<h1 class="page-title">Beschaffungsprozess<br/><em>digitalisieren</em></h1>
+<div class="badge-row">
+<span class="badge red">Infrastruktur &amp; Beschaffung</span>
+<span class="badge">Cluster: Infrastruktur &amp; IT</span>
+<span class="badge">Sprint: 4 Wochen</span>
+<span class="badge">DSG-konform</span>
+</div>
+<div class="meta-grid">
+<div class="meta-card">
+<div class="label">Wirkung</div>
+<div class="value">7.8 / 10</div>
+<div class="score-bar"><div class="score-fill" style="width:78%"></div></div>
+</div>
+<div class="meta-card">
+<div class="label">Aufwand</div>
+<div class="value">4 / 10</div>
+<div class="score-bar"><div class="score-fill" style="width:40%"></div></div>
+</div>
+<div class="meta-card">
+<div class="label">Status</div>
+<div class="value">Bereit für Sprint</div>
+</div>
+</div>
+</header>
+<!-- 1. EINLEITUNG -->
+<section class="section" id="einleitung">
+<div class="section-header">
+<span class="section-num">01</span>
+<h2 class="section-title">Einleitung</h2>
+</div>
+<p>Der bisherige Weg für Softwareanträge führt über ein IT-Formular ausserhalb der Plattform – ein Medienbruch, der weder transparent noch rückverfolgbar ist. Mitarbeitende wissen nicht, was mit ihrem Antrag passiert. IT bekommt Anfragen auf verschiedenen Kanälen. Silvan hat keinen konsolidierten Überblick.</p>
+<div class="callout">
+<div class="callout-icon">⚡</div>
+<p><strong>Der Schlüsselbefund:</strong> Die technische Infrastruktur existiert bereits vollständig. Die Plattform hat ein funktionsfähiges Request-System (<code style="font-family:var(--mono);font-size:12px;color:var(--red)">/api/requests</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--red)">SoftwareAntraege.jsx</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--red)">CpAntraege.jsx</code>) und der Prozess ist unter <code style="font-family:var(--mono);font-size:12px;color:var(--red)">/prozesse</code> bereits dokumentiert. Was fehlt, ist die formelle Aktivierung als offizieller Standardkanal – plus ein sauberer Notification-Loop.</p>
+</div>
+<p>Konkreter Mehrwert: Mitarbeitende stellen Anträge einmal, im richtigen System, und sehen den Status direkt in der App. IT und Silvan arbeiten mit einer einzigen, strukturierten Inbox. Keine E-Mails, kein Excel, kein Nachfragen.</p>
+</section>
+<!-- 2. BESCHREIBUNG -->
+<section class="section" id="beschreibung">
+<div class="section-header">
+<span class="section-num">02</span>
+<h2 class="section-title">Beschreibung</h2>
+</div>
+<p>Mitarbeitende stellen Tool-Anfragen über <code style="font-family:var(--mono);font-size:12px;color:var(--red)">/software-antraege</code> auf der Plattform. Der Antrag erscheint sofort in der Admin-Ansicht unter <code style="font-family:var(--mono);font-size:12px;color:var(--red)">/cp/antraege</code>. Zuständige Person setzt den Status. Die antragstellende Person sieht die Statusänderung in-app – ohne aktiv nachschauen zu müssen.</p>
+<p>Einbettung in Gesamtstrategie: Diese Massnahme ist ein Enabler für alle anderen Software-Massnahmen. Ohne definierten Beschaffungskanal entstehen weiter unkontrollierte Schatten-IT-Instanzen – der grösste Compliance-Risikofaktor im Tool-Bereich.</p>
+<div class="scope-grid" style="margin-top:20px">
+<div class="scope-box in">
+<div class="scope-label">✓ Im Scope</div>
+<ul>
+<li>Formalisierung des Plattform-Flows als offizieller Eingangskanal</li>
+<li>Admin-Accounts für IT-Mitarbeitende im CP</li>
+<li>Notification-Feature (Badge/Toast bei Statusänderung)</li>
+<li>Kommunikation an alle Mitarbeitenden</li>
+<li>Deaktivierung des alten IT-Formulars</li>
+<li>Sourcing-Strategie als Abschnitt auf /prozesse</li>
+</ul>
+</div>
+<div class="scope-box out">
+<div class="scope-label">– Nicht im Scope</div>
+<ul>
+<li>SCNAT-DB-Anbindung (vorgemerkt, folgt später)</li>
+<li>Hardware-Beschaffungsprozesse</li>
+<li>Budgetfreigabe-Workflows</li>
+<li>Sourcing-Kriterien-Wizard (Folgemassnahme)</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 3. OPTIONEN -->
+<section class="section" id="optionen">
+<div class="section-header">
+<span class="section-num">03</span>
+<h2 class="section-title">Umsetzungsoptionen</h2>
+</div>
+<div class="card">
+<div class="card-title">
+          Option A – Sofort-Aktivierung ohne Entwicklung
+          <span class="tag">Schnell</span>
+</div>
+<p style="font-size:13.5px">IT wird informiert, dass Anträge ab sofort über die Plattform kommen. Prozessdokument auf <code style="font-family:var(--mono);font-size:12px;color:var(--red)">/prozesse</code> freigeben. Fertig. Kein Entwicklungsaufwand, in wenigen Tagen aktiv.</p>
+<div class="pro-contra">
+<div class="pro">
+<div class="label">Pro</div>
+            Null Entwicklungsaufwand. Sofort aktiv. Kein technisches Risiko.
+          </div>
+<div class="contra">
+<div class="label">Contra</div>
+            Kein Notification-Loop. Mitarbeitende müssen aktiv nachschauen. Fühlt sich unvollständig an.
+          </div>
+</div>
+</div>
+<div class="card" style="border-color: rgba(234,81,90,0.3)">
+<div class="card-title">
+          Option B – Aktivierung + In-App-Notification
+          <span class="tag rec">↑ Empfohlen</span>
+</div>
+<p style="font-size:13.5px">Zusätzlich zu Option A: Einfaches Notification-Feature. Wenn IT den Status ändert, sieht der User beim nächsten Login einen Badge oder Toast. Kleines <code style="font-family:var(--mono);font-size:12px;color:var(--red)">read</code>-Flag in <code style="font-family:var(--mono);font-size:12px;color:var(--red)">requests.json</code>, Frontend reagiert darauf. Umsetzung in 1–2 Tagen.</p>
+<div class="pro-contra">
+<div class="pro">
+<div class="label">Pro</div>
+            Vollständiger Prozessloop. Professionelles Nutzungserlebnis. Realistisch in einem Sprint.
+          </div>
+<div class="contra">
+<div class="label">Contra</div>
+            Minimaler Entwicklungsaufwand – der einzige in dieser Massnahme.
+          </div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">
+          Option C – Aktivierung + Notification + Sourcing-Wizard
+          <span class="tag">Folgemassnahme</span>
+</div>
+<p style="font-size:13.5px">Schritt-für-Schritt-Assistent im Antragsformular, der DSG-Konformität, Datenhaltungsort, Kosten und Alternativen abfragt und dem Antrag automatisch eine Risikoeinschätzung mitgibt. 3–5 Tage Entwicklungsaufwand.</p>
+<div class="pro-contra">
+<div class="pro">
+<div class="label">Pro</div>
+            IT-Entlastung bei Erstprüfung. Deutlich höhere Antragsqualität.
+          </div>
+<div class="contra">
+<div class="label">Contra</div>
+            Höherer Aufwand, braucht vorgängig klare Kriterienliste. Besser als Folgemassnahme.
+          </div>
+</div>
+</div>
+<div class="callout">
+<div class="callout-icon">→</div>
+<p><strong>Empfehlung:</strong> Option B im aktuellen Sprint. Option C als nächste Massnahme im Backlog erfassen – die Grundlage dafür ist mit B bereits gelegt.</p>
+</div>
+</section>
+<!-- 4. VORBEREITUNG -->
+<section class="section" id="vorbereitung">
+<div class="section-header">
+<span class="section-num">04</span>
+<h2 class="section-title">Vorbereitung</h2>
+</div>
+<p><strong>Interne Klärungen (vor Sprint-Start):</strong></p>
+<table>
+<thead>
+<tr><th>Thema</th><th>Massnahme</th><th>Verantwortung</th></tr>
+</thead>
+<tbody>
+<tr><td>IT-Information</td><td>Gespräch: neuer Eingangskanal ist die Plattform – kommuniziert als Entlastung ("strukturierte Inbox")</td><td>Silvan + IT Intern</td></tr>
+<tr><td>Admin-Zugang</td><td>Klären, wer in der IT Zugang zu /cp/antraege erhält; Account anlegen</td><td>IT Intern</td></tr>
+<tr><td>Review-Zuständigkeit</td><td>Entscheid: IT, Silvan oder geteilt?</td><td>Silvan</td></tr>
+<tr><td>Statuswerte</td><td>Final definieren und in CP-Code verankern</td><td>Change Agent Team</td></tr>
+<tr><td>Altes Formular</td><td>Abschaltzeitpunkt festlegen, mit IT koordinieren</td><td>IT Intern</td></tr>
+</tbody>
+</table>
+<p style="margin-top:20px"><strong>Change Agent Briefing:</strong></p>
+<div class="card">
+<p style="font-size:13.5px;margin:0">Change Agents erhalten vorab ein einseitiges Memo: Was ändert sich, warum, und wie begleiten sie den ersten echten Antrag ihrer Abteilung durch den neuen Prozess. Sie sind die ersten Pilotpersonen und geben strukturiertes Feedback in Woche 3.</p>
+</div>
+</section>
+<!-- 5. RESSOURCEN -->
+<section class="section" id="ressourcen">
+<div class="section-header">
+<span class="section-num">05</span>
+<h2 class="section-title">Benötigte Ressourcen</h2>
+</div>
+<p><strong>Interne Rollen:</strong></p>
+<table>
+<thead>
+<tr><th>Rolle</th><th>Person</th><th>Aufwand</th></tr>
+</thead>
+<tbody>
+<tr><td>Prozessverantwortung &amp; Kommunikation</td><td>Silvan Poltera</td><td>3–4h</td></tr>
+<tr><td>IT-Koordination, Account-Setup</td><td>IT Intern</td><td>3–5h</td></tr>
+<tr><td>Notification-Feature Entwicklung</td><td>Change Agent Team (KI-Spezialisten)</td><td>1–2 Tage</td></tr>
+<tr><td>Pilotbegleitung &amp; Feedback</td><td>Change Agent Team (alle Abteilungen)</td><td>je 1–2h</td></tr>
+</tbody>
+</table>
+<div class="card" style="margin-top:20px">
+<div class="card-title">Infrastruktur &amp; Compliance</div>
+<p style="font-size:13.5px">Alle benötigten Komponenten sind bereits vorhanden: <code style="font-family:var(--mono);font-size:12px;color:var(--red)">/api/requests</code> (REST-API), <code style="font-family:var(--mono);font-size:12px;color:var(--red)">SoftwareAntraege.jsx</code> (Frontend), <code style="font-family:var(--mono);font-size:12px;color:var(--red)">CpAntraege.jsx</code> (Admin). Datenhaltung via JSON-Dateien auf eigenem Server: vollständig DSG/DSGVO-konform, On-Premise, keine Drittlandübertragung.</p>
+<p style="font-size:13.5px;margin-top:10px;margin-bottom:0"><strong>Budget:</strong> Vernachlässigbar. Reine interne Entwicklungszeit, kein Lizenzkauf, kein externer Auftrag.</p>
+</div>
+</section>
+<!-- 6. SPRINT -->
+<section class="section" id="sprint">
+<div class="section-header">
+<span class="section-num">06</span>
+<h2 class="section-title">Sprint-Ablauf (4 Wochen)</h2>
+</div>
+<div class="timeline">
+<div class="tl-week">
+<div class="tl-label">WOCHE 01</div>
+<div class="tl-title">Kick-off &amp; Vorbereitung</div>
+<ul class="tl-items">
+<li>IT-Gespräch führen: Neuer Prozesseingang kommunizieren (Silvan + IT Intern)</li>
+<li>Admin-Accounts für IT-Mitarbeitende im CP anlegen</li>
+<li>Prozessdokument auf /prozesse finalisieren und Sourcing-Kriterien ergänzen</li>
+<li>Statuswerte definieren und in CP-Code verankern</li>
+<li>Change Agents per Memo briefen</li>
+</ul>
+</div>
+<div class="tl-week">
+<div class="tl-label">WOCHE 02</div>
+<div class="tl-title">Notification-Feature entwickeln</div>
+<ul class="tl-items">
+<li>Backend: <code style="font-family:var(--mono);font-size:12px">read</code>-Flag im Schema von <code style="font-family:var(--mono);font-size:12px">requests.json</code> ergänzen (Schema-Migration sicherstellen)</li>
+<li>Frontend: Badge im Sidebar-Icon oder Toast beim Login implementieren</li>
+<li>Interne Tests: Antrag stellen → Status ändern → Notification erscheint</li>
+</ul>
+</div>
+<div class="tl-week">
+<div class="tl-label">WOCHE 03</div>
+<div class="tl-title">Pilotbetrieb</div>
+<ul class="tl-items">
+<li>3–5 echte Anträge über die Plattform einreichen (je ein Change Agent pro Abteilung)</li>
+<li>IT bearbeitet diese Anträge über das CP</li>
+<li>Feedback von Pilotpersonen einsammeln (kurze Retro, 20min)</li>
+<li>Letzte Bugs fixen</li>
+</ul>
+</div>
+<div class="tl-week">
+<div class="tl-label">WOCHE 04</div>
+<div class="tl-title">Rollout &amp; Übergabe</div>
+<ul class="tl-items">
+<li>Plattform-Mitteilung an alle Mitarbeitenden</li>
+<li>Altes IT-Formular deaktivieren (koordiniert mit IT)</li>
+<li>Prozess und FAQ auf Plattform dokumentieren</li>
+<li>Sprint-Review: Prozessloop vollständig? Offene Punkte?</li>
+<li>Option C (Sourcing-Wizard) in Backlog erfassen</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 7. CHECKLISTE -->
+<section class="section" id="checkliste">
+<div class="section-header">
+<span class="section-num">07</span>
+<h2 class="section-title">Checkliste</h2>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="checklist-group">
+<div class="checklist-group-title">Vorbereitung</div>
+<div id="checks">
+<label class="check-item" data-id="c1">
+<div class="check-box"></div>
+<span class="check-text">IT-Leitungsgespräch geführt (Neuer Eingangskanal kommuniziert)</span>
+</label>
+<label class="check-item" data-id="c2">
+<div class="check-box"></div>
+<span class="check-text">Review-Zuständigkeit entschieden (IT / Silvan / geteilt)</span>
+</label>
+<label class="check-item" data-id="c3">
+<div class="check-box"></div>
+<span class="check-text">Statuswerte definiert und in CP-Code verankert</span>
+</label>
+<label class="check-item" data-id="c4">
+<div class="check-box"></div>
+<span class="check-text">Admin-Accounts für IT-Mitarbeitende im CP angelegt</span>
+</label>
+<label class="check-item" data-id="c5">
+<div class="check-box"></div>
+<span class="check-text">Prozessdokument auf /prozesse finalisiert und Sourcing-Kriterien ergänzt</span>
+</label>
+<label class="check-item" data-id="c6">
+<div class="check-box"></div>
+<span class="check-text">Change Agents per Memo gebrieft</span>
+</label>
+<label class="check-item" data-id="c7">
+<div class="check-box"></div>
+<span class="check-text">Abschaltzeitpunkt für altes IT-Formular festgelegt</span>
+</label>
+</div>
+</div>
+<div class="checklist-group">
+<div class="checklist-group-title">Sprint-Durchführung</div>
+<div id="checks2">
+<label class="check-item" data-id="c8">
+<div class="check-box"></div>
+<span class="check-text">read-Flag im Backend implementiert (Schema-Migration geprüft)</span>
+</label>
+<label class="check-item" data-id="c9">
+<div class="check-box"></div>
+<span class="check-text">Notification-Frontend umgesetzt (Badge oder Toast)</span>
+</label>
+<label class="check-item" data-id="c10">
+<div class="check-box"></div>
+<span class="check-text">Vollständiger Statusflow intern getestet</span>
+</label>
+<label class="check-item" data-id="c11">
+<div class="check-box"></div>
+<span class="check-text">Pilotanträge (3–5) eingereicht und bearbeitet</span>
+</label>
+<label class="check-item" data-id="c12">
+<div class="check-box"></div>
+<span class="check-text">Pilot-Feedback dokumentiert und Retro durchgeführt</span>
+</label>
+<label class="check-item" data-id="c13">
+<div class="check-box"></div>
+<span class="check-text">Letzte Bugs behoben</span>
+</label>
+</div>
+</div>
+<div class="checklist-group">
+<div class="checklist-group-title">Abschluss</div>
+<div id="checks3">
+<label class="check-item" data-id="c14">
+<div class="check-box"></div>
+<span class="check-text">Plattform-Ankündigung an alle Mitarbeitenden raus</span>
+</label>
+<label class="check-item" data-id="c15">
+<div class="check-box"></div>
+<span class="check-text">Altes IT-Formular deaktiviert</span>
+</label>
+<label class="check-item" data-id="c16">
+<div class="check-box"></div>
+<span class="check-text">Prozess und FAQ auf Plattform dokumentiert</span>
+</label>
+<label class="check-item" data-id="c17">
+<div class="check-box"></div>
+<span class="check-text">Sprint-Review durchgeführt</span>
+</label>
+<label class="check-item" data-id="c18">
+<div class="check-box"></div>
+<span class="check-text">Folgemassnahme "Sourcing-Wizard" im Backlog erfasst</span>
+</label>
+</div>
+</div>
+</section>
+<!-- 8. RISIKEN -->
+<section class="section" id="risiken">
+<div class="section-header">
+<span class="section-num">08</span>
+<h2 class="section-title">Risiken &amp; Abhängigkeiten</h2>
+</div>
+<div class="risk-card medium">
+<div class="risk-type">Technisch · Mittel</div>
+<div class="risk-title">Schema-Migration bei requests.json</div>
+<p style="font-size:13.5px;margin:0">Wenn <code style="font-family:var(--mono);font-size:12px">requests.json</code> um ein <code style="font-family:var(--mono);font-size:12px">read</code>-Flag erweitert wird, müssen bestehende Einträge kompatibel bleiben. Kurzer Migrations-Check vorab – bestehende Datensätze erhalten den Flag mit Defaultwert <code style="font-family:var(--mono);font-size:12px">true</code> (= bereits gelesen).</p>
+</div>
+<div class="risk-card medium">
+<div class="risk-type">Strukturelle Rahmenbedingung · Mittel</div>
+<div class="risk-title">IT-Kapazität und Akzeptanz</div>
+<p style="font-size:13.5px;margin:0">Die IT-Abteilung ist bis Ende 2026 durch das Xojo-Konsolidierungsprojekt stark ausgelastet. Entscheidend ist die Kommunikationslinie: Das neue System bedeutet weniger Koordinationsaufwand für IT – nicht mehr. Das CP ist eine fertige Inbox, kein neues System, das gelernt werden muss. Wenn IT den CP-Zugang nicht aktiv nutzen kann, übernimmt Silvan's Team die Erstprüfung.</p>
+</div>
+<div class="risk-card low">
+<div class="risk-type">Ressourcen · Gering</div>
+<div class="risk-title">Entwicklungskapazität im Change Agent Team</div>
+<p style="font-size:13.5px;margin:0">Das Notification-Feature ist einfach genug, dass einer der KI-Spezialisten im Change Agent Team das in 1–2 Tagen parallel umsetzen kann. Frühzeitig Kapazität im Team sichern oder Notification als letzten Schritt einplanen – Prozess ohne Notification ist immer noch besser als Status quo.</p>
+</div>
+<div class="risk-card low">
+<div class="risk-type">Abhängigkeit · Gering</div>
+<div class="risk-title">Zukünftige SCNAT-DB-Anbindung</div>
+<p style="font-size:13.5px;margin:0">Kein Blocker für diesen Sprint. Das Request-Schema sollte aber so angelegt sein, dass eine spätere Verknüpfung mit der SCNAT-DB möglich ist – konkret: Tool-IDs oder Referenzen nicht hartkodieren, sondern als erweiterbare Felder designen.</p>
+</div>
+</section>
+<!-- 9. ERFOLGSMESSUNG -->
+<section class="section" id="erfolg">
+<div class="section-header">
+<span class="section-num">09</span>
+<h2 class="section-title">Erfolgsmessung</h2>
+</div>
+<table>
+<thead>
+<tr><th>Indikator</th><th>Ziel</th><th>Messbar über</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Anträge über Plattform</td>
+<td>100% – null E-Mails oder altes Formular</td>
+<td>CP-Inbox + Rückmeldung IT</td>
+</tr>
+<tr>
+<td>Bearbeitungszeit pro Antrag</td>
+<td>&lt; 5 Werktage</td>
+<td>Timestamp-Differenz in requests.json</td>
+</tr>
+<tr>
+<td>IT-Feedback zur Inbox</td>
+<td>"Übersichtlicher als vorher"</td>
+<td>Kurzumfrage nach Woche 3</td>
+</tr>
+<tr>
+<td>Abgeschlossene Anträge (3 Monate)</td>
+<td>Mind. 10 vollständige Durchläufe</td>
+<td>CP-Dashboard-Auswertung</td>
+</tr>
+<tr>
+<td>Genehmigungsquote &amp; Ablehnungsgründe</td>
+<td>Transparente Auswertung möglich</td>
+<td>requests.json-Analyse, kein Excel nötig</td>
+</tr>
+</tbody>
+</table>
+<div class="callout" style="margin-top:24px">
+<div class="callout-icon">📊</div>
+<p>Alle KPIs sind direkt aus den Plattform-Daten ableitbar. Kein separates Tracking-Tool nötig – das ist ein weiterer Vorteil des integrierten Ansatzes.</p>
+</div>
+</section>
+</div>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsoptionen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 18 erledigt</div>
+<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL = 18;
+  var DONE_CLS = 'done';
+  function countDone(){
+    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
+  }
+  function render(){
+    var n = countDone();
+    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
+    var fill = document.getElementById('tocFill');
+    var txt  = document.getElementById('tocTxt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
+  }
+  // Watch class attribute mutations on checklist items
+  var obs = new MutationObserver(render);
+  function attach(){
+    document.querySelectorAll('[data-id]').forEach(function(el){
+      obs.observe(el, {attributes:true, attributeFilter:['class']});
+    });
+    render();
+  }
+  // Also hook reset button to call original reset if defined
+  document.addEventListener('DOMContentLoaded', function(){
+    attach();
+    var btn = document.getElementById('tocResetBtn');
+    if (btn) btn.addEventListener('click', function(){
+      if (typeof reset === 'function') { reset(); }
+      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
+      else {
+        if (!confirm('Checkliste zurücksetzen?')) return;
+        document.querySelectorAll('[data-id]').forEach(function(el){
+          el.classList.remove('done','checked');
+        });
+        // Clear relevant localStorage keys
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
+        });
+      }
+      render();
+    });
+  });
+  setTimeout(attach, 300);
+})();
+</script>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+  // ── CHECKLIST mit localStorage ──────────────────────
+  const STORAGE_KEY = 'scnat-beschaffung-checks';
+  const allChecks = document.querySelectorAll('.check-item');
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function updateProgress(state) {
+    const total = allChecks.length;
+    const done = Object.values(state).filter(Boolean).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function initChecks() {
+    const state = loadState();
+    allChecks.forEach(item => {
+      const id = item.dataset.id;
+      if (state[id]) item.classList.add('done');
+      item.addEventListener('click', () => {
+        const s = loadState();
+        s[id] = !item.classList.contains('done');
+        item.classList.toggle('done');
+        saveState(s);
+        updateProgress(s);
+      });
+    });
+    updateProgress(state);
+  }
+
+  // ── SIDEBAR ACTIVE STATE ────────────────────────────
+  function initNav() {
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('.nav-list a');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initChecks();
+    initNav();
+  });
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

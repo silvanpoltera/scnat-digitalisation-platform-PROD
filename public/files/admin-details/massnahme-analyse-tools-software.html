@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Analyse Tools &amp; Software – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0C0E10;
+    --surface:   #12161A;
+    --elevated:  #181D22;
+    --border:    #1E2530;
+    --border-md: #2A3340;
+    --red:       #EA515A;
+    --red-dim:   rgba(234,81,90,0.10);
+    --anthrazit: #5A616B;
+    --muted:     #6B7280;
+    --text2:     #9CA3AF;
+    --text:      #E5E7EB;
+    --white:     #F9FAFB;
+    --green:     #10B981;
+    --orange:    #F59E0B;
+    --blue:      #3B82F6;
+    --nav-w:     240px;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.6; display: flex; min-height: 100vh; }
+
+  .sidenav { width: var(--nav-w); min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; display: flex; flex-direction: column; z-index: 100; overflow-y: auto; }
+  .sidenav-brand { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+  .sidenav-brand-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+  .sidenav-brand-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .sidenav-brand-name span { color: var(--red); }
+  .sidenav-links { padding: 16px 12px; flex: 1; }
+  .sidenav-section-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--anthrazit); padding: 8px 8px 4px; display: block; }
+  .sidenav-link { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--text2); font-size: 13px; transition: background .15s, color .15s; margin-bottom: 1px; }
+  .sidenav-link:hover { background: var(--elevated); color: var(--text); }
+  .sidenav-link.active { background: var(--red-dim); color: var(--red); font-weight: 500; }
+  .sidenav-link .link-num { font-family: var(--font-mono); font-size: 9px; color: var(--anthrazit); min-width: 16px; }
+  .sidenav-footer { padding: 14px 16px; border-top: 1px solid var(--border); }
+  .sidenav-footer-text { font-family: var(--font-mono); font-size: 8px; color: var(--anthrazit); line-height: 1.7; }
+
+  .main { margin-left: var(--nav-w); flex: 1; min-width: 0; }
+
+  .page-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 40px 48px 32px; }
+  .page-header-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .eyebrow-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: var(--elevated); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; }
+  .eyebrow-tag.red { color: var(--red); border-color: rgba(234,81,90,.3); background: var(--red-dim); }
+  .eyebrow-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border-md); }
+  .page-header h1 { font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: -.3px; margin-bottom: 12px; line-height: 1.25; }
+  .page-header h1 em { color: var(--red); font-style: normal; }
+  .page-header-desc { color: var(--text2); font-size: 14px; max-width: 680px; line-height: 1.65; margin-bottom: 24px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--elevated); color: var(--text2); }
+  .badge.green { color: var(--green); border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.08); }
+  .badge.orange { color: var(--orange); border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.08); }
+  .badge.blue { color: var(--blue); border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.08); }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
+
+  .content { padding: 48px 48px 80px; max-width: 900px; }
+
+  .section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: var(--font-mono); font-size: 11px; color: var(--red); font-weight: 600; min-width: 28px; padding-top: 3px; }
+  .section-title { font-size: 18px; font-weight: 600; color: var(--white); letter-spacing: -.2px; }
+  .section-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; font-family: var(--font-mono); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 16px; transition: border-color .2s; }
+  .card:hover { border-color: var(--border-md); }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 10px; }
+  .card-body { font-size: 13.5px; color: var(--text2); line-height: 1.65; }
+  .card-body p { margin-bottom: 8px; }
+  .card-body p:last-child { margin-bottom: 0; }
+
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .option-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s; }
+  .option-card:hover { border-color: var(--border-md); }
+  .option-card.recommended { border-color: rgba(234,81,90,.4); background: linear-gradient(135deg, var(--red-dim) 0%, var(--surface) 60%); }
+  .option-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .option-label.rec { color: var(--red); }
+  .option-title { font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.35; }
+  .option-desc { font-size: 12.5px; color: var(--text2); line-height: 1.6; flex: 1; }
+  .option-pros-cons { display: flex; flex-direction: column; gap: 5px; }
+  .pro-item, .con-item { font-size: 12px; display: flex; gap: 6px; align-items: flex-start; line-height: 1.4; }
+  .pro-item { color: var(--green); }
+  .con-item { color: var(--orange); }
+  .pro-item::before { content: '+'; font-weight: 700; min-width: 12px; }
+  .con-item::before { content: '–'; font-weight: 700; min-width: 12px; }
+  .pro-item span, .con-item span { color: var(--text2); }
+  .rec-banner { background: var(--red-dim); border: 1px solid rgba(234,81,90,.3); border-radius: 6px; padding: 14px 18px; font-size: 13px; color: var(--text2); line-height: 1.65; margin-top: 4px; }
+  .rec-banner strong { color: var(--red); }
+
+  .timeline { display: flex; flex-direction: column; }
+  .timeline-week { display: flex; gap: 24px; position: relative; }
+  .timeline-week::before { content: ''; position: absolute; left: 23px; top: 48px; bottom: 0; width: 1px; background: var(--border); }
+  .timeline-week:last-child::before { display: none; }
+  .timeline-left { display: flex; flex-direction: column; align-items: center; min-width: 48px; }
+  .timeline-dot { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--muted); flex-shrink: 0; position: relative; z-index: 1; }
+  .timeline-dot.active { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .timeline-content { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; flex: 1; margin-bottom: 12px; }
+  .timeline-week-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .timeline-week-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 10px; }
+  .timeline-items { display: flex; flex-direction: column; gap: 6px; }
+  .timeline-item { font-size: 12.5px; color: var(--text2); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; flex-wrap: wrap; }
+  .timeline-item::before { content: '›'; color: var(--anthrazit); font-weight: 700; flex-shrink: 0; }
+  .timeline-who { font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; border-radius: 3px; background: var(--elevated); border: 1px solid var(--border); color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .timeline-who.ca { color: var(--blue); border-color: rgba(59,130,246,.25); background: rgba(59,130,246,.07); }
+  .timeline-who.silvan { color: var(--red); border-color: rgba(234,81,90,.25); background: var(--red-dim); }
+
+  .checklist-group { margin-bottom: 28px; }
+  .checklist-group-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--anthrazit); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); display: block; }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 10px; border-radius: 5px; cursor: pointer; transition: background .15s; margin-bottom: 2px; }
+  .check-item:hover { background: var(--elevated); }
+  .check-box { width: 16px; height: 16px; border-radius: 3px; border: 1.5px solid var(--anthrazit); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: border-color .15s, background .15s; }
+  .check-item.checked .check-box { border-color: var(--red); background: var(--red); }
+  .check-box-tick { display: none; width: 8px; height: 8px; }
+  .check-box-tick path { stroke: white; stroke-width: 2; }
+  .check-item.checked .check-box-tick { display: block; }
+  .check-label { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .check-item.checked .check-label { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--anthrazit); }
+
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .risk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+  .risk-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .risk-icon { width: 14px; height: 14px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+  .risk-icon.orange { background: rgba(245,158,11,.2); color: var(--orange); }
+  .risk-icon.blue { background: rgba(59,130,246,.2); color: var(--blue); }
+  .risk-icon.red { background: var(--red-dim); color: var(--red); }
+  .risk-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .risk-card li { font-size: 12.5px; color: var(--text2); line-height: 1.55; display: flex; gap: 8px; align-items: flex-start; }
+  .risk-card li::before { content: '·'; color: var(--anthrazit); flex-shrink: 0; font-size: 14px; line-height: 1.3; }
+
+  .res-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .res-table th { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
+  .res-table td { padding: 10px 12px; color: var(--text2); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .res-table tr:last-child td { border-bottom: none; }
+  .res-table td:first-child { color: var(--text); font-weight: 500; }
+  .res-highlight { color: var(--red) !important; font-family: var(--font-mono); font-size: 12px; }
+  .role-tag { display: inline-block; font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; border-radius: 3px; background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.2); color: var(--blue); margin-left: 4px; }
+
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .scope-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+  .scope-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; display: block; }
+  .scope-card-label.green { color: var(--green); }
+  .scope-card-label.red { color: var(--red); }
+  .scope-card ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .scope-card li { font-size: 12.5px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+  .scope-card.green li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .scope-card.red li::before { content: '✗'; color: var(--red); font-weight: 700; flex-shrink: 0; }
+
+  .ca-box { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.2); border-radius: 8px; padding: 16px 20px; margin-top: 16px; display: flex; gap: 14px; align-items: flex-start; }
+  .ca-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ca-title { font-size: 12px; font-weight: 600; color: var(--blue); margin-bottom: 4px; font-family: var(--font-mono); }
+  .ca-body { font-size: 12.5px; color: var(--text2); line-height: 1.6; }
+
+  .info-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; font-size: 13.5px; }
+  .info-row-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); min-width: 130px; padding-top: 2px; flex-shrink: 0; }
+  .info-row-val { color: var(--text2); line-height: 1.6; }
+
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 16px; background: var(--elevated); border-radius: 6px; border: 1px solid var(--border); }
+  .progress-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); white-space: nowrap; min-width: 100px; }
+  .progress-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--red); border-radius: 2px; width: 0%; transition: width .6s ease; }
+  .progress-pct { font-family: var(--font-mono); font-size: 11px; color: var(--red); min-width: 36px; text-align: right; }
+
+  .metric-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .metric-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--red); }
+  .metric-label { font-size: 12px; color: var(--text2); line-height: 1.45; }
+  .metric-sub { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+
+  .page-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px 48px; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+  .footer-left { font-family: var(--font-mono); font-size: 10px; color: var(--anthrazit); line-height: 1.7; }
+  .footer-left span { color: var(--red); }
+  .footer-right { font-family: var(--font-mono); font-size: 10px; color: var(--anthrazit); }
+
+  @media print {
+    .sidenav { display: none !important; }
+    .main { margin-left: 0; }
+    .page-header { padding: 24px 32px 20px; }
+    .content { padding: 24px 32px 40px; }
+    .option-grid, .scope-grid, .risk-grid { grid-template-columns: 1fr; }
+    .card, .option-card, .risk-card, .timeline-content, .metric-card { break-inside: avoid; }
+  }
+  @media (max-width: 1024px) {
+    .option-grid { grid-template-columns: 1fr; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .risk-grid, .scope-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .sidenav { display: none; }
+    .main { margin-left: 0; }
+    .page-header, .content { padding-left: 20px; padding-right: 20px; }
+  }
+
+</style>
+<style>
+/* ═══ SCNAT SHELL — injected into every page ═══ */
+:root{
+  --snav:220px;   /* global sidebar width  */
+  --stoc:182px;   /* right TOC width       */
+  --sf:#141618;   --sfb:#1C1E22;
+  --sb0:#1E2124;  --sb1:#2A2D34;  --sb2:#5A616B;
+  --sr:#EA515A;   --srdim:rgba(234,81,90,.08); --srm:rgba(234,81,90,.18);
+  --st:#ECEEF1;   --st2:#8A8F9B;  --st3:#4E535D;
+}
+body{margin:0!important;padding:0!important}
+
+/* ── SHELL ── */
+.ss{display:flex;min-height:100vh}
+
+/* ── LEFT GLOBAL SIDEBAR ── */
+.sg{
+  width:var(--snav);flex-shrink:0;
+  background:var(--sf);border-right:1px solid var(--sb0);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:900;
+  overflow-y:auto;
+}
+.sg-brand{padding:1.2rem 1.15rem .7rem;border-bottom:1px solid var(--sb0);flex-shrink:0}
+.sg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--st3);margin-bottom:.2rem}
+.sg-title{font-size:.82rem;font-weight:600;color:var(--st);line-height:1.25}
+.sg-title em{color:var(--sr);font-style:normal}
+.sg-nav{padding:.55rem 0;flex:1}
+.sg-sec{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--st3);padding:.45rem 1.15rem .18rem;margin-top:.35rem}
+.sg-a{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.15rem;font-size:.78rem;color:var(--st2);text-decoration:none;border-left:2px solid transparent;transition:all .13s;white-space:nowrap;overflow:hidden}
+.sg-a svg{width:13px;height:13px;flex-shrink:0;opacity:.6;transition:opacity .13s}
+.sg-a:hover{color:var(--st);background:var(--sfb);border-left-color:var(--sb2)}
+.sg-a.on{color:var(--st);background:var(--srdim);border-left-color:var(--sr)}
+.sg-a.on svg{opacity:1}
+.sg-sub-a{display:flex;align-items:center;gap:.35rem;padding:.25rem 1.15rem .25rem 2.6rem;font-size:.71rem;color:var(--st3);text-decoration:none;transition:all .11s;border-left:2px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sg-sub-a:hover{color:var(--st2);background:var(--sfb)}
+.sg-sub-a.on{color:var(--sr)}
+.sg-sub-a.off{opacity:.32;pointer-events:none}
+.sg-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);flex-shrink:0}
+.sg-sub-a.on .sg-num{color:var(--sr)}
+.sg-user{padding:.65rem 1.15rem;border-top:1px solid var(--sb0);display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.sg-av{width:27px;height:27px;border-radius:50%;background:var(--srdim);border:1px solid var(--srm);color:var(--sr);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sg-uname{font-size:.75rem;font-weight:600;color:var(--st)}
+.sg-urole{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--st3);text-transform:uppercase;letter-spacing:.07em}
+
+/* ── PAGE AREA ── */
+.sp{margin-left:var(--snav);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb{display:flex;flex:1;min-height:0}
+.sc{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── RIGHT IN-PAGE TOC ── */
+.scnat-rtoc{
+  width:var(--stoc);flex-shrink:0;
+  border-left:1px solid var(--sb0);
+  background:var(--sf);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rtoc-head{
+  padding:1.1rem 1rem .65rem;
+  border-bottom:1px solid var(--sb0);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--st3);
+  flex-shrink:0;
+}
+.rtoc-links{flex:1;padding:.4rem 0;overflow-y:auto}
+.rtoc-a{
+  display:flex;align-items:center;gap:.42rem;
+  padding:.34rem 1rem;
+  font-size:.73rem;color:var(--st3);
+  text-decoration:none;transition:all .12s;
+  border-left:2px solid transparent;
+  line-height:1.3;
+}
+.rtoc-a:hover{color:var(--st2);background:var(--sfb)}
+.rtoc-a.on{color:var(--st);border-left-color:var(--sr);background:var(--srdim)}
+.rtoc-a.on .rtoc-num{color:var(--sr)}
+.rtoc-num{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--st3);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.rtoc-prog{
+  padding:.9rem 1rem;
+  border-top:1px solid var(--sb0);
+  flex-shrink:0;
+}
+.rtoc-prog-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--st3);margin-bottom:.55rem;
+}
+.rtoc-prog-bar{height:3px;background:var(--sb1);border-radius:2px;overflow:hidden;margin-bottom:.42rem}
+.rtoc-prog-fill{height:100%;background:var(--sr);border-radius:2px;transition:width .3s ease;width:0%}
+.rtoc-prog-txt{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--st2)}
+.rtoc-prog-btn{
+  margin-top:.55rem;width:100%;
+  font-family:'JetBrains Mono',monospace;font-size:.63rem;
+  color:var(--st3);background:none;
+  border:1px solid var(--sb1);border-radius:3px;
+  padding:4px 8px;cursor:pointer;transition:all .13s;
+}
+.st-prog-btn:hover{color:var(--st2);border-color:var(--sb2)}
+
+/* ── FOOTER ── */
+.sf-bar{
+  border-top:1px solid var(--sb0);padding:.8rem 1.8rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--sf);flex-shrink:0;
+}
+.sf-l{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3);text-transform:uppercase;letter-spacing:.09em}
+.sf-r{display:flex;align-items:center;gap:.9rem}
+.sf-link{font-size:.71rem;color:var(--st3);text-decoration:none;transition:color .13s}
+.sf-link:hover{color:var(--st2)}
+.sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;top:.65rem;left:.65rem;z-index:1000;background:var(--sf);border:1px solid var(--sb1);border-radius:6px;width:33px;height:33px;align-items:center;justify-content:center;cursor:pointer;color:var(--st2)}
+@media(max-width:1100px){.scnat-rtoc{display:none}}
+@media(max-width:760px){
+  .sg{transform:translateX(-100%);transition:transform .2s}
+  .sg.open{transform:translateX(0);box-shadow:6px 0 28px rgba(0,0,0,.6)}
+  .sp{margin-left:0}
+  .mob-btn{display:flex}
+}
+@media print{.sg,.st,.mob-btn,.sf-bar{display:none!important}.sp{margin-left:0}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="ss">
+<aside class="sg" id="sg">
+<div class="sg-brand">
+<div class="sg-lbl">SCNAT · Digitalisierung</div>
+<div class="sg-title">Digitalisierungs-<br/><em>plattform</em></div>
+</div>
+<nav class="sg-nav">
+<div class="sg-sec">Plattform</div>
+<a class="sg-a" href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Übersicht</a>
+<a class="sg-a" href="sprints-dashboard.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>Sprints</a>
+<div class="sg-sec">Massnahmen</div>
+<a class="sg-sub-a" href="massnahme-kommunikation-digitale-transformation.html"><span class="sg-num">01</span>Kommunikation Digitale Transformation</a>
+<a class="sg-sub-a" href="massnahme-ressourcenabklaerung.html"><span class="sg-num">02</span>Ressourcenabklärung</a>
+<a class="sg-sub-a" href="massnahme-change-agents.html"><span class="sg-num">03</span>Team Change Agents</a>
+<a class="sg-sub-a" href="einfuehrung-digitalisierungsplattform.html"><span class="sg-num">04</span>Digitalisierungsplattform</a>
+<a class="sg-sub-a" href="massnahme-tool-uebersicht.html"><span class="sg-num">05</span>Übersicht digitale Tools</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">06</span>DB &amp; Portale Konzept</span>
+<a class="sg-sub-a" href="ki-strategie-befaehigung.html"><span class="sg-num">07</span>KI-Strategie</a>
+<span class="sg-sub-a off" title="Noch nicht erstellt"><span class="sg-num">08</span>KI Lernpfad</span>
+<a class="sg-sub-a on" href="massnahme-analyse-tools-software.html"><span class="sg-num">09</span>Analyse Tools &amp; Software</a>
+<a class="sg-sub-a" href="massnahme-beschaffungsprozess.html"><span class="sg-num">10</span>Beschaffungsprozess</a>
+<a class="sg-sub-a" href="prozessdigitalisierung-evergreens.html"><span class="sg-num">11</span>Prozessdigitalisierung</a>
+<a class="sg-sub-a" href="massnahme-lead-applikationslandschaft.html"><span class="sg-num">12</span>Lead Applikationslandschaft</a>
+<div class="sg-sec">System</div>
+<a class="sg-a" href="admin.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Control Panel</a>
+</nav>
+<div class="sg-user">
+<div class="sg-av">SP</div>
+<div>
+<div class="sg-uname">Silvan Poltera</div>
+<div class="sg-urole">Admin</div>
+</div>
+</div>
+</aside>
+<button class="mob-btn" onclick="document.getElementById('sg').classList.toggle('open')">
+<svg fill="none" height="15" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" width="15"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+</button>
+<div class="sp">
+<div class="sb">
+<div class="sc">
+<div class="content">
+<!-- 01 -->
+<section class="section" id="einleitung">
+<div class="section-header">
+<span class="section-num">01</span>
+<div><div class="section-title">Einleitung</div><div class="section-subtitle">Ausgangslage · Relevanz · Mehrwert</div></div>
+</div>
+<div class="card">
+<div class="card-title">Ausgangslage</div>
+<div class="card-body">
+<p>SCNAT betreibt heute eine Toollandschaft, die über Jahre organisch gewachsen ist. Tools wurden häufig abteilungsweise eingeführt – ohne strategische Gesamtsicht, ohne einheitliche Bewertung, oft am formellen Beschaffungsprozess vorbei. Das Ergebnis: die IT verwaltet über 20 Ausnahmen, deren tatsächliche Nutzungsrealität intern kaum dokumentiert ist.</p>
+<p>Mit M-06 ("Übersicht digitale Tools", Sprint 03) wurde ein erster Schritt zur Sichtbarkeit gemacht. Diese Massnahme baut direkt darauf auf und macht aus der Bestandsaufnahme eine bewertete, handlungsrelevante Grundlage.</p>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Zentraler Mehrwert</div>
+<div class="card-body">
+<p>Welche Tools brauchen wir wirklich? Welche kosten Geld und Aufmerksamkeit ohne echten Nutzen? Wo fehlt etwas? Das Ergebnis ist die notwendige Datenbasis für alle zukünftigen Konsolidierungs-, Ablöse- und Neueinführungsentscheide – sachlich begründet, vollständig intern erarbeitet, politisch tragfähig.</p>
+</div>
+</div>
+</section>
+<!-- 02 -->
+<section class="section" id="beschreibung">
+<div class="section-header">
+<span class="section-num">02</span>
+<div><div class="section-title">Beschreibung</div><div class="section-subtitle">Scope · Inhalte · Strategischer Fit</div></div>
+</div>
+<div class="scope-grid">
+<div class="scope-card green">
+<span class="scope-card-label green">✓ Im Scope</span>
+<ul>
+<li>Alle aktiv lizenzierten oder genutzten Tools (SaaS, Desktop, intern)</li>
+<li>Tatsächliche Nutzungsintensität pro Tool und Abteilung</li>
+<li>Strukturierte Bewertung nach einheitlichem Kriterienkatalog</li>
+<li>Redundanzen, Compliance-Risiken und Lücken identifizieren</li>
+<li>Priorisierte Folgeempfehlungen (konsolidieren / ablösen / neu)</li>
+<li>M-06-Output als validierter Startpunkt nutzen</li>
+</ul>
+</div>
+<div class="scope-card red">
+<span class="scope-card-label red">✗ Nicht im Scope</span>
+<ul>
+<li>Eigentliche Konsolidierung oder Ablösung (Folgemassnahmen)</li>
+<li>IT-technische Migrationen oder Datentransfers</li>
+<li>Vertragsverhandlungen mit Anbietern</li>
+<li>Einführung konkreter neuer Tools</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Bewertungskriterien (Kriterienkatalog)</div>
+<div class="card-body">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K1</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">Nutzungsintensität</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Wer nutzt es, wie oft, wie zentral?</div></div>
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K2</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">Lizenzkosten</div><div style="font-size:11px;color:var(--text2);margin-top:2px">CHF/Monat, pro Nutzer, Gesamtkosten</div></div>
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K3</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">DSG / DSGVO-Status</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Konform / Ausnahme / Risiko</div></div>
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K4</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">IT-Betriebsaufwand</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Wartung, Support, Ausnahme-Handling</div></div>
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K5</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">Redundanz</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Überlappung mit anderen Tools?</div></div>
+<div style="background:var(--elevated);border:1px solid var(--border);border-radius:5px;padding:10px 12px"><div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:3px">K6</div><div style="font-size:12.5px;font-weight:600;color:var(--text)">Strategischer Fit</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Langfristig sinnvoll, skalierbar?</div></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Strategischer Fit</div>
+<div class="card-body"><p>Die Massnahme ist direkte Voraussetzung für fundierte Beschaffungsentscheide und liefert die Datenbasis für das Steering Committee. Sie schafft Transparenz im Handlungsfeld Information &amp; Transparenz und bereitet den Boden für Infrastruktur-Entscheide nach dem Xojo-Projektabschluss 2026. Alle Folgemassnahmen in den Bereichen Konsolidierung, Ablösung und Neueinführung hängen an dieser Grundlage.</p></div>
+</div>
+</section>
+<!-- 03 -->
+<section class="section" id="optionen">
+<div class="section-header">
+<span class="section-num">03</span>
+<div><div class="section-title">Umsetzungsoptionen</div><div class="section-subtitle">3 Wege · Pro/Contra · Empfehlung</div></div>
+</div>
+<div class="option-grid">
+<div class="option-card">
+<div class="option-label">Option A</div>
+<div class="option-title">Interne Auswertung auf Basis M-06</div>
+<div class="option-desc">Die bestehende Übersicht aus M-06 wird mit einem Bewertungsraster ergänzt. Silvans Team trägt bekannte Infos ein, Change Agents liefern abteilungsspezifische Einschätzungen per Formular.</div>
+<div class="option-pros-cons">
+<div class="pro-item"><span>Schnell (1–2 Wochen), kein Zusatzaufwand</span></div>
+<div class="pro-item"><span>Sofort umsetzbar, kein Setup nötig</span></div>
+<div class="con-item"><span>Nutzungsdaten bleiben Schätzwerte</span></div>
+<div class="con-item"><span>Blinde Flecken möglich, schwer validierbar</span></div>
+</div>
+</div>
+<div class="option-card recommended">
+<div class="option-label rec">Option B · Empfohlen</div>
+<div class="option-title">Strukturierte Erhebung via Change Agent Netzwerk + Nutzungsdaten</div>
+<div class="option-desc">Change Agents erheben in ihren Abteilungen strukturiert. Parallel: Admin-Konsolen und Lizenzstatistiken auswerten. Das KI-Team im Change Agent Netzwerk unterstützt bei Auswertung und Kategorisierung.</div>
+<div class="option-pros-cons">
+<div class="pro-item"><span>Validiertere Datenbasis, echtes Nutzerfeedback</span></div>
+<div class="pro-item"><span>Change Agents sind Owner – Doppelnutzen</span></div>
+<div class="pro-item"><span>Vollständig intern umsetzbar</span></div>
+<div class="con-item"><span>Mehr Koordination nötig (3–4 Wochen)</span></div>
+</div>
+</div>
+<div class="option-card">
+<div class="option-label">Option C</div>
+<div class="option-title">Externer Audit – nur wenn intern nicht möglich</div>
+<div class="option-desc">Nur sinnvoll wenn intern weder Kapazität noch Daten vorhanden sind, oder wenn eine unabhängige Perspektive für politisch heikle Ablöse-Empfehlungen zwingend nötig ist.</div>
+<div class="option-pros-cons">
+<div class="pro-item"><span>Unabhängige Perspektive für heikle Entscheide</span></div>
+<div class="con-item"><span>Kosten CHF 5'000–15'000</span></div>
+<div class="con-item"><span>Vorlaufzeit, internes Briefing aufwändig</span></div>
+<div class="con-item"><span>Intern in der Regel vermeidbar</span></div>
+</div>
+</div>
+</div>
+<div class="rec-banner"><strong>Empfehlung:</strong> Option B – vollständig intern, vollständig im Change Agent Netzwerk verankert. Das KI-Team (integriert in Change Agents) übernimmt Auswertung und strukturierte Kategorisierung. Silvans Team steuert und qualitätssichert. Kein externer Aufwand nötig.</div>
+</section>
+<!-- 04 -->
+<section class="section" id="vorbereitung">
+<div class="section-header">
+<span class="section-num">04</span>
+<div><div class="section-title">Vorbereitung</div><div class="section-subtitle">Was vor Sprint-Start erledigt sein muss</div></div>
+</div>
+<div class="card">
+<div class="card-title">Inhaltliche Abklärungen</div>
+<div class="card-body">
+<div class="info-row"><span class="info-row-label">M-06 sichten</span><span class="info-row-val">Was fehlt noch in der bestehenden Übersicht? Welche Kategorien sind nicht abgedeckt? Vollständigkeit beurteilen, als Startpunkt bestätigen.</span></div>
+<div class="info-row"><span class="info-row-label">Bewertungsraster</span><span class="info-row-val">Kriterien, Gewichtung und Skala (1–5 pro Kriterium) definieren – einfach genug, dass Change Agents es ohne Schulung ausfüllen können.</span></div>
+<div class="info-row"><span class="info-row-label">Nutzungsdaten</span><span class="info-row-val">Klären, welche Daten aus Admin-Konsolen auslesbar sind (M365 Admin Center, ggf. andere SaaS-Portale). IT Intern Aufwand minimal halten.</span></div>
+<div class="info-row"><span class="info-row-label">Plattform-Daten</span><span class="info-row-val">Bestehende software.json und Voting-Daten aus der SCNAT-Plattform (Systemlandschaft) direkt als ergänzende Datenquelle nutzen – bereits strukturiert vorhanden.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">IT-Koordination (IT Intern)</div>
+<div class="card-body">
+<div class="info-row"><span class="info-row-label">Lizenzdaten</span><span class="info-row-val">Welche Daten sind wo dokumentiert? Abfrage auf wenige, klar definierte Datenpunkte beschränken – die IT-Abteilung ist durch das Xojo-Projekt stark ausgelastet, Aufwand muss minimal bleiben.</span></div>
+<div class="info-row"><span class="info-row-label">Admin-Zugänge</span><span class="info-row-val">Welche Systeme liefern brauchbare Nutzungsstatistiken? Priorität setzen, nur das Nötigste abfragen.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Datenschutz-Check</div>
+<div class="card-body"><p>Nutzungsdaten können personenbezogen sein. Anonymisierung auf Abteilungsebene sicherstellen – kein Tracking einzelner Personen. Erhebungsformular auf DSG-Konformität prüfen: bevorzugt Microsoft Forms (EU-Rechenzentrum, M365 bereits lizenziert) oder Cryptpad Forms (CH/EU-Hosting, Open Source, kostenlos, vollständig DSG-konform).</p></div>
+</div>
+<div class="ca-box">
+<div class="ca-icon"><svg fill="none" height="16" stroke="#3B82F6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
+<div>
+<div class="ca-title">Change Agent Briefing (inkl. KI-Team)</div>
+<div class="ca-body">Erhebungsauftrag klar formulieren: Was sollen sie herausfinden, wie, bis wann? Kurzformular bereitstellen (max. 10–15 Min. pro Tool-Einschätzung). Das KI-Team im Change Agent Netzwerk übernimmt zusätzlich die Unterstützung bei Auswertung und Kategorisierung der Daten – diese Rolle früh briefen. Rückfragen-Kanal definieren (Slack oder Q&amp;A im Change Agent Meeting).</div>
+</div>
+</div>
+</section>
+<!-- 05 -->
+<section class="section" id="ressourcen">
+<div class="section-header">
+<span class="section-num">05</span>
+<div><div class="section-title">Ressourcen</div><div class="section-subtitle">Rollen · Tools · Budget</div></div>
+</div>
+<div class="card">
+<div class="card-title">Internes Team</div>
+<div class="card-body" style="padding:0;overflow:hidden;border-radius:4px">
+<table class="res-table" style="margin:0">
+<thead><tr><th>Person / Rolle</th><th>Aufgabe</th><th>Aufwand</th></tr></thead>
+<tbody>
+<tr><td>Silvan Poltera</td><td>Projektleitung, Bewertungsraster definieren, Koordination Erhebung, Qualitätssicherung Report</td><td class="res-highlight">~8h</td></tr>
+<tr><td>IT Intern<span class="role-tag">IT</span></td><td>Lizenzdaten und Admin-Nutzungsstatistiken liefern – klar begrenzter, minimaler Aufwand</td><td class="res-highlight">~3h</td></tr>
+<tr><td>Change Agents<span class="role-tag">alle Abt.</span></td><td>Strukturierte Erhebung in ihrer Abteilung, Formular ausfüllen, Rückfragen beantworten</td><td class="res-highlight">~2h / Agent</td></tr>
+<tr><td>KI-Team<span class="role-tag">Change Agents</span></td><td>Datenzusammenführung, Kategorisierung, KI-gestützte Auswertung, Reportentwurf</td><td class="res-highlight">~4–5h</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Tools &amp; Software</div>
+<div class="card-body">
+<div class="info-row"><span class="info-row-label">Erhebungsformular</span><span class="info-row-val"><strong>Microsoft Forms</strong> (lizenziert, DSG-konform bei EU-Rechenzentrum) oder <strong>Cryptpad Forms</strong> (Open Source, CH/EU-Hosting, gratis, vollständig DSG-konform – bevorzugt bei Zweifel an M365-Konfiguration).</span></div>
+<div class="info-row"><span class="info-row-label">Datenzusammenführung</span><span class="info-row-val"><strong>Excel / On-Premise</strong> – kein Setup, keine Compliance-Fragen, sofort verfügbar. Kein Cloud-Spreadsheet ohne vorherige Prüfung.</span></div>
+<div class="info-row"><span class="info-row-label">Plattform-Daten</span><span class="info-row-val">Bestehende <strong>Systemlandschaft + Voting-Daten</strong> auf der SCNAT-Plattform als strukturierte Datenquelle direkt nutzen.</span></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Budget</div>
+<div class="card-body">
+<div class="info-row"><span class="info-row-label">Intern</span><span class="info-row-val">Im Rahmen bestehender Kapazitäten – kein Zusatzbudget nötig</span></div>
+<div class="info-row"><span class="info-row-label">Tools</span><span class="info-row-val">Keine Zusatzlizenz erforderlich (Forms via M365 vorhanden oder Cryptpad gratis)</span></div>
+<div class="info-row"><span class="info-row-label">Extern</span><span class="info-row-val" style="color:var(--muted)">Nicht vorgesehen – intern vollständig abdeckbar</span></div>
+</div>
+</div>
+</section>
+<!-- 06 -->
+<section class="section" id="sprint">
+<div class="section-header">
+<span class="section-num">06</span>
+<div><div class="section-title">Sprint-Ablauf</div><div class="section-subtitle">4-Wochen-Plan · Wer macht was wann</div></div>
+</div>
+<div class="timeline">
+<div class="timeline-week">
+<div class="timeline-left"><div class="timeline-dot active">W1</div></div>
+<div class="timeline-content">
+<div class="timeline-week-label">Woche 1</div>
+<div class="timeline-week-title">Kick-off &amp; Setup</div>
+<div class="timeline-items">
+<div class="timeline-item">M-06-Output sichten, Lücken identifizieren, als validierten Startpunkt festlegen <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Bewertungsraster finalisieren: Kriterien, Gewichtung, Skala – dokumentiert und abgestimmt <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Change Agent Meeting: Erhebungsauftrag erklären, Formular abgeben, Abgabefrist setzen (Ende Woche 2) <span class="timeline-who ca">Change Agents</span></div>
+<div class="timeline-item">Plattform-Daten (software.json, Votings) als Datenquelle aufbereiten <span class="timeline-who ca">KI-Team</span></div>
+<div class="timeline-item">IT-Lizenzdaten und Admin-Nutzungsstatistiken anfordern <span class="timeline-who">IT Intern</span></div>
+<div class="timeline-item">Datenschutz-Check: Erhebungsformular und Anonymisierungsansatz abstimmen <span class="timeline-who silvan">Silvan</span></div>
+</div>
+</div>
+</div>
+<div class="timeline-week">
+<div class="timeline-left"><div class="timeline-dot">W2</div></div>
+<div class="timeline-content">
+<div class="timeline-week-label">Woche 2</div>
+<div class="timeline-week-title">Erhebung</div>
+<div class="timeline-items">
+<div class="timeline-item">Strukturierte Erhebungen in allen Abteilungen durchführen <span class="timeline-who ca">Change Agents</span></div>
+<div class="timeline-item">Lizenzdaten und verfügbare Nutzungsstatistiken liefern <span class="timeline-who">IT Intern</span></div>
+<div class="timeline-item">Erste Zusammenführung eingehender Rückmeldungen im Excel-Dashboard <span class="timeline-who ca">KI-Team</span></div>
+<div class="timeline-item">Erinnerung Mitte Woche 2 an ausstehende Rückmeldungen <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Qualitätssicht auf erste Dateneingänge, fehlende Tools nachfordern <span class="timeline-who silvan">Silvan</span></div>
+</div>
+</div>
+</div>
+<div class="timeline-week">
+<div class="timeline-left"><div class="timeline-dot">W3</div></div>
+<div class="timeline-content">
+<div class="timeline-week-label">Woche 3</div>
+<div class="timeline-week-title">Analyse &amp; Bewertung</div>
+<div class="timeline-items">
+<div class="timeline-item">Alle Daten vollständig zusammengeführt und im Dashboard bereit <span class="timeline-who ca">KI-Team</span></div>
+<div class="timeline-item">Internes Analyse-Meeting (~1.5h): Redundanzen, Lücken, erste Konsolidierungskandidaten <span class="timeline-who silvan">Silvan</span> <span class="timeline-who ca">Change Agents</span></div>
+<div class="timeline-item">Kategorisierung: Behalten / Konsolidieren / Ablösen / Prüfen / Neu einführen <span class="timeline-who ca">KI-Team</span></div>
+<div class="timeline-item">Compliance-Markierungen: nicht-DSG-konforme Tools ohne Ausnahme kennzeichnen <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Erstentwurf Empfehlungsreport erstellen <span class="timeline-who ca">KI-Team</span></div>
+</div>
+</div>
+</div>
+<div class="timeline-week">
+<div class="timeline-left"><div class="timeline-dot">W4</div></div>
+<div class="timeline-content">
+<div class="timeline-week-label">Woche 4</div>
+<div class="timeline-week-title">Review, Dokumentation &amp; Übergabe</div>
+<div class="timeline-items">
+<div class="timeline-item">Report finalisieren und intern abstimmen <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Ergebnisse in Plattform-Systemlandschaft einpflegen <span class="timeline-who ca">KI-Team</span></div>
+<div class="timeline-item">Folgemassnahmen priorisieren und als Sprint-Backlog-Items definieren <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Präsentation für Steering Committee vorbereiten <span class="timeline-who silvan">Silvan</span></div>
+<div class="timeline-item">Change Agent Meeting: Ergebnisse zurückmelden, nächste Schritte kommunizieren <span class="timeline-who ca">Change Agents</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 07 -->
+<section class="section" id="checkliste">
+<div class="section-header">
+<span class="section-num">07</span>
+<div><div class="section-title">Checkliste</div><div class="section-subtitle">Interaktiv · Status wird lokal gespeichert</div></div>
+</div>
+<div class="progress-row">
+<span class="progress-label">Fortschritt gesamt</span>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+<span class="progress-pct" id="progress-pct">0%</span>
+</div>
+<div style="margin-top:24px">
+<div class="checklist-group">
+<span class="checklist-group-label">Vorbereitung</span>
+<label class="check-item" onclick="toggleCheck(this,'c1')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">M-06-Output gesichtet, Vollständigkeit beurteilt und als Startpunkt bestätigt</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c2')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Bewertungsraster (6 Kriterien + Skala 1–5) definiert und dokumentiert</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c3')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Erhebungsformular erstellt und mit 1–2 Change Agents getestet</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c4')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Change Agents gebrieft: Auftrag, Formular, Abgabefrist, Ansprechperson</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c5')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">KI-Team über Auswertungsrolle informiert und eingebunden</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c6')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">IT Intern: Datenlieferung vereinbart (Umfang klar und minimal definiert)</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c7')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Datenschutz-Check Erhebungsformular abgeschlossen (Anonymisierung sichergestellt)</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c8')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Abteilungsleitungen über Erhebung informiert</span></label>
+</div>
+<div class="checklist-group">
+<span class="checklist-group-label">Sprint-Durchführung</span>
+<label class="check-item" onclick="toggleCheck(this,'c9')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">IT-Lizenzdaten und Nutzungsstatistiken erhalten</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c10')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Alle Change Agent Erhebungen abgeschlossen (100% Abteilungsabdeckung)</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c11')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Daten vollständig zusammengeführt im Excel-Dashboard</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c12')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Redundanzen identifiziert und dokumentiert</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c13')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Compliance-Risiken (nicht-DSG-konforme Tools ohne Ausnahme) markiert</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c14')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Lücken (fehlende Lösungen für bekannte Bedürfnisse) festgehalten</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c15')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Kategorisierung abgeschlossen: Behalten / Konsolidieren / Ablösen / Prüfen / Neu</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c16')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Internes Analyse-Meeting durchgeführt, Konsolidierungskandidaten definiert</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c17')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Erstentwurf Empfehlungsreport erstellt</span></label>
+</div>
+<div class="checklist-group">
+<span class="checklist-group-label">Abschluss</span>
+<label class="check-item" onclick="toggleCheck(this,'c18')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Report finalisiert und von Silvan abgenommen</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c19')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Folgemassnahmen definiert, priorisiert, im Sprint-Backlog erfasst</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c20')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Erkenntnisse in Plattform-Systemlandschaft eingepflegt</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c21')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Steering Committee Präsentation bereit</span></label>
+<label class="check-item" onclick="toggleCheck(this,'c22')"><div class="check-box"><svg class="check-box-tick" viewbox="0 0 10 8"><path d="M1 4l3 3 5-6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><span class="check-label">Change Agents über Ergebnisse informiert, nächste Schritte kommuniziert</span></label>
+</div>
+</div>
+</section>
+<!-- 08 -->
+<section class="section" id="risiken">
+<div class="section-header">
+<span class="section-num">08</span>
+<div><div class="section-title">Risiken &amp; Abhängigkeiten</div><div class="section-subtitle">Technisch · Strukturell · Ressourcen</div></div>
+</div>
+<div class="risk-grid">
+<div class="risk-card">
+<div class="risk-card-label"><span class="risk-icon orange">!</span>Technische Risiken</div>
+<ul>
+<li>Lizenzdaten nicht vollständig dokumentiert → Lücken in der Kostensicht. Mitigation: fehlende Werte mit Schätzwerten und Hinweis markieren, transparent ausweisen.</li>
+<li>Nutzungsdaten einzelner Tools nicht auslesbar (kein Admin-Zugang) → Schätzwerte nötig. Mitigation: Change Agent Einschätzungen als Fallback.</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-card-label"><span class="risk-icon blue">i</span>Strukturelle Rahmenbedingungen</div>
+<ul>
+<li>Die IT-Abteilung ist durch das Xojo-Projekt (Abschluss 2026) nahezu vollständig ausgelastet. Datenabfragen müssen auf klar definierte Datenpunkte reduziert und zeitlich koordiniert werden.</li>
+<li>Empfehlungen zur Ablösung langjährig genutzter Tools können intern Widerstand erzeugen. Sachliche, kriterienbasierte Datengrundlage macht die Empfehlungen belastbar.</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-card-label"><span class="risk-icon orange">!</span>Ressourcenrisiken</div>
+<ul>
+<li>Change Agents können Erhebung nicht fristgerecht abschliessen (parallele Aufgaben). Mitigation: Abgabefrist mit 3–4 Tagen Puffer, Erinnerung Mitte Woche 2.</li>
+<li>KI-Team hat parallele Aufgaben. Mitigation: Auswertungsrolle früh briefen und ~5h im Sprint einplanen.</li>
+</ul>
+</div>
+<div class="risk-card">
+<div class="risk-card-label"><span class="risk-icon red">→</span>Abhängigkeiten</div>
+<ul>
+<li>Setzt M-06 als abgeschlossenen Startpunkt voraus. Falls M-06 noch läuft, erhöht sich der Aufwand in Woche 1.</li>
+<li>Alle Folgemassnahmen (Konsolidierung, Ablösung, Neueinführung) hängen an dieser Analyse – Verzögerung verschiebt den gesamten Folgefahrplan.</li>
+<li>Ergebnisse sollten in den nächsten Steering Committee Termin einfliessen.</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 09 -->
+<section class="section" id="erfolg">
+<div class="section-header">
+<span class="section-num">09</span>
+<div><div class="section-title">Erfolgsmessung</div><div class="section-subtitle">Indikatoren · Messpunkte · Definition of Done</div></div>
+</div>
+<div class="metric-grid">
+<div class="metric-card"><div class="metric-value">100%</div><div class="metric-label">Aktiv genutzte Tools erfasst und bewertet</div><div class="metric-sub">Vollständigkeit</div></div>
+<div class="metric-card"><div class="metric-value">6</div><div class="metric-label">Bewertungskriterien pro Tool ausgefüllt</div><div class="metric-sub">Datenqualität</div></div>
+<div class="metric-card"><div class="metric-value">≥3</div><div class="metric-label">Konkrete Folgeempfehlungen ausgearbeitet</div><div class="metric-sub">Handlungsrelevanz</div></div>
+<div class="metric-card"><div class="metric-value">✓</div><div class="metric-label">Report abgenommen &amp; dem Steering Committee präsentiert</div><div class="metric-sub">Abnahme</div></div>
+<div class="metric-card"><div class="metric-value">✓</div><div class="metric-label">Ergebnisse in Plattform-Systemlandschaft nachgeführt</div><div class="metric-sub">Transparenz</div></div>
+<div class="metric-card"><div class="metric-value">≥1</div><div class="metric-label">Folgemassnahme im nächsten Sprint-Backlog definiert</div><div class="metric-sub">Wirkung</div></div>
+</div>
+</section>
+</div>
+</div>
+<aside class="scnat-rtoc">
+<div class="rtoc-head">Inhalt</div>
+<div class="rtoc-links" id="tocLinks">
+<a class="rtoc-a" href="#einleitung"><span class="rtoc-num">01</span>Einleitung</a>
+<a class="rtoc-a" href="#beschreibung"><span class="rtoc-num">02</span>Beschreibung</a>
+<a class="rtoc-a" href="#optionen"><span class="rtoc-num">03</span>Umsetzungsoptionen</a>
+<a class="rtoc-a" href="#vorbereitung"><span class="rtoc-num">04</span>Vorbereitung</a>
+<a class="rtoc-a" href="#ressourcen"><span class="rtoc-num">05</span>Ressourcen</a>
+<a class="rtoc-a" href="#sprint"><span class="rtoc-num">06</span>Sprint-Ablauf</a>
+<a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
+<a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
+<a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
+</div>
+</aside>
+</div>
+<footer class="sf-bar">
+<div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
+<div class="sf-r">
+<a class="sf-link" href="index.html">Übersicht</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="sprints-dashboard.html">Sprints</a>
+<div class="sf-dot"></div>
+<a class="sf-link" href="admin.html">Admin</a>
+<div class="sf-dot"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+</div>
+</footer>
+</div>
+</div>
+<script>
+  const STORAGE_KEY = 'scnat-checklist-analyse-tools-v2';
+
+  function loadChecklist() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      const state = JSON.parse(saved);
+      document.querySelectorAll('.check-item').forEach(item => {
+        const m = item.getAttribute('onclick').match(/'(c\d+)'/);
+        if (m && state[m[1]]) item.classList.add('checked');
+      });
+    } catch(e) {}
+    updateProgress();
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    saveChecklist();
+    updateProgress();
+  }
+
+  function saveChecklist() {
+    const state = {};
+    document.querySelectorAll('.check-item').forEach(item => {
+      const m = item.getAttribute('onclick').match(/'(c\d+)'/);
+      if (m) state[m[1]] = item.classList.contains('checked');
+    });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.check-item').length;
+    const done = document.querySelectorAll('.check-item.checked').length;
+    const pct = all > 0 ? Math.round(done / all * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = document.querySelectorAll('.sidenav-link');
+
+  function updateNav() {
+    let current = 'einleitung';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 80) current = sec.id; });
+    navLinks.forEach(link => { link.classList.toggle('active', link.getAttribute('href') === '#' + current); });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  loadChecklist();
+  updateNav();
+</script>
+<script>
+(function(){
+  var as = Array.from(document.querySelectorAll('.rtoc-a'));
+  var pairs = as.map(function(a){
+    var id = (a.getAttribute('href')||'').replace('#','');
+    return {a:a, sec:id ? document.getElementById(id) : null};
+  }).filter(function(p){return p.sec});
+  function sync(){
+    var y = window.scrollY + 130;
+    var cur = null;
+    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    as.forEach(function(a){ a.classList.remove('on'); });
+    if(cur) cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll', sync, {passive:true});
+  setTimeout(sync, 200);
+})();
+</script>
+</body>
+</html>

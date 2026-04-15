@@ -38,6 +38,8 @@ import CpLiveInfos from './pages/cp/CpLiveInfos';
 import CpNews from './pages/cp/CpNews';
 import CpAdminStuff from './pages/cp/CpAdminStuff';
 import CpAdminStuffView from './pages/cp/CpAdminStuffView';
+import CpAdminDetails from './pages/cp/CpAdminDetails';
+import CpAdminDetailsView from './pages/cp/CpAdminDetailsView';
 import CpInbox from './pages/cp/CpInbox';
 import CpSichtbarkeit from './pages/cp/CpSichtbarkeit';
 import Sprints from './pages/Sprints';
@@ -97,6 +99,8 @@ function App() {
             <Route path="/cp/sichtbarkeit" element={<CpSichtbarkeit />} />
             <Route path="/cp/admin-stuff" element={<CpAdminStuff />} />
             <Route path="/cp/admin-stuff/:page" element={<CpAdminStuffView />} />
+            <Route path="/cp/admin-details" element={<CpAdminDetails />} />
+            <Route path="/cp/admin-details/:page" element={<CpAdminDetailsView />} />
             <Route path="/cp/sprints" element={<CpSprints />} />
             <Route path="/cp/sprints/:id" element={<CpSprintEditor />} />
           </Route>
