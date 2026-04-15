@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0;min-width:0;overflow:hidden;border-right-color:transparent}aside.sg~.sp{margin-left:0}";document.head.appendChild(s)}})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important;transition:none!important}aside.sg~.sp{margin-left:0!important}";document.head.appendChild(s)}})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Analyse Tools &amp; Software – SCNAT Digitalisierung</title>
@@ -374,6 +374,12 @@ html.light table td{border-color:var(--border,#E5E7EB)!important}
 html.light .data-table tr:hover td{background:rgba(0,0,0,.03)!important}
 html.light .pc-box{background:rgba(0,0,0,.03)!important}
 
+
+/* ── LIGHT MODE: header inline styles fix ── */
+html.light header[style]{background:var(--surface,#fff)!important}
+html.light header[style] h1{color:var(--text,#1F2937)!important}
+html.light header[style] p{color:var(--text2,#6B7280)!important}
+
 </style>
 </head>
 <body>
@@ -409,7 +415,11 @@ html.light .pc-box{background:rgba(0,0,0,.03)!important}
 <div class="sp">
 <div class="sb">
 <div class="sc">
-<div style="padding:2rem 2.5rem 0"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;color:#9CA3AF">SCNAT <span style="opacity:.4;margin:0 .3rem">›</span> Massnahmen <span style="opacity:.4;margin:0 .3rem">›</span> <span style="color:#EA515A">Analyse Tools &amp; Software</span></div><h1 style="font-size:1.75rem;font-weight:700;color:var(--white,var(--text));margin-bottom:.5rem">Analyse Tools &amp; Software</h1><p style="font-size:.9rem;color:var(--text2,var(--muted));line-height:1.6;max-width:600px;margin-bottom:1.5rem">Systematische Bewertung der bestehenden Toollandschaft – Nutzungsrealität, Überschneidungen und Konsolidierungspotenzial.</p></div>
+<header style="padding:2rem 2.5rem 1.75rem;border-bottom:1px solid var(--border,#1E2530)">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;color:#9CA3AF">SCNAT <span style="opacity:.4;margin:0 .3rem">›</span> Massnahmen <span style="opacity:.4;margin:0 .3rem">›</span> <span style="color:#EA515A">Analyse Tools &amp; Software</span></div>
+<h1 style="font-size:clamp(1.5rem,3vw,1.85rem);font-weight:700;color:var(--white,#F9FAFB);line-height:1.15;letter-spacing:-.01em;margin:0 0 .5rem">Analyse Tools &amp; Software</h1>
+<p style="font-size:.9rem;color:var(--text2,#9CA3AF);line-height:1.6;max-width:700px;margin:0 0 1rem">Systematische Bewertung der bestehenden Toollandschaft – Nutzungsrealität, Überschneidungen und Konsolidierungspotenzial.</p>
+</header>
 <div class="content">
 <!-- 01 -->
 <section class="section" id="einleitung">

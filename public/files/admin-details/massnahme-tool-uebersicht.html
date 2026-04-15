@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0;min-width:0;overflow:hidden;border-right-color:transparent}aside.sg~.sp{margin-left:0}";document.head.appendChild(s)}})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important;transition:none!important}aside.sg~.sp{margin-left:0!important}";document.head.appendChild(s)}})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Übersicht digitale Tools – SCNAT Digitalisierung</title>
@@ -949,6 +949,12 @@ html.light table td{border-color:var(--border,#E5E7EB)!important}
 html.light .data-table tr:hover td{background:rgba(0,0,0,.03)!important}
 html.light .pc-box{background:rgba(0,0,0,.03)!important}
 
+
+/* ── LIGHT MODE: header inline styles fix ── */
+html.light header[style]{background:var(--surface,#fff)!important}
+html.light header[style] h1{color:var(--text,#1F2937)!important}
+html.light header[style] p{color:var(--text2,#6B7280)!important}
+
 </style>
 </head>
 <body>
@@ -983,18 +989,20 @@ html.light .pc-box{background:rgba(0,0,0,.03)!important}
 </button>
 <div class="sp">
 <div class="sb">
-<div class="sc"><header class="pg-header">
+<div class="sc">
+<header style="padding:2rem 2.5rem 1.75rem;border-bottom:1px solid var(--border,#1E2530)">
 <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;color:#9CA3AF">SCNAT <span style="opacity:.4;margin:0 .3rem">›</span> Massnahmen <span style="opacity:.4;margin:0 .3rem">›</span> <span style="color:#EA515A">Übersicht digitale Tools</span></div>
-<h1>Übersicht digitale Tools</h1>
-<p class="pg-subtitle">Erweiterung der bestehenden Systemlandschaft um interaktiven Nutzungs-Toggle und Feedback-Tags – kombiniert mit geführten Change Agent Workshops, die valide Daten direkt aus den Abteilungen liefern. Basis für strategische Konsolidierungs-Entscheidungen.</p>
-<div class="badge-row" style="margin-top:1rem">
-<span class="badge b-red">Kommunikation &amp; Kollaboration</span>
-<span class="badge b-red">Information &amp; Transparenz</span>
-<span class="badge b-green">Wirkung 8.1 / 10</span>
-<span class="badge b-yellow">Aufwand 3 / 10</span>
-<span class="badge b-default">M-06 · Sprint 03</span>
+<h1 style="font-size:clamp(1.5rem,3vw,1.85rem);font-weight:700;color:var(--white,#F9FAFB);line-height:1.15;letter-spacing:-.01em;margin:0 0 .5rem">Übersicht digitale Tools</h1>
+<p style="font-size:.9rem;color:var(--text2,#9CA3AF);line-height:1.6;max-width:700px;margin:0 0 1rem">Erweiterung der bestehenden Systemlandschaft um interaktiven Nutzungs-Toggle und Feedback-Tags – kombiniert mit geführten Change Agent Workshops.</p>
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem">
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:var(--red,#EA515A);white-space:nowrap">Kommunikation &amp; Kollaboration</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:var(--red,#EA515A);white-space:nowrap">Information &amp; Transparenz</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:var(--green,#34D399);white-space:nowrap">Wirkung: 8.1 / 10</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.08);color:var(--amber,#FBBF24);white-space:nowrap">Aufwand: 3 / 10</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--border,#1E2530);background:var(--elevated,#171C21);color:var(--text2,#9CA3AF);white-space:nowrap">M-06 · Sprint 03</span>
 </div>
 </header>
+
 <main>
 <!-- 01 EINLEITUNG -->
 <section class="section" id="einleitung">
