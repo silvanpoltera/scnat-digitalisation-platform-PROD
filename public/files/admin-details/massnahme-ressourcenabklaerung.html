@@ -937,7 +937,7 @@ html.in-iframe header.site-header{position:relative!important}
 html.in-iframe .content{max-width:100%!important}
 
 /* ── LIGHT MODE: comprehensive element fixes ── */
-html.light header,html.light .page-header,html.light .pg-header,html.light .site-header{background:var(--surface,var(--bg-card,#fff))!important;color:var(--text,#1F2937)!important}
+html.light .page-header,html.light .pg-header,html.light .site-header{background:var(--surface,var(--bg-card,#fff))!important;color:var(--text,#1F2937)!important}
 html.light .layout>nav{background:var(--surface,#fff)!important;border-right-color:var(--border,#E5E7EB)!important}
 html.light footer,html.light .sf-bar{background:var(--surface,var(--sf,#fff))!important}
 html.light .card,html.light .sw-card,html.light .res-card,html.light .opt-card,html.light .tc,html.light .oc,html.light .risk-card,html.light .metric-card{background:var(--surface,var(--bg-card,#fff))!important;border-color:var(--border,#E5E7EB)!important}
@@ -953,17 +953,9 @@ html.light .data-table tr:hover td{background:rgba(0,0,0,.03)!important}
 html.light .pc-box{background:rgba(0,0,0,.03)!important}
 
 
-/* ── LIGHT MODE: header inline styles fix ── */
-html.light header[style]{background:var(--surface,#fff)!important}
-html.light header[style] h1{color:var(--text,#1F2937)!important}
-html.light header[style] p{color:var(--text2,#6B7280)!important}
-
 
 /* ── MOBILE RESPONSIVE ── */
 @media(max-width:640px){
-  header[style*="padding"]{padding:1.25rem 1rem 1.25rem!important}
-  header[style] h1{font-size:1.2rem!important}
-  header[style] p{font-size:.82rem!important;max-width:100%!important}
   main,.main-content{padding:1.5rem 1rem 3rem!important}
   .content{padding-left:1rem!important;padding-right:1rem!important}
   .sec,.section{margin-bottom:2rem!important}
@@ -978,12 +970,62 @@ html.light header[style] p{color:var(--text2,#6B7280)!important}
   html.in-iframe .layout>main{padding-left:1rem!important;padding-right:1rem!important}
 }
 @media(max-width:420px){
-  header[style*="padding"]{padding:1rem .75rem .75rem!important}
-  header[style] h1{font-size:1.05rem!important}
   main,.main-content{padding:1rem .75rem 2rem!important}
   .content{padding-left:.75rem!important;padding-right:.75rem!important}
   .spg{grid-template-columns:1fr 1fr!important}
   html.in-iframe .layout>main{padding-left:.75rem!important;padding-right:.75rem!important}
+}
+
+
+/* ── HEADER OVERRIDE: force identical appearance across all pages ── */
+.sc>header{
+  background:#141618!important;
+  padding:2rem 2.5rem 1.75rem!important;
+  border-bottom:1px solid #1E2530!important;
+  position:relative!important;
+  display:block!important;
+  margin:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  grid-column:unset!important;
+  width:auto!important;
+  max-width:none!important;
+  top:unset!important;
+  z-index:1!important;
+}
+.sc>header h1{
+  font-size:clamp(1.5rem,3vw,1.85rem)!important;
+  font-weight:700!important;
+  color:#F9FAFB!important;
+  line-height:1.15!important;
+  letter-spacing:-.01em!important;
+  margin:0 0 .5rem!important;
+}
+.sc>header p{
+  font-size:.9rem!important;
+  color:#9CA3AF!important;
+  line-height:1.6!important;
+  max-width:700px!important;
+  margin:0 0 1rem!important;
+}
+html.light .sc>header{
+  background:#FFFFFF!important;
+  border-bottom-color:#E5E7EB!important;
+}
+html.light .sc>header h1{
+  color:#1F2937!important;
+}
+html.light .sc>header p{
+  color:#6B7280!important;
+}
+@media(max-width:640px){
+  .sc>header{padding:1.25rem 1rem 1.25rem!important}
+  .sc>header h1{font-size:1.2rem!important}
+  .sc>header p{font-size:.82rem!important}
+}
+@media(max-width:420px){
+  .sc>header{padding:1rem .75rem .75rem!important}
+  .sc>header h1{font-size:1.05rem!important}
 }
 
 </style>
