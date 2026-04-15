@@ -982,9 +982,29 @@ html.light .opt-card.rec{background:linear-gradient(150deg,#FFFFFF 0%,#FEF2F2 10
 html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 
 
-/* ── STANDARD HEADER NORMALIZATION ── */
-.sc>header,.sc>div:first-child>.page-header,.sc>.content:first-child{position:relative}
-.sc>header h1,.sc>div:first-child h1,.page-header h1,.pg-header h1,.header-inner h1,.header-inner .header-title,.site-header .header-title{font-size:clamp(1.5rem,3vw,1.85rem)!important;font-weight:700!important;line-height:1.15!important;letter-spacing:-.01em!important}
+/* ── IFRAME LAYOUT FIX: hide redundant internal nav ── */
+html.in-iframe .layout{display:block!important}
+html.in-iframe .layout>nav,html.in-iframe nav.sidebar,html.in-iframe .sidebar{display:none!important}
+html.in-iframe .layout>main{max-width:100%!important;padding-left:2rem!important;padding-right:2rem!important}
+html.in-iframe header.site-header{position:relative!important}
+html.in-iframe .content{max-width:100%!important}
+
+/* ── LIGHT MODE: comprehensive element fixes ── */
+html.light header,html.light .page-header,html.light .pg-header,html.light .site-header{background:var(--surface,var(--bg-card,#fff))!important;color:var(--text,#1F2937)!important}
+html.light .layout>nav{background:var(--surface,#fff)!important;border-right-color:var(--border,#E5E7EB)!important}
+html.light footer,html.light .sf-bar{background:var(--surface,var(--sf,#fff))!important}
+html.light .card,html.light .sw-card,html.light .res-card,html.light .opt-card,html.light .tc,html.light .oc,html.light .risk-card,html.light .metric-card{background:var(--surface,var(--bg-card,#fff))!important;border-color:var(--border,#E5E7EB)!important}
+html.light .ib,html.light .infobox{border-color:var(--border,#E5E7EB)!important}
+html.light .badge{border-color:var(--border,#E5E7EB)!important}
+html.light code{background:var(--elevated,var(--surface2,#F3F4F6))!important}
+html.light .section-header,html.light .sec-head{border-bottom-color:var(--border,#E5E7EB)!important}
+html.light hr{border-color:var(--border,#E5E7EB)!important}
+html.light .cl-item:hover{background:var(--elevated,var(--surface2,#F3F4F6))!important}
+html.light table th{background:var(--elevated,var(--surface2,#F3F4F6))!important}
+html.light table td{border-color:var(--border,#E5E7EB)!important}
+html.light .data-table tr:hover td{background:rgba(0,0,0,.03)!important}
+html.light .pc-box{background:rgba(0,0,0,.03)!important}
+
 </style>
 </head>
 <body>
@@ -1022,7 +1042,7 @@ html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 <div class="sc"><header>
 <div class="header-inner">
 <div class="header-left">
-<div class="header-eyebrow">SCNAT <span style="opacity:.5">›</span> Massnahmen <span style="opacity:.5">›</span> Einführung Digitalisierungsplattform</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;color:#9CA3AF">SCNAT <span style="opacity:.4;margin:0 .3rem">›</span> Massnahmen <span style="opacity:.4;margin:0 .3rem">›</span> <span style="color:#EA515A">Einführung Digitalisierungsplattform</span></div>
 <h1>Einführung Digitalisierungsplattform</h1>
 <div class="badges">
 <span class="badge primary">Information &amp; Transparenz</span>
