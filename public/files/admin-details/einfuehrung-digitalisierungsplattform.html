@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top)document.documentElement.classList.add("in-iframe")})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0;min-width:0;overflow:hidden;border-right-color:transparent}aside.sg~.sp{margin-left:0}";document.head.appendChild(s)}})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Einführung Digitalisierungsplattform – SCNAT Digitalisierung</title>
@@ -981,7 +981,10 @@ html.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
 html.light .opt-card.rec{background:linear-gradient(150deg,#FFFFFF 0%,#FEF2F2 100%)}
 html.light aside.sg.open{box-shadow:6px 0 28px rgba(0,0,0,.12)}
 
-html.in-iframe aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important}html.in-iframe aside.sg~.sp{margin-left:0!important}html.in-iframe .sg-expand{display:none!important}
+
+/* ── STANDARD HEADER NORMALIZATION ── */
+.sc>header,.sc>div:first-child>.page-header,.sc>.content:first-child{position:relative}
+.sc>header h1,.sc>div:first-child h1,.page-header h1,.pg-header h1,.header-inner h1,.header-inner .header-title,.site-header .header-title{font-size:clamp(1.5rem,3vw,1.85rem)!important;font-weight:700!important;line-height:1.15!important;letter-spacing:-.01em!important}
 </style>
 </head>
 <body>
@@ -1570,6 +1573,6 @@ html.in-iframe aside.sg{width:0!important;min-width:0!important;overflow:hidden!
   setTimeout(sync, 200);
 })();
 </script>
-<script>function toggleSidebar(){var s=document.getElementById("sg");var c=s.classList.toggle("collapsed");try{localStorage.setItem("sg-col",c?"1":"0")}catch(e){}}(function(){var inIframe=window.self!==window.top;if(inIframe){document.getElementById("sg").classList.add("collapsed");document.body.classList.add("in-iframe")}else{try{if(localStorage.getItem("sg-col")==="1")document.getElementById("sg").classList.add("collapsed")}catch(e){}}})();</script>
+<script>function toggleSidebar(){var s=document.getElementById("sg");var c=s.classList.toggle("collapsed");try{localStorage.setItem("sg-col",c?"1":"0")}catch(e){}}(function(){var inIframe=window.self!==window.top;if(inIframe){document.getElementById("sg").classList.add("collapsed");document.body.classList.add("in-iframe");var ifc=document.getElementById("_ifc");if(ifc)ifc.remove()}else{try{if(localStorage.getItem("sg-col")==="1")document.getElementById("sg").classList.add("collapsed")}catch(e){}}})();</script>
 </body>
 </html>
