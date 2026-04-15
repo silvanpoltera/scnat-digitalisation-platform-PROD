@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ClipboardList, ArrowRight, LayoutGrid } from 'lucide-react';
+import { ClipboardList, ArrowRight, LayoutGrid, Play } from 'lucide-react';
 
 const CARDS = [
   { num: '00', slug: 'uebersicht',            title: 'Übersicht',                              sub: 'Dashboard aller Massnahmen',           accent: 'text-scnat-red',    bg: 'bg-scnat-red/8',    highlight: true },
@@ -15,6 +15,10 @@ const CARDS = [
   { num: '10', slug: 'beschaffung',            title: 'Beschaffungsprozess',                    sub: 'Digitalisierung · Prozess · Ablauf',   accent: 'text-scnat-red',    bg: 'bg-scnat-red/8'     },
   { num: '11', slug: 'prozessdigitalisierung', title: 'Prozessdigitalisierung',                 sub: 'Evergreens · Optimierung · Workflows', accent: 'text-amber-400',    bg: 'bg-amber-400/8'     },
   { num: '12', slug: 'applikationslandschaft', title: 'Lead Applikationslandschaft',             sub: 'Governance · Portfolio · Steuerung',   accent: 'text-status-green', bg: 'bg-status-green/8'  },
+];
+
+const PROCESS_CARDS = [
+  { slug: 'beitragsmanagement', title: 'Beitragsmanagement', sub: 'Jahresrechnung FG/KRG · Animierter Prozessablauf', accent: 'text-scnat-red', bg: 'bg-scnat-red/8' },
 ];
 
 export default function CpAdminDetails() {
@@ -50,6 +54,31 @@ export default function CpAdminDetails() {
           </div>
         </Link>
       ))}
+
+      {/* Process animations */}
+      {PROCESS_CARDS.length > 0 && (
+        <div className="mb-5">
+          <p className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider mb-2">Prozessanimationen</p>
+          {PROCESS_CARDS.map(card => (
+            <Link
+              key={card.slug}
+              to={`/cp/admin-details/${card.slug}`}
+              className="block bg-bg-surface border border-bd-faint rounded-sm p-4 hover:border-bd-strong transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-sm ${card.bg} flex items-center justify-center shrink-0`}>
+                  <Play className={`w-4 h-4 ${card.accent}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-heading font-semibold text-txt-primary">{card.title}</p>
+                  <p className="text-[10px] font-mono text-txt-tertiary">{card.sub}</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-txt-tertiary shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Massnahmen grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

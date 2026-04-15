@@ -17,12 +17,14 @@ const PAGES = {
   'beschaffung':           { title: 'Beschaffungsprozess',                    sub: 'Massnahme 10',               file: '/files/admin-details/massnahme-beschaffungsprozess.html' },
   'prozessdigitalisierung': { title: 'Prozessdigitalisierung',                sub: 'Massnahme 11',               file: '/files/admin-details/prozessdigitalisierung-evergreens.html' },
   'applikationslandschaft': { title: 'Lead Applikationslandschaft',            sub: 'Massnahme 12',               file: '/files/admin-details/massnahme-lead-applikationslandschaft.html' },
+  'beitragsmanagement':    { title: 'Beitragsmanagement',                     sub: 'Prozessanimation',            file: '/files/admin-details/beitragsmanagement-prozess.html' },
 };
 
 const PAGE_ORDER = [
   'uebersicht', 'kommunikation', 'ressourcen', 'change-agents', 'plattform',
   'tools', 'db-portale', 'ki-strategie', 'ki-lernpfad', 'analyse-tools',
   'beschaffung', 'prozessdigitalisierung', 'applikationslandschaft',
+  'beitragsmanagement',
 ];
 
 export default function CpAdminDetailsView() {
