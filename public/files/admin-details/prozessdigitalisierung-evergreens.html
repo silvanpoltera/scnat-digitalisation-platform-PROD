@@ -1383,6 +1383,55 @@ body{margin:0!important;padding:0!important}
 .sf-dot{width:3px;height:3px;border-radius:50%;background:var(--sb2)}
 
 
+/* ── BEITRAGSMANAGEMENT FLOW (inline) ── */
+.bm-ctrl{display:flex;align-items:center;justify-content:center;gap:.6rem;padding:.65rem .75rem;flex-wrap:wrap;position:sticky;top:0;z-index:8;background:var(--base);border:1px solid var(--border);border-radius:var(--r);margin-bottom:1rem}
+.bm-btn{font-family:var(--font-mono);font-size:.65rem;padding:.35rem .75rem;border-radius:5px;cursor:pointer;transition:all .15s;border:1px solid var(--border2);background:var(--surface);color:var(--text2)}
+.bm-btn:hover:not(:disabled){color:var(--text);border-color:var(--muted)}
+.bm-btn:disabled{opacity:.3;cursor:not-allowed}
+.bm-primary{background:var(--red);border-color:var(--red);color:#fff}
+.bm-primary:hover{background:#f06570}
+.bm-prog{flex:1;max-width:140px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.bm-prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width .4s;width:0%}
+.bm-count{font-family:var(--font-mono);font-size:.65rem;color:var(--muted)}
+.bm-flow{position:relative;padding-left:2.5rem;padding-bottom:1rem}
+.bm-line{position:absolute;left:1rem;top:0;bottom:0;width:2px;background:var(--border)}
+.bm-line-fill{width:100%;background:var(--red);height:0%;transition:height .6s;border-radius:2px}
+.bm-s{position:relative;margin-bottom:1rem;opacity:0;transform:translateY(14px);transition:all .4s cubic-bezier(.22,.68,0,1)}
+.bm-s.vis{opacity:1;transform:translateY(0)}
+.bm-s.act .bm-card{border-color:var(--red);box-shadow:0 0 16px rgba(234,81,90,.08)}
+.bm-dot{position:absolute;left:-1.85rem;top:1rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);background:var(--base);z-index:2;transition:all .3s}
+.bm-s.vis .bm-dot{border-color:var(--red);background:rgba(234,81,90,.1)}
+.bm-s.act .bm-dot{background:var(--red);box-shadow:0 0 6px rgba(234,81,90,.25)}
+.bm-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem;cursor:pointer;transition:all .2s}
+.bm-card:hover{border-color:var(--border2);background:var(--surface2)}
+.bm-snum{font-family:var(--font-mono);font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem}
+.bm-st{font-size:.88rem;font-weight:600;color:var(--text-bright);margin-bottom:.1rem}
+.bm-ss{font-size:.75rem;color:var(--text2);line-height:1.5}
+.bm-det{max-height:0;overflow:hidden;transition:max-height .3s,padding .3s,opacity .25s;opacity:0;padding:0 1rem}
+.bm-s.act .bm-det{max-height:400px;opacity:1;padding:.6rem 1rem .8rem}
+.bm-dr{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.4rem}
+.bm-dl{font-family:var(--font-mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);min-width:55px;padding-top:2px;flex-shrink:0}
+.bm-dv{font-size:.78rem;color:var(--text2);line-height:1.5}
+.bm-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.bm-tag{display:inline-flex;align-items:center;font-family:var(--font-mono);font-size:.55rem;padding:.15rem .45rem;border-radius:3px;border:1px solid}
+.bm-tt{color:#4A90D9;border-color:rgba(74,144,217,.25);background:rgba(74,144,217,.08)}
+.bm-tp{color:#3DAA75;border-color:rgba(61,170,117,.25);background:rgba(61,170,117,.08)}
+.bm-dec .bm-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border-color:var(--border2)}
+.bm-dec .bm-dot{border-color:#D4882A;background:rgba(212,136,42,.1)}
+.bm-dec.vis .bm-dot{border-color:#D4882A;background:rgba(212,136,42,.1)}
+.bm-dec.act .bm-dot{background:#D4882A;box-shadow:0 0 6px rgba(212,136,42,.3)}
+.bm-dec .bm-snum{color:#D4882A}
+.bm-badge{display:inline-flex;align-items:center;gap:.25rem;font-family:var(--font-mono);font-size:.53rem;padding:.12rem .4rem;border-radius:3px}
+.bm-by{color:#3DAA75;background:rgba(61,170,117,.08);border:1px solid rgba(61,170,117,.2)}
+.bm-bn{color:var(--red);background:rgba(234,81,90,.08);border:1px solid rgba(234,81,90,.2)}
+.bm-phase{margin:1.5rem 0 1rem;padding-left:0;opacity:0;transform:translateX(-6px);transition:all .35s}
+.bm-phase.vis{opacity:1;transform:translateX(0)}
+.bm-phase-t{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--red);padding:.3rem .65rem;background:rgba(234,81,90,.08);border:1px solid rgba(234,81,90,.12);border-radius:var(--r);display:inline-block}
+.bm-book{position:relative;margin-bottom:1rem;opacity:0;transform:translateY(10px);transition:all .35s}
+.bm-book.vis{opacity:1;transform:translateY(0)}
+.bm-book-in{display:flex;align-items:center;justify-content:center}
+.bm-book-pill{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:.3rem 1rem;letter-spacing:.08em}
+
 /* ── IFRAME EMBED ── */
 body.in-iframe .scnat-rtoc{width:200px}
 body.in-iframe .rtoc-prog{padding:1rem;background:var(--sfb);border-top:1px solid var(--sr);border-top-width:2px}
@@ -1635,7 +1684,7 @@ body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
           IST-Prozess Analyse &amp; Schmerzpunkte
         </button>
 </div>
-<div style="margin-top:10px; padding-top:10px; border-top:1px solid #1E2530;">
+<div style="margin-top:14px; padding-top:12px; border-top:1px solid #1E2530;">
 <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
 <span style="font-size:12px; color:#6B7280;">Interaktiver Prozessablauf Jahresrechnung FG/KRG</span>
 <button id="bmToggleBtn" onclick="toggleBmFlow()" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:#EA515A;cursor:pointer;transition:all .15s;">
@@ -1643,8 +1692,55 @@ body.in-iframe .rtoc-prog-btn:hover{opacity:1;background:var(--srdim)}
 <span id="bmToggleLabel">Prozessanimation einblenden</span>
 </button>
 </div>
-<div id="bmFlowWrapper" style="display:none;border:1px solid #1E2530;border-radius:6px;overflow:hidden;margin-top:8px;">
-<iframe src="beitragsmanagement-prozess.html" style="width:100%;height:80vh;border:0;display:block;background:#0C0E10;" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+<div id="bmFlowWrapper" style="display:none;">
+
+<div class="bm-ctrl" id="bmCtrl">
+  <button class="bm-btn" id="bmPrev" onclick="bmPrev()" disabled>‹ Zurück</button>
+  <button class="bm-btn bm-primary" id="bmPlay" onclick="bmTogglePlay()">▶ Abspielen</button>
+  <button class="bm-btn" id="bmNext" onclick="bmManualNext()">Weiter ›</button>
+  <button class="bm-btn" onclick="bmReset()">↺ Reset</button>
+  <div class="bm-prog"><div class="bm-prog-fill" id="bmProgFill"></div></div>
+  <div class="bm-count" id="bmCount">0 / 14</div>
+</div>
+
+<div class="bm-flow" id="bmFlow">
+  <div class="bm-line"><div class="bm-line-fill" id="bmLineFill"></div></div>
+
+  <div class="bm-book" data-bm="0"><div class="bm-book-in"><div class="bm-book-pill">START</div></div></div>
+
+  <div class="bm-phase" data-bm="1"><div class="bm-phase-t">Phase 1 · Einreichung</div></div>
+
+  <div class="bm-s" data-bm="1" onclick="bmGo(1)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 01</div><div class="bm-st">Formular Jahresrechnung senden</div><div class="bm-ss">Mitte Dezember verschickt der Finanzdienst die Formulare an die FG/KRG. Jahresrechnung inkl. Rechnungskopien müssen bis 31.03. in die SCNAT Cloud hochgeladen werden.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">E-Mail</span><span class="bm-tag bm-tt">beitragsgesuche@scnat.ch</span><span class="bm-tag bm-tt">Formulare</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">FG/KRG</span><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s" data-bm="2" onclick="bmGo(2)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 02</div><div class="bm-st">Überprüfung Eingänge Jahresrechnungen</div><div class="bm-ss">Der/Die Sachbearbeiter:in prüft, ob die Jahresrechnungen inkl. Rechnungskopien von den FG/KRG eingereicht wurden.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">SCNAT Cloud</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s bm-dec" data-bm="3" onclick="bmGo(3)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Entscheidung</div><div class="bm-st">Jahresrechnung eingereicht?</div><div class="bm-ss">Kontrolle: Sind alle Jahresrechnungen eingereicht?</div><div style="display:flex;gap:.5rem;margin-top:.35rem"><div class="bm-badge bm-by">✓ Ja → weiter</div><div class="bm-badge bm-bn">✕ Nein → Erinnerung</div></div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Nein</div><div class="bm-dv">FG/KRG mahnen, Erinnerung senden</div></div></div></div>
+
+  <div class="bm-phase" data-bm="4"><div class="bm-phase-t">Phase 2 · Prüfung &amp; Freigabe</div></div>
+
+  <div class="bm-s" data-bm="4" onclick="bmGo(4)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 03</div><div class="bm-st">Jahresrechnung ablegen</div><div class="bm-ss">Die Jahresrechnung inkl. Rechnungskopien werden im jeweiligen Ordner der FG/KRG elektronisch abgelegt.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">Finder</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s" data-bm="5" onclick="bmGo(5)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 04</div><div class="bm-st">Jahresrechnung kontrollieren</div><div class="bm-ss">Die Jahresrechnung wird auf Richtigkeit geprüft: Formulare korrekt ausgefüllt, bewilligte Projekte durchgeführt, sämtliche Rechnungskopien beigefügt?</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">Formulare</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s" data-bm="6" onclick="bmGo(6)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 05</div><div class="bm-st">Kontrolle durch Plattform-Leiter:in</div><div class="bm-ss">Information der Plattform-Leiter:in via E-Mail, die Jahresrechnung zu kontrollieren und die Auszahlung der Beiträge zu bestätigen.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">E-Mail</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span><span class="bm-tag bm-tp">Plattform-Leiter:in</span></div></div></div></div>
+
+  <div class="bm-s bm-dec" data-bm="7" onclick="bmGo(7)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Entscheidung</div><div class="bm-st">Auszahlung i.O.?</div><div class="bm-ss">Ist der/die Plattform-Leiter:in einverstanden mit der Auszahlung der SCNAT-Beiträge?</div><div style="display:flex;gap:.5rem;margin-top:.35rem"><div class="bm-badge bm-by">✓ Ja → Zahlung</div><div class="bm-badge bm-bn">✕ Nein → Korrektur</div></div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Nein</div><div class="bm-dv">Zurück an SB Rechnungswesen für Korrektur</div></div></div></div>
+
+  <div class="bm-phase" data-bm="8"><div class="bm-phase-t">Phase 3 · Zahlung &amp; Verbuchung</div></div>
+
+  <div class="bm-s" data-bm="8" onclick="bmGo(8)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 06</div><div class="bm-st">Manuelle Zahlungserfassung im E-Banking</div><div class="bm-ss">Manuelle Erfassung des SCNAT-Beitrags an die FG/KRG im E-Banking.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">E-Banking BEKB</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s" data-bm="9" onclick="bmGo(9)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 07</div><div class="bm-st">Überprüfung der Auszahlung</div><div class="bm-ss">Der/Die Bereichsleiter:in Services prüft die Jahresrechnung vor der Freigabe der Zahlung im E-Banking.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">E-Banking BEKB</span><span class="bm-tag bm-tt">Unterlagen im Finder</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">BL Services</span></div></div></div></div>
+
+  <div class="bm-s bm-dec" data-bm="10" onclick="bmGo(10)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Entscheidung</div><div class="bm-st">Ist die Zahlung korrekt?</div><div class="bm-ss">Der/Die Bereichsleiter:in Services gibt die Zahlung im E-Banking frei.</div><div style="display:flex;gap:.5rem;margin-top:.35rem"><div class="bm-badge bm-by">✓ Ja → Freigabe</div><div class="bm-badge bm-bn">✕ Nein → Korrektur</div></div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Nein</div><div class="bm-dv">Zurück an den/die Sachbearbeiter:in für die Korrektur</div></div></div></div>
+
+  <div class="bm-s" data-bm="11" onclick="bmGo(11)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 08</div><div class="bm-st">Verbuchung der Zahlung</div><div class="bm-ss">Nach der Freigabe im E-Banking wird die Zahlung im Abacus K21 verbucht und die Unterlagen im Abacus K11 abgelegt.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">Abacus K11</span><span class="bm-tag bm-tt">Abacus K21</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-s" data-bm="12" onclick="bmGo(12)"><div class="bm-dot"></div><div class="bm-card"><div class="bm-snum">Schritt 09</div><div class="bm-st">Restbetrag ausbuchen</div><div class="bm-ss">Falls der gesamte SCNAT-Beitrag nicht vollständig abgerufen wurde, erfolgt eine Ausbuchung des verbleibenden Restbetrags.</div></div><div class="bm-det"><div class="bm-dr"><div class="bm-dl">Tools</div><div class="bm-tags"><span class="bm-tag bm-tt">Abacus K21</span></div></div><div class="bm-dr"><div class="bm-dl">Verant.</div><div class="bm-tags"><span class="bm-tag bm-tp">SB RW</span></div></div></div></div>
+
+  <div class="bm-book" data-bm="13"><div class="bm-book-in"><div class="bm-book-pill">ENDE</div></div></div>
+</div>
+
 </div>
 </div>
 </div>
@@ -2274,6 +2370,38 @@ function showTab(btn, contentId) {
 }
 
 /* ─── BEITRAGSMANAGEMENT FLOW ────────────────────────────────────────── */
+var bmTOTAL=14,bmCur=-1,bmPlaying=false,bmTimer=null;
+function bmItems(){return document.querySelectorAll('[data-bm]')}
+function bmUpBtn(){var p=document.getElementById('bmPrev'),n=document.getElementById('bmNext');if(p)p.disabled=bmCur<=0;if(n)n.disabled=bmCur>=bmTOTAL-1}
+function bmShow(i){
+  bmItems().forEach(function(el){var idx=parseInt(el.dataset.bm);if(idx<=i)el.classList.add('vis');else el.classList.remove('vis');el.classList.toggle('act',idx===i)});
+  var pct=Math.min(100,((i+1)/bmTOTAL)*100);
+  var lf=document.getElementById('bmLineFill');if(lf)lf.style.height=pct+'%';
+  var pf=document.getElementById('bmProgFill');if(pf)pf.style.width=pct+'%';
+  var c=document.getElementById('bmCount');if(c)c.textContent=(i+1)+' / '+bmTOTAL;
+  bmCur=i;bmUpBtn();
+  var ae=document.querySelector('.bm-s[data-bm="'+i+'"],.bm-book[data-bm="'+i+'"]');
+  if(ae)ae.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function bmGo(i){if(bmPlaying)bmTogglePlay();bmShow(i)}
+function bmPrev(){if(bmPlaying)bmTogglePlay();if(bmCur>0)bmShow(bmCur-1)}
+function bmManualNext(){if(bmPlaying)bmTogglePlay();if(bmCur<bmTOTAL-1)bmShow(bmCur+1)}
+function bmNextStep(){if(bmCur<bmTOTAL-1)bmShow(bmCur+1);else bmTogglePlay()}
+function bmTogglePlay(){
+  var btn=document.getElementById('bmPlay');
+  if(bmPlaying){clearInterval(bmTimer);bmTimer=null;bmPlaying=false;if(btn){btn.textContent='▶ Abspielen';btn.classList.add('bm-primary')}bmUpBtn()}
+  else{bmPlaying=true;if(btn){btn.textContent='❚❚ Pause';btn.classList.remove('bm-primary')}
+  if(bmCur>=bmTOTAL-1){bmCur=-1;bmItems().forEach(function(el){el.classList.remove('vis','act')});var lf=document.getElementById('bmLineFill');if(lf)lf.style.height='0%'}
+  bmNextStep();bmTimer=setInterval(bmNextStep,1200)}
+}
+function bmReset(){
+  if(bmPlaying)bmTogglePlay();bmCur=-1;
+  bmItems().forEach(function(el){el.classList.remove('vis','act')});
+  var lf=document.getElementById('bmLineFill');if(lf)lf.style.height='0%';
+  var pf=document.getElementById('bmProgFill');if(pf)pf.style.width='0%';
+  var c=document.getElementById('bmCount');if(c)c.textContent='0 / '+bmTOTAL;
+  bmUpBtn();
+}
 function toggleBmFlow() {
   var w = document.getElementById('bmFlowWrapper');
   var label = document.getElementById('bmToggleLabel');
@@ -2286,6 +2414,7 @@ function toggleBmFlow() {
     w.style.display = 'none';
     label.textContent = 'Prozessanimation einblenden';
     icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+    bmReset();
   }
 }
 
@@ -2366,9 +2495,6 @@ document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
 <a class="rtoc-a" href="#checkliste"><span class="rtoc-num">07</span>Checkliste</a>
 <a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
 <a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
-<a class="rtoc-a" href="#ws-archiv">WS1Archiv</a>
-<a class="rtoc-a" href="#ws-beitrag">WS2Beitragswesen</a>
-<a class="rtoc-a" href="#ws-event">WS3Eventmanagement</a>
 </div>
 <div class="rtoc-prog">
 <div class="rtoc-prog-lbl">Checkliste</div>
