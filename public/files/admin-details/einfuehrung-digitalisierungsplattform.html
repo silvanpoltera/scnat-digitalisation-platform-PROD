@@ -1744,14 +1744,14 @@ document.addEventListener('DOMContentLoaded',function(){var s=ls();document.quer
     var id = (a.getAttribute('href')||'').replace('#','');
     return {a:a, sec:id ? document.getElementById(id) : null};
   }).filter(function(p){return p.sec});
+  var sc=document.querySelector('.sc');var scrollEl=(sc&&window.self!==window.top)?sc:window;
   function sync(){
-    var y = window.scrollY + 130;
     var cur = null;
-    pairs.forEach(function(p){ if(p.sec.offsetTop <= y) cur = p; });
+    pairs.forEach(function(p){ if(p.sec.getBoundingClientRect().top <= 130) cur = p; });
     as.forEach(function(a){ a.classList.remove('on'); });
     if(cur) cur.a.classList.add('on');
   }
-  window.addEventListener('scroll', sync, {passive:true});
+  scrollEl.addEventListener('scroll', sync, {passive:true});
   setTimeout(sync, 200);
 })();
 </script>
