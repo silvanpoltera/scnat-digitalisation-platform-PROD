@@ -2120,7 +2120,8 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 <div id="bmFlowWrapper" style="display:none;">
 
-<div class="bm-ctrl" id="bmCtrl" style="position:sticky;top:0;z-index:50;background:var(--surface,#12161A);border:1px solid var(--border,#1E2530);border-radius:var(--r,8px);margin-bottom:1rem;">
+<div id="bmCtrlAnchor"></div>
+<div class="bm-ctrl" id="bmCtrl" style="z-index:50;background:var(--surface,#12161A);border:1px solid var(--border,#1E2530);border-radius:var(--r,8px);margin-bottom:1rem;">
   <button class="bm-btn" id="bmPrev" onclick="bmPrev()" disabled>‹ Zurück</button>
   <button class="bm-btn bm-primary" id="bmPlay" onclick="bmTogglePlay()">▶ Abspielen</button>
   <button class="bm-btn" id="bmNext" onclick="bmManualNext()">Weiter ›</button>
@@ -2771,6 +2772,52 @@ function toggleBmFlow() {
     bmReset();
   }
 }
+
+/* ─── STICKY BM-CTRL (JS-based) ─────────────────────────────────────── */
+(function(){
+  var sc = document.querySelector('.sc');
+  var ctrl = document.getElementById('bmCtrl');
+  var anchor = document.getElementById('bmCtrlAnchor');
+  if(!ctrl || !anchor) return;
+  var stuck = false;
+  var origStyle = ctrl.getAttribute('style') || '';
+
+  function update(){
+    var wrapper = document.getElementById('bmFlowWrapper');
+    if(!wrapper || wrapper.style.display==='none'){ if(stuck) unstick(); return; }
+    var scEl = sc || document.documentElement;
+    var scTop = sc ? sc.getBoundingClientRect().top : 0;
+    var aRect = anchor.getBoundingClientRect();
+    var wRect = wrapper.getBoundingClientRect();
+    var h = stuck ? parseInt(anchor.style.height) : ctrl.offsetHeight;
+
+    if(!stuck && aRect.top < scTop){
+      anchor.style.height = ctrl.offsetHeight + 'px';
+      var w = anchor.offsetWidth;
+      ctrl.style.position = 'fixed';
+      ctrl.style.top = scTop + 'px';
+      ctrl.style.left = aRect.left + 'px';
+      ctrl.style.width = w + 'px';
+      ctrl.style.zIndex = '100';
+      stuck = true;
+    } else if(stuck){
+      var aR = anchor.getBoundingClientRect();
+      ctrl.style.top = scTop + 'px';
+      ctrl.style.left = aR.left + 'px';
+      ctrl.style.width = anchor.offsetWidth + 'px';
+      if(aR.top >= scTop || wRect.bottom < scTop + h + 10) unstick();
+    }
+  }
+  function unstick(){
+    if(!stuck) return;
+    ctrl.setAttribute('style', origStyle);
+    anchor.style.height = '0';
+    stuck = false;
+  }
+  var target = sc || window;
+  target.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', function(){ unstick(); setTimeout(update, 50); });
+})();
 
 /* ─── MODAL ──────────────────────────────────────────────────────────── */
 function openIstModal() {
