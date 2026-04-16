@@ -410,18 +410,32 @@ html.light .pc-box{background:rgba(0,0,0,.03)!important}
   box-shadow:none!important;
   backdrop-filter:none!important;
   grid-column:unset!important;
-  width:auto!important;
-  max-width:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
   top:unset!important;
   z-index:1!important;
+  -webkit-font-smoothing:antialiased!important;
+  -moz-osx-font-smoothing:grayscale!important;
+}
+.sc header>div:first-child{
+  font-family:'JetBrains Mono',monospace!important;
+  font-size:11px!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+  margin-bottom:.75rem!important;
+  color:#9CA3AF!important;
 }
 .sc header h1{
+  font-family:'DM Sans',system-ui,sans-serif!important;
   font-size:clamp(1.5rem,3vw,1.85rem)!important;
   font-weight:700!important;
   color:#F9FAFB!important;
   line-height:1.15!important;
   letter-spacing:-.01em!important;
   margin:0 0 .5rem!important;
+  -webkit-font-smoothing:antialiased!important;
+  -moz-osx-font-smoothing:grayscale!important;
 }
 .sc header p{
   font-size:.9rem!important;
@@ -430,9 +444,26 @@ html.light .pc-box{background:rgba(0,0,0,.03)!important}
   max-width:700px!important;
   margin:0 0 1rem!important;
 }
+.sc header div[style*="flex-wrap"]{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:.5rem!important;
+  margin-top:.75rem!important;
+}
+.sc header div[style*="flex-wrap"]>span{
+  font-family:'JetBrains Mono',monospace!important;
+  font-size:.68rem!important;
+  letter-spacing:.04em!important;
+  padding:.3rem .7rem!important;
+  border-radius:4px!important;
+  white-space:nowrap!important;
+}
 html.light .sc header{
   background:#FFFFFF!important;
   border-bottom-color:#E5E7EB!important;
+}
+html.light .sc header>div:first-child{
+  color:#6B7280!important;
 }
 html.light .sc header h1{
   color:#1F2937!important;
@@ -444,10 +475,13 @@ html.light .sc header p{
   .sc header{padding:1.25rem 1rem 1.25rem!important}
   .sc header h1{font-size:1.2rem!important}
   .sc header p{font-size:.82rem!important}
+  .sc header div[style*="flex-wrap"]{gap:.35rem!important}
+  .sc header div[style*="flex-wrap"]>span{font-size:.6rem!important;padding:.2rem .5rem!important}
 }
 @media(max-width:420px){
   .sc header{padding:1rem .75rem .75rem!important}
   .sc header h1{font-size:1.05rem!important}
+  .sc header div[style*="flex-wrap"]>span{font-size:.55rem!important;padding:.15rem .4rem!important}
 }
 
 
@@ -574,6 +608,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;color:#9CA3AF">SCNAT <span style="opacity:.4;margin:0 .3rem">›</span> Massnahmen <span style="opacity:.4;margin:0 .3rem">›</span> <span style="color:#EA515A">Analyse Tools &amp; Software</span></div>
 <h1 style="font-size:clamp(1.5rem,3vw,1.85rem);font-weight:700;color:var(--white,#F9FAFB);line-height:1.15;letter-spacing:-.01em;margin:0 0 .5rem">Analyse Tools &amp; Software</h1>
 <p style="font-size:.9rem;color:var(--text2,#9CA3AF);line-height:1.6;max-width:700px;margin:0 0 1rem">Systematische Bewertung der bestehenden Toollandschaft – Nutzungsrealität, Überschneidungen und Konsolidierungspotenzial.</p>
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem">
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:var(--red,#EA515A);white-space:nowrap">Infrastruktur &amp; Beschaffung</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--border,#1E2530);background:var(--elevated,#171C21);color:var(--text2,#9CA3AF);white-space:nowrap">Evaluation · Kriterien · Vergleich</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:var(--green,#34D399);white-space:nowrap">Wirkung: 7.0 / 10</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.08);color:var(--amber,#FBBF24);white-space:nowrap">Aufwand: Mittel</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:var(--green,#34D399);white-space:nowrap">Score: 7.0</span>
+</div>
 </header>
 <div class="content">
 <!-- 01 -->
