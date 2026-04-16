@@ -2849,7 +2849,7 @@ function ls(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){retu
 function ss(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
 function tc(el){var id=el.dataset.id;var s=ls();if(el.classList.contains('done')){el.classList.remove('done');delete s[id]}else{el.classList.add('done');s[id]=true}ss(s);up()}
 function up(){var d=Object.keys(ls()).length;var p=Math.round(d/T*100);document.getElementById('pbf').style.width=p+'%';document.getElementById('pt').textContent=d+' / '+T+' erledigt'}
-function reset(){if(!confirm('Checkliste zur\u00fccksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(function(e){e.classList.remove('done')});up()}
+function reset(){if(!confirm('Checkliste zurücksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(function(e){e.classList.remove('done')});up()}
 function resetChecklist(){reset()}
 document.addEventListener('DOMContentLoaded',function(){var s=ls();document.querySelectorAll('.ci').forEach(function(e){if(s[e.dataset.id])e.classList.add('done')});up()});
 
@@ -2883,7 +2883,7 @@ document.querySelectorAll('.section-anchor').forEach(function(a) { observer.obse
 <div class="rtoc-prog-lbl">Checkliste</div>
 <div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
 <div class="rtoc-prog-txt" id="tocTxt">0 / 30 erledigt</div>
-<button class="rtoc-prog-btn" onclick="if(typeof reset==='function')reset()">Zur\u00fccksetzen</button>
+<button class="rtoc-prog-btn" onclick="if(typeof reset==='function')reset()">Zurücksetzen</button>
 </div>
 <script>
 (function(){
