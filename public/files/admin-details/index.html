@@ -371,18 +371,18 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem">
 <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(234,81,90,.25);background:rgba(234,81,90,.08);color:var(--red,#EA515A);white-space:nowrap">Dashboard</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--border,#1E2530);background:var(--elevated,#171C21);color:var(--text2,#9CA3AF);white-space:nowrap">12 Massnahmen</span>
-<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:var(--green,#34D399);white-space:nowrap">10 / 12 Seiten erstellt</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;padding:.3rem .7rem;border-radius:4px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:var(--green,#34D399);white-space:nowrap">12 / 12 Seiten erstellt</span>
 </div>
 </header>
 
-<main style="padding:1.5rem 2.5rem 2.5rem">
+<main style="padding:1.5rem 0 2.5rem">
 <div class="stats" style="margin-bottom:1.5rem">
 <div class="stat">
-<div class="stat-n" style="color:#3DAA75">10</div>
+<div class="stat-n" style="color:#3DAA75">12</div>
 <div class="stat-l">Seiten vorhanden</div>
 </div>
 <div class="stat">
-<div class="stat-n" style="color:var(--st2)">2</div>
+<div class="stat-n" style="color:#3DAA75">0</div>
 <div class="stat-l">Noch ausstehend</div>
 </div>
 <div class="stat">
@@ -392,7 +392,7 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 <div class="sh" id="massnahmen">
 <div class="sh-t">Alle Massnahmen</div>
-<div class="sh-c">10 / 12 Seiten erstellt</div>
+<div class="sh-c">12 / 12 Seiten erstellt</div>
 </div>
 <div class="fbar">
 <button class="fc on" onclick="filter('all',this)">Alle</button>
@@ -455,10 +455,10 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="mc-bar"><div class="mc-fill" style="width:81%;background:#EA515A"></div></div>
 <span class="mc-val" style="color:#EA515A">8.1</span>
 </div>
-</a><div class="mc mc-miss">
+</a><a class="mc" href="massnahme-db-portale.html">
 <div class="mc-top">
 <span class="mc-num">06</span>
-<span class="mc-badge mc-miss-b">○ Ausstehend</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
 </div>
 <div class="mc-title">DB &amp; Portale Konzept</div>
 <div class="mc-cat">Daten &amp; Wissen</div>
@@ -466,7 +466,7 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="mc-bar"><div class="mc-fill" style="width:75%;background:#EA515A"></div></div>
 <span class="mc-val" style="color:#EA515A">7.5</span>
 </div>
-</div><a class="mc" href="ki-strategie-befaehigung.html">
+</a><a class="mc" href="ki-strategie-befaehigung.html">
 <div class="mc-top">
 <span class="mc-num">07</span>
 <span class="mc-badge mc-ok">✓ Seite vorhanden</span>
@@ -477,10 +477,10 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="mc-bar"><div class="mc-fill" style="width:83%;background:#EA515A"></div></div>
 <span class="mc-val" style="color:#EA515A">8.3</span>
 </div>
-</a><div class="mc mc-miss">
+</a><a class="mc" href="massnahme-ki-lernpfad.html">
 <div class="mc-top">
 <span class="mc-num">08</span>
-<span class="mc-badge mc-miss-b">○ Ausstehend</span>
+<span class="mc-badge mc-ok">✓ Seite vorhanden</span>
 </div>
 <div class="mc-title">KI Lernpfad</div>
 <div class="mc-cat">Digitale Kultur &amp; Befähigung</div>
@@ -488,7 +488,7 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="mc-bar"><div class="mc-fill" style="width:88%;background:#3DAA75"></div></div>
 <span class="mc-val" style="color:#3DAA75">8.8</span>
 </div>
-</div><a class="mc" href="massnahme-analyse-tools-software.html">
+</a><a class="mc" href="massnahme-analyse-tools-software.html">
 <div class="mc-top">
 <span class="mc-num">09</span>
 <span class="mc-badge mc-ok">✓ Seite vorhanden</span>
@@ -551,9 +551,9 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="cl-item" onclick="tog('u3')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u3" onclick="event.stopPropagation()" type="checkbox"/><label for="u3" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">03 Team Change Agents – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u4')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u4" onclick="event.stopPropagation()" type="checkbox"/><label for="u4" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">04 Einführung Digitalisierungsplattform – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u5')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u5" onclick="event.stopPropagation()" type="checkbox"/><label for="u5" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">05 Übersicht digitale Tools – Seite prüfen und finalisieren</label></div>
-<div class="cl-item" onclick="tog('u6')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u6" onclick="event.stopPropagation()" type="checkbox"/><label for="u6" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">06 DB &amp; Portale Konzept – Seite erstellen</label></div>
+<div class="cl-item" onclick="tog('u6')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u6" onclick="event.stopPropagation()" type="checkbox"/><label for="u6" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">06 DB &amp; Portale Konzept – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u7')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u7" onclick="event.stopPropagation()" type="checkbox"/><label for="u7" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">07 KI-Strategie &amp; Befähigung – Seite prüfen und finalisieren</label></div>
-<div class="cl-item" onclick="tog('u8')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u8" onclick="event.stopPropagation()" type="checkbox"/><label for="u8" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">08 KI Lernpfad – Seite erstellen</label></div>
+<div class="cl-item" onclick="tog('u8')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u8" onclick="event.stopPropagation()" type="checkbox"/><label for="u8" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">08 KI Lernpfad – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u9')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u9" onclick="event.stopPropagation()" type="checkbox"/><label for="u9" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">09 Analyse Tools &amp; Software – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u10')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u10" onclick="event.stopPropagation()" type="checkbox"/><label for="u10" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">10 Beschaffungsprozess – Seite prüfen und finalisieren</label></div>
 <div class="cl-item" onclick="tog('u11')" style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:6px;margin-bottom:4px;background:#12161A;border:1px solid #1E2530;cursor:pointer"><input id="u11" onclick="event.stopPropagation()" type="checkbox"/><label for="u11" style="font-size:14px;color:#E5E7EB;cursor:pointer;flex-grow:1;line-height:1.5">11 Prozessdigitalisierung – Seite prüfen und finalisieren</label></div>
@@ -569,7 +569,7 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="sf-r">
 <a class="sf-link" href="index.html">Übersicht</a>
 <div class="sf-dot"></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2025.04</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2026.04</span>
 </div>
 </footer>
 </div>
