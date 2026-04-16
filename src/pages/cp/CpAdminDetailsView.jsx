@@ -64,7 +64,7 @@ export default function CpAdminDetailsView() {
 
   if (expanded) {
     return (
-      <div className="fixed inset-0 z-50 bg-bg-base flex flex-col">
+      <div key={page} className="fixed inset-0 z-50 bg-bg-base flex flex-col">
         <TopBar
           config={config}
           iframeSrc={iframeSrc}
@@ -76,6 +76,7 @@ export default function CpAdminDetailsView() {
           navigate={navigate}
         />
         <iframe
+          key={page}
           src={iframeSrc}
           title={config.title}
           className="flex-1 w-full border-0 bg-bg-base"
@@ -86,7 +87,7 @@ export default function CpAdminDetailsView() {
   }
 
   return (
-    <div className="-m-4 md:-m-6 flex flex-col" style={{ height: 'calc(100dvh - 49px)' }}>
+    <div key={page} className="-m-4 md:-m-6 flex flex-col" style={{ height: 'calc(100dvh - 49px)' }}>
       <TopBar
         config={config}
         iframeSrc={iframeSrc}
@@ -98,6 +99,7 @@ export default function CpAdminDetailsView() {
         navigate={navigate}
       />
       <iframe
+        key={page}
         src={iframeSrc}
         title={config.title}
         className="flex-1 w-full border-0 bg-bg-base min-h-0"
