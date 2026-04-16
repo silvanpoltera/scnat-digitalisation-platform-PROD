@@ -3,18 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles, Zap, Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PageHeader from '../components/PageHeader';
-
-const CLUSTER_COLORS = {
-  'Digitale Kultur & Befähigung': 'var(--status-blue)',
-  'Infrastruktur & Beschaffung': 'var(--status-green)',
-  'Kommunikation & Transparenz': 'var(--status-yellow)',
-  'Prozesse & Methoden': '#9B59B6',
-  'Strategie & Steuerung': '#EA515A',
-  'Daten & Wissen': '#1ABC9C',
-};
-
-const PRIO_ORDER = { A: 0, B: 1, C: 2, D: 3 };
-const PRIO_LABEL = { A: 'Quick Win', B: 'Strategisch', C: 'Mittelfristig', D: 'Langfristig' };
+import { CLUSTER_COLORS, PRIO_ORDER, PRIO_LABEL } from '../lib/constants';
 
 function PrioBar({ value, max = 10, color = '#EA515A' }) {
   if (!value) return <span className="text-xs text-txt-tertiary">–</span>;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Target, Map, Flag, FileText, Table2, Layout, Bot, BookOpen, GitBranch, Download, ExternalLink, ChevronRight } from "lucide-react";
+import { Target, Map, Flag, FileText, Table2, Layout, Bot, BookOpen, GitBranch, ExternalLink } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import VisionHouse from "@/components/vision/VisionHouse";
 import ActionFieldDetail from "@/components/vision/ActionFieldDetail";

@@ -1,18 +1,9 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
+import { readJSON, writeJSON, generateId, sanitize, isActive } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const FILE = 'live-infos.json';
-
-function isActive(item) {
-  if (!item.aktiv) return false;
-  if (item.gueltigBis) {
-    const now = new Date().toISOString().split('T')[0];
-    if (item.gueltigBis < now) return false;
-  }
-  return true;
-}
 
 router.get('/', requireAuth, (_req, res) => {
   const data = readJSON(FILE);

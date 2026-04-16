@@ -51,3 +51,20 @@ export function sanitize(value) {
   }
   return value;
 }
+
+export function isActive(item) {
+  if (!item.aktiv) return false;
+  if (item.gueltigBis) {
+    const now = new Date().toISOString().split('T')[0];
+    if (item.gueltigBis < now) return false;
+  }
+  return true;
+}
+
+export function createJsonRouter(filename) {
+  return {
+    read() { return readJSON(filename); },
+    write(data) { writeJSON(filename, data); },
+    findById(data, id) { return data.findIndex(i => i.id === id); },
+  };
+}

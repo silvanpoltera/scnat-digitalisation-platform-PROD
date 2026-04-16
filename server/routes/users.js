@@ -20,11 +20,14 @@ router.put('/', requireAuth, requireAdmin, async (req, res) => {
   }
   const validRole = VALID_ROLES.includes(role) ? role : 'user';
 
+  const normalizedEmail = email.toLowerCase().trim();
   const data = readJSON(FILE);
-  if (data.some(u => u.email === email)) return res.status(400).json({ error: 'E-Mail existiert bereits' });
+  if (data.some(u => u.email.toLowerCase().trim() === normalizedEmail)) {
+    return res.status(400).json({ error: 'E-Mail existiert bereits' });
+  }
 
   const passwordHash = await hashPassword(password);
-  const newUser = { id: generateId(), name, email, passwordHash, role: validRole };
+  const newUser = { id: generateId(), name, email: normalizedEmail, passwordHash, role: validRole };
   data.push(newUser);
   writeJSON(FILE, data);
 
@@ -38,7 +41,9 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res) => {
   const idx = data.findIndex(u => u.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'User nicht gefunden' });
 
-  if (email && email !== data[idx].email && data.some(u => u.email === email && u.id !== req.params.id)) {
+  const normalizedEmail = email ? email.toLowerCase().trim() : null;
+  if (normalizedEmail && normalizedEmail !== data[idx].email.toLowerCase().trim() &&
+      data.some(u => u.email.toLowerCase().trim() === normalizedEmail && u.id !== req.params.id)) {
     return res.status(400).json({ error: 'E-Mail existiert bereits' });
   }
   if (password && password.length < MIN_PASSWORD_LENGTH) {
@@ -46,7 +51,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res) => {
   }
 
   if (name) data[idx].name = name;
-  if (email) data[idx].email = email;
+  if (normalizedEmail) data[idx].email = normalizedEmail;
   if (role && VALID_ROLES.includes(role)) data[idx].role = role;
   if (password) data[idx].passwordHash = await hashPassword(password);
 

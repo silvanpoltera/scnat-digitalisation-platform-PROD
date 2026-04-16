@@ -826,6 +826,29 @@ aside.sg.collapsed~.sp{margin-left:0}
 .sg-expand:hover{color:var(--st);border-color:var(--sb2)}
 aside.sg.collapsed~.sg-expand{display:flex}
 @media(max-width:760px){.sg-toggle{display:none}}
+/* CHECKLIST VARIABLE ALIASES */
+:root{--elevated:var(--bg-elevated,#161B21);--green-dim:rgba(52,211,153,0.1);--border-hi:var(--border-hover,#2A3542);--red:#EA515A;--red-dim:rgba(234,81,90,0.12);--anthrazit:#5A616B;--text2:var(--text-mid,#9CA3AF);--white:var(--text-light,#F9FAFB);--surface:var(--bg-card,#12161A);}
+/* CHECKLIST */
+.cg{margin-bottom:1.5rem;}
+.cgt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+.ci{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem .75rem;margin-bottom:.3rem;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent;}
+.ci:hover{background:var(--elevated);}
+.ci.done{background:var(--green-dim);border-color:rgba(52,211,153,.12);}
+.ci.done .cl{color:var(--muted);text-decoration:line-through;}
+.cc{width:17px;height:17px;flex-shrink:0;border-radius:4px;border:1.5px solid var(--border-hi);margin-top:.12em;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ci.done .cc{background:var(--red);border-color:var(--red);}
+.cc svg{opacity:0;transition:opacity .15s;}
+.ci.done .cc svg{opacity:1;}
+.cl{font-size:.85rem;color:var(--text2);line-height:1.5;user-select:none;}
+.cp{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.pb{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pbf{height:100%;background:var(--red);border-radius:2px;transition:width .3s;}
+.pt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);white-space:nowrap;}
+.rb{font-family:var(--font-mono);font-size:.65rem;color:var(--anthrazit);background:none;border:1px solid var(--border);border-radius:4px;padding:.25rem .6rem;cursor:pointer;transition:all .15s;}
+.rb:hover{color:var(--text2);border-color:var(--border-hi);}
+.sl{font-family:var(--font-mono);font-size:.68rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+.st{font-size:1.35rem;font-weight:600;color:var(--white);margin-bottom:1rem;letter-spacing:-.015em;}
+.slead{color:var(--text2);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem;border-left:2px solid var(--border);padding-left:1rem;}
 </style>
 <style>
 /* ═══ SCNAT SHELL — injected into every page ═══ */
@@ -1688,150 +1711,44 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </section>
 <!-- ══ 07 CHECKLISTE ══ -->
-<section id="checkliste">
-<div class="section-header">
-<span class="section-num-tag">07</span>
-<h2>Checkliste</h2>
+<section class="sec" id="checkliste">
+<div class="sl">07 · Checkliste</div>
+<h2 class="st">Umsetzungs-Checkliste</h2>
+<p class="slead">Fortschritt wird lokal gespeichert – Häkchen bleiben erhalten.</p>
+<div class="cp"><div class="pb"><div class="pbf" id="pbf" style="width:0%"></div></div><div class="pt" id="pt">0 / 28 erledigt</div><button class="rb" onclick="reset()">Zurücksetzen</button></div>
+<div class="cg"><div class="cgt">Vorbereitung</div>
+<div class="ci" data-id="c01" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">KI-Tool-Inventar erstellt (offiziell und inoffiziell genutzte Tools erfasst)</label></div>
+<div class="ci" data-id="c02" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">DSG/DSGVO-Status ChatGPT Team mit IT Intern geklärt (OpenAI Enterprise-Vertrag, Trainingsoptout, Speicherort geprüft)</label></div>
+<div class="ci" data-id="c03" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">KI-Hub Bestandsaufnahme: Was ist vorhanden, was fehlt für L1–L3?</label></div>
+<div class="ci" data-id="c04" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Schulungskalender-Funktion auf Plattform technisch bereit für Schulungsevents geprüft</label></div>
+<div class="ci" data-id="c05" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Trainingspartner aus Raum Bern identifiziert – mindestens 2 Kandidaten, Offerten angefragt</label></div>
+<div class="ci" data-id="c06" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Mandat für KI-Strategie von Direktion eingeholt (Briefing-Dokument erstellt und präsentiert)</label></div>
+<div class="ci" data-id="c07" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">super mini pai: Ziel-Datenquellen definiert, Datenqualität geprüft</label></div>
+<div class="ci" data-id="c08" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agents benannt und gebrieft, Feedback-Auftrag für Abteilungen erteilt</label></div>
 </div>
-<div class="checklist-progress-bar">
-<span class="progress-label" id="prog-label">0 / 27 erledigt</span>
-<div class="progress-outer">
-<div class="progress-inner" id="prog-bar" style="width:0%"></div>
+<div class="cg"><div class="cgt">Sprint-Durchführung</div>
+<div class="ci" data-id="c09" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off mit Kernteam durchgeführt</label></div>
+<div class="ci" data-id="c10" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Datenkategorisierungs-Schema definiert und dokumentiert (was geht in welchen Tier)</label></div>
+<div class="ci" data-id="c11" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Governance-Dokument Rohfassung erstellt</label></div>
+<div class="ci" data-id="c12" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">IT-Feedback zu Governance-Dokument eingeholt (via IT Intern – IT nicht übergangen)</label></div>
+<div class="ci" data-id="c13" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Lernpfad L1–L3 Struktur und Inhaltsübersicht pro Stufe definiert</label></div>
+<div class="ci" data-id="c14" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">KI-Hub mit Governance-Inhalten und L1-Content aktualisiert und publiziert</label></div>
+<div class="ci" data-id="c15" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">super mini pai: Erste Datenquelle angebunden, Testabfragen durchgeführt und bewertet</label></div>
+<div class="ci" data-id="c16" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agent Training L1+L2 durchgeführt (intern, ~3 Stunden)</label></div>
+<div class="ci" data-id="c17" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Feedback aus Change Agent Training gesammelt und für Lernpfad-Anpassungen ausgewertet</label></div>
+<div class="ci" data-id="c18" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">super mini pai Live-Demo mit interessierten Change Agents durchgeführt</label></div>
+<div class="ci" data-id="c19" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agent Team (KI): Erste interne Schulungssession durchgeführt oder terminiert</label></div>
+<div class="ci" data-id="c20" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">STT-Analyse: DSG-Status dokumentiert, Nutzungsregeln im Governance-Dokument ergänzt</label></div>
+<div class="ci" data-id="c21" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Prompt-Tipps und Best Practices auf KI-Hub publiziert</label></div>
+<div class="ci" data-id="c22" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Schulungskalender auf Plattform mit internen Schulungsterminen befüllt</label></div>
 </div>
-<button class="reset-btn" onclick="resetAll()">Reset</button>
-</div>
-<!-- Vorbereitung -->
-<div class="checklist-group">
-<div class="cl-group-label">
-          Vorbereitung
-          <span class="cl-count" id="cnt-vor"></span>
-</div>
-<div class="cl-item" data-group="vor" data-id="v1" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">KI-Tool-Inventar erstellt (offiziell und inoffiziell genutzte Tools erfasst)</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v2" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">DSG/DSGVO-Status ChatGPT Team mit IT Intern geklärt (OpenAI Enterprise-Vertrag, Trainingsoptout, Speicherort geprüft)</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v3" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">KI-Hub Bestandsaufnahme: Was ist vorhanden, was fehlt für L1–L3?</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v4" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Schulungskalender-Funktion auf Plattform technisch bereit für Schulungsevents geprüft</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v5" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Trainingspartner aus Raum Bern identifiziert – mindestens 2 Kandidaten, Offerten angefragt</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v6" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Mandat für KI-Strategie von Direktion eingeholt (Briefing-Dokument erstellt und präsentiert)</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v7" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">super mini pai: Ziel-Datenquellen definiert, Datenqualität geprüft</div>
-</div>
-<div class="cl-item" data-group="vor" data-id="v8" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Change Agents benannt und gebrieft, Feedback-Auftrag für Abteilungen erteilt</div>
-</div>
-</div>
-<!-- Sprint-Durchführung -->
-<div class="checklist-group">
-<div class="cl-group-label">
-          Sprint-Durchführung
-          <span class="cl-count" id="cnt-spr"></span>
-</div>
-<div class="cl-item" data-group="spr" data-id="s1" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Kick-off mit Kernteam durchgeführt</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s2" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Datenkategorisierungs-Schema definiert und dokumentiert (was geht in welchen Tier)</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s3" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Governance-Dokument Rohfassung erstellt</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s4" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">IT-Feedback zu Governance-Dokument eingeholt (via IT Intern – IT nicht übergangen)</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s5" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Lernpfad L1–L3 Struktur und Inhaltsübersicht pro Stufe definiert</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s6" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">KI-Hub mit Governance-Inhalten und L1-Content aktualisiert und publiziert</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s7" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">super mini pai: Erste Datenquelle angebunden, Testabfragen durchgeführt und bewertet</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s8" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Change Agent Training L1+L2 durchgeführt (intern, ~3 Stunden)</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s9" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Feedback aus Change Agent Training gesammelt und für Lernpfad-Anpassungen ausgewertet</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s10" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">super mini pai Live-Demo mit interessierten Change Agents durchgeführt</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s11" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Change Agent Team (KI): Erste interne Schulungssession durchgeführt oder terminiert</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s12" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">STT-Analyse: DSG-Status dokumentiert, Nutzungsregeln im Governance-Dokument ergänzt</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s13" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Prompt-Tipps und Best Practices auf KI-Hub publiziert</div>
-</div>
-<div class="cl-item" data-group="spr" data-id="s14" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Schulungskalender auf Plattform mit internen Schulungsterminen befüllt</div>
-</div>
-</div>
-<!-- Abschluss -->
-<div class="checklist-group">
-<div class="cl-group-label">
-          Abschluss
-          <span class="cl-count" id="cnt-abs"></span>
-</div>
-<div class="cl-item" data-group="abs" data-id="a1" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Change Agent Meeting durchgeführt: Feedback aus Pilot, Anpassungen beschlossen</div>
-</div>
-<div class="cl-item" data-group="abs" data-id="a2" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Governance-Dokument final durch Silvan freigegeben (+ Direktion falls nötig)</div>
-</div>
-<div class="cl-item" data-group="abs" data-id="a3" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Vollständiger Lernpfad L1–L3 auf Plattform publiziert und end-to-end getestet</div>
-</div>
-<div class="cl-item" data-group="abs" data-id="a4" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Rollout-Plan für alle Mitarbeitenden erstellt (Zeitplan, Kommunikationskanäle, Verantwortliche)</div>
-</div>
-<div class="cl-item" data-group="abs" data-id="a5" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Interne Kommunikation zu KI-Strategie und Lernpfad vorbereitet und abgestimmt</div>
-</div>
-<div class="cl-item" data-group="abs" data-id="a6" onclick="toggle(this)">
-<div class="cl-box"></div>
-<div class="cl-text">Sprint-Retro durchgeführt, Learnings dokumentiert, Folgemassnahmen als Backlog definiert</div>
-</div>
+<div class="cg"><div class="cgt">Abschluss</div>
+<div class="ci" data-id="c23" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agent Meeting durchgeführt: Feedback aus Pilot, Anpassungen beschlossen</label></div>
+<div class="ci" data-id="c24" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Governance-Dokument final durch Silvan freigegeben (+ Direktion falls nötig)</label></div>
+<div class="ci" data-id="c25" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Vollständiger Lernpfad L1–L3 auf Plattform publiziert und end-to-end getestet</label></div>
+<div class="ci" data-id="c26" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Rollout-Plan für alle Mitarbeitenden erstellt (Zeitplan, Kommunikationskanäle, Verantwortliche)</label></div>
+<div class="ci" data-id="c27" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Interne Kommunikation zu KI-Strategie und Lernpfad vorbereitet und abgestimmt</label></div>
+<div class="ci" data-id="c28" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Sprint-Retro durchgeführt, Learnings dokumentiert, Folgemassnahmen als Backlog definiert</label></div>
 </div>
 </section>
 <!-- ══ 08 RISIKEN ══ -->
@@ -1982,52 +1899,15 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <div class="rtoc-prog-lbl">Checkliste</div>
 <div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
 <div class="rtoc-prog-txt" id="tocTxt">0 / 28 erledigt</div>
-<button class="rtoc-prog-btn" id="tocResetBtn">Zurücksetzen</button>
+<button class="rtoc-prog-btn" onclick="if(typeof reset==='function')reset()">Zur\u00fccksetzen</button>
 </div>
 <script>
 (function(){
-  var TOTAL = 28;
-  var DONE_CLS = 'done';
-  function countDone(){
-    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
-  }
-  function render(){
-    var n = countDone();
-    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
-    var fill = document.getElementById('tocFill');
-    var txt  = document.getElementById('tocTxt');
-    if (fill) fill.style.width = pct + '%';
-    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
-  }
-  // Watch class attribute mutations on checklist items
-  var obs = new MutationObserver(render);
-  function attach(){
-    document.querySelectorAll('[data-id]').forEach(function(el){
-      obs.observe(el, {attributes:true, attributeFilter:['class']});
-    });
-    render();
-  }
-  // Also hook reset button to call original reset if defined
-  document.addEventListener('DOMContentLoaded', function(){
-    attach();
-    var btn = document.getElementById('tocResetBtn');
-    if (btn) btn.addEventListener('click', function(){
-      if (typeof reset === 'function') { reset(); }
-      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
-      else {
-        if (!confirm('Checkliste zurücksetzen?')) return;
-        document.querySelectorAll('[data-id]').forEach(function(el){
-          el.classList.remove('done','checked');
-        });
-        // Clear relevant localStorage keys
-        Object.keys(localStorage).forEach(function(k){
-          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
-        });
-      }
-      render();
-    });
-  });
-  setTimeout(attach, 300);
+  var TOTAL=28;
+  function render(){var n=document.querySelectorAll('.ci.done').length;var pct=TOTAL>0?Math.round(n/TOTAL*100):0;var f=document.getElementById('tocFill');var t=document.getElementById('tocTxt');if(f)f.style.width=pct+'%';if(t)t.textContent=n+' / '+TOTAL+' erledigt'}
+  var obs=new MutationObserver(render);
+  document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.ci').forEach(function(el){obs.observe(el,{attributes:true,attributeFilter:['class']})});render()});
+  setTimeout(render,400);
 })();
 </script>
 </aside>
@@ -2043,69 +1923,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </div>
 <script>
-  const STORE = 'scnat_ki_strategie_v1';
-
-  function load() {
-    try { return JSON.parse(localStorage.getItem(STORE) || '{}'); }
-    catch { return {}; }
-  }
-  function save(s) {
-    try { localStorage.setItem(STORE, JSON.stringify(s)); } catch {}
-  }
-
-  function toggle(el) {
-    el.classList.toggle('done');
-    const s = load();
-    s[el.dataset.id] = el.classList.contains('done');
-    save(s);
-    updateAll();
-  }
-
-  function updateAll() {
-    const all = document.querySelectorAll('.cl-item');
-    const done = document.querySelectorAll('.cl-item.done');
-    const pct = all.length ? Math.round(done.length / all.length * 100) : 0;
-    document.getElementById('prog-label').textContent = `${done.length} / ${all.length} erledigt`;
-    document.getElementById('prog-bar').style.width = pct + '%';
-
-    ['vor','spr','abs'].forEach(g => {
-      const gAll = document.querySelectorAll(`.cl-item[data-group="${g}"]`);
-      const gDone = document.querySelectorAll(`.cl-item[data-group="${g}"].done`);
-      const el = document.getElementById(`cnt-${g}`);
-      if (el) el.textContent = `${gDone.length}/${gAll.length}`;
-    });
-  }
-
-  function resetAll() {
-    if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
-    document.querySelectorAll('.cl-item').forEach(el => el.classList.remove('done'));
-    save({});
-    updateAll();
-  }
-  window.resetChecklist = resetAll;
-
-  // Init
-  (function init() {
-    const s = load();
-    document.querySelectorAll('.cl-item').forEach(el => {
-      if (s[el.dataset.id]) el.classList.add('done');
-    });
-    updateAll();
-  })();
-
-  // Active nav on scroll
-  const secs = document.querySelectorAll('section[id]');
-  const navAs = document.querySelectorAll('.nav-list a');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navAs.forEach(a => a.classList.remove('active'));
-        const a = document.querySelector(`.nav-list a[href="#${e.target.id}"]`);
-        if (a) a.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
-  secs.forEach(s => obs.observe(s));
+const K='scnat_ki_strategie_v1';const T=28;
+function ls(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}}
+function ss(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
+function tc(el){var id=el.dataset.id;var s=ls();if(el.classList.contains('done')){el.classList.remove('done');delete s[id]}else{el.classList.add('done');s[id]=true}ss(s);up()}
+function up(){var d=Object.keys(ls()).length;var p=Math.round(d/T*100);document.getElementById('pbf').style.width=p+'%';document.getElementById('pt').textContent=d+' / '+T+' erledigt'}
+function reset(){if(!confirm('Checkliste zur\u00fccksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(function(e){e.classList.remove('done')});up()}
+document.addEventListener('DOMContentLoaded',function(){var s=ls();document.querySelectorAll('.ci').forEach(function(e){if(s[e.dataset.id])e.classList.add('done')});up()});
 </script>
 <script>
 (function(){

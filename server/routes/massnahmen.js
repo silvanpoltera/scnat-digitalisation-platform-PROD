@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
+import { readJSON, writeJSON, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -46,7 +46,7 @@ router.put('/', requireAuth, requireAdmin, (req, res) => {
 
 router.post('/reorder', requireAuth, requireAdmin, (req, res) => {
   const { order } = req.body;
-  if (!Array.isArray(order)) return res.status(400).json({ error: 'order must be an array' });
+  if (!Array.isArray(order)) return res.status(400).json({ error: 'Ungültiges Format' });
 
   const data = readJSON(FILE);
   const orderedIds = new Set(order.map(o => o.id));

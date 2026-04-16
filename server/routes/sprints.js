@@ -40,6 +40,9 @@ router.get('/:id', requireAuth, (req, res) => {
   const sprints = readJSON(FILE);
   const sprint = sprints.find(s => s.id === req.params.id);
   if (!sprint) return res.status(404).json({ error: 'Sprint nicht gefunden' });
+  if (sprint.isAdminSprint && req.user?.role !== 'admin') {
+    return res.status(404).json({ error: 'Sprint nicht gefunden' });
+  }
   res.json(enrichMassnahmen(sprint));
 });
 

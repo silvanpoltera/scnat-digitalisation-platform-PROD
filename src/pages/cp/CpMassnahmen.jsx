@@ -3,31 +3,8 @@ import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Sea
 import { DndContext, DragOverlay, closestCenter, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, useDraggable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
-const PRIO_OPTIONS = ['A', 'B', 'C', 'D'];
-const PRIO_LABEL = { A: 'Quick Win', B: 'Strategisch', C: 'Mittelfristig', D: 'Langfristig' };
-const STATUS_OPTIONS = ['geplant', 'in_umsetzung', 'blockiert', 'abgeschlossen', 'sistiert'];
-const STATUS_LABELS = { geplant: 'Backlog', in_umsetzung: 'In Bearbeitung', blockiert: 'Blockiert', abgeschlossen: 'Erledigt', sistiert: 'Sistiert' };
-const STATUS_COLORS = {
-  geplant: 'bg-bg-elevated text-txt-secondary',
-  in_umsetzung: 'bg-status-green/15 text-status-green',
-  blockiert: 'bg-status-yellow/15 text-status-yellow',
-  abgeschlossen: 'bg-scnat-teal/15 text-scnat-teal',
-  sistiert: 'bg-scnat-red/15 text-scnat-red',
-};
-const KANBAN_COLUMNS = [
-  { id: 'geplant', label: 'Backlog', desc: 'Alle geplanten Massnahmen', borderClass: 'border-txt-tertiary/40' },
-  { id: 'in_umsetzung', label: 'In Bearbeitung', desc: 'Aktiv in Umsetzung', borderClass: 'border-status-green' },
-  { id: 'blockiert', label: 'Blockiert', desc: 'Braucht Entscheid / Freigabe', borderClass: 'border-status-yellow' },
-  { id: 'abgeschlossen', label: 'Erledigt', desc: 'Abgenommen & dokumentiert', borderClass: 'border-scnat-teal' },
-  { id: 'sistiert', label: 'Sistiert', desc: 'Zurückgestellt', borderClass: 'border-scnat-red' },
-];
-const TAG_OPTIONS = ['Schulungen', 'Befähigungen', 'Beschaffung', 'Information & Transparenz', 'Kommunikation'];
-const CLUSTER_OPTIONS = [
-  'Digitale Kultur & Befähigung', 'Infrastruktur & Beschaffung',
-  'Kommunikation & Transparenz', 'Prozesse & Methoden',
-  'Strategie & Steuerung', 'Daten & Wissen',
-];
+import { PRIO_OPTIONS, PRIO_LABEL, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, KANBAN_COLUMNS, TAG_OPTIONS, CLUSTER_OPTIONS } from '../../lib/constants';
+import CommentSection from '../../components/cp/CommentSection';
 
 function SortableItem({ m, index }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
@@ -1068,8 +1045,6 @@ export default function CpMassnahmen() {
         credentials: 'include',
       });
       if (!res.ok) {
-        const err = await res.text();
-        console.error('Delete failed:', res.status, err);
         alert(`Löschen fehlgeschlagen (${res.status})`);
         return;
       }
@@ -1078,9 +1053,8 @@ export default function CpMassnahmen() {
         ...s,
         massnahmen: s.massnahmen.filter(m => m.massnahmeId !== id),
       })));
-    } catch (e) {
-      console.error('Delete error:', e);
-      alert('Löschen fehlgeschlagen: ' + e.message);
+    } catch {
+      alert('Löschen fehlgeschlagen');
     }
   }, []);
 
@@ -1672,79 +1646,3 @@ export default function CpMassnahmen() {
   );
 }
 
-function CommentSection({ comments, onAdd, onDelete }) {
-  const [text, setText] = useState('');
-  const [expanded, setExpanded] = useState(comments.length > 0);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!text.trim()) return;
-    onAdd(text.trim());
-    setText('');
-  };
-
-  function timeAgo(iso) {
-    const d = new Date(iso);
-    const diff = Date.now() - d.getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'gerade eben';
-    if (mins < 60) return `vor ${mins}m`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `vor ${hrs}h`;
-    const days = Math.floor(hrs / 24);
-    return `vor ${days}d`;
-  }
-
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1.5 text-[10px] font-mono text-txt-tertiary hover:text-txt-secondary transition-colors mb-2"
-      >
-        <MessageSquare className="w-3.5 h-3.5" />
-        Kommentare {comments.length > 0 && `(${comments.length})`}
-        {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-      </button>
-
-      {expanded && (
-        <div className="space-y-2 pl-1">
-          {comments.length > 0 && (
-            <div className="space-y-1.5 max-h-48 overflow-y-auto">
-              {comments.map(c => (
-                <div key={c.id} className="group flex items-start gap-2 bg-bg-elevated/60 rounded-sm px-2.5 py-2 border border-bd-faint/50">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] text-txt-primary leading-snug whitespace-pre-wrap">{c.text}</p>
-                    <span className="text-[9px] font-mono text-txt-tertiary mt-0.5 inline-block">{timeAgo(c.createdAt)}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onDelete(c.id); }}
-                    className="p-0.5 text-txt-tertiary/30 hover:text-scnat-red opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <input
-              value={text}
-              onChange={e => setText(e.target.value)}
-              placeholder="Kommentar schreiben..."
-              className="flex-1 bg-bg-elevated border border-bd-faint text-txt-primary text-[11px] px-2.5 py-1.5 rounded-sm focus:border-purple-500/50 focus:outline-none"
-            />
-            <button
-              type="submit"
-              disabled={!text.trim()}
-              className="p-1.5 text-purple-400 hover:text-purple-300 disabled:text-txt-tertiary/30 disabled:cursor-not-allowed transition-colors"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
-  );
-}

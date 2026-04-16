@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, AlertTriangle, Mail, Megaphone, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, Megaphone, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import PageHeader from '../components/PageHeader';

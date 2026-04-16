@@ -290,7 +290,7 @@ aside.sg{
 /* SECTION HEADERS */
 .sec{margin-bottom:4rem;scroll-margin-top:2rem;}
 .sl{font-family:var(--font-mono);font-size:.68rem;color:var(--primary);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
-.st2-h{font-size:1.35rem;font-weight:600;color:var(--white);margin-bottom:1rem;letter-spacing:-.015em;}
+.st{font-size:1.35rem;font-weight:600;color:var(--white);margin-bottom:1rem;letter-spacing:-.015em;}
 .slead{color:var(--text2);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem;border-left:2px solid var(--border);padding-left:1rem;}
 /* CHECKLIST */
 .cg{margin-bottom:1.5rem;}
@@ -800,38 +800,33 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </section>
 <!-- 07 CHECKLISTE -->
-<section id="checkliste">
-<div class="sh"><span class="snum">07</span><h2>Checkliste</h2></div>
-<div class="div"></div>
-<div class="cl-progress">
-<span class="pb-text" id="pb-label">0 / 17 erledigt</span>
-<div class="pb-wrap"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+<section class="sec" id="checkliste">
+<div class="sl">07 · Checkliste</div>
+<h2 class="st">Umsetzungs-Checkliste</h2>
+<p class="slead">Fortschritt wird lokal gespeichert – Häkchen bleiben erhalten.</p>
+<div class="cp"><div class="pb"><div class="pbf" id="pbf" style="width:0%"></div></div><div class="pt" id="pt">0 / 17 erledigt</div><button class="rb" onclick="reset()">Zurücksetzen</button></div>
+<div class="cg"><div class="cgt">Vorbereitung</div>
+<div class="ci" data-id="c01" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Redaktionsverantwortung klären – wer aus dem Change Agent Team übernimmt Koordination?</label></div>
+<div class="ci" data-id="c02" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Update-Rhythmus und feste Rubriken festlegen (Empfehlung: monatlich)</label></div>
+<div class="ci" data-id="c03" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Erstes Update-Thema bestimmen</label></div>
+<div class="ci" data-id="c04" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agents im Monthly Meeting über Kommunikationsplan briefen</label></div>
+<div class="ci" data-id="c05" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kommunikationsverantwortliche SCNAT einbinden und abstimmen</label></div>
 </div>
-<div class="cl-group">
-<h3>Vorbereitung</h3>
-<div class="cl-item" onclick="tog('c1')"><input id="c1" onclick="event.stopPropagation()" type="checkbox"/><label for="c1">Redaktionsverantwortung klären – wer aus dem Change Agent Team übernimmt Koordination?</label></div>
-<div class="cl-item" onclick="tog('c2')"><input id="c2" onclick="event.stopPropagation()" type="checkbox"/><label for="c2">Update-Rhythmus und feste Rubriken festlegen (Empfehlung: monatlich)</label></div>
-<div class="cl-item" onclick="tog('c3')"><input id="c3" onclick="event.stopPropagation()" type="checkbox"/><label for="c3">Erstes Update-Thema bestimmen</label></div>
-<div class="cl-item" onclick="tog('c4')"><input id="c4" onclick="event.stopPropagation()" type="checkbox"/><label for="c4">Change Agents im Monthly Meeting über Kommunikationsplan briefen</label></div>
-<div class="cl-item" onclick="tog('c5')"><input id="c5" onclick="event.stopPropagation()" type="checkbox"/><label for="c5">Kommunikationsverantwortliche SCNAT einbinden und abstimmen</label></div>
+<div class="cg"><div class="cgt">Sprint-Durchführung</div>
+<div class="ci" data-id="c06" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Ersten Neuigkeiten-Artikel inhaltlich ausarbeiten (Was läuft / Was kommt / Wie mitmachen)</label></div>
+<div class="ci" data-id="c07" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Vorab-Review durch 2–3 Change Agents durchführen</label></div>
+<div class="ci" data-id="c08" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Freigabe für Publikation einholen</label></div>
+<div class="ci" data-id="c09" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Artikel auf Plattform publizieren (Neuigkeiten-Sektion)</label></div>
+<div class="ci" data-id="c10" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">News Ticker mit Update aktivieren</label></div>
+<div class="ci" data-id="c11" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">In-App Notification auslösen</label></div>
+<div class="ci" data-id="c12" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Silvans Kontaktprofil auf der Plattform live schalten</label></div>
+<div class="ci" data-id="c13" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Manuelles E-Mail-Update als Übergangskanal versenden</label></div>
 </div>
-<div class="cl-group">
-<h3>Sprint-Durchführung</h3>
-<div class="cl-item" onclick="tog('c6')"><input id="c6" onclick="event.stopPropagation()" type="checkbox"/><label for="c6">Ersten Neuigkeiten-Artikel inhaltlich ausarbeiten (Was läuft / Was kommt / Wie mitmachen)</label></div>
-<div class="cl-item" onclick="tog('c7')"><input id="c7" onclick="event.stopPropagation()" type="checkbox"/><label for="c7">Vorab-Review durch 2–3 Change Agents durchführen</label></div>
-<div class="cl-item" onclick="tog('c8')"><input id="c8" onclick="event.stopPropagation()" type="checkbox"/><label for="c8">Freigabe für Publikation einholen</label></div>
-<div class="cl-item" onclick="tog('c9')"><input id="c9" onclick="event.stopPropagation()" type="checkbox"/><label for="c9">Artikel auf Plattform publizieren (Neuigkeiten-Sektion)</label></div>
-<div class="cl-item" onclick="tog('c10')"><input id="c10" onclick="event.stopPropagation()" type="checkbox"/><label for="c10">News Ticker mit Update aktivieren</label></div>
-<div class="cl-item" onclick="tog('c11')"><input id="c11" onclick="event.stopPropagation()" type="checkbox"/><label for="c11">In-App Notification auslösen</label></div>
-<div class="cl-item" onclick="tog('c12')"><input id="c12" onclick="event.stopPropagation()" type="checkbox"/><label for="c12">Silvans Kontaktprofil auf der Plattform live schalten</label></div>
-<div class="cl-item" onclick="tog('c13')"><input id="c13" onclick="event.stopPropagation()" type="checkbox"/><label for="c13">Manuelles E-Mail-Update als Übergangskanal versenden</label></div>
-</div>
-<div class="cl-group">
-<h3>Abschluss</h3>
-<div class="cl-item" onclick="tog('c14')"><input id="c14" onclick="event.stopPropagation()" type="checkbox"/><label for="c14">Feedback auswerten und dokumentieren</label></div>
-<div class="cl-item" onclick="tog('c15')"><input id="c15" onclick="event.stopPropagation()" type="checkbox"/><label for="c15">Redaktionsplan für nächste 3 Monate finalisieren</label></div>
-<div class="cl-item" onclick="tog('c16')"><input id="c16" onclick="event.stopPropagation()" type="checkbox"/><label for="c16">Mailserver-Integration als priorisierte Folgemassnahme ins Backlog aufnehmen</label></div>
-<div class="cl-item" onclick="tog('c17')"><input id="c17" onclick="event.stopPropagation()" type="checkbox"/><label for="c17">Sprint-Retrospektive abhalten – Prozess und Vorlagen dokumentieren</label></div>
+<div class="cg"><div class="cgt">Abschluss</div>
+<div class="ci" data-id="c14" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Feedback auswerten und dokumentieren</label></div>
+<div class="ci" data-id="c15" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Redaktionsplan für nächste 3 Monate finalisieren</label></div>
+<div class="ci" data-id="c16" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Mailserver-Integration als priorisierte Folgemassnahme ins Backlog aufnehmen</label></div>
+<div class="ci" data-id="c17" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Sprint-Retrospektive abhalten – Prozess und Vorlagen dokumentieren</label></div>
 </div>
 </section>
 <!-- 08 RISIKEN -->
@@ -923,6 +918,21 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
 <a class="rtoc-a" href="#erfolgsmessung"><span class="rtoc-num">09</span>Erfolgsmessung</a>
 </div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 17 erledigt</div>
+<button class="rtoc-prog-btn" onclick="if(typeof reset==='function')reset()">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL=17;
+  function render(){var n=document.querySelectorAll('.ci.done').length;var pct=TOTAL>0?Math.round(n/TOTAL*100):0;var f=document.getElementById('tocFill');var t=document.getElementById('tocTxt');if(f)f.style.width=pct+'%';if(t)t.textContent=n+' / '+TOTAL+' erledigt'}
+  var obs=new MutationObserver(render);
+  document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.ci').forEach(function(el){obs.observe(el,{attributes:true,attributeFilter:['class']})}); render()});
+  setTimeout(render,400);
+})();
+</script>
 </aside>
 </div>
 <footer class="sf-bar">
@@ -936,50 +946,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </div>
 <script>
-const PFX = 'scnat_komm_dt_';
-const TOTAL = 17;
-
-function updateProgress() {
-  let n = 0;
-  for (let i = 1; i <= TOTAL; i++) {
-    if (localStorage.getItem(PFX + 'c' + i) === '1') n++;
-  }
-  document.getElementById('pb-fill').style.width = Math.round(n / TOTAL * 100) + '%';
-  document.getElementById('pb-label').textContent = n + ' / ' + TOTAL + ' erledigt';
-}
-
-function tog(id) {
-  const cb = document.getElementById(id);
-  cb.checked = !cb.checked;
-  localStorage.setItem(PFX + id, cb.checked ? '1' : '0');
-  cb.closest('.cl-item').classList.toggle('done', cb.checked);
-  updateProgress();
-}
-
-// Restore saved state
-for (let i = 1; i <= TOTAL; i++) {
-  const id = 'c' + i;
-  const cb = document.getElementById(id);
-  if (cb && localStorage.getItem(PFX + id) === '1') {
-    cb.checked = true;
-    cb.closest('.cl-item').classList.add('done');
-  }
-}
-updateProgress();
-
-// Active nav highlight on scroll
-const sections = document.querySelectorAll('section[id]');
-const links = document.querySelectorAll('#sidenav a');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      links.forEach(a => a.classList.remove('active'));
-      const a = document.querySelector('#sidenav a[href="#' + e.target.id + '"]');
-      if (a) a.classList.add('active');
-    }
-  });
-}, { rootMargin: '-15% 0px -75% 0px' });
-sections.forEach(s => obs.observe(s));
+const K='scnat-m01-kommunikation-v1';const T=17;
+function ls(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}}
+function ss(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
+function tc(el){var id=el.dataset.id;var s=ls();if(el.classList.contains('done')){el.classList.remove('done');delete s[id]}else{el.classList.add('done');s[id]=true}ss(s);up()}
+function up(){var d=Object.keys(ls()).length;var p=Math.round(d/T*100);document.getElementById('pbf').style.width=p+'%';document.getElementById('pt').textContent=d+' / '+T+' erledigt'}
+function reset(){if(!confirm('Checkliste zurücksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(function(e){e.classList.remove('done')});up()}
+document.addEventListener('DOMContentLoaded',function(){var s=ls();document.querySelectorAll('.ci').forEach(function(e){if(s[e.dataset.id])e.classList.add('done')});up()});
 </script>
 <script>
 (function(){

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
-import { requireAuth, requireAdmin } from '../auth.js';
+import { requireAuth } from '../auth.js';
 
 const router = Router();
 const FILE = 'schulungsthemen.json';

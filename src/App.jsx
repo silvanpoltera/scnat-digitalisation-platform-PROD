@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
@@ -119,9 +119,9 @@ function NotFound() {
       <h1 className="text-6xl font-heading font-light text-txt-tertiary mb-4">404</h1>
       <h2 className="text-xl font-heading font-semibold text-txt-primary mb-2">Seite nicht gefunden</h2>
       <p className="text-txt-secondary mb-8">Die gesuchte Seite existiert nicht.</p>
-      <a href="/" className="inline-flex items-center px-4 py-2 bg-scnat-red text-white rounded-sm text-sm font-medium hover:bg-scnat-darkred transition-colors">
+      <Link to="/" className="inline-flex items-center px-4 py-2 bg-scnat-red text-white rounded-sm text-sm font-medium hover:bg-scnat-darkred transition-colors">
         Zur Startseite
-      </a>
+      </Link>
     </div>
   );
 }

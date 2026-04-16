@@ -1,21 +1,2 @@
-import { Router } from 'express';
-import { readJSON, writeJSON, sanitize } from '../utils.js';
-import { requireAuth, requireAdmin } from '../auth.js';
-
-const router = Router();
-const FILE = 'content.json';
-
-router.get('/', requireAuth, (_req, res) => {
-  const data = readJSON(FILE);
-  res.json(Array.isArray(data) ? {} : data);
-});
-
-router.post('/', requireAuth, requireAdmin, (req, res) => {
-  if (typeof req.body !== 'object' || Array.isArray(req.body)) {
-    return res.status(400).json({ error: 'Body muss ein Objekt sein' });
-  }
-  writeJSON(FILE, sanitize(req.body));
-  res.json({ ok: true });
-});
-
-export default router;
+import createContentRouter from './json-content.js';
+export default createContentRouter('content.json');

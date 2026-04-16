@@ -8,7 +8,6 @@ import SystemCard from '../components/systemlandschaft/SystemCard';
 import SystemDetailModal from '../components/systemlandschaft/SystemDetailModal';
 import ToolMatrix from '../components/systemlandschaft/ToolMatrix';
 import SoftwareDrawer from '../components/SoftwareDrawer';
-import RadarChart from '../components/RadarChart';
 
 const VIEWS = [
   { id: 'matrix', label: 'Tool-Matrix', icon: LayoutGrid },
@@ -17,21 +16,8 @@ const VIEWS = [
 ];
 
 function RankingView({ onSelectSoftware }) {
-  const [software, setSoftware] = useState([]);
   const [ranking, setRanking] = useState([]);
   const [tab, setTab] = useState('satisfaction');
-
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/software-votes/ranking', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
-    ]).then(([r]) => setRanking(r)).catch(() => {});
-
-    fetch('/api/software-votes', { credentials: 'include' }).catch(() => {});
-
-    import('../../data/software.json').catch(() =>
-      fetch('/api/massnahmen', { credentials: 'include' })
-    );
-  }, []);
 
   useEffect(() => {
     fetch('/api/software-votes/ranking', { credentials: 'include' })
@@ -126,11 +112,6 @@ export default function Systemlandschaft() {
   const [search, setSearch] = useState('');
   const [selectedSystem, setSelectedSystem] = useState(null);
   const [drawerSoftware, setDrawerSoftware] = useState(null);
-  const [apiSoftware, setApiSoftware] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/massnahmen', { credentials: 'include' }).catch(() => {});
-  }, []);
 
   const lizenzFilter = [
     { id: 'Alle', label: 'Alle' },

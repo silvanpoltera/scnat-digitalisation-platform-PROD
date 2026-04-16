@@ -12,7 +12,7 @@ router.post('/', requireAuth, (req, res) => {
   const event = events.find(e => e.id === eventId);
   if (!event) return res.status(404).json({ error: 'Event nicht gefunden' });
 
-  if (event.anmeldungen && event.anmeldungen.length >= event.maxTeilnehmer) {
+  if (event.maxTeilnehmer && event.anmeldungen && event.anmeldungen.length >= event.maxTeilnehmer) {
     return res.status(400).json({ error: 'Ausgebucht' });
   }
 
@@ -81,7 +81,7 @@ router.delete('/:id', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/admin', requireAuth, requireAdmin, (req, res) => {
-  const { eventId, userId } = req.body;
+  const { eventId, userId } = sanitize(req.body);
   if (!eventId || !userId) return res.status(400).json({ error: 'eventId und userId erforderlich' });
 
   const events = readJSON('events.json');
@@ -96,7 +96,7 @@ router.post('/admin', requireAuth, requireAdmin, (req, res) => {
   const alreadyRegistered = regs.some(r => r.eventId === eventId && r.userId === userId);
   if (alreadyRegistered) return res.status(409).json({ error: 'User ist bereits angemeldet' });
 
-  if (event.anmeldungen && event.anmeldungen.length >= event.maxTeilnehmer) {
+  if (event.maxTeilnehmer && event.anmeldungen && event.anmeldungen.length >= event.maxTeilnehmer) {
     return res.status(400).json({ error: 'Event ist ausgebucht' });
   }
 
