@@ -254,7 +254,7 @@ export default function CpSprintEditor() {
             onChange={e => {
               const start = e.target.value;
               const updates = { startDate: start };
-              if (start && !form.endDate) {
+              if (start) {
                 const d = new Date(start);
                 d.setDate(d.getDate() + 28);
                 updates.endDate = d.toISOString().split('T')[0];

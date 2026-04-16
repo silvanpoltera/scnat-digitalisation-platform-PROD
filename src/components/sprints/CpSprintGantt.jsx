@@ -33,6 +33,9 @@ const STATUS_DOT = {
 };
 
 const ZOOM_LEVELS = [
+  { days: 365, label: '12 M' },
+  { days: 273, label: '9 M' },
+  { days: 182, label: '6 M' },
   { days: 112, label: '16 W' },
   { days: 84,  label: '12 W' },
   { days: 56,  label: '8 W' },
@@ -40,7 +43,8 @@ const ZOOM_LEVELS = [
   { days: 28,  label: '4 W' },
   { days: 21,  label: '3 W' },
 ];
-const DEFAULT_ZOOM = 2;
+const DEFAULT_ZOOM = 5;
+const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
 export default function CpSprintGantt({ sprints, onDatesChange }) {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
@@ -51,15 +55,30 @@ export default function CpSprintGantt({ sprints, onDatesChange }) {
     const days = ZOOM_LEVELS[zoom].days;
     const leadDays = Math.max(7, Math.floor(days * 0.25));
     const start = new Date(today.getTime() - leadDays * DAY);
-    const numWeeks = Math.ceil(days / 7);
-    const wks = [];
-    for (let w = 0; w < numWeeks; w++) {
-      const d = new Date(start.getTime() + w * 7 * DAY);
-      const kw = getKW(d);
+    const cols = [];
+
+    if (days > 100) {
+      const ms = new Date(start.getFullYear(), start.getMonth(), 1);
+      const end = new Date(start.getTime() + days * DAY);
+      let d = new Date(ms);
+      while (d <= end) {
+        cols.push({
+          label: MONTH_LABELS[d.getMonth()],
+          isToday: d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear(),
+        });
+        d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      }
+    } else {
+      const numWeeks = Math.ceil(days / 7);
       const todayKw = getKW(today);
-      wks.push({ kw, isToday: kw === todayKw });
+      for (let w = 0; w < numWeeks; w++) {
+        const d = new Date(start.getTime() + w * 7 * DAY);
+        const kw = getKW(d);
+        cols.push({ label: `KW${kw}`, isToday: kw === todayKw });
+      }
     }
-    return { tlDays: days, tlStart: start, weeks: wks };
+
+    return { tlDays: days, tlStart: start, weeks: cols };
   }, [zoom, today]);
 
   const pct = useCallback(
@@ -239,7 +258,7 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW, tlStart, tlDays, cha
             key={i}
             className={`flex-1 text-center font-mono text-[9px] tracking-wide ${w.isToday ? 'text-scnat-red font-medium' : 'text-txt-tertiary'}`}
           >
-            KW{w.kw}
+            {w.label}
           </div>
         ))}
       </div>
