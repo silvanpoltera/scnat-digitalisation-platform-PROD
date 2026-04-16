@@ -2042,11 +2042,12 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
   }
 
   function resetAll() {
-    if (!confirm('Alle Häkchen zurücksetzen?')) return;
+    if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
     document.querySelectorAll('.cl-item').forEach(el => el.classList.remove('done'));
     save({});
     updateAll();
   }
+  window.resetChecklist = resetAll;
 
   // Init
   (function init() {

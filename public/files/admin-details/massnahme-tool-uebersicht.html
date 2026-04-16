@@ -1706,6 +1706,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
       updateCounts();
     }
 
+    window.resetChecklist = function() {
+      if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
+      document.querySelectorAll('.cl-item').forEach(function(el) { el.classList.remove('done'); });
+      save({});
+      updateCounts();
+    };
+
     // ── SCROLL SPY für aktive Nav ──
     function initScrollSpy() {
       const sections = document.querySelectorAll('.section[id]');

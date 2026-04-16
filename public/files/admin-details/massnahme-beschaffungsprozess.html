@@ -1493,6 +1493,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
     document.getElementById('progressFill').style.width = pct + '%';
   }
 
+  window.resetChecklist = function() {
+    if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
+    allChecks.forEach(function(item) { item.classList.remove('done'); });
+    saveState({});
+    updateProgress({});
+  };
+
   function initChecks() {
     const state = loadState();
     allChecks.forEach(item => {

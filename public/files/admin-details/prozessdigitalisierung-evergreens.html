@@ -2482,8 +2482,8 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 <div class="check-item" data-id="c29" onclick="toggleCheck(this)">
 <div class="check-box"></div>
-<div class="check-label">Vollständige Dokumentation: Prozess, Technik, Benutzeranleitung
-    </div>
+<div class="check-label">Vollständige Dokumentation: Prozess, Technik, Benutzeranleitung</div>
+</div>
 <div class="check-item" data-id="c30" onclick="toggleCheck(this)">
 <div class="check-box"></div>
 <div class="check-label">Change-Agent-Abschluss-Briefing durchgeführt, Lessons Learned dokumentiert</div>
@@ -2833,40 +2833,54 @@ document.addEventListener('keydown', e => {
 
 /* ─── CHECKLIST (localStorage) ───────────────────────────────────────── */
 function toggleCheck(el) {
-  el.classList.toggle('checked');
-  const id = el.dataset.id;
-  if (id) localStorage.setItem('check_' + id, el.classList.contains('checked') ? '1' : '0');
+  el.classList.toggle('done');
+  var id = el.dataset.id;
+  if (id) localStorage.setItem('check_' + id, el.classList.contains('done') ? '1' : '0');
   updateProgress();
 }
 
 function updateProgress() {
-  const items = document.querySelectorAll('.check-item');
-  const done = document.querySelectorAll('.check-item.checked').length;
-  const pct = items.length ? Math.round(done / items.length * 100) : 0;
-  const bar = document.getElementById('progress-fill');
-  const txt = document.getElementById('progress-text');
+  var items = document.querySelectorAll('.check-item[data-id]');
+  var done = document.querySelectorAll('.check-item.done').length;
+  var total = items.length;
+  var pct = total ? Math.round(done / total * 100) : 0;
+  var bar = document.getElementById('prog-bar');
+  var txt = document.getElementById('prog-count');
+  var tocFill = document.getElementById('tocFill');
+  var tocTxt = document.getElementById('tocTxt');
   if (bar) bar.style.width = pct + '%';
-  if (txt) txt.textContent = done + ' / ' + items.length + ' erledigt';
+  if (txt) txt.textContent = done + ' / ' + total;
+  if (tocFill) tocFill.style.width = pct + '%';
+  if (tocTxt) tocTxt.textContent = done + ' / ' + total + ' erledigt';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.check-item[data-id]').forEach(el => {
-    if (localStorage.getItem('check_' + el.dataset.id) === '1') el.classList.add('checked');
+function resetChecklist() {
+  if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
+  document.querySelectorAll('.check-item[data-id]').forEach(function(el) {
+    el.classList.remove('done');
+    if (el.dataset.id) localStorage.removeItem('check_' + el.dataset.id);
+  });
+  updateProgress();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.check-item[data-id]').forEach(function(el) {
+    if (localStorage.getItem('check_' + el.dataset.id) === '1') el.classList.add('done');
   });
   updateProgress();
 });
 
 /* ─── ACTIVE NAV LINK ────────────────────────────────────────────────── */
-const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
+var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
     if (e.isIntersecting) {
-      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+      navLinks.forEach(function(l) { l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id); });
     }
   });
 }, { rootMargin: '-20% 0px -70% 0px' });
 
-document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
+document.querySelectorAll('.section-anchor').forEach(function(a) { observer.observe(a); });
 </script>
 </div></section></div>
 </div>
@@ -2891,49 +2905,10 @@ document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
 </div>
 <script>
 (function(){
-  var TOTAL = 30;
-  var DONE_CLS = 'checked';
-  function countDone(){
-    return document.querySelectorAll('[data-id].' + DONE_CLS).length;
-  }
-  function render(){
-    var n = countDone();
-    var pct = TOTAL > 0 ? Math.round(n / TOTAL * 100) : 0;
-    var fill = document.getElementById('tocFill');
-    var txt  = document.getElementById('tocTxt');
-    if (fill) fill.style.width = pct + '%';
-    if (txt)  txt.textContent  = n + ' / ' + TOTAL + ' erledigt';
-  }
-  // Watch class attribute mutations on checklist items
-  var obs = new MutationObserver(render);
-  function attach(){
-    document.querySelectorAll('[data-id]').forEach(function(el){
-      obs.observe(el, {attributes:true, attributeFilter:['class']});
-    });
-    render();
-  }
-  // Also hook reset button to call original reset if defined
-  document.addEventListener('DOMContentLoaded', function(){
-    attach();
-    var btn = document.getElementById('tocResetBtn');
-    if (btn) btn.addEventListener('click', function(){
-      if (typeof reset === 'function') { reset(); }
-      else if (typeof window.resetChecklist === 'function') { window.resetChecklist(); }
-      else {
-        if (!confirm('Checkliste zurücksetzen?')) return;
-        document.querySelectorAll('[data-id]').forEach(function(el){
-          el.classList.remove('done','checked');
-        });
-        // Clear relevant localStorage keys
-        Object.keys(localStorage).forEach(function(k){
-          if (k.indexOf('scnat') > -1 || k.indexOf('check_') > -1) localStorage.removeItem(k);
-        });
-      }
-      render();
-    });
+  var btn = document.getElementById('tocResetBtn');
+  if (btn) btn.addEventListener('click', function(){
+    if (typeof window.resetChecklist === 'function') window.resetChecklist();
   });
-  setTimeout(attach, 300);
-})();
 </script>
 </aside>
 </div>
@@ -2974,42 +2949,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeIstModal();
 });
 
-/* ─── CHECKLIST (localStorage) ───────────────────────────────────────── */
-function toggleCheck(el) {
-  el.classList.toggle('checked');
-  const id = el.dataset.id;
-  if (id) localStorage.setItem('check_' + id, el.classList.contains('checked') ? '1' : '0');
-  updateProgress();
-}
-
-function updateProgress() {
-  const items = document.querySelectorAll('.check-item');
-  const done = document.querySelectorAll('.check-item.checked').length;
-  const pct = items.length ? Math.round(done / items.length * 100) : 0;
-  const bar = document.getElementById('progress-fill');
-  const txt = document.getElementById('progress-text');
-  if (bar) bar.style.width = pct + '%';
-  if (txt) txt.textContent = done + ' / ' + items.length + ' erledigt';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.check-item[data-id]').forEach(el => {
-    if (localStorage.getItem('check_' + el.dataset.id) === '1') el.classList.add('checked');
-  });
-  updateProgress();
-});
-
-/* ─── ACTIVE NAV LINK ────────────────────────────────────────────────── */
-const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
-    }
-  });
-}, { rootMargin: '-20% 0px -70% 0px' });
-
-document.querySelectorAll('.section-anchor').forEach(a => observer.observe(a));
 </script>
 <script>
 (function(){

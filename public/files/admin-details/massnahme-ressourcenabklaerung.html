@@ -1707,7 +1707,7 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <script>
 (function(){
   var TOTAL = 20;
-  var DONE_CLS = 'done';
+  var DONE_CLS = 'checked';
   function countDone(){
     return document.querySelectorAll('[data-id].' + DONE_CLS).length;
   }
@@ -1792,21 +1792,23 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
   }
 
   function updateProgress() {
-    const items = document.querySelectorAll('.checklist-item');
-    const checked = document.querySelectorAll('.checklist-item.checked');
-    const total = items.length;
-    const done = checked.length;
-    const pct = total ? Math.round(done / total * 100) : 0;
-    const bar = document.getElementById('progress-bar');
-    const count = document.getElementById('progress-count');
-    if (bar) bar.style.width = pct + '%';
-    if (count) count.textContent = done + ' / ' + total + ' erledigt';
+    var items = document.querySelectorAll('.checklist-item');
+    var checked = document.querySelectorAll('.checklist-item.checked');
+    var total = items.length;
+    var done = checked.length;
+    var pct = total ? Math.round(done / total * 100) : 0;
+    var tocFill = document.getElementById('tocFill');
+    var tocTxt = document.getElementById('tocTxt');
+    if (tocFill) tocFill.style.width = pct + '%';
+    if (tocTxt) tocTxt.textContent = done + ' / ' + total + ' erledigt';
   }
 
   function resetAll() {
+    if (!confirm('Checkliste wirklich zurücksetzen? Alle Häkchen werden entfernt.')) return;
     localStorage.removeItem(STORAGE_KEY);
     renderChecklist();
   }
+  window.resetChecklist = resetAll;
 
   function checkAll() {
     const state = {};
