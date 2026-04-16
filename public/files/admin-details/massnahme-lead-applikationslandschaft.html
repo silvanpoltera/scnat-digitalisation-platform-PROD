@@ -706,6 +706,29 @@ html.light{--bg:#F8F9FA;--bg-card:#FFFFFF;--border:#E5E7EB;--primary:#DC2626;--a
     }
   
 
+/* CHECKLIST */
+.sl{font-family:var(--font-mono);font-size:.68rem;color:var(--red,#EA515A);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+.st{font-size:1.35rem;font-weight:600;color:var(--white,#F9FAFB);margin-bottom:1rem;letter-spacing:-.015em;}
+.slead{color:var(--text2,#9CA3AF);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem;border-left:2px solid var(--border,#1E2530);padding-left:1rem;}
+.cg{margin-bottom:1.5rem;}
+.cgt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+.ci{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem .75rem;margin-bottom:.3rem;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent;}
+.ci:hover{background:var(--elevated,#171C21);}
+.ci.done{background:var(--green-dim,rgba(52,211,153,0.1));border-color:rgba(52,211,153,.12);}
+.ci.done .cl{color:var(--muted);text-decoration:line-through;}
+.cc{width:17px;height:17px;flex-shrink:0;border-radius:4px;border:1.5px solid var(--border-md,#2A3340);margin-top:.12em;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ci.done .cc{background:var(--red,#EA515A);border-color:var(--red,#EA515A);}
+.cc svg{opacity:0;transition:opacity .15s;}
+.ci.done .cc svg{opacity:1;}
+.cl{font-size:.85rem;color:var(--text2,#9CA3AF);line-height:1.5;user-select:none;}
+.cp{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--surface,#12161A);border:1px solid var(--border);border-radius:8px;}
+.pb{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pbf{height:100%;background:var(--red,#EA515A);border-radius:2px;transition:width .3s;}
+.pt{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);white-space:nowrap;}
+.rb{font-family:var(--font-mono);font-size:.65rem;color:var(--anthrazit);background:none;border:1px solid var(--border);border-radius:4px;padding:.25rem .6rem;cursor:pointer;transition:all .15s;}
+.rb:hover{color:var(--text2,#9CA3AF);border-color:var(--border-md,#2A3340);}
+.sec{margin-bottom:4rem;scroll-margin-top:2rem;}
+
 aside.sg{transition:width .2s ease,transform .2s ease}
 aside.sg.collapsed{width:0;min-width:0;overflow:hidden;border-right-color:transparent}
 aside.sg.collapsed~.sp{margin-left:0}
@@ -990,7 +1013,8 @@ html.light .sc header p{
 
 /* ── PREVENT HORIZONTAL SCROLL ── */
 html,body{overflow-x:hidden!important;max-width:100vw!important}
-.ss,.sp,.sb,.sc{max-width:100vw!important;overflow-x:hidden!important}
+.ss,.sp,.sb{max-width:100vw!important;overflow-x:clip!important}
+.sc{max-width:100vw!important;overflow-x:hidden!important}
 .layout{max-width:100%!important;overflow-x:hidden!important}
 main,.main-content,.content{max-width:100%!important;overflow-x:hidden!important}
 .sf-bar{max-width:100%!important;overflow-x:hidden!important}
@@ -1444,33 +1468,47 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </section>
 <!-- ── 07 CHECKLISTE ── -->
-<section id="checkliste">
-<div class="section-header">
-<span class="section-num">07</span>
-<h2>Checkliste</h2>
+<section class="sec" id="checkliste">
+<div class="sl">07 · Checkliste</div>
+<h2 class="st">Umsetzungs-Checkliste</h2>
+<p class="slead">Fortschritt wird lokal gespeichert – Häkchen bleiben erhalten.</p>
+<div class="cp"><div class="pb"><div class="pbf" id="pbf" style="width:0%"></div></div><div class="pt" id="pt">0 / 31 erledigt</div><button class="rb" onclick="reset()">Zurücksetzen</button></div>
+<div class="cg"><div class="cgt">Vorbereitung</div>
+<div class="ci" data-id="c01" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Bestehendes Betriebskonzept CMS lokalisiert und gesichtet</label></div>
+<div class="ci" data-id="c02" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Bestehendes Betriebskonzept DB lokalisiert und gesichtet</label></div>
+<div class="ci" data-id="c03" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Jira Service Desk-Konfiguration dokumentiert</label></div>
+<div class="ci" data-id="c04" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Bugtracker-Nutzung dokumentiert, Überschneidungen identifiziert</label></div>
+<div class="ci" data-id="c05" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">IT-Lead für Mitarbeit gewonnen, Termin fixiert</label></div>
+<div class="ci" data-id="c06" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Mandat für Triage-Rolle formal eingeholt (Geschäftsleitung)</label></div>
+<div class="ci" data-id="c07" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Externer Berater evaluiert und beauftragt</label></div>
+<div class="ci" data-id="c08" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agents für Sprint nominiert</label></div>
+<div class="ci" data-id="c09" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off-Termin mit allen Beteiligten fixiert</label></div>
+<div class="ci" data-id="c10" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">SCNAT-DB-Analyse-Ergebnisse eingeholt (falls vorhanden)</label></div>
 </div>
-<div class="checklist-wrap">
-<div class="cl-group" id="cl-group-vorbereitung">
-<div class="cl-group-header">
-<span>Vorbereitung</span>
-<span class="cl-progress" id="cl-prog-vorbereitung">0 / 10</span>
+<div class="cg"><div class="cgt">Sprint-Durchführung</div>
+<div class="ci" data-id="c11" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kick-off durchgeführt</label></div>
+<div class="ci" data-id="c12" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Bestandsaufnahme Betriebskonzept CMS abgeschlossen</label></div>
+<div class="ci" data-id="c13" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Bestandsaufnahme Betriebskonzept DB abgeschlossen</label></div>
+<div class="ci" data-id="c14" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Audit Jira Service Desk abgeschlossen</label></div>
+<div class="ci" data-id="c15" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Audit Bugtracker abgeschlossen</label></div>
+<div class="ci" data-id="c16" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Workshop Anforderungsprozess Ist/Soll durchgeführt</label></div>
+<div class="ci" data-id="c17" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Triage-Logik dokumentiert</label></div>
+<div class="ci" data-id="c18" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Rollenbeschreibungen erstellt</label></div>
+<div class="ci" data-id="c19" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Ticket-Templates für Jira definiert (Bug / CR / FR / Frage)</label></div>
+<div class="ci" data-id="c20" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Beschaffungsrahmen skizziert</label></div>
+<div class="ci" data-id="c21" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Jira Service Desk konfiguriert</label></div>
+<div class="ci" data-id="c22" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Betriebskonzept CMS finalisiert</label></div>
+<div class="ci" data-id="c23" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Betriebskonzept DB finalisiert</label></div>
+<div class="ci" data-id="c24" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Pilotlauf mit Change Agents durchgeführt</label></div>
+<div class="ci" data-id="c25" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Feedback ausgewertet und Anpassungen gemacht</label></div>
 </div>
-<div class="cl-items" id="cl-items-vorbereitung"></div>
-</div>
-<div class="cl-group" id="cl-group-sprint">
-<div class="cl-group-header">
-<span>Sprint-Durchführung</span>
-<span class="cl-progress" id="cl-prog-sprint">0 / 15</span>
-</div>
-<div class="cl-items" id="cl-items-sprint"></div>
-</div>
-<div class="cl-group" id="cl-group-abschluss">
-<div class="cl-group-header">
-<span>Abschluss</span>
-<span class="cl-progress" id="cl-prog-abschluss">0 / 6</span>
-</div>
-<div class="cl-items" id="cl-items-abschluss"></div>
-</div>
+<div class="cg"><div class="cgt">Abschluss</div>
+<div class="ci" data-id="c26" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Sprint-Retrospektive durchgeführt</label></div>
+<div class="ci" data-id="c27" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Dokumentation finalisiert und abgelegt</label></div>
+<div class="ci" data-id="c28" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">IT hat neuen Prozess formal bestätigt</label></div>
+<div class="ci" data-id="c29" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Kommunikation an Mitarbeitende versandt</label></div>
+<div class="ci" data-id="c30" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Change Agents aktiviert und informiert</label></div>
+<div class="ci" data-id="c31" onclick="tc(this)"><div class="cc"><svg fill="none" height="8" viewbox="0 0 10 8" width="10"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></div><label class="cl">Nächste Schritte / Folgeprojekte definiert</label></div>
 </div>
 </section>
 <!-- ── 08 RISIKEN ── -->
@@ -1562,6 +1600,21 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 <a class="rtoc-a" href="#risiken"><span class="rtoc-num">08</span>Risiken</a>
 <a class="rtoc-a" href="#erfolg"><span class="rtoc-num">09</span>Erfolgsmessung</a>
 </div>
+<div class="rtoc-prog">
+<div class="rtoc-prog-lbl">Checkliste</div>
+<div class="rtoc-prog-bar"><div class="rtoc-prog-fill" id="tocFill"></div></div>
+<div class="rtoc-prog-txt" id="tocTxt">0 / 31 erledigt</div>
+<button class="rtoc-prog-btn" onclick="if(typeof reset==='function')reset()">Zurücksetzen</button>
+</div>
+<script>
+(function(){
+  var TOTAL=31;
+  function render(){var n=document.querySelectorAll('.ci.done').length;var pct=TOTAL>0?Math.round(n/TOTAL*100):0;var f=document.getElementById('tocFill');var t=document.getElementById('tocTxt');if(f)f.style.width=pct+'%';if(t)t.textContent=n+' / '+TOTAL+' erledigt'}
+  var obs=new MutationObserver(render);
+  document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.ci').forEach(function(el){obs.observe(el,{attributes:true,attributeFilter:['class']})}); render()});
+  setTimeout(render,400);
+})();
+</script>
 </aside>
 </div>
 <footer class="sf-bar">
@@ -1575,145 +1628,13 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 </div>
 </div>
 <script>
-(function() {
-  const STORAGE_KEY = 'scnat_cl_lead_applandschaft_v1';
-
-  const DATA = {
-    vorbereitung: [
-      'Bestehendes Betriebskonzept CMS lokalisiert und gesichtet',
-      'Bestehendes Betriebskonzept DB lokalisiert und gesichtet',
-      'Jira Service Desk-Konfiguration dokumentiert',
-      'Bugtracker-Nutzung dokumentiert, Überschneidungen identifiziert',
-      'IT-Lead für Mitarbeit gewonnen, Termin fixiert',
-      'Mandat für Triage-Rolle formal eingeholt (Geschäftsleitung)',
-      'Externer Berater evaluiert und beauftragt',
-      'Change Agents für Sprint nominiert',
-      'Kick-off-Termin mit allen Beteiligten fixiert',
-      'SCNAT-DB-Analyse-Ergebnisse eingeholt (falls vorhanden)'
-    ],
-    sprint: [
-      'Kick-off durchgeführt',
-      'Bestandsaufnahme Betriebskonzept CMS abgeschlossen',
-      'Bestandsaufnahme Betriebskonzept DB abgeschlossen',
-      'Audit Jira Service Desk abgeschlossen',
-      'Audit Bugtracker abgeschlossen',
-      'Workshop Anforderungsprozess Ist/Soll durchgeführt',
-      'Triage-Logik dokumentiert',
-      'Rollenbeschreibungen erstellt',
-      'Ticket-Templates für Jira definiert (Bug / CR / FR / Frage)',
-      'Beschaffungsrahmen skizziert',
-      'Jira Service Desk konfiguriert',
-      'Betriebskonzept CMS finalisiert',
-      'Betriebskonzept DB finalisiert',
-      'Pilotlauf mit Change Agents durchgeführt',
-      'Feedback ausgewertet und Anpassungen gemacht'
-    ],
-    abschluss: [
-      'Sprint-Retrospektive durchgeführt',
-      'Dokumentation finalisiert und abgelegt',
-      'IT hat neuen Prozess formal bestätigt',
-      'Kommunikation an Mitarbeitende versandt',
-      'Change Agents aktiviert und informiert',
-      'Nächste Schritte / Folgeprojekte definiert'
-    ]
-  };
-
-  function loadState() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch(e) { return {}; }
-  }
-
-  function saveState(state) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-    catch(e) {}
-  }
-
-  function updateProgress(groupId, items) {
-    var checked = items.filter(function(el) { return el.classList.contains('checked'); }).length;
-    var total = items.length;
-    var el = document.getElementById('cl-prog-' + groupId);
-    if (el) el.textContent = checked + ' / ' + total;
-  }
-
-  function renderGroup(groupId, texts, state) {
-    var container = document.getElementById('cl-items-' + groupId);
-    if (!container) return;
-    container.innerHTML = '';
-    var rendered = [];
-
-    texts.forEach(function(text, idx) {
-      var id = groupId + '__' + idx;
-      var isChecked = !!state[id];
-
-      var label = document.createElement('label');
-      label.className = 'cl-item' + (isChecked ? ' checked' : '');
-
-      var inp = document.createElement('input');
-      inp.type = 'checkbox';
-      inp.checked = isChecked;
-
-      var box = document.createElement('div');
-      box.className = 'cl-box';
-
-      var span = document.createElement('span');
-      span.className = 'cl-text';
-      span.textContent = text;
-
-      label.appendChild(inp);
-      label.appendChild(box);
-      label.appendChild(span);
-
-      (function(lbl, itemId) {
-        lbl.addEventListener('click', function(e) {
-          var wasChecked = lbl.classList.contains('checked');
-          lbl.classList.toggle('checked', !wasChecked);
-          inp.checked = !wasChecked;
-          var s = loadState();
-          s[itemId] = !wasChecked;
-          saveState(s);
-          updateProgress(groupId, rendered);
-        });
-      })(label, id);
-
-      container.appendChild(label);
-      rendered.push(label);
-    });
-
-    updateProgress(groupId, rendered);
-  }
-
-  function init() {
-    var state = loadState();
-    Object.keys(DATA).forEach(function(groupId) {
-      renderGroup(groupId, DATA[groupId], state);
-    });
-  }
-
-  // Active nav on scroll
-  function setupNav() {
-    var sections = document.querySelectorAll('section[id]');
-    var links = document.querySelectorAll('.nav-list a');
-    if (!sections.length || !links.length) return;
-
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          links.forEach(function(a) { a.classList.remove('active'); });
-          var active = document.querySelector('.nav-list a[href="#' + entry.target.id + '"]');
-          if (active) active.classList.add('active');
-        }
-      });
-    }, { rootMargin: '-15% 0px -75% 0px' });
-
-    sections.forEach(function(s) { observer.observe(s); });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { init(); setupNav(); });
-  } else {
-    init(); setupNav();
-  }
-})();
+const K='scnat_cl_lead_applandschaft_v1';const T=31;
+function ls(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}}
+function ss(s){try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}}
+function tc(el){var id=el.dataset.id;var s=ls();if(el.classList.contains('done')){el.classList.remove('done');delete s[id]}else{el.classList.add('done');s[id]=true}ss(s);up()}
+function up(){var d=Object.keys(ls()).length;var p=Math.round(d/T*100);document.getElementById('pbf').style.width=p+'%';document.getElementById('pt').textContent=d+' / '+T+' erledigt'}
+function reset(){if(!confirm('Checkliste zurücksetzen?'))return;ss({});document.querySelectorAll('.ci').forEach(function(e){e.classList.remove('done')});up()}
+document.addEventListener('DOMContentLoaded',function(){var s=ls();document.querySelectorAll('.ci').forEach(function(e){if(s[e.dataset.id])e.classList.add('done')});up()});
 </script>
 <script>
 (function(){
