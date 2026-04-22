@@ -132,38 +132,66 @@ h1 em{font-style:normal;color:var(--red)}
 .gl-title{font-weight:700;font-size:1.05rem}
 .gl-sub{font-size:.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:.2rem}
 
-/* ── STAFF ROW ── */
-.staff-row{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;
-  max-width:720px;margin:0 auto 3.5rem;position:relative;
-}
-.staff-row::before{
+/* ── GENERALSEKRETARIAT ── */
+.gs-wrap{display:flex;justify-content:center;margin-bottom:2.2rem;position:relative;opacity:0;animation:fadeUp .7s .65s forwards ease-out}
+.gs-wrap::before{
   content:'';position:absolute;top:-2.8rem;left:50%;width:1px;height:2.8rem;
   background:linear-gradient(180deg, var(--red-mid), var(--b-def));
 }
-.staff-row::after{
+.gs-wrap::after{
   content:'STAB';position:absolute;top:-1.4rem;left:50%;transform:translateX(-50%);
   font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);
   letter-spacing:.18em;background:var(--bg);padding:0 .5rem;
 }
-.staff-card{
-  opacity:0;animation:fadeUp .7s forwards ease-out;
-  padding:1.1rem 1.3rem;background:var(--surface);
+.gs-card{
+  position:relative;padding:.95rem 2rem;
+  background:linear-gradient(135deg, rgba(234,81,90,0.05), var(--surface));
   border:1px solid var(--b-def);border-radius:6px;
-  transition:all .3s cubic-bezier(.22,1,.36,1);cursor:pointer;
-  position:relative;overflow:hidden;
+  min-width:280px;text-align:center;
 }
-.staff-card:nth-child(1){animation-delay:.7s}
-.staff-card:nth-child(2){animation-delay:.8s}
-.staff-card::before{
+.gs-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.3rem}
+.gs-title{font-weight:700;font-size:1rem}
+.gs-sub{font-size:.76rem;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:.2rem}
+
+/* ── GS UNITS (4 Boxen) ── */
+.gs-units-wrap{position:relative;margin-bottom:3.5rem}
+.gs-units-wrap::before{
+  content:'';position:absolute;top:-1.6rem;left:50%;width:1px;height:1.6rem;
+  background:var(--b-def);
+}
+.gs-units{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;
+  max-width:1100px;margin:0 auto;position:relative;
+}
+.gs-units::before{
+  content:'';position:absolute;top:-.8rem;left:12.5%;right:12.5%;height:1px;
+  background:linear-gradient(90deg, transparent, var(--b-def) 15%, var(--b-def) 85%, transparent);
+}
+.gs-unit{
+  opacity:0;animation:fadeUp .6s forwards ease-out;
+  padding:.85rem 1rem;background:var(--surface);
+  border:1px solid var(--b-def);border-radius:5px;
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  position:relative;overflow:hidden;
+  text-align:left;
+}
+.gs-unit:nth-child(1){animation-delay:.80s}
+.gs-unit:nth-child(2){animation-delay:.88s}
+.gs-unit:nth-child(3){animation-delay:.96s}
+.gs-unit:nth-child(4){animation-delay:1.04s}
+.gs-unit::before{
+  content:'';position:absolute;top:-.8rem;left:50%;width:1px;height:.8rem;
+  background:var(--b-def);
+}
+.gs-unit::after{
   content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
   background:var(--anth);transition:all .3s;
 }
-.staff-card:hover{border-color:var(--b-strong);background:var(--elevated);transform:translateY(-2px)}
-.staff-card:hover::before{width:4px;background:var(--red)}
-.staff-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.3rem}
-.staff-title{font-weight:600;font-size:.95rem;margin-bottom:.15rem}
-.staff-desc{font-size:.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.gs-unit:hover{border-color:var(--b-strong);background:var(--elevated);transform:translateY(-2px)}
+.gs-unit:hover::after{width:3px;background:var(--red)}
+.gs-unit-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-bottom:.25rem;letter-spacing:.08em}
+.gs-unit-title{font-weight:600;font-size:.82rem;margin-bottom:.15rem;line-height:1.25}
+.gs-unit-desc{font-size:.7rem;color:var(--text2);font-family:'JetBrains Mono',monospace;line-height:1.35}
 
 /* ── BEREICHE ROW ── */
 .bereiche-wrap{position:relative}
@@ -335,18 +363,21 @@ h1 em{font-style:normal;color:var(--red)}
   .bereiche{grid-template-columns:repeat(2,1fr)}
   .bereiche::before{display:none}
   .bereich::before{display:none}
+  .gs-units{grid-template-columns:repeat(2,1fr);max-width:640px}
+  .gs-units::before{display:none}
+  .gs-unit::before{display:none}
 }
 @media(max-width:640px){
   body{padding:2rem 1rem 4rem}
-  .staff-row{grid-template-columns:1fr;max-width:400px}
-  .staff-row::before{display:none}
-  .staff-row::after{display:none}
+  .gs-units{grid-template-columns:1fr;max-width:400px}
+  .gs-units-wrap::before{display:none}
   .bereiche{grid-template-columns:1fr}
   .bereiche-wrap::before{display:none}
   .bereiche-wrap::after{display:none}
   .root{padding:1.4rem 2rem;min-width:auto}
   .root-title{font-size:1.15rem}
   .gl-card{min-width:auto;padding:1rem 1.5rem}
+  .gs-card{min-width:auto;padding:.9rem 1.3rem}
 }
 </style>
 </head>
@@ -385,17 +416,38 @@ h1 em{font-style:normal;color:var(--red)}
     </div>
   </div>
 
-  <!-- STAB: GS + KPA -->
-  <div class="staff-row">
-    <div class="staff-card">
-      <div class="staff-num">01</div>
-      <div class="staff-title">Generalsekretariat</div>
-      <div class="staff-desc">Koordination · Governance</div>
+  <!-- GENERALSEKRETARIAT -->
+  <div class="gs-wrap">
+    <div class="gs-card">
+      <div class="gs-label">Stab</div>
+      <div class="gs-title">Generalsekretariat</div>
+      <div class="gs-sub">Koordination · Governance</div>
     </div>
-    <div class="staff-card">
-      <div class="staff-num">02</div>
-      <div class="staff-title">Kommunikation und Public Affairs</div>
-      <div class="staff-desc">Aussenauftritt · Medien</div>
+  </div>
+
+  <!-- GS UNTEREINHEITEN -->
+  <div class="gs-units-wrap">
+    <div class="gs-units">
+      <div class="gs-unit">
+        <div class="gs-unit-num">01</div>
+        <div class="gs-unit-title">Kommunikation</div>
+        <div class="gs-unit-desc">Aussenauftritt · Medien</div>
+      </div>
+      <div class="gs-unit">
+        <div class="gs-unit-num">02</div>
+        <div class="gs-unit-title">Digitalisierung</div>
+        <div class="gs-unit-desc">Plattform · Tools</div>
+      </div>
+      <div class="gs-unit">
+        <div class="gs-unit-num">03</div>
+        <div class="gs-unit-title">Direktionsassistenz</div>
+        <div class="gs-unit-desc">Unterstützung Direktion</div>
+      </div>
+      <div class="gs-unit">
+        <div class="gs-unit-num">04</div>
+        <div class="gs-unit-title">Wiss. Mitarbeiter Spezialprojekte</div>
+        <div class="gs-unit-desc">Projektleitung · Themen</div>
+      </div>
     </div>
   </div>
 
