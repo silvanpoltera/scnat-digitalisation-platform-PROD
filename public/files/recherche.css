@@ -598,3 +598,56 @@
     }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════
+   COLOR REFRESH · Multi-Color Cards (2026)
+   Each carousel card gets its own accent color so the Recherche page
+   feels more like the colorful Where / concept look.
+   ══════════════════════════════════════════════════════════════════ */
+.carousel-card[data-index="0"]{ --card-accent:#4A90D9; --card-accent-dim:rgba(74,144,217,0.10); --card-accent-mid:rgba(74,144,217,0.30); }
+.carousel-card[data-index="1"]{ --card-accent:#7C5CBF; --card-accent-dim:rgba(124,92,191,0.10); --card-accent-mid:rgba(124,92,191,0.30); }
+.carousel-card[data-index="2"]{ --card-accent:#EA515A; --card-accent-dim:rgba(234,81,90,0.10);  --card-accent-mid:rgba(234,81,90,0.30);  }
+.carousel-card[data-index="3"]{ --card-accent:#D4882A; --card-accent-dim:rgba(212,136,42,0.10); --card-accent-mid:rgba(212,136,42,0.30); }
+.carousel-card[data-index="4"]{ --card-accent:#3DAA75; --card-accent-dim:rgba(61,170,117,0.10); --card-accent-mid:rgba(61,170,117,0.30); }
+.carousel-card[data-index="5"]{ --card-accent:#2FD4C7; --card-accent-dim:rgba(47,212,199,0.10); --card-accent-mid:rgba(47,212,199,0.30); }
+.carousel-card[data-index="6"]{ --card-accent:#E85FA1; --card-accent-dim:rgba(232,95,161,0.10); --card-accent-mid:rgba(232,95,161,0.30); }
+.carousel-card[data-index="7"]{ --card-accent:#A8DB5F; --card-accent-dim:rgba(168,219,95,0.10); --card-accent-mid:rgba(168,219,95,0.30); }
+
+.carousel-card[data-index]{
+  border-color: var(--card-accent-mid, rgba(234, 81, 90, 0.2));
+}
+.carousel-card[data-index].active{
+  border-color: var(--card-accent, var(--accent-color));
+  box-shadow: 0 10px 40px var(--card-accent-dim, rgba(234,81,90,0.2));
+}
+.carousel-card[data-index] h3,
+.carousel-card[data-index] h3.accordion-header,
+.carousel-card[data-index] li.accordion-header,
+.carousel-card[data-index] li.item-heading,
+.carousel-card[data-index] li.arrow-item,
+.carousel-card[data-index] .accordion-icon{
+  color: var(--card-accent, var(--accent-color));
+}
+.carousel-card[data-index] li::before{
+  color: var(--card-accent, var(--accent-color));
+}
+.carousel-card[data-index] li.item-heading{
+  border-top-color: var(--card-accent-mid, rgba(234,81,90,0.2));
+}
+.carousel-card[data-index] .carousel-card-expand-btn{
+  background: var(--card-accent-dim);
+  border-color: var(--card-accent-mid);
+  color: var(--card-accent);
+}
+.carousel-card[data-index] .carousel-card-expand-btn:hover{
+  border-color: var(--card-accent);
+}
+
+/* Softer, slightly different shapes to match concept */
+.carousel-card{ border-radius: 14px; }
+.carousel-card-expand-btn{ border-radius: 50%; }
+
+/* Carousel dots adopt the active card's color */
+.carousel-dot.active{
+  background: var(--active-dot-color, var(--accent-color));
+}

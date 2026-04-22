@@ -898,4 +898,177 @@ input[type="radio"] {
         font-weight: bold;
     }
   }
-  
+
+/* ══════════════════════════════════════════════════════════════════
+   COLOR REFRESH · Multi-Color Sections (2026)
+   Gives each section its own accent color so the Details & Recherche
+   pages feel more like the colorful Where concept.
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --c-einleitung: #EA515A;
+  --c-einleitung-dim: rgba(234,81,90,0.10);
+  --c-einleitung-mid: rgba(234,81,90,0.40);
+  --c-sicherheit: #4A90D9;
+  --c-sicherheit-dim: rgba(74,144,217,0.10);
+  --c-sicherheit-mid: rgba(74,144,217,0.40);
+  --c-betrieb: #D4882A;
+  --c-betrieb-dim: rgba(212,136,42,0.10);
+  --c-betrieb-mid: rgba(212,136,42,0.40);
+  --c-publishing: #7C5CBF;
+  --c-publishing-dim: rgba(124,92,191,0.10);
+  --c-publishing-mid: rgba(124,92,191,0.40);
+  --c-governance: #3DAA75;
+  --c-governance-dim: rgba(61,170,117,0.10);
+  --c-governance-mid: rgba(61,170,117,0.40);
+}
+
+/* ─── TABS (left side) ─────────────────────────────────────────── */
+.tabs-container .tab:nth-child(1){
+  background: var(--c-einleitung-dim);
+  border-color: var(--c-einleitung-mid);
+}
+.tabs-container .tab:nth-child(1):hover,
+.tabs-container .tab:nth-child(1).active{
+  background: var(--c-einleitung-dim);
+  border-color: var(--c-einleitung);
+  color: var(--c-einleitung);
+}
+
+.tabs-container .tab:nth-child(2){
+  background: var(--c-sicherheit-dim);
+  border-color: var(--c-sicherheit-mid);
+}
+.tabs-container .tab:nth-child(2):hover,
+.tabs-container .tab:nth-child(2).active{
+  background: var(--c-sicherheit-dim);
+  border-color: var(--c-sicherheit);
+  color: var(--c-sicherheit);
+}
+
+.tabs-container .tab:nth-child(3){
+  background: var(--c-betrieb-dim);
+  border-color: var(--c-betrieb-mid);
+}
+.tabs-container .tab:nth-child(3):hover,
+.tabs-container .tab:nth-child(3).active{
+  background: var(--c-betrieb-dim);
+  border-color: var(--c-betrieb);
+  color: var(--c-betrieb);
+}
+
+.tabs-container .tab:nth-child(4){
+  background: var(--c-publishing-dim);
+  border-color: var(--c-publishing-mid);
+}
+.tabs-container .tab:nth-child(4):hover,
+.tabs-container .tab:nth-child(4).active{
+  background: var(--c-publishing-dim);
+  border-color: var(--c-publishing);
+  color: var(--c-publishing);
+}
+
+.tabs-container .tab:nth-child(5){
+  background: var(--c-governance-dim);
+  border-color: var(--c-governance-mid);
+}
+.tabs-container .tab:nth-child(5):hover,
+.tabs-container .tab:nth-child(5).active{
+  background: var(--c-governance-dim);
+  border-color: var(--c-governance);
+  color: var(--c-governance);
+}
+
+/* ─── CUBE WALLS (each face its own color) ─────────────────────── */
+.wall.einleitung-content{
+  background: linear-gradient(135deg, var(--c-einleitung-dim) 0%, rgba(234,81,90,0.05) 100%);
+  border-color: var(--c-einleitung-mid);
+  box-shadow:
+    0 25px 80px var(--shadow-color),
+    0 10px 30px var(--shadow-color),
+    inset 0 0 50px rgba(234,81,90,0.10);
+}
+.wall.einleitung-content h2{color: var(--c-einleitung)}
+
+.wall.sicherheit-content{
+  background: linear-gradient(135deg, var(--c-sicherheit-dim) 0%, rgba(74,144,217,0.05) 100%);
+  border-color: var(--c-sicherheit-mid);
+  box-shadow:
+    0 25px 80px var(--shadow-color),
+    0 10px 30px var(--shadow-color),
+    inset 0 0 50px rgba(74,144,217,0.10);
+}
+.wall.sicherheit-content h2{color: var(--c-sicherheit)}
+
+.wall.betrieb-content{
+  background: linear-gradient(135deg, var(--c-betrieb-dim) 0%, rgba(212,136,42,0.05) 100%);
+  border-color: var(--c-betrieb-mid);
+  box-shadow:
+    0 25px 80px var(--shadow-color),
+    0 10px 30px var(--shadow-color),
+    inset 0 0 50px rgba(212,136,42,0.10);
+}
+.wall.betrieb-content h2{color: var(--c-betrieb)}
+
+.wall.publishing-content{
+  background: linear-gradient(135deg, var(--c-publishing-dim) 0%, rgba(124,92,191,0.05) 100%);
+  border-color: var(--c-publishing-mid);
+  box-shadow:
+    0 25px 80px var(--shadow-color),
+    0 10px 30px var(--shadow-color),
+    inset 0 0 50px rgba(124,92,191,0.10);
+}
+.wall.publishing-content h2{color: var(--c-publishing)}
+
+.wall.governance-content{
+  background: linear-gradient(135deg, var(--c-governance-dim) 0%, rgba(61,170,117,0.05) 100%);
+  border-color: var(--c-governance-mid);
+  box-shadow:
+    0 25px 80px var(--shadow-color),
+    0 10px 30px var(--shadow-color),
+    inset 0 0 50px rgba(61,170,117,0.10);
+}
+.wall.governance-content h2{color: var(--c-governance)}
+
+/* ─── CONTENT PANELS (right) – accent per panel ────────────────── */
+.content-panel[data-section="einleitung"]{border-color: var(--c-einleitung-mid)}
+.content-panel[data-section="einleitung"] .content-title{color: var(--c-einleitung)}
+.content-panel[data-section="einleitung"] .content-body li::before{color: var(--c-einleitung)}
+
+.content-panel[data-section="sicherheit"]{border-color: var(--c-sicherheit-mid)}
+.content-panel[data-section="sicherheit"] .content-title{color: var(--c-sicherheit)}
+.content-panel[data-section="sicherheit"] .content-body li::before{color: var(--c-sicherheit)}
+
+.content-panel[data-section="betrieb"]{border-color: var(--c-betrieb-mid)}
+.content-panel[data-section="betrieb"] .content-title{color: var(--c-betrieb)}
+.content-panel[data-section="betrieb"] .content-body li::before{color: var(--c-betrieb)}
+
+.content-panel[data-section="publishing"]{border-color: var(--c-publishing-mid)}
+.content-panel[data-section="publishing"] .content-title{color: var(--c-publishing)}
+.content-panel[data-section="publishing"] .content-body li::before{color: var(--c-publishing)}
+
+.content-panel[data-section="governance"]{border-color: var(--c-governance-mid)}
+.content-panel[data-section="governance"] .content-title{color: var(--c-governance)}
+.content-panel[data-section="governance"] .content-body li::before{color: var(--c-governance)}
+
+/* ─── ACTIVE-TAB → CONTENT PANEL color shift (Details cube-page) ─ */
+#tab-einleitung:checked ~ .content-panel,
+#tab-einleitung:checked ~ .content-section{--active-accent: var(--c-einleitung)}
+#tab-sicherheit:checked ~ .content-panel,
+#tab-sicherheit:checked ~ .content-section{--active-accent: var(--c-sicherheit)}
+#tab-betrieb:checked ~ .content-panel,
+#tab-betrieb:checked ~ .content-section{--active-accent: var(--c-betrieb)}
+#tab-publishing:checked ~ .content-panel,
+#tab-publishing:checked ~ .content-section{--active-accent: var(--c-publishing)}
+#tab-governance:checked ~ .content-panel,
+#tab-governance:checked ~ .content-section{--active-accent: var(--c-governance)}
+
+/* Shape refinement: softer corners, subtle elevation */
+.wall{border-radius: 6px}
+.content-panel{border-radius: 10px}
+.tab{border-radius: 5px}
+.tabs-container .tab{
+  transition: all 0.25s cubic-bezier(.22,1,.36,1);
+}
+.tabs-container .tab:hover{
+  transform: translateX(2px);
+}

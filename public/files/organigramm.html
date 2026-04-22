@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCNAT – Organigramm</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function(){
+  try{var p=new URLSearchParams(window.location.search);if(p.get('theme')==='light')document.documentElement.classList.add('light');}catch(e){}
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b);document.documentElement.classList.toggle('light',b);}catch(e){}}
+  try{sync();new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.10);
+  --red-mid:rgba(234,81,90,0.28);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+  --purple:#7C5CBF;
+}
+
+html.theme-bright,
+html.light{
+  --bg:#F2F3F5;
+  --surface:#FFFFFF;
+  --elevated:#F8F9FA;
+  --subtle:#E8EAED;
+  --b-faint:#E2E4E8;
+  --b-def:#CDD1D6;
+  --b-strong:#9DA3AE;
+  --red-dim:rgba(234,81,90,0.08);
+  --red-mid:rgba(234,81,90,0.22);
+  --anth:#5A616B;
+  --text:#1A1D23;
+  --text2:#4A5060;
+  --text3:#7A8090;
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+body{min-height:100vh;padding:3rem 2rem 6rem}
+
+.bg-grid{
+  position:fixed;inset:0;z-index:-2;
+  background-image:
+    linear-gradient(var(--b-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--b-faint) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 75%);
+  pointer-events:none;
+}
+.bg-glow{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(234,81,90,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(74,144,217,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(124,92,191,0.05) 0%, transparent 60%);
+}
+html.theme-bright .bg-grid,
+html.light .bg-grid{opacity:.5}
+
+/* ── HEADER ── */
+.header{max-width:1500px;margin:0 auto 4rem;text-align:center;opacity:0;animation:fadeUp .8s .1s forwards ease-out}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1rem}
+h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:700;line-height:1.1;margin-bottom:1rem}
+h1 em{font-style:normal;color:var(--red)}
+.sub{font-size:.95rem;color:var(--text2);max-width:560px;margin:0 auto;line-height:1.7}
+.controls{margin-top:2rem;display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;padding:.6rem 1.1rem;border:1px solid var(--b-def);background:var(--surface);color:var(--text2);cursor:pointer;border-radius:3px;transition:all .2s}
+.btn:hover{border-color:var(--red);color:var(--text);background:var(--elevated)}
+
+.org{max-width:1500px;margin:0 auto;position:relative}
+
+/* ── ROOT NODE (SCNAT) ── */
+.root-wrap{display:flex;justify-content:center;margin-bottom:2.8rem;position:relative;opacity:0;animation:fadeUp .8s .3s forwards ease-out}
+.root{
+  position:relative;padding:1.75rem 3rem;
+  background:linear-gradient(135deg,rgba(234,81,90,0.12),rgba(234,81,90,0.04));
+  border:1px solid var(--red-mid);border-radius:8px;
+  text-align:center;min-width:320px;
+  box-shadow:0 0 60px rgba(234,81,90,0.15), 0 0 0 1px rgba(234,81,90,0.1) inset;
+}
+.root::before{
+  content:'';position:absolute;inset:-2px;border-radius:9px;
+  background:conic-gradient(from 0deg, transparent, var(--red), transparent 30%);
+  z-index:-1;opacity:.4;
+  animation:rotate 6s linear infinite;
+}
+.root::after{
+  content:'';position:absolute;inset:0;border-radius:8px;background:var(--bg);z-index:-1;
+}
+.root-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:.16em;margin-bottom:.5rem}
+.root-title{font-size:1.4rem;font-weight:700;letter-spacing:-.01em}
+.root-sub{font-size:.82rem;color:var(--text2);margin-top:.3rem;font-family:'JetBrains Mono',monospace}
+.root-pulse{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:100%;height:100%;border-radius:8px;border:1px solid var(--red);
+  pointer-events:none;
+  animation:pulse 2.4s ease-out infinite;
+}
+
+/* ── GL / DIREKTION ── */
+.gl-wrap{display:flex;justify-content:center;margin-bottom:2.8rem;position:relative;opacity:0;animation:fadeUp .7s .5s forwards ease-out}
+.gl-wrap::before{
+  content:'';position:absolute;top:-2.8rem;left:50%;width:1px;height:2.8rem;
+  background:linear-gradient(180deg, var(--red-mid), var(--b-def));
+}
+.gl-card{
+  position:relative;padding:1.1rem 2.2rem;
+  background:linear-gradient(135deg, rgba(234,81,90,0.08), var(--surface));
+  border:1px solid var(--red-mid);border-radius:6px;
+  min-width:280px;text-align:center;
+  box-shadow:0 0 30px rgba(234,81,90,0.08);
+}
+.gl-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.35rem}
+.gl-title{font-weight:700;font-size:1.05rem}
+.gl-sub{font-size:.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:.2rem}
+
+/* ── STAFF ROW ── */
+.staff-row{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;
+  max-width:720px;margin:0 auto 3.5rem;position:relative;
+}
+.staff-row::before{
+  content:'';position:absolute;top:-2.8rem;left:50%;width:1px;height:2.8rem;
+  background:linear-gradient(180deg, var(--red-mid), var(--b-def));
+}
+.staff-row::after{
+  content:'STAB';position:absolute;top:-1.4rem;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);
+  letter-spacing:.18em;background:var(--bg);padding:0 .5rem;
+}
+.staff-card{
+  opacity:0;animation:fadeUp .7s forwards ease-out;
+  padding:1.1rem 1.3rem;background:var(--surface);
+  border:1px solid var(--b-def);border-radius:6px;
+  transition:all .3s cubic-bezier(.22,1,.36,1);cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.staff-card:nth-child(1){animation-delay:.7s}
+.staff-card:nth-child(2){animation-delay:.8s}
+.staff-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--anth);transition:all .3s;
+}
+.staff-card:hover{border-color:var(--b-strong);background:var(--elevated);transform:translateY(-2px)}
+.staff-card:hover::before{width:4px;background:var(--red)}
+.staff-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.3rem}
+.staff-title{font-weight:600;font-size:.95rem;margin-bottom:.15rem}
+.staff-desc{font-size:.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace}
+
+/* ── BEREICHE ROW ── */
+.bereiche-wrap{position:relative}
+.bereiche-wrap::before{
+  content:'';position:absolute;top:-2rem;left:50%;width:1px;height:2rem;
+  background:var(--b-def);
+}
+.bereiche-wrap::after{
+  content:'LINIE';position:absolute;top:-.6rem;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);
+  letter-spacing:.18em;background:var(--bg);padding:0 .5rem;
+}
+.bereiche{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;
+  position:relative;
+}
+.bereiche::before{
+  content:'';position:absolute;top:-1rem;left:12.5%;right:12.5%;height:1px;
+  background:linear-gradient(90deg, transparent, var(--b-def) 15%, var(--b-def) 85%, transparent);
+}
+
+.bereich{
+  opacity:0;animation:fadeUp .7s forwards ease-out;
+  background:var(--surface);border:1px solid var(--b-def);border-radius:6px;
+  overflow:hidden;position:relative;
+  transition:border-color .3s;
+  align-self:start;
+}
+.bereich:nth-child(1){animation-delay:1.0s;--accent:var(--info);--accent-dim:rgba(74,144,217,0.10)}
+.bereich:nth-child(2){animation-delay:1.1s;--accent:var(--warn);--accent-dim:rgba(212,136,42,0.10)}
+.bereich:nth-child(3){animation-delay:1.2s;--accent:var(--ok);--accent-dim:rgba(61,170,117,0.10)}
+.bereich:nth-child(4){animation-delay:1.3s;--accent:var(--purple);--accent-dim:rgba(124,92,191,0.10)}
+
+.bereich:hover{border-color:var(--accent)}
+.bereich::before{
+  content:'';position:absolute;top:-1rem;left:50%;width:1px;height:1rem;
+  background:linear-gradient(180deg, transparent, var(--b-def));
+}
+
+.bereich-header{
+  padding:1.3rem 1.2rem;cursor:pointer;
+  display:flex;align-items:flex-start;gap:.7rem;
+  min-height:100px;
+  background:linear-gradient(135deg, var(--accent-dim), transparent);
+  border-bottom:1px solid transparent;
+  transition:all .3s;
+  position:relative;
+}
+.bereich.open .bereich-header{border-bottom-color:var(--b-faint)}
+.bereich-dot{
+  width:10px;height:10px;border-radius:50%;background:var(--accent);
+  flex-shrink:0;margin-top:.35rem;box-shadow:0 0 12px var(--accent);
+  animation:blink 2.8s ease-in-out infinite;
+}
+.bereich-name{flex:1;font-weight:600;font-size:.92rem;line-height:1.3;letter-spacing:-.005em}
+.bereich-meta{
+  display:flex;align-items:center;gap:.4rem;margin-top:.1rem;
+}
+.bereich-toggle{
+  font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text3);
+  transition:transform .3s, color .2s;
+  line-height:1;
+}
+.bereich.open .bereich-toggle{transform:rotate(45deg);color:var(--accent)}
+.bereich-count{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:2px 7px;border-radius:2px;
+  color:var(--accent);border:1px solid var(--accent);opacity:.7;
+}
+
+.subs{
+  max-height:0;overflow:hidden;
+  transition:max-height .5s cubic-bezier(.22,1,.36,1);
+}
+.bereich.open .subs{max-height:2200px}
+
+.plattform-badge{
+  margin:.9rem 1.3rem .2rem;
+  padding:.55rem .75rem;
+  background:var(--elevated);
+  border:1px solid var(--b-faint);
+  border-left:2px solid var(--accent);
+  border-radius:3px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--text2);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  display:flex;align-items:center;gap:.5rem;
+}
+.plattform-badge strong{color:var(--accent);font-weight:500}
+.plattform-badge .chip{
+  margin-left:auto;
+  font-size:9px;padding:1px 5px;background:var(--subtle);border-radius:2px;color:var(--text3);
+}
+
+.sub-group{padding:.4rem 0}
+.sub-group-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--text3);
+  padding:.5rem 1.3rem .35rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.sub-group-label::after{
+  content:'';flex:1;height:1px;background:var(--b-faint);
+}
+.sub-item{
+  padding:.55rem 1.3rem .55rem 2rem;font-size:.85rem;color:var(--text);
+  border-left:2px solid transparent;margin-left:1rem;position:relative;
+  transition:all .2s;cursor:default;line-height:1.35;
+}
+.sub-item::before{
+  content:'';position:absolute;left:-1px;top:50%;width:8px;height:1px;
+  background:var(--b-def);
+}
+.sub-item .sub-acro{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);
+  margin-left:.3rem;
+}
+.sub-item:hover{color:var(--accent);border-left-color:var(--accent);background:var(--elevated)}
+.sub-item:hover::before{background:var(--accent)}
+.sub-item:hover .sub-acro{color:var(--accent);opacity:.8}
+
+.bereich.open .sub-item{animation:slideIn .4s ease-out backwards}
+.bereich.open .sub-item:nth-of-type(1){animation-delay:.05s}
+.bereich.open .sub-item:nth-of-type(2){animation-delay:.08s}
+.bereich.open .sub-item:nth-of-type(3){animation-delay:.11s}
+.bereich.open .sub-item:nth-of-type(4){animation-delay:.14s}
+.bereich.open .sub-item:nth-of-type(5){animation-delay:.17s}
+.bereich.open .sub-item:nth-of-type(6){animation-delay:.20s}
+.bereich.open .sub-item:nth-of-type(7){animation-delay:.23s}
+.bereich.open .sub-item:nth-of-type(8){animation-delay:.26s}
+.bereich.open .sub-item:nth-of-type(9){animation-delay:.29s}
+.bereich.open .sub-item:nth-of-type(10){animation-delay:.32s}
+.bereich.open .sub-item:nth-of-type(11){animation-delay:.35s}
+
+.meta{
+  max-width:1500px;margin:5rem auto 0;padding-top:2rem;
+  border-top:1px solid var(--b-faint);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.meta-legend{display:flex;gap:1.25rem;flex-wrap:wrap}
+.legend-dot{display:inline-flex;align-items:center;gap:.4rem}
+.legend-dot i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(-8px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes pulse{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.6}
+  100%{transform:translate(-50%,-50%) scale(1.15);opacity:0}
+}
+@keyframes rotate{
+  to{transform:rotate(360deg)}
+}
+@keyframes blink{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.85)}
+}
+
+@media(max-width:1100px){
+  .bereiche{grid-template-columns:repeat(2,1fr)}
+  .bereiche::before{display:none}
+  .bereich::before{display:none}
+}
+@media(max-width:640px){
+  body{padding:2rem 1rem 4rem}
+  .staff-row{grid-template-columns:1fr;max-width:400px}
+  .staff-row::before{display:none}
+  .staff-row::after{display:none}
+  .bereiche{grid-template-columns:1fr}
+  .bereiche-wrap::before{display:none}
+  .bereiche-wrap::after{display:none}
+  .root{padding:1.4rem 2rem;min-width:auto}
+  .root-title{font-size:1.15rem}
+  .gl-card{min-width:auto;padding:1rem 1.5rem}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<header class="header">
+  <div class="eyebrow">Organisationsstruktur</div>
+  <h1>SCNAT <em>Organigramm</em></h1>
+  <p class="sub">Akademie der Naturwissenschaften Schweiz – Bereiche, Plattformen, Foren, Kommissionen und Netzwerke im Überblick.</p>
+  <div class="controls">
+    <button class="btn" id="btn-expand">Alle aufklappen</button>
+    <button class="btn" id="btn-collapse">Alle einklappen</button>
+  </div>
+</header>
+
+<main class="org">
+
+  <!-- ROOT: SCNAT -->
+  <div class="root-wrap">
+    <div class="root">
+      <div class="root-pulse"></div>
+      <div class="root-label">Dachorganisation</div>
+      <div class="root-title">SCNAT</div>
+      <div class="root-sub">Akademie der Naturwissenschaften Schweiz</div>
+    </div>
+  </div>
+
+  <!-- GESCHÄFTSLEITUNG / DIREKTION -->
+  <div class="gl-wrap">
+    <div class="gl-card">
+      <div class="gl-label">Führung</div>
+      <div class="gl-title">Geschäftsleitung / Direktion</div>
+      <div class="gl-sub">Strategie · Gesamtleitung</div>
+    </div>
+  </div>
+
+  <!-- STAB: GS + KPA -->
+  <div class="staff-row">
+    <div class="staff-card">
+      <div class="staff-num">01</div>
+      <div class="staff-title">Generalsekretariat</div>
+      <div class="staff-desc">Koordination · Governance</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-num">02</div>
+      <div class="staff-title">Kommunikation und Public Affairs</div>
+      <div class="staff-desc">Aussenauftritt · Medien</div>
+    </div>
+  </div>
+
+  <!-- BEREICHE (LINIE) -->
+  <div class="bereiche-wrap">
+  <div class="bereiche">
+
+    <!-- BEREICH WISSENSCHAFT -->
+    <div class="bereich">
+      <div class="bereich-header">
+        <div class="bereich-dot"></div>
+        <div class="bereich-name">Bereich Wissenschaft</div>
+        <div class="bereich-meta">
+          <div class="bereich-count">7</div>
+          <div class="bereich-toggle">+</div>
+        </div>
+      </div>
+      <div class="subs">
+        <div class="plattform-badge">
+          <strong>4 disziplinäre Plattformen</strong>
+          <span class="chip">Fachgesellschaften</span>
+        </div>
+        <div class="sub-group">
+          <div class="sub-item">Plattform Biologie</div>
+          <div class="sub-item">Plattform Chemie</div>
+          <div class="sub-item">Plattform Geowissenschaften</div>
+          <div class="sub-item">Plattform Mathematik, Astronomie, Physik <span class="sub-acro">MAP</span></div>
+        </div>
+        <div class="sub-group">
+          <div class="sub-group-label">Kommissionen &amp; Initiativen</div>
+          <div class="sub-item">Kommission für Nachwuchsförderung</div>
+          <div class="sub-item">Swiss Quantum Initiative <span class="sub-acro">SQI</span></div>
+          <div class="sub-item">Schweizer Netzwerk Naturhistorische Sammlungen <span class="sub-acro">SwissCollNet</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEREICH WISSENSCHAFT UND POLITIK -->
+    <div class="bereich">
+      <div class="bereich-header">
+        <div class="bereich-dot"></div>
+        <div class="bereich-name">Bereich Wissenschaft und Politik</div>
+        <div class="bereich-meta">
+          <div class="bereich-count">10</div>
+          <div class="bereich-toggle">+</div>
+        </div>
+      </div>
+      <div class="subs">
+        <div class="plattform-badge">
+          <strong>Plattform Wissenschaft und Politik</strong>
+          <span class="chip">SAP</span>
+        </div>
+        <div class="sub-group">
+          <div class="sub-group-label">Foren</div>
+          <div class="sub-item">Forum für Klima und globalen Wandel <span class="sub-acro">ProClim</span></div>
+          <div class="sub-item">Forum Biodiversität Schweiz</div>
+          <div class="sub-item">Forum Genforschung</div>
+          <div class="sub-item">Forum Landschaft, Alpen, Pärke <span class="sub-acro">FoLAP</span></div>
+        </div>
+        <div class="sub-group">
+          <div class="sub-group-label">Kommissionen</div>
+          <div class="sub-item">Erweiterte Energiekommission <span class="sub-acro">a+</span></div>
+          <div class="sub-item">Forschungskommission Schweiz. Nationalpark <span class="sub-acro">FOK-SNP</span></div>
+          <div class="sub-item">Kommission für Polar- und Höhenforschung <span class="sub-acro">SKPH</span></div>
+        </div>
+        <div class="sub-group">
+          <div class="sub-group-label">Netzwerke &amp; Initiativen</div>
+          <div class="sub-item">Netzwerk für transdisziplinäre Forschung <span class="sub-acro">td-net</span></div>
+          <div class="sub-item">Swiss Alliance for Global Research Partnerships</div>
+          <div class="sub-item">Initiative für Nachhaltigkeitsforschung <span class="sub-acro">SRI</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEREICH WISSENSCHAFT UND GESELLSCHAFT -->
+    <div class="bereich">
+      <div class="bereich-header">
+        <div class="bereich-dot"></div>
+        <div class="bereich-name">Bereich Wissenschaft und Gesellschaft</div>
+        <div class="bereich-meta">
+          <div class="bereich-count">1</div>
+          <div class="bereich-toggle">+</div>
+        </div>
+      </div>
+      <div class="subs">
+        <div class="plattform-badge">
+          <strong>1 Plattform</strong>
+          <span class="chip">Regional</span>
+        </div>
+        <div class="sub-group">
+          <div class="sub-item">Plattform Naturwissenschaften und Region <span class="sub-acro">NWR</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEREICH SERVICES -->
+    <div class="bereich">
+      <div class="bereich-header">
+        <div class="bereich-dot"></div>
+        <div class="bereich-name">Bereich Services</div>
+        <div class="bereich-meta">
+          <div class="bereich-count">3</div>
+          <div class="bereich-toggle">+</div>
+        </div>
+      </div>
+      <div class="subs">
+        <div class="plattform-badge">
+          <strong>Support-Einheiten</strong>
+          <span class="chip">Betrieb</span>
+        </div>
+        <div class="sub-group">
+          <div class="sub-item">Informatikdienste <span class="sub-acro">IT</span></div>
+          <div class="sub-item">Personal und Rechnungswesen <span class="sub-acro">HR / FIN</span></div>
+          <div class="sub-item">Administration</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <!-- META -->
+  <div class="meta">
+    <div>SCNAT · Struktur 2026</div>
+    <div class="meta-legend">
+      <span class="legend-dot"><i style="background:var(--info)"></i>Wissenschaft</span>
+      <span class="legend-dot"><i style="background:var(--warn)"></i>Wiss. &amp; Politik</span>
+      <span class="legend-dot"><i style="background:var(--ok)"></i>Wiss. &amp; Gesellschaft</span>
+      <span class="legend-dot"><i style="background:var(--purple)"></i>Services</span>
+    </div>
+    <div>Klick auf Bereich · Aufklappen</div>
+  </div>
+
+</main>
+
+<script>
+document.querySelectorAll('.bereich-header').forEach(h => {
+  h.addEventListener('click', () => {
+    h.parentElement.classList.toggle('open');
+  });
+});
+
+const all = document.querySelectorAll('.bereich');
+document.getElementById('btn-expand').addEventListener('click', () => {
+  all.forEach(b => b.classList.add('open'));
+});
+document.getElementById('btn-collapse').addEventListener('click', () => {
+  all.forEach(b => b.classList.remove('open'));
+});
+</script>
+</body>
+</html>

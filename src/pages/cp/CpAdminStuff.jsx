@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic } from 'lucide-react';
+import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic, Network, GitBranch } from 'lucide-react';
 
 const CARDS = [
   {
@@ -18,6 +18,18 @@ const CARDS = [
   },
   {
     num: '02',
+    section: 'Zielarchitektur',
+    title: 'Architektur',
+    sub: 'Vier Schichten · Vier Stufen · 3D Explorer',
+    desc: 'Architektur-Szenarien von heute bis Greenfield: Die Zielarchitektur mit Experience, Workflow, API und Core Systems – interaktiv aufgebaut in vier Stufen. Core bleibt, API wird nach aussen exponiert, Identity querschnittlich.',
+    primary: { to: '/cp/admin-stuff/architektur', label: 'Öffnen' },
+    visual: 'architektur',
+    quickIcon: GitBranch,
+    quickColor: 'text-purple-500',
+    accentBg: 'bg-purple-500/8',
+  },
+  {
+    num: '03',
     section: 'Analyse & Begründung',
     title: 'The Reason Why',
     sub: 'Was die Zahlen sagen · Pitch-Unterlage',
@@ -30,7 +42,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '03',
+    num: '04',
     section: 'Standort & Infrastruktur',
     title: 'Where',
     sub: 'Positionierung · Verortung · Kontext',
@@ -42,7 +54,7 @@ const CARDS = [
     accentBg: 'bg-scnat-teal/8',
   },
   {
-    num: '04',
+    num: '05',
     section: 'Technische Details',
     title: 'The Details',
     sub: 'Sicherheit · Betrieb · Publishing · Governance',
@@ -65,7 +77,7 @@ const CARDS = [
     accentBg: 'bg-status-green/8',
   },
   {
-    num: '05',
+    num: '06',
     section: 'Technologie & Prozess',
     title: 'How it gets Built',
     sub: 'Tech Stack · Codex · The Super Mini PAI',
@@ -77,7 +89,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '06',
+    num: '07',
     section: 'KI-Tools · Analyse',
     title: 'Speech-to-Text',
     sub: '9 Tools · SaaS · API · Lokal · CH-DE',
@@ -87,6 +99,18 @@ const CARDS = [
     quickIcon: Mic,
     quickColor: 'text-status-green',
     accentBg: 'bg-status-green/8',
+  },
+  {
+    num: '08',
+    section: 'Organisation',
+    title: 'SCNAT Organigramm',
+    sub: 'Bereiche · Plattformen · Foren · Kommissionen',
+    desc: 'Die Struktur der SCNAT im Überblick: Geschäftsleitung, Generalsekretariat und Kommunikation als Stab, vier Bereiche mit ihren Plattformen, Foren, Kommissionen und Netzwerken – interaktiv aufklappbar.',
+    primary: { to: '/cp/admin-stuff/organigramm', label: 'Öffnen' },
+    visual: 'organigramm',
+    quickIcon: Network,
+    quickColor: 'text-status-yellow',
+    accentBg: 'bg-status-yellow/8',
   },
 ];
 
@@ -310,6 +334,72 @@ function SttVisual() {
   );
 }
 
+function ArchitekturVisual() {
+  const LAYERS = [
+    { label: 'Experience', color: 'rgba(124,92,191,', count: 3 },
+    { label: 'Workflow', color: 'rgba(47,212,199,', count: 1, dashed: true },
+    { label: 'API', color: 'rgba(212,136,42,', count: 1 },
+    { label: 'Core', color: 'rgba(90,97,107,', count: 2 },
+  ];
+  return (
+    <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
+      {LAYERS.map((l, i) => (
+        <div
+          key={i}
+          className="h-7 rounded-sm flex items-center px-2 gap-1.5 text-[9px] font-medium"
+          style={{
+            background: l.color + '0.08)',
+            border: `1px ${l.dashed ? 'dashed' : 'solid'} ${l.color}0.45)`,
+            color: l.color + '0.95)',
+            animation: `layerFloat 6s ease-in-out ${i * 0.25}s infinite`,
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: l.color + '0.9)' }} />
+          <span className="truncate flex-1 uppercase tracking-wider">{l.label}</span>
+          <span className="font-mono text-[8px] opacity-70">{l.count}</span>
+        </div>
+      ))}
+      <p className="text-[9px] font-mono text-txt-tertiary text-center mt-1">4 Stufen · 3D</p>
+    </div>
+  );
+}
+
+function OrganigrammVisual() {
+  return (
+    <div className="flex flex-col items-center gap-1.5 w-full max-w-[200px]">
+      <div className="w-full flex justify-center">
+        <div className="px-3 py-1 rounded-sm border border-scnat-red/50 bg-scnat-red/10 text-[9px] font-mono text-scnat-red font-medium uppercase tracking-wider">SCNAT</div>
+      </div>
+      <div className="w-px h-2 bg-bd-def" />
+      <div className="w-full flex justify-center">
+        <div className="px-3 py-1 rounded-sm border border-scnat-red/40 bg-scnat-red/5 text-[8px] font-mono text-txt-secondary">Direktion</div>
+      </div>
+      <div className="w-px h-2 bg-bd-def" />
+      <div className="grid grid-cols-4 gap-1 w-full">
+        {[
+          { c: 'rgba(74,144,217,', label: 'Wiss' },
+          { c: 'rgba(212,136,42,', label: 'Pol' },
+          { c: 'rgba(61,170,117,', label: 'Ges' },
+          { c: 'rgba(124,92,191,', label: 'Serv' },
+        ].map((b, i) => (
+          <div
+            key={i}
+            className="rounded-sm py-1 px-1 text-center text-[7px] font-mono uppercase tracking-wider"
+            style={{
+              background: b.c + '0.10)',
+              border: `1px solid ${b.c}0.4)`,
+              color: b.c + '1)',
+            }}
+          >
+            {b.label}
+          </div>
+        ))}
+      </div>
+      <p className="text-[9px] font-mono text-txt-tertiary mt-1">4 Bereiche</p>
+    </div>
+  );
+}
+
 function CardVisual({ type }) {
   if (type === 'layers') return <LayersVisual />;
   if (type === 'stats') return <StatsVisual />;
@@ -317,6 +407,8 @@ function CardVisual({ type }) {
   if (type === 'stack') return <StackVisual />;
   if (type === 'stt') return <SttVisual />;
   if (type === 'none') return <WhereVisual />;
+  if (type === 'architektur') return <ArchitekturVisual />;
+  if (type === 'organigramm') return <OrganigrammVisual />;
   return null;
 }
 
@@ -329,7 +421,7 @@ export default function CpAdminStuff() {
           <h2 className="text-xl font-heading font-semibold text-txt-primary flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-scnat-red" /> Admin Stuff
           </h2>
-          <p className="text-xs text-txt-secondary mt-0.5">6 Dokumente · Strategie, Begründung, Standort, Details, Technologie und KI-Analyse</p>
+          <p className="text-xs text-txt-secondary mt-0.5">8 Dokumente · Strategie, Architektur, Begründung, Standort, Details, Technologie, KI-Analyse und Organigramm</p>
         </div>
       </div>
 
