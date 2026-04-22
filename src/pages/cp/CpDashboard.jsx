@@ -7,6 +7,14 @@ import {
   CalendarRange, Play, Pause, Eye, CircleDot,
 } from 'lucide-react';
 
+const CHANGE_STATUS_LABELS = {
+  eingereicht: 'Eingereicht',
+  in_pruefung: 'In Prüfung',
+  angenommen: 'Angenommen',
+  abgelehnt: 'Abgelehnt',
+  umgesetzt: 'Umgesetzt',
+};
+
 function StatCard({ label, value, icon: Icon, color = 'text-txt-tertiary', sub, to }) {
   const Wrapper = to ? Link : 'div';
   return (
@@ -505,7 +513,7 @@ export default function CpDashboard() {
                     c.status === 'in_pruefung' ? 'bg-status-blue/15 text-status-blue' :
                     c.status === 'angenommen' ? 'bg-status-green/15 text-status-green' :
                     'bg-scnat-red/15 text-scnat-red'
-                  }`}>{c.status}</span>
+                  }`}>{CHANGE_STATUS_LABELS[c.status] || c.status}</span>
                 </div>
               ))}
           </div>
