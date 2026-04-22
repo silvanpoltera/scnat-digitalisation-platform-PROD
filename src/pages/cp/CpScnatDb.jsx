@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import {
   Save, Plus, Trash2, Database, AlertTriangle, Filter, Shield, Zap,
   GitBranch, CheckCircle2, XCircle, ChevronDown, Rocket, Server, RefreshCw,
+  ExternalLink, Maximize2, Minimize2,
 } from 'lucide-react';
 import ArchitekturDiagramm from '@/components/systemlandschaft/ArchitekturDiagramm';
 import FunktionenUebersicht from '@/components/systemlandschaft/FunktionenUebersicht';
+import { useTheme } from '@/contexts/ThemeContext';
 
 /* ── Strategische Optionen (read-only) ── */
 const OPTION_ICONS = { shield: Shield, zap: Zap, 'git-branch': GitBranch };
@@ -201,9 +203,72 @@ function BacklogView({ backlog, onAdd, onDelete, newBacklog, setNewBacklog }) {
   );
 }
 
+/* ── Zielarchitektur (3D Explorer · aus Admin Stuff) ── */
+function ZielarchitekturView() {
+  const { theme } = useTheme();
+  const [expanded, setExpanded] = useState(false);
+  const iframeTheme = theme === 'bright' ? 'light' : 'dark';
+  const iframeSrc = `/files/architektur.html?theme=${iframeTheme}`;
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape' && expanded) setExpanded(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [expanded]);
+
+  if (expanded) {
+    return (
+      <div className="fixed inset-0 z-50 bg-bg-base flex flex-col">
+        <div className="flex items-center gap-2 px-4 h-10 bg-bg-surface border-b border-bd-faint shrink-0">
+          <span className="text-sm font-heading font-semibold text-txt-primary">Zielarchitektur · 3D Explorer</span>
+          <span className="text-[10px] font-mono text-txt-tertiary">· Vier Schichten · Vier Stufen</span>
+          <div className="flex-1" />
+          <a href={iframeSrc} target="_blank" rel="noopener noreferrer" className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated rounded-sm transition-colors" title="In neuem Tab öffnen">
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <button onClick={() => setExpanded(false)} className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated rounded-sm transition-colors" title="Verkleinern (Esc)">
+            <Minimize2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <iframe
+          src={iframeSrc}
+          title="Zielarchitektur"
+          className="flex-1 w-full border-0 bg-bg-base"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+      <div className="flex items-center gap-2 px-4 h-10 bg-bg-elevated border-b border-bd-faint">
+        <GitBranch className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+        <span className="text-xs font-heading font-semibold text-txt-primary">Zielarchitektur · 3D Explorer</span>
+        <span className="text-[10px] font-mono text-txt-tertiary hidden sm:inline">· Vier Schichten · Vier Stufen</span>
+        <div className="flex-1" />
+        <a href={iframeSrc} target="_blank" rel="noopener noreferrer" className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-surface rounded-sm transition-colors" title="In neuem Tab öffnen">
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+        <button onClick={() => setExpanded(true)} className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-surface rounded-sm transition-colors" title="Vollbild">
+          <Maximize2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      <iframe
+        src={iframeSrc}
+        title="Zielarchitektur"
+        className="w-full border-0 bg-bg-base"
+        style={{ height: 'calc(100dvh - 220px)', minHeight: '600px' }}
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+      />
+    </div>
+  );
+}
+
 /* ── Main Component ── */
 const TABS = [
   { id: 'uebersicht', label: 'Architektur' },
+  { id: 'zielarchitektur', label: 'Zielarchitektur' },
   { id: 'funktionen', label: 'Funktionen' },
   { id: 'strategie', label: 'Strategische Optionen' },
   { id: 'entscheide', label: 'Grundsatzentscheide' },
@@ -287,6 +352,8 @@ export default function CpScnatDb() {
       </div>
 
       {tab === 'uebersicht' && <ArchitekturDiagramm status={data.status} />}
+
+      {tab === 'zielarchitektur' && <ZielarchitekturView />}
 
       {tab === 'funktionen' && <FunktionenUebersicht bereiche={data.funktionsbereiche || []} />}
 
