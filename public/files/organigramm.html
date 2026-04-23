@@ -160,11 +160,11 @@ h1 em{font-style:normal;color:var(--red)}
   background:var(--b-def);
 }
 .gs-units{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;
-  max-width:1100px;margin:0 auto;position:relative;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;
+  max-width:1200px;margin:0 auto;position:relative;
 }
 .gs-units::before{
-  content:'';position:absolute;top:-.8rem;left:12.5%;right:12.5%;height:1px;
+  content:'';position:absolute;top:-.8rem;left:10%;right:10%;height:1px;
   background:linear-gradient(90deg, transparent, var(--b-def) 15%, var(--b-def) 85%, transparent);
 }
 .gs-unit{
@@ -176,9 +176,10 @@ h1 em{font-style:normal;color:var(--red)}
   text-align:left;
 }
 .gs-unit:nth-child(1){animation-delay:.80s}
-.gs-unit:nth-child(2){animation-delay:.88s}
-.gs-unit:nth-child(3){animation-delay:.96s}
-.gs-unit:nth-child(4){animation-delay:1.04s}
+.gs-unit:nth-child(2){animation-delay:.86s}
+.gs-unit:nth-child(3){animation-delay:.92s}
+.gs-unit:nth-child(4){animation-delay:.98s}
+.gs-unit:nth-child(5){animation-delay:1.04s}
 .gs-unit::before{
   content:'';position:absolute;top:-.8rem;left:50%;width:1px;height:.8rem;
   background:var(--b-def);
@@ -363,7 +364,7 @@ h1 em{font-style:normal;color:var(--red)}
   .bereiche{grid-template-columns:repeat(2,1fr)}
   .bereiche::before{display:none}
   .bereich::before{display:none}
-  .gs-units{grid-template-columns:repeat(2,1fr);max-width:640px}
+  .gs-units{grid-template-columns:repeat(3,1fr);max-width:820px}
   .gs-units::before{display:none}
   .gs-unit::before{display:none}
 }
@@ -430,23 +431,28 @@ h1 em{font-style:normal;color:var(--red)}
     <div class="gs-units">
       <div class="gs-unit">
         <div class="gs-unit-num">01</div>
-        <div class="gs-unit-title">Kommunikation</div>
-        <div class="gs-unit-desc">Aussenauftritt · Medien</div>
+        <div class="gs-unit-title">Kommunikation und Public Affairs</div>
+        <div class="gs-unit-desc">Aussenauftritt · Medien · Politik</div>
       </div>
       <div class="gs-unit">
         <div class="gs-unit-num">02</div>
-        <div class="gs-unit-title">Digitalisierung</div>
-        <div class="gs-unit-desc">Plattform · Tools</div>
+        <div class="gs-unit-title">Internationale Zusammenarbeit</div>
+        <div class="gs-unit-desc">Kooperationen · Netzwerke</div>
       </div>
       <div class="gs-unit">
         <div class="gs-unit-num">03</div>
-        <div class="gs-unit-title">Direktionsassistenz</div>
-        <div class="gs-unit-desc">Unterstützung Direktion</div>
+        <div class="gs-unit-title">Unternehmensentwicklung</div>
+        <div class="gs-unit-desc">Strategie · Organisation</div>
       </div>
       <div class="gs-unit">
         <div class="gs-unit-num">04</div>
-        <div class="gs-unit-title">Wiss. Mitarbeiter</div>
-        <div class="gs-unit-desc">Projektleitung · Themen</div>
+        <div class="gs-unit-title">Arbeitsgruppen des Vorstandes</div>
+        <div class="gs-unit-desc">Gremien · Koordination</div>
+      </div>
+      <div class="gs-unit">
+        <div class="gs-unit-num">05</div>
+        <div class="gs-unit-title">Digitalisierung</div>
+        <div class="gs-unit-desc">Plattform · Tools · Daten</div>
       </div>
     </div>
   </div>
