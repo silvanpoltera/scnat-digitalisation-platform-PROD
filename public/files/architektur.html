@@ -65,38 +65,43 @@ body{min-height:100vh;background:
   var(--bg);
 }
 
-/* ═══ HERO · Reason-Why Style ═══ */
+/* ═══ HERO ═══ */
 .hero{
-  max-width:960px;
-  margin:0 auto;
-  padding:3rem 2rem 2rem;
-  position:relative;
+  min-height:78vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:3rem 2rem;
+  position:relative;overflow:hidden;
 }
-.hero-eyebrow{
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;color:var(--red);
-  text-transform:uppercase;letter-spacing:.12em;
-  margin-bottom:1rem;
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 35%, rgba(234,81,90,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 30% 70%, rgba(74,144,217,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 70%, rgba(47,212,199,0.04) 0%, transparent 70%);
+  pointer-events:none;
 }
-.hero h1{
-  font-size:clamp(2rem,5vw,3.2rem);
-  font-weight:700;line-height:1.1;
-  color:var(--text);
-  margin-bottom:1.2rem;
-  letter-spacing:-0.01em;
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--b-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--b-faint) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 75%);
+  pointer-events:none;
 }
+#heroCanvas{position:absolute;inset:0;pointer-events:none;opacity:.65}
+html.theme-bright #heroCanvas,
+html.light #heroCanvas{opacity:.4}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1.5rem;position:relative;z-index:2}
+.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:700;line-height:1.05;margin-bottom:1.4rem;max-width:960px;position:relative;z-index:2;letter-spacing:-0.02em}
 .hero h1 em{font-style:normal;color:var(--red)}
-.hero h1 .gradient{
-  background:linear-gradient(135deg,var(--red) 0%,var(--purple) 60%,var(--cyan) 100%);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.hero-sub{
-  font-size:1.05rem;
-  color:var(--text2);
-  max-width:640px;
-  line-height:1.75;
-}
+.hero h1 .gradient{background:linear-gradient(135deg,var(--red) 0%,var(--purple) 60%,var(--cyan) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:680px;line-height:1.8;margin-bottom:2.2rem;position:relative;z-index:2}
+.hero-stats{display:flex;gap:2rem;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;position:relative;z-index:2;margin-bottom:2.5rem;flex-wrap:wrap;justify-content:center}
+.hero-stats span::before{content:'◆';margin-right:.5rem;color:var(--red)}
+.scroll-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer;position:relative;z-index:2}
+.scroll-hint .arrow{width:1px;height:36px;background:linear-gradient(var(--b-def),transparent);margin:0 auto;animation:arrowPulse 2s ease-in-out infinite}
+@keyframes arrowPulse{0%,100%{opacity:.4}50%{opacity:1}}
 
 /* ═══ SECTION ═══ */
 .section{max-width:1320px;margin:0 auto;padding:5rem 2rem}
@@ -136,6 +141,18 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
   content:'';position:absolute;left:0;top:12%;bottom:12%;width:2px;
   background:var(--accent,var(--red));
   border-radius:2px;
+}
+.scenario-btn.recommended::after{
+  content:'Empfohlen';
+  position:absolute;top:.55rem;right:.55rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;padding:2px 6px;
+  border:1px solid var(--red);
+  color:var(--red);
+  border-radius:2px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  background:rgba(234,81,90,.05);
 }
 .scenario-btn-idx{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.1em;margin-bottom:.25rem;display:block}
 .scenario-btn-name{font-weight:600;font-size:.92rem;margin-bottom:.2rem;line-height:1.3}
@@ -178,7 +195,6 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
   pointer-events:none;
 }
 
-/* Header Bar */
 .stage-header{
   display:grid;
   grid-template-columns:1fr auto;
@@ -227,7 +243,6 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
 .meta-chip.ok::before{background:var(--ok)}
 .meta-chip.warn::before{background:var(--warn)}
 
-/* Stage Layout */
 .stage-layout{
   display:grid;
   grid-template-columns:1fr 340px;
@@ -278,7 +293,6 @@ html.light .scene3d::after{background:repeating-linear-gradient(0deg,transparent
   will-change:transform;
 }
 
-/* ═══ FLOOR ═══ */
 .floor{
   position:absolute;
   left:50%;top:50%;
@@ -294,7 +308,6 @@ html.light .scene3d::after{background:repeating-linear-gradient(0deg,transparent
   pointer-events:none;
 }
 
-/* ═══ MONOLITH FRAME ═══ */
 .monolith-frame{
   position:absolute;
   left:50%;top:50%;
@@ -430,6 +443,28 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .box.c-placeholder .box-name{color:var(--text2)}
 .box.c-placeholder .box-tech{opacity:.75}
 
+/* Webportale / öffentlicher Output - hochkant mit mehrzeiligem Text */
+.box.c-webportale{
+  color:var(--purple);
+  background:linear-gradient(180deg,rgba(153,105,217,.14),rgba(153,105,217,.04));
+  border:1px solid rgba(153,105,217,.5);
+}
+.box.c-webportale .box-tech{white-space:normal;line-height:1.45}
+.box.c-webportale .box-name{font-size:.9rem;margin-bottom:.35rem}
+.box.c-webportale::after{
+  content:'';position:absolute;
+  left:15%;right:15%;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);
+  opacity:.5;
+}
+
+/* GitHub-Flow-Box: dev / prod Repos */
+.box.c-github{
+  color:var(--info);
+  background:linear-gradient(180deg,rgba(74,144,217,.12),rgba(74,144,217,.03));
+  border:1px solid rgba(74,144,217,.55);
+}
+
 .layer-label{
   position:absolute;
   left:50%;top:50%;
@@ -452,6 +487,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .layer-label.l-wf{color:var(--cyan)}
 .layer-label.l-api{color:var(--warn)}
 .layer-label.l-core{color:var(--anth)}
+.layer-label.l-dev{color:var(--info)}
 
 .box.c-internal .box-name{color:var(--text2)}
 .box.c-internal .box-tech{opacity:.7}
@@ -529,6 +565,12 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 }
 .conn.conn-grey .conn-arrow{opacity:.85}
 
+/* Dev/Prod deploy connection: dashed info-color */
+.conn.conn-deploy .conn-body{
+  background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 10px);
+  box-shadow:0 0 6px currentColor;
+}
+
 .conn.c-api{color:var(--warn)}
 .conn.c-logic{color:var(--info)}
 .conn.c-flow{color:var(--cyan)}
@@ -538,6 +580,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .conn.c-media{color:var(--lime)}
 .conn.c-db{color:var(--anth)}
 .conn.c-grey{color:var(--text3)}
+.conn.c-deploy{color:var(--info)}
 
 .conn .packet{
   position:absolute;top:-2px;
@@ -587,6 +630,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .side-block.accent-media{border-left:2px solid var(--lime)}
 .side-block.accent-logic{border-left:2px solid var(--info)}
 .side-block.accent-warn{border-left:2px solid var(--warn)}
+.side-block.accent-dev{border-left:2px solid var(--info)}
 
 .side-head{
   display:flex;align-items:center;justify-content:space-between;
@@ -689,6 +733,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .flow-legend-item.api{color:var(--warn)}
 .flow-legend-item.auth{color:var(--red)}
 .flow-legend-item.grey{color:var(--text3)}
+.flow-legend-item.deploy{color:var(--info)}
 
 /* ═══ COMPARISON ═══ */
 .compare-grid{
@@ -708,8 +753,20 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 }
 .compare-card.c-heute{border-top-color:var(--anth)}
 .compare-card.c-enabler{border-top-color:var(--red)}
-.compare-card.c-statamic{border-top-color:var(--cyan)}
-.compare-card.c-green{border-top-color:var(--purple)}
+.compare-card.c-split{border-top-color:var(--cyan)}
+.compare-card.c-transform{border-top-color:var(--purple)}
+.compare-card.recommended::before{
+  content:'Empfohlener nächster Schritt';
+  position:absolute;top:-9px;right:12px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;
+  padding:2px 8px;
+  background:var(--red);
+  color:white;
+  border-radius:2px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
 
 .compare-head{
   display:flex;align-items:center;justify-content:space-between;
@@ -724,8 +781,8 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 }
 .compare-card.c-heute .compare-badge{color:var(--anth)}
 .compare-card.c-enabler .compare-badge{color:var(--red)}
-.compare-card.c-statamic .compare-badge{color:var(--cyan)}
-.compare-card.c-green .compare-badge{color:var(--purple)}
+.compare-card.c-split .compare-badge{color:var(--cyan)}
+.compare-card.c-transform .compare-badge{color:var(--purple)}
 
 .compare-attrs{
   display:flex;flex-direction:column;gap:.4rem;
@@ -740,6 +797,12 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 .compare-attr-k{color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
 .compare-attr-v{color:var(--text);font-weight:500;text-align:right}
 .compare-desc{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:.5rem}
+
+/* ═══ FAZIT ═══ */
+.final{background:var(--red-dim);border:1px solid rgba(234,81,90,.2);border-radius:4px;padding:2rem;margin-bottom:1rem}
+.final h3{font-size:1rem;font-weight:600;margin-bottom:.75rem}
+.final p{font-size:.85rem;color:var(--text2);line-height:1.8}
+.final strong{color:var(--text)}
 
 /* ═══ FLOATING NAV ═══ */
 .floatnav{
@@ -770,7 +833,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 @media(max-width:760px){
   .floatnav{display:none}
   .section{padding:3rem 1.1rem}
-  .hero{padding:3rem 1.1rem}
+  .hero{padding:3rem 1.1rem;min-height:60vh}
   .stage-wrap{padding:1.1rem}
   .stage-header{grid-template-columns:1fr;gap:.75rem}
   .scene3d{min-height:560px}
@@ -805,13 +868,27 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
   <button class="nav-dot active" onclick="scrollToId('hero')" title="Intro"></button>
   <button class="nav-dot" onclick="scrollToId('explorer')" title="Explorer"></button>
   <button class="nav-dot" onclick="scrollToId('vergleich')" title="Vergleich"></button>
+  <button class="nav-dot" onclick="scrollToId('fazit')" title="Fazit"></button>
 </nav>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero" id="hero">
-  <div class="hero-eyebrow">SCNAT Digitalisierung · Architektur-Explorer</div>
-  <h1>Vier Schichten –<br><span class="gradient">vier Stufen dahin</span></h1>
-  <p class="hero-sub">Die Zielarchitektur besteht aus vier Schichten: Experience, Workflow, API und Core Systems. Ausgehend vom heutigen Xojo-Monolith zeigen vier Stufen, wie diese Zielarchitektur schrittweise erreicht wird – und was sie konkret ermöglicht.</p>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-eyebrow">SCNAT Digitalisierung · Zielarchitektur und Phasenplan</div>
+  <h1>Drei Schichten,<br><span class="gradient">drei Phasen dahin</span></h1>
+  <p class="hero-sub">Die Zielarchitektur besteht aus drei Schichten: Experience, Adapter und Business. Der Weg dorthin führt über drei Phasen – Refactoring, Split und die kontinuierliche digitale Transformation. Jeder Zustand lässt sich in 3D drehen und untersuchen.</p>
+  <div class="hero-stats">
+    <span>3 Schichten</span>
+    <span>3 Phasen</span>
+    <span>zentraler Datenstand</span>
+    <span>Adapter pro Anwendung</span>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('explorer').scrollIntoView({behavior:'smooth'})">
+    <span>Explorer öffnen</span>
+    <div class="arrow"></div>
+  </div>
 </section>
 
 <hr class="sep">
@@ -820,28 +897,28 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 <section class="section wide" id="explorer">
   <div class="section-label">Interaktiv · 3D</div>
   <div class="section-title">Szenario Explorer</div>
-  <p class="section-lead">Wähle eine Stufe. Die 3D-Szene baut sich entsprechend auf. Ziehen rotiert, Scrollen zoomt. In der Sidebar stehen die Erklärungen und – wo sinnvoll – Technologie-Alternativen, die du durchklicken kannst.</p>
+  <p class="section-lead">Wähle eine Phase. Die 3D-Szene baut sich entsprechend auf. Ziehen rotiert, Shift/Rechtsklick pannt, Scrollen zoomt. In der Sidebar stehen die Erklärungen und – wo sinnvoll – Technologie-Alternativen, die du durchklicken kannst.</p>
 
   <div class="scenario-picker" id="scenarioPicker">
     <button class="scenario-btn active" data-scenario="0" onclick="setScenario(0)">
-      <span class="scenario-btn-idx">STUFE 0 · STATUS QUO</span>
+      <span class="scenario-btn-idx">HEUTE · STATUS QUO</span>
       <span class="scenario-btn-name">Heute</span>
-      <span class="scenario-btn-hint">Alles in einer Codebase</span>
+      <span class="scenario-btn-hint">Datenbank + Websystem + Push-API</span>
     </button>
     <button class="scenario-btn" data-scenario="1" onclick="setScenario(1)">
-      <span class="scenario-btn-idx">STUFE 1 · ZIEL</span>
-      <span class="scenario-btn-name">Zielarchitektur</span>
-      <span class="scenario-btn-hint">Vier Schichten, Core bleibt</span>
+      <span class="scenario-btn-idx">PHASE 1 · 1–1.5 JAHRE</span>
+      <span class="scenario-btn-name">Refactoring</span>
+      <span class="scenario-btn-hint">Modernisieren, Git, Editor-Pilot</span>
     </button>
-    <button class="scenario-btn" data-scenario="2" onclick="setScenario(2)">
-      <span class="scenario-btn-idx">STUFE 2 · BEISPIEL</span>
-      <span class="scenario-btn-name">Statamic angedockt</span>
-      <span class="scenario-btn-hint">Konkrete Umsystem-Anbindung</span>
+    <button class="scenario-btn recommended" data-scenario="2" onclick="setScenario(2)">
+      <span class="scenario-btn-idx">PHASE 2 · 2 JAHRE</span>
+      <span class="scenario-btn-name">Split</span>
+      <span class="scenario-btn-hint">Drei Schichten sichtbar, zentrale Auth</span>
     </button>
     <button class="scenario-btn" data-scenario="3" onclick="setScenario(3)">
-      <span class="scenario-btn-idx">STUFE 3 · GREENFIELD</span>
-      <span class="scenario-btn-name">Alles neu</span>
-      <span class="scenario-btn-hint">DB bleibt, Stack komplett erneuert</span>
+      <span class="scenario-btn-idx">PHASE 3+ · KONTINUIERLICH</span>
+      <span class="scenario-btn-name">Transformation</span>
+      <span class="scenario-btn-hint">Zielarchitektur in Betrieb</span>
     </button>
   </div>
 
@@ -849,9 +926,9 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 
     <div class="stage-header">
       <div class="stage-title-block">
-        <span class="stage-eyebrow" id="stageEyebrow">STUFE 0 · STATUS QUO</span>
-        <span class="stage-title" id="stageTitle">Der Xojo-Monolith</span>
-        <span class="stage-desc" id="stageDesc">Xojo arbeitet nicht in getrennten Schichten. Datenbank-Zugriff, Business-Logik und UI-Events sind in einer einzigen Codebase verwoben.</span>
+        <span class="stage-eyebrow" id="stageEyebrow">HEUTE · STATUS QUO</span>
+        <span class="stage-title" id="stageTitle">Datenbank SCNAT und Websystem – verbunden über die Push-API</span>
+        <span class="stage-desc" id="stageDesc">Die SCNAT betreibt heute zwei Systeme: die Datenbank SCNAT (Xojo-Applikation mit interner Schichtung von DB, Logik und GUI inklusive Mediendateien) und das Websystem SCNAT für die Web-Darstellung.</span>
       </div>
       <div class="stage-meta" id="stageMeta"></div>
     </div>
@@ -893,6 +970,7 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
     <div class="flow-legend">
       <div class="flow-legend-item api"><span class="flow-legend-swatch"></span>Datenfluss (API)</div>
       <div class="flow-legend-item auth"><span class="flow-legend-swatch dashed"></span>Identity / Token (bidirektional)</div>
+      <div class="flow-legend-item deploy"><span class="flow-legend-swatch dashed"></span>Deploy (Dev → Prod → Live)</div>
       <div class="flow-legend-item grey"><span class="flow-legend-swatch grey"></span>Intern, nicht exponiert</div>
     </div>
   </div>
@@ -903,8 +981,8 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
 <!-- ═══ VERGLEICH ═══ -->
 <section class="section" id="vergleich">
   <div class="section-label">Auf einen Blick</div>
-  <div class="section-title">Die vier Stufen im Vergleich</div>
-  <p class="section-lead">Nicht alle Stufen müssen erreicht werden – aber sie bauen aufeinander auf. Stufe 1 ist der Eintritt; ab dann sind Stufe 2 und 3 Optionen, keine Pflichten.</p>
+  <div class="section-title">Heute und die drei Phasen im Vergleich</div>
+  <p class="section-lead">Die Phasen bauen aufeinander auf. Phase 1 schafft die Voraussetzungen, Phase 2 macht die drei Schichten sichtbar, Phase 3+ ist der kontinuierliche Betrieb und Ausbau.</p>
 
   <div class="compare-grid">
     <div class="compare-card c-heute">
@@ -912,229 +990,409 @@ html.light .box{box-shadow:0 10px 30px -15px rgba(0,0,0,.15),inset 0 1px 0 rgba(
         <span class="compare-name">Heute</span>
         <span class="compare-badge">S0</span>
       </div>
-      <p class="compare-desc">In Xojo verwoben: Datenzugriff, Business-Logik und UI-Events in einer Codebase. Keine Aussenkante, keine zentrale Authentifizierung.</p>
+      <p class="compare-desc">Xojo-Datenbank mit interner Schichtung und das separate Websystem, verbunden über eine historisch gewachsene Push-API. Keine zentrale Authentifizierung, Versionierung via Subversion.</p>
       <div class="compare-attrs">
+        <div class="compare-attr"><span class="compare-attr-k">Zeithorizont</span><span class="compare-attr-v">Status Quo</span></div>
         <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">Keiner</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Offenheit</span><span class="compare-attr-v">Keine</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Risiko</span><span class="compare-attr-v">Kopfmonopol</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Flexibilität</span><span class="compare-attr-v">Tief</span></div>
       </div>
     </div>
 
     <div class="compare-card c-enabler">
       <div class="compare-head">
-        <span class="compare-name">Zielarchitektur</span>
-        <span class="compare-badge">S1</span>
+        <span class="compare-name">Phase 1 · Refactoring</span>
+        <span class="compare-badge">P1</span>
       </div>
-      <p class="compare-desc">Vier saubere Schichten. Core Systems (Xojo + DB) bleiben. API-Schicht nutzt die Xojo-Logik, Experience spricht nur mit der API, Workflow ist vorgesehen aber noch offen.</p>
+      <p class="compare-desc">Hardware und Betriebssystem neu, Push-API modernisiert, Seitenstrukturen und Layout erweitert, Umstieg auf Git mit Dev- und Prod-Repos. Pilot: Web-Seiten-Editor als eigenes, ausgelagertes Modul.</p>
       <div class="compare-attrs">
+        <div class="compare-attr"><span class="compare-attr-k">Zeithorizont</span><span class="compare-attr-v">1–1.5 Jahre</span></div>
         <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">Mittel</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Offenheit</span><span class="compare-attr-v">Hoch</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Risiko</span><span class="compare-attr-v">Kontrollierbar</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Flexibilität</span><span class="compare-attr-v">Tief–mittel</span></div>
       </div>
     </div>
 
-    <div class="compare-card c-statamic">
+    <div class="compare-card c-split recommended">
       <div class="compare-head">
-        <span class="compare-name">Statamic</span>
-        <span class="compare-badge">S2</span>
+        <span class="compare-name">Phase 2 · Split</span>
+        <span class="compare-badge">P2</span>
       </div>
-      <p class="compare-desc">Beispielhafte Anbindung: Statamic übernimmt das öffentliche Web, nutzt Daten aus Xojo per API, eigene Media-DB für Assets. Xojo-GUI bleibt als Admin.</p>
+      <p class="compare-desc">Datenbank-GUI wird von Xojo getrennt, Websystem in zwei Teile gespalten, zentrales Auth-System als Drittsystem in die Business-Schicht. Drei Schichten werden sichtbar.</p>
       <div class="compare-attrs">
-        <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">Mittel-hoch</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Offenheit</span><span class="compare-attr-v">Sehr hoch (Web)</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Risiko</span><span class="compare-attr-v">Zwei DBs</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Zeithorizont</span><span class="compare-attr-v">2 Jahre</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">Hoch</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Flexibilität</span><span class="compare-attr-v">Hoch</span></div>
       </div>
     </div>
 
-    <div class="compare-card c-green">
+    <div class="compare-card c-transform">
       <div class="compare-head">
-        <span class="compare-name">Greenfield</span>
-        <span class="compare-badge">S3</span>
+        <span class="compare-name">Phase 3+ · Transformation</span>
+        <span class="compare-badge">P3+</span>
       </div>
-      <p class="compare-desc">DB bleibt, alles andere wird neu gebaut: Java/Kotlin/.NET für Logik, moderne Workflow-Engine, Multi-Frontend. Nur mit grossem Mandat sinnvoll.</p>
+      <p class="compare-desc">Zielarchitektur im laufenden Betrieb. Neue Module werden über Adapter angefügt, bestehende ersetzt. Xojo wird schrittweise ausgefädelt. Business-Schicht wird vielfältiger.</p>
       <div class="compare-attrs">
-        <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">Sehr hoch</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Offenheit</span><span class="compare-attr-v">Maximal</span></div>
-        <div class="compare-attr"><span class="compare-attr-k">Risiko</span><span class="compare-attr-v">Projektgrösse</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Zeithorizont</span><span class="compare-attr-v">kontinuierlich</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Aufwand</span><span class="compare-attr-v">laufend</span></div>
+        <div class="compare-attr"><span class="compare-attr-k">Flexibilität</span><span class="compare-attr-v">Maximal</span></div>
       </div>
     </div>
   </div>
 </section>
 
+<hr class="sep">
+
+<!-- ═══ FAZIT ═══ -->
+<section class="section" id="fazit">
+  <div class="section-label">Einordnung</div>
+  <div class="section-title">Zielarchitektur und Phasenplan – Zusammenfassung</div>
+
+  <div class="final" style="margin-bottom:1rem">
+    <h3>Das Schichtenmodell ist der Rahmen – nicht das Ergebnis.</h3>
+    <p>Die drei Schichten Experience, Adapter und Business definieren, wie Teilsysteme zueinanderstehen und wie sie kommunizieren. Der Phasenplan beschreibt, wie dieser Rahmen schrittweise erreicht wird. Phase 3+ ist der eigentliche Betrieb: Module werden angefügt, ersetzt, verschoben – die Zusammenstellung ist nicht konstant.</p>
+  </div>
+
+  <div class="final" style="border-color:rgba(212,136,42,.2);background:rgba(212,136,42,.05)">
+    <h3 style="color:var(--warn)">Die wichtigen Prinzipien, die jede Phase einhalten muss.</h3>
+    <p>Erstens: Schichten dürfen nur die nächstgelegene Schicht ansprechen – nie eine überspringen. Zweitens: Business-Logik ist gekapselt, betriebsspezifische Anforderungen gelten für alle. Drittens: Jede Anwendung hat ihren eigenen Adapter – manche trivial, manche aufwendig. Viertens: Der zentrale Datenstand bleibt in der Business-Schicht, auch wenn sich sonst alles verändert. <strong>Das ist der Unterschied zu einem klassischen Refactoring-Projekt</strong>: hier wird nicht ein System modernisiert, sondern eine neue Organisationsform für viele Systeme etabliert.</p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--info);border-radius:4px;padding:1.75rem;margin-top:1rem">
+    <div class="section-label" style="margin-bottom:.6rem">Deployment-Weg</div>
+    <p style="font-size:.88rem;color:var(--text2);line-height:1.85">
+      Ab Phase 1 gilt durchgehend derselbe Ablauf: Entwicklung lokal, Push in das <strong style="color:var(--text)">Dev-Repo auf GitHub</strong>, Abgleich auf Dev-Umgebung, dann Merge ins <strong style="color:var(--text)">Prod-Repo auf GitHub</strong> und von dort Deployment auf <strong style="color:var(--text)">Live</strong>. Gleicher Weg für jedes Modul – ob Web-Seiten-Editor (Phase 1), Auth-System (Phase 2) oder ein Drittsystem-Adapter (Phase 3+).
+    </p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:1.75rem;margin-top:1rem">
+    <div class="section-label" style="margin-bottom:.6rem">Charakter der Schichten</div>
+    <p style="font-size:.88rem;color:var(--text2);line-height:1.85">
+      Die Schichten lassen sich auf mehreren Spektren einordnen, jeweils von Experience zu Business: KI-Anwendung <strong style="color:var(--text)">häufig → selten</strong>. Ressourceneinsatz <strong style="color:var(--text)">extern → intern</strong>. Transformation <strong style="color:var(--text)">schnell → langsam</strong>. Volatilität <strong style="color:var(--text)">temporär → archiviert</strong>. Das hilft, neue Module richtig einzuordnen.
+    </p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:1.75rem;margin-top:1rem">
+    <div class="section-label" style="margin-bottom:.6rem">Wichtig für die Steuerung</div>
+    <p style="font-size:.88rem;color:var(--text2);line-height:1.85">
+      Der Effekt von Phase 1 ist in den ersten Monaten nach aussen kaum sichtbar – aber strukturell enorm. Erst ab Phase 2 wird der Nutzen für Anwender greifbar. <strong style="color:var(--text)">Die Geschäftsleitung muss diese zeitliche Differenz bewusst tragen</strong>, sonst droht ein Abbruch kurz vor dem Punkt, an dem alles zusammenläuft.
+    </p>
+  </div>
+</section>
+
 <script>
+/* ══════════════════════════════════════════════════════════════════
+   BOX DATA – Zielarchitektur: Experience · Adapter · Business
+   ══════════════════════════════════════════════════════════════════ */
 const BOX_DEFAULTS = {
-  db:           {w:280, h:80, color:'db',          role:'Data · System of Record',       idx:'L0'},
+  // ── Business ──
+  db:           {w:280, h:80, color:'db',          role:'Business · Datenbank',          idx:'BUS'},
+  mediadb:      {w:240, h:80, color:'media',       role:'Business · Medien-DB',          idx:'BUS'},
+  businesslogic:{w:280, h:80, color:'logic',       role:'Business · Logik',              idx:'BUS'},
+  authsys:      {w:220, h:80, color:'auth',        role:'Business · Auth-System',        idx:'BUS'},
+
+  // ── Xojo (heute + frühe Phasen) ──
+  xojocore:     {w:380, h:95, color:'mono',        role:'Datenbank SCNAT · Xojo',        idx:'BUS'},
   xojo_dbapi:   {w:280, h:70, color:'internal',    role:'interne API · Datenzugriff',    idx:'int'},
   xojo_logic:   {w:280, h:80, color:'internal',    role:'Business-Logik · intern',       idx:'int'},
   xojo_flowapi: {w:280, h:70, color:'internal',    role:'interne API · zu Workflow',     idx:'int'},
   xojo_flow:    {w:280, h:80, color:'internal',    role:'Workflow · intern',             idx:'int'},
-  xojo_uiapi:   {w:280, h:70, color:'internal',    role:'interne API · zur UI',          idx:'int'},
+  xojo_uiapi:   {w:280, h:70, color:'internal',    role:'interne API · zur GUI',         idx:'int'},
 
-  xojocore:     {w:340, h:95, color:'mono',        role:'Xojo Core · Business-Logik',    idx:'L1'},
-  xojoapp:      {w:340, h:95, color:'mono',        role:'Core · Xojo Monolith',          idx:'L1'},
+  // ── Websystem ──
+  websystem:    {w:280, h:85, color:'ui',          role:'Websystem SCNAT',                idx:'EXP'},
+  pushapi:      {w:220, h:70, color:'api',         role:'Push-API · Transfer',           idx:'PUSH'},
 
-  api:          {w:340, h:90, color:'api',         role:'API · alle Datenzugriffe',      idx:'API'},
+  // ── Adapter ──
+  adapter_gui:    {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
+  adapter_web:    {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
+  adapter_editor: {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
+  adapter_ext:    {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
+  adapter_cms:    {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
+  adapter_app:    {w:180, h:70, color:'api',       role:'Adapter',                        idx:'ADP'},
 
-  workflow:     {w:260, h:80, color:'placeholder', role:'Workflow · Async',              idx:'WF'},
+  // ── Experience ──
+  xojogui:      {w:220, h:80, color:'ui',          role:'DB-GUI · Xojo',                 idx:'EXP'},
+  dbgui_neu:    {w:220, h:80, color:'ui',          role:'DB-GUI · modern',               idx:'EXP'},
+  web_display:  {w:220, h:80, color:'ui',          role:'Web-Darstellung',               idx:'EXP'},
+  web_editor:   {w:220, h:80, color:'ui',          role:'Web-Seiten-Editor',             idx:'EXP'},
+  meinkonto:    {w:200, h:80, color:'ui',          role:'Mein Konto',                    idx:'EXP'},
+  eventmgmt:    {w:200, h:80, color:'saas',        role:'Eventmanagement',               idx:'EXP'},
+  cms:          {w:200, h:80, color:'saas',        role:'CMS',                            idx:'EXP'},
+  webframework: {w:220, h:80, color:'ui',          role:'Web-Framework',                 idx:'EXP'},
+  app_x:        {w:180, h:80, color:'ui',          role:'Fach-App',                      idx:'EXP'},
 
-  xojogui:      {w:220, h:80, color:'ui',          role:'Fachoberfläche · intern',       idx:'EXP'},
-  web:          {w:220, h:80, color:'ui',          role:'Web · öffentlich',              idx:'EXP'},
-  anchor:       {w:220, h:80, color:'internal',    role:'Umsystem · Andockpunkt',        idx:'EXP'},
+  // ── Öffentlicher Output ──
+  webportale:   {w:200, h:160, color:'webportale', role:'Öffentlich',                    idx:'OUT'},
 
-  identity:     {w:220, h:80, color:'auth',        role:'Identity · querschnittlich',    idx:'L7'},
-
-  statamic:     {w:220, h:80, color:'saas',        role:'Umsystem · CMS',                idx:'EXT'},
-  statfront:    {w:220, h:80, color:'ui',          role:'UI · öffentliches Web',         idx:'EXP'},
-  mediadb:      {w:220, h:80, color:'media',       role:'Data · Assets',                 idx:'EXT'},
-
-  logic:        {w:300, h:90, color:'logic',       role:'Business Services',             idx:'L1'},
-  uireact:      {w:210, h:80, color:'ui',          role:'UI · Admin',                    idx:'EXP'},
-  uiflutter:    {w:210, h:80, color:'ui',          role:'UI · Mobile',                   idx:'EXP'},
-  uiweb:        {w:210, h:80, color:'ui',          role:'UI · Public',                   idx:'EXP'},
+  // ── Dev / Prod GitHub-Flow (ab Phase 1) ──
+  gh_dev:       {w:180, h:70, color:'github',      role:'GitHub · Dev-Repo',             idx:'DEV'},
+  gh_prod:      {w:180, h:70, color:'github',      role:'GitHub · Prod-Repo',            idx:'PROD'},
 };
 
+/* Layer labels */
 const LAYER_LABELS = {
   0: [
-    {text:'Xojo Monolith · alles intern', y:-350, x:-520, color:'mono'}
+    {text:'Öffentlich',        y:-290, x:-520, color:'exp'},
+    {text:'Anwendungen',       y:-100, x:-520, color:'exp'},
+    {text:'Push-API',          y:-100, x: 380, color:'api'},
+    {text:'Datenbank SCNAT',   y: 200, x:-520, color:'core'}
   ],
   1: [
-    {text:'Experience Layer', y:-300, x:-520, color:'exp'},
-    {text:'Workflow · offen',  y:-130, x:-520, color:'wf'},
-    {text:'API Layer · NEU',   y:  30, x:-520, color:'api'},
-    {text:'Core Systems',      y: 230, x:-520, color:'core'}
+    {text:'Öffentlich',        y:-290, x:-520, color:'exp'},
+    {text:'Anwendungen',       y:-100, x:-520, color:'exp'},
+    {text:'Dev → Prod → Live', y:-100, x: 380, color:'dev'},
+    {text:'Datenbank SCNAT',   y: 200, x:-520, color:'core'}
   ],
   2: [
-    {text:'Experience Layer', y:-300, x:-520, color:'exp'},
-    {text:'Workflow · offen',  y:-130, x:-520, color:'wf'},
-    {text:'API Layer',         y:  30, x:-520, color:'api'},
-    {text:'Core Systems',      y: 230, x:-520, color:'core'}
+    {text:'Experience',        y:-230, x:-520, color:'exp'},
+    {text:'Adapter',           y:  20, x:-520, color:'api'},
+    {text:'Business',          y: 260, x:-520, color:'core'},
+    {text:'Dev → Prod → Live', y:-230, x: 450, color:'dev'}
   ],
   3: [
-    {text:'Experience Layer', y:-300, x:-520, color:'exp'},
-    {text:'Workflow Layer',    y:-140, x:-520, color:'wf'},
-    {text:'API Layer',         y:  10, x:-520, color:'api'},
-    {text:'Core Systems',      y: 250, x:-520, color:'core'}
+    {text:'Experience',        y:-230, x:-520, color:'exp'},
+    {text:'Adapter',           y:  20, x:-520, color:'api'},
+    {text:'Business',          y: 300, x:-520, color:'core'},
+    {text:'Dev → Prod → Live', y:-230, x: 450, color:'dev'}
   ]
 };
 
+/* ══════════════════════════════════════════════════════════════════
+   SCENARIOS
+   ══════════════════════════════════════════════════════════════════ */
 const SCENARIOS = {
 
+/* ─── HEUTE ────────────────────────────────────────────────────── */
 0: {
-  eyebrow:"STUFE 0 · STATUS QUO",
-  title:"Der Xojo-Monolith – intern strukturiert, nichts exponiert",
-  desc:"Xojo hat intern eine klare Schichtung: Datenbank, interne API zur Business-Logik, die Business-Logik selbst, interne API zum Workflow, der Workflow, interne API zur UI, und schliesslich Xojo-GUI und Web. All das ist innerhalb von Xojo gekapselt. Von aussen sichtbar ist nichts – kein System kann andocken, kein Browser kommt an die Daten vorbei an Xojo.",
+  eyebrow:"HEUTE · STATUS QUO",
+  title:"Datenbank SCNAT und Websystem – verbunden über die Push-API",
+  desc:"Die SCNAT betreibt heute zwei Systeme: die Datenbank SCNAT (Xojo-Applikation mit interner Schichtung von DB, Logik und GUI inklusive Mediendateien) und das Websystem SCNAT für die Web-Darstellung. Verbunden sind die beiden über eine historisch gewachsene Push-API, die in ihrer aktuellen Form einige Strukturen unnötig auftrennt und wieder zusammensetzt. Keine zentrale Authentifizierung. Versionierung läuft über Subversion.",
   meta:[
-    {text:"Intern strukturiert", cls:"warn"},
-    {text:"Nichts exponiert", cls:"warn"},
-    {text:"Auth dezentral", cls:"warn"}
+    {text:"Xojo-Framework alt", cls:"warn"},
+    {text:"Push-API historisch", cls:"warn"},
+    {text:"Auth dezentral", cls:"warn"},
+    {text:"SVN statt Git", cls:"warn"}
   ],
   boxes: [
-    {id:'db',           x: 0, y: 340, z:  0,  name:'Xojo DB', tech:'<strong>PostgreSQL</strong> · Personen · Organisationen'},
-    {id:'xojo_dbapi',   x: 0, y: 250, z: 25,  name:'interne API', tech:'zwischen DB und Business-Logik · nicht exponiert', note:'intern'},
-    {id:'xojo_logic',   x: 0, y: 150, z: 55,  name:'Business-Logik', tech:'<strong>Xojo</strong> · über Jahre gewachsen'},
-    {id:'xojo_flowapi', x: 0, y:  55, z: 90,  name:'interne API', tech:'zwischen Logik und Workflow · nicht exponiert', note:'intern'},
-    {id:'xojo_flow',    x: 0, y: -40, z:130,  name:'Workflow (intern)', tech:'<strong>Xojo</strong> · Hintergrundprozesse'},
-    {id:'xojo_uiapi',   x: 0, y:-135, z:170,  name:'interne API', tech:'zwischen Workflow und UI · nicht exponiert', note:'intern'},
-    {id:'xojogui',      x:-170, y:-260, z:220, name:'Xojo GUI', tech:'<strong>Xojo Desktop</strong> · interne Anwender'},
-    {id:'web',          x: 170, y:-260, z:220, name:'Web direkt', tech:'Browser → Xojo · Sonderweg'},
+    {id:'db',           x:-330, y: 340, z:  0, name:'Xojo DB', tech:'<strong>PostgreSQL</strong> · Kerndaten + Medien'},
+    {id:'xojo_dbapi',   x:-330, y: 240, z: 30, name:'interne API', tech:'DB zu Logik', note:'intern'},
+    {id:'xojo_logic',   x:-330, y: 140, z: 60, name:'Business-Logik', tech:'<strong>Xojo</strong> · über Jahre gewachsen'},
+    {id:'xojo_uiapi',   x:-330, y:  40, z: 90, name:'interne API', tech:'Logik zu GUI', note:'intern'},
+    {id:'xojogui',      x:-330, y:-110, z:140, name:'DB-GUI', tech:'<strong>Xojo Desktop</strong> · Fach-Anwender'},
+    {id:'pushapi',      x: -60, y:-110, z:150, name:'Push-API', tech:'Transfer · historisch'},
+    {id:'websystem',    x: 200, y:-110, z:160, name:'Websystem SCNAT', tech:'eigene Server-Anwendung'},
+    {id:'webportale',   x: 200, y:-300, z:210, name:'Webseiten und Portale', tech:'öffentlich sichtbar · interne Portale für Mitglieder'},
   ],
   monolith: {
-    xMin:-330, xMax:330, yMin:-320, yMax:400, z:-30,
-    label:'Xojo Monolith · alle Schichten intern, keine exponiert'
+    xMin:-470, xMax:-190, yMin:-155, yMax:390, z:-30,
+    label:'Datenbank SCNAT · Xojo-Applikation'
   },
   connections: [
     {from:'db',          to:'xojo_dbapi',   color:'grey'},
     {from:'xojo_dbapi',  to:'xojo_logic',   color:'grey'},
-    {from:'xojo_logic',  to:'xojo_flowapi', color:'grey'},
-    {from:'xojo_flowapi',to:'xojo_flow',    color:'grey'},
-    {from:'xojo_flow',   to:'xojo_uiapi',   color:'grey'},
+    {from:'xojo_logic',  to:'xojo_uiapi',   color:'grey'},
     {from:'xojo_uiapi',  to:'xojogui',      color:'grey'},
-    {from:'xojo_uiapi',  to:'web',          color:'grey'},
+    {from:'xojo_logic',  to:'pushapi',      color:'api'},
+    {from:'pushapi',     to:'websystem',    color:'api'},
+    {from:'websystem',   to:'webportale',   color:'ui'},
   ],
   sidebar: [
     {
       accent:'warn',
-      tag:'Realität · Xojo intern',
-      name:'Die Schichten existieren – aber nur innen',
-      desc:'Der Xojo-Monolith hat bereits die klassische Schichtung: DB, interne API zur Logik, Business-Logik, interne API zum Workflow, Workflow, interne API zur UI. Nichts davon ist von aussen sichtbar oder nutzbar. Alles läuft ausschliesslich innerhalb von Xojo.'
+      tag:'Ausgangslage',
+      name:'Zwei Systeme, eine Brücke',
+      desc:'Datenbank SCNAT und Websystem SCNAT sind zwei separate Systeme. Die Datenbank hält Stammdaten und Medien, die Business-Logik und die fachliche GUI. Das Websystem ist für die öffentliche Darstellung zuständig. Zwischen beiden läuft die Push-API, die aus historischen Gründen komplexer ist als nötig.'
     },
     {
       accent:'warn',
-      tag:'Problem 1',
-      name:'Keine offene Kante',
-      desc:'Andere Systeme können nicht sauber andocken. Integrationen wären nur über Datei-Austausch oder direkten DB-Zugriff möglich – beides brüchig.'
+      tag:'Xojo-Framework',
+      name:'Läuft – aber am Limit',
+      desc:'Die produktive Xojo-Version ist auf Intel-Macs ausgelegt. Via Rosetta 2 läuft sie aktuell auf ARM-Hardware. Apple hat jedoch bereits angekündigt, Rosetta 2 einzustellen. Ein Update auf eine neuere Xojo-Version wird nötig.'
+    },
+    {
+      accent:'api',
+      tag:'Push-API',
+      name:'Historisch kompliziert',
+      desc:'Datenstrukturen werden auf der einen Seite unnötig aufgetrennt und auf der anderen wieder zusammengefügt. Das erhöht die Komplexität und erschwert künftige Änderungen. Phase 1 modernisiert sie.'
     },
     {
       accent:'warn',
-      tag:'Problem 2',
-      name:'Identität ist überall und nirgends',
-      desc:'Jedes angrenzende System hat eigene Anmeldungen. Zentraler Zugriffsschutz fehlt. Rollen werden ad hoc gepflegt.'
-    },
-    {
-      accent:'warn',
-      tag:'Problem 3',
-      name:'Kopfmonopol',
-      desc:'Die Struktur ist vorhanden, aber sie existiert nur im Code und im Wissen weniger Personen. Wer Xojo nicht kennt, kann nichts ändern. Ausfall oder Wegfall wirkt direkt auf den Betrieb.'
+      tag:'Kritische Punkte',
+      name:'Was fehlt strukturell',
+      desc:'Keine zentrale Authentifizierung. Keine offene Aussenkante für weitere Anwendungen. Die GUI der Datenbank ist an Xojo gebunden. Das Layout im Websystem ist starr. Versionierung über Subversion statt Git – externe Zusammenarbeit ist dadurch erschwert.'
     }
   ]
 },
 
+/* ─── PHASE 1 · REFACTORING ────────────────────────────────────── */
 1: {
-  eyebrow:"STUFE 1 · ZIELARCHITEKTUR",
-  title:"Vier Schichten – Core bleibt, API wird nach aussen exponiert",
-  desc:"Der Xojo-Kern und die DB bleiben als Core Systems unverändert. Die Business-Logik, die über Jahre gewachsen ist, bleibt die eine Wahrheit. Darüber kommt eine externe API-Schicht, die alle Datenzugriffe lesend und schreibend abwickelt und dabei die bestehende Xojo-Logik nutzt. Die Experience-Schicht (interne Fachoberflächen, öffentliches Web, Umsysteme) spricht ausschliesslich mit dieser neuen API. Der Workflow-Layer ist als Platzhalter vorgesehen – noch ungelöst. Identity ist querschnittlich.",
+  eyebrow:"PHASE 1 · REFACTORING UND PLANUNG",
+  title:"Stabilisieren, modernisieren, Pilot für Modularisierung",
+  desc:"Zeithorizont 1–1.5 Jahre. Keine komplett neuen Funktionen. Stattdessen: neue Hardware und Betriebssystem, die Push-API wird modernisiert, Seitenstrukturen werden auf weitere Produkte ausgedehnt, Layout-Möglichkeiten werden geöffnet, Umstieg von Subversion auf Git mit getrennten Dev- und Prod-Repos. Der zentrale Erfahrungsgewinn: ein neuer Web-Seiten-Editor wird als eigenes Modul (nicht in Xojo) entwickelt – ein Pilotprojekt mit überschaubarem Risiko.",
   meta:[
-    {text:"Core bleibt unverändert", cls:"ok"},
-    {text:"Externe API neu", cls:"new"},
-    {text:"SSO zentral", cls:"new"},
-    {text:"Workflow offen", cls:"warn"}
+    {text:"1–1.5 Jahre", cls:""},
+    {text:"HW + OS neu", cls:"new"},
+    {text:"Push-API modern", cls:"new"},
+    {text:"Dev/Prod via GitHub", cls:"new"},
+    {text:"Editor ausgelagert", cls:"new"}
   ],
   boxes: [
-    {id:'db',       x: 0,   y: 310, z: 0,   name:'Xojo DB',    tech:'<strong>PostgreSQL</strong> · bleibt'},
-    {id:'xojocore', x: 0,   y: 180, z: 50,  name:'Xojo Core', tech:'<strong>Xojo</strong> · Business-Logik bleibt · interne Struktur unverändert'},
-    {id:'api',     x: 0,   y:  30, z: 130, name:'Externe API', tech:'<strong>REST / GraphQL</strong> · alle Datenzugriffe · nutzt Xojo-Logik', highlight:true, status:'NEU'},
-    {id:'workflow',x: 0,   y:-130, z: 180, name:'Workflow / Async', tech:'<strong>Noch ungelöst</strong> · Platz für asynchrone Prozesse'},
-    {id:'xojogui', x:-260, y:-290, z: 240, name:'Fachoberfläche', tech:'intern · spricht mit API · mit SSO'},
-    {id:'web',     x: 0,   y:-290, z: 240, name:'Web', tech:'öffentlich · spricht mit API · mit SSO'},
-    {id:'anchor',  x: 260, y:-290, z: 240, name:'Umsystem', tech:'Andockpunkt · KI · Events · CMS · Analyse'},
-    {id:'identity',x: 480, y:-80,  z: 300, name:'Identity',    tech:'<strong>Keycloak</strong> · OIDC · SSO', highlight:true, status:'NEU'},
+    {id:'db',           x:-330, y: 340, z:  0, name:'Xojo DB', tech:'<strong>PostgreSQL</strong> · neue HW · neues OS'},
+    {id:'xojo_dbapi',   x:-330, y: 240, z: 30, name:'interne API', tech:'DB zu Logik', note:'intern'},
+    {id:'xojo_logic',   x:-330, y: 140, z: 60, name:'Business-Logik', tech:'<strong>Xojo</strong> · unverändert'},
+    {id:'xojo_uiapi',   x:-330, y:  40, z: 90, name:'interne API', tech:'Logik zu GUI', note:'intern'},
+    {id:'xojogui',      x:-330, y:-110, z:140, name:'DB-GUI', tech:'<strong>Xojo Desktop</strong> · bleibt'},
+    {id:'pushapi',      x: -60, y:-110, z:150, name:'Push-API · modern', tech:'vereinfacht · reduzierte Komplexität', highlight:true, status:'NEU'},
+    {id:'websystem',    x: 200, y:-110, z:160, name:'Websystem SCNAT', tech:'neue HW · Layout geöffnet'},
+    {id:'web_editor',   x: -60, y:-300, z:210, name:'Web-Seiten-Editor', tech:'<strong>Web-Technologie</strong> · Pilot · extern entwickelt', highlight:true, status:'PILOT'},
+    {id:'webportale',   x: 200, y:-300, z:210, name:'Webseiten und Portale', tech:'öffentlich · Layout erweitert · mehr Produkte mit Seiten­strukturen'},
+
+    // Dev / Prod GitHub-Flow
+    {id:'gh_dev',       x: 420, y: 140, z: 60, name:'Dev-Repo', tech:'<strong>GitHub</strong> · Feature-Branches', highlight:true, status:'NEU'},
+    {id:'gh_prod',      x: 420, y:   0, z: 90, name:'Prod-Repo', tech:'<strong>GitHub</strong> · Release → Live', highlight:true, status:'NEU'},
   ],
   monolith: {
-    xMin:-220, xMax:220, yMin:130, yMax:360, z:-30,
-    label:'Core Systems · Xojo + DB + Business-Logik · bleibt'
+    xMin:-470, xMax:-190, yMin:-155, yMax:390, z:-30,
+    label:'Datenbank SCNAT · jetzt mit erstem ausgelagertem Modul'
   },
   connections: [
-    {from:'xojocore', to:'db',       color:'grey'},
-    {from:'api',      to:'xojocore', color:'api'},
-    {from:'api',      to:'workflow', color:'grey'},
-    {from:'workflow', to:'xojocore', color:'grey'},
-    {from:'xojogui', to:'api', color:'ui'},
-    {from:'web',     to:'api', color:'ui'},
-    {from:'anchor',  to:'api', color:'ui'},
-    {from:'identity', to:'xojogui', color:'auth'},
-    {from:'identity', to:'web',     color:'auth'},
-    {from:'identity', to:'anchor',  color:'auth'},
-    {from:'identity', to:'api',     color:'auth'},
+    {from:'db',          to:'xojo_dbapi',   color:'grey'},
+    {from:'xojo_dbapi',  to:'xojo_logic',   color:'grey'},
+    {from:'xojo_logic',  to:'xojo_uiapi',   color:'grey'},
+    {from:'xojo_uiapi',  to:'xojogui',      color:'grey'},
+    {from:'xojo_uiapi',  to:'web_editor',   color:'ui'},
+    {from:'xojo_logic',  to:'pushapi',      color:'api'},
+    {from:'pushapi',     to:'websystem',    color:'api'},
+    {from:'websystem',   to:'webportale',   color:'ui'},
+
+    // Deploy-Pfad: Dev-Repo → Prod-Repo → Websystem (Live)
+    {from:'gh_dev',      to:'gh_prod',      color:'deploy'},
+    {from:'gh_prod',     to:'websystem',    color:'deploy'},
+    {from:'gh_prod',     to:'web_editor',   color:'deploy'},
   ],
   sidebar: [
     {
       highlight:true,
-      accent:'api',
-      tag:'Kernprinzip',
-      name:'Externe API nutzt die Xojo-Logik, umgeht sie nicht',
-      desc:'Die neue API-Schicht sitzt OBERHALB des Xojo-Kerns und ruft dessen Business-Logik auf. Alle Datenzugriffe – lesend wie schreibend – laufen durch sie. Die interne Xojo-Struktur bleibt, sie wird aber ergänzt durch eine klare Aussenkante. Keine doppelte Wahrheit, kein Regel-Drift.',
+      accent:'ui',
+      tag:'Pilotprojekt',
+      name:'Web-Seiten-Editor als eigenes Modul',
+      desc:'Der bestehende Editor wird durch ein eigenes Modul ersetzt – nicht in Xojo. Integraler Teil der Datenbank, aber separates Projekt. Der Umfang ist überblickbar, das Risiko klein. Externe Entwicklungsressourcen werden erstmals eingebunden.'
+    },
+    {
+      highlight:true,
+      accent:'dev',
+      tag:'Versionierung · Deploy',
+      name:'Von Subversion zu GitHub · Dev → Prod → Live',
+      desc:'Umstieg von Subversion auf Git. Zwei getrennte Repos auf GitHub: ein Dev-Repo für die tägliche Entwicklung (Feature-Branches, Reviews) und ein Prod-Repo für Releases. Von Prod aus wird automatisch auf Live deployt. Damit wird Zusammenarbeit mit externen Ressourcen überhaupt erst praktikabel, und Fehler landen nicht direkt in Produktion.',
       techs:[
-        {label:'REST', active:true, color:'t-warn'},
-        {label:'GraphQL', color:'t-warn'},
-        {label:'gRPC', color:'t-warn'}
+        {label:'GitHub', active:true, color:'t-info'},
+        {label:'GitHub Actions', color:'t-info'},
+        {label:'GitLab', color:'t-info'}
       ]
+    },
+    {
+      accent:'',
+      tag:'Infrastruktur',
+      name:'Hardware und Betriebssystem',
+      desc:'Datenbank und Websystem laufen beide auf neuer Hardware und aktuellem macOS. Über Rosetta 2 vorerst noch möglich, mittelfristig wird aber ein Update auf eine neuere Xojo-Version nötig.'
+    },
+    {
+      accent:'api',
+      tag:'Push-API',
+      name:'Modernisiert',
+      desc:'Die Schnittstelle zwischen Datenbank und Websystem wird vereinfacht. Datenstrukturen werden nicht mehr unnötig aufgetrennt. Reduziert Komplexität auf Seiten der Datenbank und erleichtert spätere Erneuerungsschritte.'
+    },
+    {
+      accent:'ui',
+      tag:'Erweiterungen',
+      name:'Bereits angelegte Features aktivieren',
+      desc:'Seitenstrukturen mit Seitenobjekten werden auf weitere Produkte ausgedehnt (aktuell nur bei Organisationen). Das Layout im Websystem wird geöffnet.'
+    },
+    {
+      accent:'warn',
+      tag:'Chancen · Risiken',
+      name:'Ehrlich betrachtet',
+      desc:'Chancen: Systemumfeld wird stabilisiert, bessere Planung für Phase 2, erster Modularisierungsschritt mit kontrolliertem Risiko. Risiken: Erneuerung von Xojo weiter verschoben, keine wirklich neue Funktionalität, Kommunikationsaufwand mit externen Ressourcen.'
+    }
+  ]
+},
+
+/* ─── PHASE 2 · SPLIT ──────────────────────────────────────────── */
+2: {
+  eyebrow:"PHASE 2 · SPLIT",
+  title:"Aufteilung in Module – Zielarchitektur wird sichtbar",
+  desc:"Zeithorizont 2 Jahre. Die bestehenden Systeme werden in Module aufgeteilt. Die Datenbank-GUI wird von der Business-Logik getrennt und nicht mehr in Xojo geschrieben. Der restliche Xojo-Anteil läuft auf dem neuesten Framework. Das Websystem wird aufgeteilt: der Caching- und Transformations-Teil geht in die Adapterschicht, der Darstellungs-Teil in die Experience-Schicht. Ein Drittsystem für zentrale Authentifizierung kommt als Teil der Business-Schicht dazu. Die drei Schichten werden erstmals erkennbar. Deployment-Weg bleibt einheitlich: Dev-Repo → Prod-Repo → Live.",
+  meta:[
+    {text:"2 Jahre", cls:""},
+    {text:"GUI getrennt", cls:"new"},
+    {text:"Websystem gesplittet", cls:"new"},
+    {text:"Auth zentral", cls:"new"},
+    {text:"Dev/Prod via GitHub", cls:"ok"}
+  ],
+  boxes: [
+    // Business-Schicht
+    {id:'db',            x:-280, y: 340, z:  0, name:'DB SCNAT', tech:'<strong>PostgreSQL</strong> · Kerndaten + Medien'},
+    {id:'xojo_logic',    x:  40, y: 340, z:  0, name:'Business-Logik', tech:'<strong>Xojo</strong> · neues Framework'},
+    {id:'authsys',       x: 340, y: 340, z:  0, name:'Auth-System', tech:'<strong>Drittsystem</strong> · OIDC', highlight:true, status:'NEU'},
+    // Adapterschicht
+    {id:'adapter_gui',   x:-300, y:  20, z:110, name:'Adapter · GUI', tech:'kompatibel · ggf. übersprungen'},
+    {id:'adapter_web',   x:  40, y:  20, z:110, name:'Adapter · Web', tech:'Caching + Transformation', highlight:true, status:'NEU'},
+    // Experience-Schicht
+    {id:'dbgui_neu',     x:-300, y:-210, z:210, name:'DB-GUI · modern', tech:'nicht mehr Xojo · modern', highlight:true, status:'NEU'},
+    {id:'web_editor',    x: -40, y:-210, z:210, name:'Web-Seiten-Editor', tech:'aus Phase 1 · bleibt'},
+    {id:'webframework',  x: 220, y:-210, z:210, name:'Web-Darstellung', tech:'<strong>Web-Framework</strong> · extern', highlight:true, status:'NEU'},
+    // Öffentlicher Output
+    {id:'webportale',    x: 220, y:-400, z:260, name:'Webseiten und Portale', tech:'öffentlich · Portale für Mitglieder'},
+
+    // Dev / Prod GitHub-Flow
+    {id:'gh_dev',        x: 520, y:-100, z:210, name:'Dev-Repo', tech:'<strong>GitHub</strong> · pro Modul'},
+    {id:'gh_prod',       x: 520, y:  20, z:210, name:'Prod-Repo', tech:'<strong>GitHub</strong> · Release → Live'},
+  ],
+  monolith: null,
+  connections: [
+    {from:'xojo_logic',   to:'db',           color:'grey'},
+    {from:'adapter_gui',  to:'xojo_logic',   color:'api'},
+    {from:'adapter_web',  to:'xojo_logic',   color:'api'},
+    {from:'dbgui_neu',    to:'adapter_gui',  color:'ui'},
+    {from:'webframework', to:'adapter_web',  color:'ui'},
+    {from:'web_editor',   to:'adapter_web',  color:'ui'},
+    {from:'adapter_gui',  to:'authsys',      color:'auth'},
+    {from:'adapter_web',  to:'authsys',      color:'auth'},
+    {from:'webframework', to:'webportale',   color:'ui'},
+
+    // Deploy-Pfad: Dev → Prod → jeweiliges Modul
+    {from:'gh_dev',       to:'gh_prod',      color:'deploy'},
+    {from:'gh_prod',      to:'webframework', color:'deploy'},
+    {from:'gh_prod',      to:'dbgui_neu',    color:'deploy'},
+    {from:'gh_prod',      to:'adapter_web',  color:'deploy'},
+  ],
+  sidebar: [
+    {
+      highlight:true,
+      accent:'',
+      tag:'Die drei Schichten werden sichtbar',
+      name:'Experience · Adapter · Business',
+      desc:'Am Ende dieser Phase stehen die drei Schichten der Zielarchitektur erstmals in Ansätzen. Oben die Anwendungen mit ihren Oberflächen, in der Mitte die Adapter (einer pro Anwendung), unten der zentrale Datenstand mit Business-Logik und Auth-System.'
+    },
+    {
+      highlight:true,
+      accent:'ui',
+      tag:'Datenbank-Split',
+      name:'GUI raus aus Xojo',
+      desc:'Die Benutzerschnittstelle der Datenbank wird von der Business-Logik getrennt und mit anderer Technologie zumindest partiell ersetzt. Die bestehende Schnittstelle bleibt kompatibel, weshalb der Adapter hier übersprungen werden kann. Der verbleibende Xojo-Anteil läuft auf dem neuesten Framework.'
+    },
+    {
+      highlight:true,
+      accent:'api',
+      tag:'Websystem-Split',
+      name:'Zwei Teile, zwei Schichten',
+      desc:'Das Websystem wird aufgeteilt. Caching und Datentransformation wandern in die Adapterschicht. Die eigentliche Darstellung geht in die Experience-Schicht – dabei entsteht die Möglichkeit, die Eigenentwicklung durch ein externes Web-Framework zu ersetzen. Der Anteil an Eigenentwicklung sinkt deutlich.'
     },
     {
       highlight:true,
       accent:'auth',
-      tag:'Querschnitt',
-      name:'Identity Layer',
-      desc:'Ein zentraler Identity Provider gilt für alle Systeme: Fachoberfläche, Web, Umsysteme und die API selbst. Login-Flow nach unten, Token-Validierung nach oben – bidirektional.',
+      tag:'Auth-System',
+      name:'Zentrales Drittsystem in der Business-Schicht',
+      desc:'Eine zentrale Möglichkeit zur Authentifizierung und Rechtevergabe kommt als Drittsystem hinzu. Es wird Teil der Business-Schicht. Alle Anwendungen kommunizieren über eine gemeinsame Schnittstelle mit ihm. Entscheidend: dass die Schnittstelle konsequent genutzt wird – technisch kann sie auch über mehrere einzelne Schnittstellen realisiert sein.',
       techs:[
         {label:'Keycloak', active:true, color:'t-red'},
         {label:'Ory', color:'t-red'},
@@ -1143,216 +1401,132 @@ const SCENARIOS = {
       ]
     },
     {
-      accent:'',
-      tag:'Core Systems',
-      name:'Was bleibt unverändert',
-      desc:'Xojo-Kern, Business-Logik und DB. Die interne Schichtung, die intern bereits existiert, bleibt bestehen und arbeitet weiter wie heute. Kein Refactoring, kein Risiko für den laufenden Betrieb.'
+      accent:'dev',
+      tag:'Deployment',
+      name:'Gleicher Weg pro Modul',
+      desc:'Jedes Modul (DB-GUI, Web-Framework, Adapter, Auth-Integration) hat seinen eigenen Dev- und Prod-Repo auf GitHub. Entwicklung läuft im Dev-Repo, Releases werden in den Prod-Repo gemerged und von dort auf Live deployt. Einheitlicher Weg – egal wer entwickelt.'
     },
-    {
-      accent:'flow',
-      tag:'Workflow · noch offen',
-      name:'Platzhalter mit Anschlussfähigkeit',
-      desc:'Asynchrone Prozesse, Langläufer, Integrations-Events – diese Schicht ist vorgesehen, aber noch nicht entschieden. Die Position im Stack ist reserviert, die API kann später darauf zugreifen, ohne dass sich sonst etwas ändert.',
-      techs:[
-        {label:'RabbitMQ', color:'t-cyan'},
-        {label:'Temporal', color:'t-cyan'},
-        {label:'n8n', color:'t-cyan'},
-        {label:'Camunda', color:'t-cyan'},
-        {label:'Noch offen', active:true, color:'t-cyan'}
-      ]
-    },
-    {
-      accent:'ui',
-      tag:'Experience Layer',
-      name:'Was oben passiert',
-      desc:'Alle Oberflächen sprechen nur noch mit der externen API – nie mehr direkt mit Xojo. Die interne Fachoberfläche für Anwender, die öffentliche Webseite, jedes Umsystem. Der direkte Browser-Zugriff auf Xojo entfällt.'
-    }
-  ]
-},
-
-2: {
-  eyebrow:"STUFE 2 · BEISPIELHAFTE ANBINDUNG",
-  title:"Statamic als öffentliches Web",
-  desc:"Die Zielarchitektur aus Stufe 1 steht. Darauf aufbauend: Statamic übernimmt das öffentliche Web. Es holt Stammdaten über die API aus dem Xojo-Kern, verwaltet Web-Inhalte selbst und hat eine eigene Media-DB für Assets. Die interne Fachoberfläche bleibt bestehen – Statamic löst nur das öffentliche Web ab.",
-  meta:[
-    {text:"Umsystem via API", cls:"new"},
-    {text:"Eigene Media-DB", cls:""},
-    {text:"SSO durchgängig", cls:"ok"}
-  ],
-  boxes: [
-    {id:'db',       x: 120, y: 310, z: 0,   name:'Xojo DB',    tech:'<strong>PostgreSQL</strong> · Stammdaten'},
-    {id:'xojocore', x: 120, y: 180, z: 50,  w:300, h:90, name:'Xojo Core', tech:'<strong>Xojo</strong> · Business-Logik bleibt'},
-    {id:'api',     x: 0,   y:  30, z: 130, w:380, name:'Externe API', tech:'<strong>REST / GraphQL</strong> · nutzt Xojo-Logik'},
-    {id:'workflow',x: 0,   y:-130, z: 180, name:'Workflow / Async', tech:'<strong>Noch ungelöst</strong>'},
-    {id:'xojogui',   x: 240, y:-290, z: 240, name:'Fachoberfläche', tech:'<strong>Xojo</strong> · interner Admin · bleibt'},
-    {id:'statfront', x:-240, y:-290, z: 240, name:'Web · Statamic Frontend', tech:'<strong>Nuxt</strong> · statisch generiert', highlight:true, status:'NEU'},
-    {id:'statamic',  x:-380, y:  30, z: 130, name:'Statamic CMS', tech:'<strong>Statamic</strong> · Content · Antlers', highlight:true, status:'NEU'},
-    {id:'mediadb',   x:-380, y: 310, z: 0,   name:'Media-DB',     tech:'<strong>PostgreSQL + S3</strong> · Assets', highlight:true, status:'NEU'},
-    {id:'identity',  x: 480, y:-80,  z: 300, name:'Identity',     tech:'<strong>Keycloak</strong> · OIDC · SSO'},
-  ],
-  monolith: {
-    xMin:-40, xMax:280, yMin:130, yMax:360, z:-30,
-    label:'Core Systems · SCNAT'
-  },
-  connections: [
-    {from:'xojocore', to:'db',       color:'grey'},
-    {from:'api',      to:'xojocore', color:'api'},
-    {from:'api',      to:'workflow', color:'grey'},
-    {from:'workflow', to:'xojocore', color:'grey'},
-    {from:'xojogui',  to:'api',      color:'ui'},
-    {from:'statamic', to:'mediadb',  color:'media'},
-    {from:'statamic', to:'api',      color:'api'},
-    {from:'statfront',to:'statamic', color:'ui'},
-    {from:'identity', to:'xojogui',  color:'auth'},
-    {from:'identity', to:'statamic', color:'auth'},
-    {from:'identity', to:'statfront',color:'auth'},
-    {from:'identity', to:'api',      color:'auth'},
-  ],
-  sidebar: [
     {
       accent:'warn',
-      tag:'Wichtige Klärung',
-      name:'Interne Fachoberfläche bleibt',
-      desc:'Statamic ist ein CMS für Web-Inhalte. Es kennt weder SCNAT-Personen noch -Organisationen als Datenmodell. Die Admin-Pflege dieser Stammdaten läuft weiter über die interne Fachoberfläche (Xojo). Erst Stufe 3 würde dieses Admin-Tool ablösen.'
-    },
-    {
-      highlight:true,
-      accent:'saas',
-      tag:'Umsystem',
-      name:'Statamic als CMS',
-      desc:'Statamic übernimmt den Web-Publikationsprozess. Redaktor:innen arbeiten in einer modernen Oberfläche, Inhalte werden strukturiert abgelegt, mehrsprachig. Schweizer Hosting möglich.',
-      techs:[
-        {label:'Statamic', active:true, color:'t-pink'},
-        {label:'Strapi', color:'t-pink'},
-        {label:'Directus', color:'t-pink'},
-        {label:'Sanity', color:'t-pink'}
-      ]
-    },
-    {
-      accent:'ui',
-      tag:'Frontend',
-      name:'Öffentliches Web',
-      desc:'Zieht Content aus Statamic, Stammdaten über die externe API aus dem Xojo-Kern. Statisch generiert für Performance.',
-      techs:[
-        {label:'Nuxt', active:true, color:'t-purple'},
-        {label:'Next.js', color:'t-purple'},
-        {label:'Astro', color:'t-purple'},
-        {label:'SvelteKit', color:'t-purple'}
-      ]
-    },
-    {
-      highlight:true,
-      accent:'media',
-      tag:'Trade-off',
-      name:'Zweite Datenhaltung',
-      desc:'Bilder, Videos, PDFs liegen nicht im Xojo-Kern, sondern in einer separaten Media-DB. Performance und Versionierung sprechen dafür; die bewusste Zweiteilung ist der Preis.',
-      techs:[
-        {label:'PostgreSQL + S3', active:true, color:'t-lime'},
-        {label:'MinIO', color:'t-lime'},
-        {label:'Cloudinary', color:'t-lime'},
-        {label:'Wasabi CH', color:'t-lime'}
-      ]
-    },
-    {
-      accent:'auth',
-      tag:'Was zeigt das Beispiel',
-      name:'Das Muster für jede Anbindung',
-      desc:'Identity Layer sorgt für SSO. SCNAT-Core unberührt. Das Umsystem holt die Daten, die es braucht, über die API. Jede weitere Anbindung (KI, Events) folgt genau diesem Muster.'
+      tag:'Risiko',
+      name:'Web-Framework mit Bedacht wählen',
+      desc:'Ein schlecht ausgewähltes Web-Framework erhöht das Sicherheitsrisiko. Web-Server sind durch ihre Exponiertheit das erste Ziel für Angriffe. Die Auswahl ist entsprechend sorgfältig zu machen.'
     }
   ]
 },
 
+/* ─── PHASE 3+ · DIGITALE TRANSFORMATION ───────────────────────── */
 3: {
-  eyebrow:"STUFE 3 · GREENFIELD",
-  title:"DB bleibt – alles andere neu",
-  desc:"Die Xojo-Codebase wird abgelöst. Die DB bleibt als Source of Truth erhalten. Business-Services werden in einer modernen Sprache neu implementiert. Die API-Schicht wird sauber aufgebaut, Workflow-Engine ist integriert, Multi-Frontend bedient verschiedene Anwendungsfälle. Identity wie bisher querschnittlich.",
+  eyebrow:"PHASE 3+ · DIGITALE TRANSFORMATION",
+  title:"Zielarchitektur in Betrieb – kontinuierliche Veränderung",
+  desc:"Ab hier läuft die digitale Transformation kontinuierlich. Neue Module werden über Adapter angefügt, bestehende ersetzt oder angepasst. Die Business-Schicht ist nicht mehr ein einziges System, sondern vielfältig: mehrere Drittsysteme und Eigenentwicklungen, technologisch divers. Das Xojo-Framework wird schrittweise ausgefädelt. Jedes Modul folgt demselben Deployment-Pfad: Dev-Repo → Prod-Repo → Live. Das folgende Bild ist ein möglicher Zustand – kein fixer Vorschlag, sondern ein Beispiel dessen, was das Schichtenmodell erlaubt.",
   meta:[
-    {text:"Full Rebuild", cls:"new"},
-    {text:"Multi-Frontend", cls:"new"},
-    {text:"Workflow integriert", cls:"new"}
+    {text:"kontinuierlich", cls:""},
+    {text:"Xojo ausgefädelt", cls:"ok"},
+    {text:"Module pro Bedarf", cls:"new"},
+    {text:"Dev/Prod via GitHub", cls:"ok"}
   ],
   boxes: [
-    {id:'db',        x: 0,    y: 300, z: 0,   name:'DB',             tech:'<strong>PostgreSQL</strong> · bleibt als Source of Truth'},
-    {id:'logic',     x: 0,    y: 170, z: 50,  name:'Business Services', tech:'<strong>Java · Kotlin · .NET</strong> · Domain-Logik neu', highlight:true, status:'NEU'},
-    {id:'api',       x: 0,    y:  20, z: 130, name:'API Layer',       tech:'<strong>GraphQL</strong> · Federation', highlight:true, status:'NEU'},
-    {id:'workflow',  x: 0,    y:-140, z: 180, color:'flow', name:'Workflow Engine', tech:'<strong>Temporal</strong> · Events · Orchestration', highlight:true, status:'NEU'},
-    {id:'uireact',   x:-260,  y:-300, z: 240, name:'React SPA',       tech:'<strong>React</strong> · Admin'},
-    {id:'uiflutter', x: 0,    y:-300, z: 240, name:'Flutter App',     tech:'<strong>Flutter · Dart</strong> · Mobile', highlight:true},
-    {id:'uiweb',     x: 260,  y:-300, z: 240, name:'Nuxt Web',        tech:'<strong>Nuxt</strong> · Public'},
-    {id:'identity',  x: 480,  y:-80,  z: 300, name:'Identity',        tech:'<strong>Keycloak</strong> · OIDC · SSO'},
+    // Business-Schicht
+    {id:'db',            x:-380, y: 380, z:  0, name:'DB SCNAT', tech:'<strong>PostgreSQL</strong> · Kerndaten'},
+    {id:'mediadb',       x:-130, y: 380, z:  0, name:'Medien-DB', tech:'<strong>S3 + PostgreSQL</strong> · Assets'},
+    {id:'businesslogic', x: 130, y: 380, z:  0, name:'Business-Logik', tech:'<strong>Modern</strong> · Xojo ausgefädelt', highlight:true},
+    {id:'authsys',       x: 380, y: 380, z:  0, name:'Auth-System', tech:'<strong>Drittsystem</strong> · zentral'},
+    // Adapterschicht
+    {id:'adapter_gui',   x:-380, y:  30, z:110, name:'Adapter A', tech:'intern · kompatibel'},
+    {id:'adapter_web',   x:-130, y:  30, z:110, name:'Adapter B', tech:'semantisch + struktur'},
+    {id:'adapter_cms',   x: 130, y:  30, z:110, name:'Adapter C', tech:'CMS-Anbindung'},
+    {id:'adapter_ext',   x: 380, y:  30, z:110, name:'Adapter D', tech:'externe App'},
+    // Experience-Schicht
+    {id:'dbgui_neu',     x:-380, y:-220, z:210, name:'DB-Admin', tech:'intern'},
+    {id:'meinkonto',     x:-130, y:-220, z:210, name:'Mein Konto', tech:'Selbstbedienung', highlight:true, status:'NEU'},
+    {id:'cms',           x: 130, y:-220, z:210, name:'CMS · Web', tech:'<strong>extern</strong> · öffentliches Web', highlight:true, status:'NEU'},
+    {id:'eventmgmt',     x: 380, y:-220, z:210, name:'Eventmanagement', tech:'<strong>Drittsystem</strong>', highlight:true, status:'NEU'},
+    // Öffentlicher Output
+    {id:'webportale',    x: 130, y:-410, z:260, name:'Webseiten und Portale', tech:'öffentlich · interne Portale für Mitglieder · vielfältig'},
+
+    // Dev / Prod GitHub-Flow
+    {id:'gh_dev',        x: 640, y:-100, z:210, name:'Dev-Repo', tech:'<strong>GitHub</strong> · pro Modul'},
+    {id:'gh_prod',       x: 640, y:  30, z:210, name:'Prod-Repo', tech:'<strong>GitHub</strong> · Release → Live'},
   ],
+  monolith: null,
   connections: [
-    {from:'logic',    to:'db',        color:'api'},
-    {from:'workflow', to:'logic',     color:'logic'},
-    {from:'api',      to:'workflow',  color:'flow'},
-    {from:'uireact',  to:'api',       color:'ui'},
-    {from:'uiflutter',to:'api',       color:'ui'},
-    {from:'uiweb',    to:'api',       color:'ui'},
-    {from:'identity', to:'uireact',   color:'auth'},
-    {from:'identity', to:'uiflutter', color:'auth'},
-    {from:'identity', to:'uiweb',     color:'auth'},
-    {from:'identity', to:'api',       color:'auth'},
-    {from:'identity', to:'workflow',  color:'auth'},
+    {from:'businesslogic', to:'db',         color:'grey'},
+    {from:'businesslogic', to:'mediadb',    color:'media'},
+    {from:'adapter_gui',   to:'businesslogic', color:'api'},
+    {from:'adapter_web',   to:'businesslogic', color:'api'},
+    {from:'adapter_cms',   to:'businesslogic', color:'api'},
+    {from:'adapter_ext',   to:'businesslogic', color:'api'},
+    {from:'adapter_gui',   to:'authsys',    color:'auth'},
+    {from:'adapter_web',   to:'authsys',    color:'auth'},
+    {from:'adapter_cms',   to:'authsys',    color:'auth'},
+    {from:'adapter_ext',   to:'authsys',    color:'auth'},
+    {from:'adapter_cms',   to:'mediadb',    color:'media'},
+    {from:'dbgui_neu',     to:'adapter_gui', color:'ui'},
+    {from:'meinkonto',     to:'adapter_web', color:'ui'},
+    {from:'cms',           to:'adapter_cms', color:'ui'},
+    {from:'eventmgmt',     to:'adapter_ext', color:'ui'},
+    {from:'cms',           to:'webportale', color:'ui'},
+
+    // Deploy-Pfad: Dev → Prod → diverse Module
+    {from:'gh_dev',        to:'gh_prod',    color:'deploy'},
+    {from:'gh_prod',       to:'eventmgmt',  color:'deploy'},
+    {from:'gh_prod',       to:'cms',        color:'deploy'},
+    {from:'gh_prod',       to:'meinkonto',  color:'deploy'},
+    {from:'gh_prod',       to:'adapter_cms',color:'deploy'},
   ],
   sidebar: [
     {
+      highlight:true,
       accent:'',
-      tag:'Architektur-Prinzip',
-      name:'Die vier Schichten sauber ausgeprägt',
-      desc:'Experience oben, Workflow als echte Orchestrierung, API als klar definierte Aussenkante, Business-Services als Domain-Kern. Jede Schicht hat eine Zuständigkeit, keine springt über eine andere hinweg.'
+      tag:'Zielzustand',
+      name:'Nicht fertig – in Bewegung',
+      desc:'Die Zielarchitektur ist kein festgeschriebener Endzustand, sondern ein Rahmen. Die Zusammenstellung der Module verändert sich mit den Anforderungen. Teilweise werden Module aus der Business-Schicht in die Adapterschicht verschoben, wenn sie nicht universell gebraucht werden. Umgekehrt wandern Funktionen aus Anwendungen in die Business-Schicht, wenn sie für mehrere nützlich werden.'
     },
     {
-      accent:'logic',
-      tag:'Business Services',
-      name:'Moderne Sprache wählbar',
-      desc:'Drei realistische Kandidaten mit reifem Ökosystem und verfügbaren Entwicklern am Markt.',
-      techs:[
-        {label:'Java · Spring', active:true, color:'t-info'},
-        {label:'Kotlin', color:'t-info'},
-        {label:'.NET 8 / C#', color:'t-info'}
-      ]
-    },
-    {
-      accent:'flow',
-      tag:'Workflow',
-      name:'Jetzt gelöst',
-      desc:'Asynchrone Prozesse, Langläufer, Approval-Flows, Integrationen – eine eigene Engine macht das wartbar.',
-      techs:[
-        {label:'Temporal', active:true, color:'t-cyan'},
-        {label:'Camunda', color:'t-cyan'},
-        {label:'n8n', color:'t-cyan'},
-        {label:'Airflow', color:'t-cyan'}
-      ]
+      accent:'ui',
+      tag:'Experience',
+      name:'Vielfalt an Anwendungen',
+      desc:'Mein Konto, Eventmanagement, CMS, fachspezifische Werkzeuge. Technologisch divers, auch externe Systeme. Anwendungen kommunizieren untereinander nur in Ausnahmefällen – meist indirekt über die Schicht darunter.'
     },
     {
       accent:'api',
-      tag:'API',
-      name:'GraphQL als Kante',
-      desc:'Eine flexible Aussenkante für alle Frontends. Intern können unterschiedliche Protokolle stehen.',
-      techs:[
-        {label:'GraphQL', active:true, color:'t-warn'},
-        {label:'REST', color:'t-warn'},
-        {label:'gRPC', color:'t-warn'}
-      ]
+      tag:'Adapter',
+      name:'Einer pro Anwendung',
+      desc:'Jede Anwendung bekommt ihren eigenen Adapter. Der Aufwand variiert: manche sind trivial (kompatible Schnittstelle, Adapter übersprungen), andere müssen semantisch und strukturell übersetzen. Die Adapterschicht ermöglicht einheitlichen Zugriff auf die gemeinsame Datenbasis.'
     },
     {
-      accent:'ui',
-      tag:'Frontends',
-      name:'Multi-Frontend',
-      desc:'Je Anwendungsfall das passende Werkzeug: Admin-Desktop, native Mobile, öffentliches Web.',
-      techs:[
-        {label:'React', active:true, color:'t-purple'},
-        {label:'Angular', color:'t-purple'},
-        {label:'Flutter · Dart', color:'t-purple'},
-        {label:'Svelte', color:'t-purple'},
-        {label:'Vue', color:'t-purple'}
-      ]
+      accent:'',
+      tag:'Business',
+      name:'Zentraler Datenstand, vielfältige Module',
+      desc:'Der gemeinsame Datenstand, die Business-Logik, die Medien-DB und das Auth-System. Drittsysteme oder Eigenentwicklungen – technologisch divers, je nach Anforderung. Die etablierten Schnittstellen bilden die Kante zur Adapterschicht.'
+    },
+    {
+      accent:'media',
+      tag:'Medien',
+      name:'Immer final in der Business-Schicht',
+      desc:'Die Medien-DB gehört zur Business-Schicht und wird von Anwendungen gemeinsam genutzt. Unabhängig davon, wo Dateien entstehen – final abgelegt werden sie hier.'
+    },
+    {
+      accent:'dev',
+      tag:'Deployment',
+      name:'Dev → Prod → Live für jedes Modul',
+      desc:'Einheitliches Muster seit Phase 1: jedes Modul hat ein Dev-Repo (tägliche Arbeit, Feature-Branches) und ein Prod-Repo (Releases) auf GitHub. Von Prod aus läuft der Deployment auf Live. Neue Module fügen sich in dasselbe Muster – egal ob intern entwickelt oder extern beigesteuert.'
+    },
+    {
+      accent:'',
+      tag:'Charakter der Schichten',
+      name:'Spektren zwischen Experience und Business',
+      desc:'KI: Experience häufig, Business selten. Ressourcen: aussen extern, innen intern. Transformation: oben schnell, unten langsam. Volatilität: oben temporär, unten archiviert. Das hilft bei der Einordnung neuer Module.'
     }
   ]
 }
 
 };
 
+/* ══════════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════════ */
 let currentScenario = 0;
 let rotX = 18, rotY = -22, zoomScale = 1;
 let panX = 0, panY = 0;
@@ -1360,6 +1534,9 @@ let panMode = false;
 let autoRotate = false;
 let autoRotateFrame = null;
 
+/* ══════════════════════════════════════════════════════════════════
+   RENDER BOXES
+   ══════════════════════════════════════════════════════════════════ */
 function renderBoxes(scenario){
   const layer = document.getElementById('boxesLayer');
   layer.innerHTML = '';
@@ -1504,7 +1681,11 @@ function renderConnections(scenario){
     const angleZ = Math.atan2(dy, horizLen) * 180 / Math.PI;
 
     const conn = document.createElement('div');
-    conn.className = `conn c-${c.color}${c.color==='auth'?' conn-auth':''}${c.color==='grey'?' conn-grey':''}`;
+    const extra = [];
+    if(c.color==='auth') extra.push('conn-auth');
+    if(c.color==='grey') extra.push('conn-grey');
+    if(c.color==='deploy') extra.push('conn-deploy');
+    conn.className = `conn c-${c.color}${extra.length?' '+extra.join(' '):''}`;
     conn.style.width = length + 'px';
     conn.style.transform = `translate3d(${sx}px, ${sy}px, ${sz}px) rotateY(${angleY}deg) rotateZ(${angleZ}deg)`;
 
@@ -1574,6 +1755,7 @@ function toggleTech(el){
   else if(block.classList.contains('accent-saas')) colorClass = 't-pink';
   else if(block.classList.contains('accent-media')) colorClass = 't-lime';
   else if(block.classList.contains('accent-logic')) colorClass = 't-info';
+  else if(block.classList.contains('accent-dev')) colorClass = 't-info';
   el.classList.add(colorClass);
 }
 
@@ -1600,6 +1782,9 @@ function setScenario(idx){
   renderSidebar(s.sidebar);
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   3D CONTROLS
+   ══════════════════════════════════════════════════════════════════ */
 function applyTransform(){
   const world = document.getElementById('world');
   world.style.transform = `translate3d(${panX}px, ${panY}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${zoomScale})`;
@@ -1617,7 +1802,7 @@ sceneEl.addEventListener('contextmenu', e=>e.preventDefault());
 sceneEl.addEventListener('mousedown', e=>{
   dragging = true;
   dragKind = isPanGesture(e) ? 'pan' : 'rotate';
-  sceneEl.style.cursor = dragKind === 'pan' ? 'grabbing' : 'grabbing';
+  sceneEl.style.cursor = 'grabbing';
   startX = e.clientX; startY = e.clientY;
   stopAutoRotate();
   e.preventDefault();
@@ -1639,7 +1824,7 @@ window.addEventListener('mousemove', e=>{
 });
 window.addEventListener('mouseup', ()=>{
   dragging=false;
-  sceneEl.style.cursor = panMode ? 'grab' : 'grab';
+  sceneEl.style.cursor = 'grab';
 });
 
 let lastTouchDist = 0;
@@ -1710,7 +1895,7 @@ function togglePanMode(){
   panMode = !panMode;
   const btn = document.getElementById('panModeBtn');
   if(btn) btn.classList.toggle('active', panMode);
-  sceneEl.style.cursor = panMode ? 'grab' : 'grab';
+  sceneEl.style.cursor = 'grab';
 }
 
 function toggleAutoRotate(){
@@ -1735,8 +1920,71 @@ function stopAutoRotate(){
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   HERO PARTICLES
+   ══════════════════════════════════════════════════════════════════ */
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas(){
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initParticles(){
+  particles = [];
+  const count = Math.min(80, Math.floor(canvas.width / 22));
+  for(let i=0; i<count; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random()-0.5) * 0.3,
+      vy: (Math.random()-0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.4,
+      hue: Math.random() > 0.75 ? '234,81,90' : (Math.random() > 0.5 ? '153,105,217' : '138,143,155')
+    });
+  }
+}
+initParticles();
+
+function drawParticles(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p=>{
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${p.hue}, 0.6)`;
+    ctx.fill();
+  });
+  for(let i=0; i<particles.length; i++){
+    for(let j=i+1; j<particles.length; j++){
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(138,143,155, ${0.15 * (1 - dist/120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ══════════════════════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════════════════════ */
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
-const navSections = ['hero','explorer','vergleich'];
+const navSections = ['hero','explorer','vergleich','fazit'];
 const navDots = document.querySelectorAll('.nav-dot');
 const navObserver = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
