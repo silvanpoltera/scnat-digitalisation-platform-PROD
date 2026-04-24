@@ -553,6 +553,33 @@ aside.sg.collapsed~.sp .sc header>div:first-child{padding-left:2.5rem}
 
 
 </style>
+<style id="light-mode-var-fix">
+/* LIGHT MODE VAR FIX — fallback definitions for CSS vars referenced in inline styles. Uses :where() so explicit file-defined values still win. */
+:where(html.light){
+  --white:#1F2937;--text:#1F2937;--text2:#6B7280;--text3:#9CA3AF;--text-light:#1F2937;--text-mid:#6B7280;--text-dim:#6B7280;--text-bright:#1F2937;--bright:#1F2937;
+  --elevated:#F3F4F6;--bg-elevated:#F3F4F6;--surface:#FFFFFF;--surface2:#F3F4F6;
+  --bg:#F8F9FA;--bg-base:#F8F9FA;--bg-card:#FFFFFF;--bg-card-hover:#F3F4F6;--bg-deep:#FFFFFF;
+  --panel:#FFFFFF;--card:#FFFFFF;--base:#F8F9FA;--light:#F8F9FA;--mid:#6B7280;--muted:#9CA3AF;--sub:#9CA3AF;--anthrazit:#9CA3AF;--anthraz:#9CA3AF;
+  --border:#E5E7EB;--border2:#D1D5DB;--border-hi:#D1D5DB;--border-hover:#9CA3AF;--border-md:#D1D5DB;--color-border:#E5E7EB;
+  --red:#DC2626;--red-dim:rgba(220,38,38,.08);--red-glow:rgba(220,38,38,.15);
+  --green:#059669;--green-dim:rgba(5,150,105,.08);--green-subtle:rgba(5,150,105,.06);
+  --amber:#D97706;--amber-dim:rgba(217,119,6,.08);
+  --yellow:#D97706;--yellow-dim:rgba(217,119,6,.08);--yellow-subtle:rgba(217,119,6,.06);
+  --orange:#EA580C;--blue:#2563EB;--blue-dim:rgba(37,99,235,.08);--purple:#7C3AED;--cyan:#0891B2;
+  --primary:#DC2626;--primary-hover:#B91C1C;--primary-subtle:rgba(220,38,38,.06);--primary-border:rgba(220,38,38,.2);
+  --info:#2563EB;--warn:#D97706
+}
+/* Attribute selectors for hardcoded dark hex values in inline styles (no var() wrapper) */
+html.light [style*="background:#12161A"],html.light [style*="background: #12161A"],
+html.light [style*="background:#161B21"],html.light [style*="background: #161B21"],
+html.light [style*="background:#1E2530"],html.light [style*="background: #1E2530"],
+html.light [style*="background:#0C0E10"],html.light [style*="background: #0C0E10"]{background:#F3F4F6!important}
+html.light [style*="background:#141618"],html.light [style*="background: #141618"]{background:#FFFFFF!important}
+html.light [style*="solid #1E2530"],html.light [style*="solid#1E2530"],
+html.light [style*="border:#1E2530"],html.light [style*="border-color:#1E2530"]{border-color:#E5E7EB!important}
+html.light [style*="color:#F9FAFB"],html.light [style*="color: #F9FAFB"],
+html.light [style*="color:#ECEEF1"],html.light [style*="color: #ECEEF1"]{color:#1F2937!important}
+</style>
 </head>
 <body>
 <div class="ss">
