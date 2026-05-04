@@ -97,9 +97,7 @@ html.in-iframe .hero{padding-top:3rem}
 .hero-meta span b{color:var(--text2);font-weight:500;margin-left:.3rem}
 
 /* ── BIG NUMBERS ── */
-.numbers-strip{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b-faint);border:1px solid var(--b-faint);border-radius:4px;overflow:hidden}
-.numbers-strip-wrap{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;position:relative;z-index:1}
-.numbers-strip{padding:0;margin:0}
+.numbers-strip{max-width:calc(1100px - 4rem);margin:0 auto 4rem;position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b-faint);border:1px solid var(--b-faint);border-radius:4px;overflow:hidden}
 .num-cell{background:var(--surface);padding:1.75rem 1.5rem;display:flex;flex-direction:column;gap:.4rem}
 .num-val{font-size:2.6rem;font-weight:700;line-height:1;letter-spacing:-0.03em}
 .num-val.red{color:var(--red)}
@@ -366,7 +364,7 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
   .topnav-meta{display:none}
   .topnav-link{padding:.35rem .7rem;font-size:.75rem}
   .hero{padding:3rem 1.25rem 2rem}
-  .numbers-strip{padding:0 1.25rem 3rem;grid-template-columns:repeat(2,1fr)}
+  .numbers-strip{max-width:calc(100vw - 2.5rem);margin:0 auto 3rem;grid-template-columns:repeat(2,1fr)}
   .num-val{font-size:2.1rem}
   .section{padding:3rem 1.25rem}
   .factors{grid-template-columns:1fr}
