@@ -4,6 +4,7 @@
 <script>
 (function(){
   try{var p=new URLSearchParams(window.location.search);if(p.get('theme')==='light')document.documentElement.classList.add('light');}catch(e){}
+  if(window.self!==window.top)document.documentElement.classList.add('in-iframe');
   function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b);document.documentElement.classList.toggle('light',b);}catch(e){}}
   sync();
   try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
@@ -73,6 +74,8 @@ html.light .grid-bg{opacity:.6}
 
 /* ── TOP NAV ── */
 .topnav{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--b-faint);padding:0 2rem;display:flex;align-items:center;height:52px;gap:2rem}
+html.in-iframe .topnav{display:none!important}
+html.in-iframe .hero{padding-top:3rem}
 .topnav-brand{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;border-right:1px solid var(--b-faint);padding-right:2rem;white-space:nowrap}
 .topnav-brand b{color:var(--text2);font-weight:500}
 .topnav-links{display:flex;gap:0;flex:1;overflow-x:auto;scrollbar-width:none}
