@@ -113,6 +113,15 @@ html.in-iframe .hero{padding-top:3rem}
 .pillars-intro .section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3)}
 .pillars-intro-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
 .pillars-intro-hint b{color:var(--text2)}
+.pillars-clear-btn{display:none;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--red);background:var(--red-dim);border:1px solid var(--red-mid);padding:.35rem .65rem;border-radius:3px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.pillars-clear-btn:hover{background:var(--red-mid);border-color:var(--red);transform:translateY(-1px)}
+.pillars-clear-x{font-size:14px;line-height:1;font-weight:700}
+body.pillar-filter-1 .pillars-clear-btn,
+body.pillar-filter-2 .pillars-clear-btn,
+body.pillar-filter-3 .pillars-clear-btn{display:inline-flex}
+body.pillar-filter-1 .pillars-intro-hint,
+body.pillar-filter-2 .pillars-intro-hint,
+body.pillar-filter-3 .pillars-intro-hint{display:none}
 .pillars-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
 .pillar-btn{
   position:relative;background:var(--surface);border:1px solid var(--b-def);border-radius:4px;
@@ -619,7 +628,11 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
   <div class="pillars-section">
     <div class="pillars-intro">
       <span class="section-label">Auf welcher Säule?</span>
-      <span class="pillars-intro-hint">Klick auf eine Säule, um <b>Massnahmen</b> & <b>Roadmap-Wellen</b> zu fokussieren – nochmal Klick, um alle wieder anzuzeigen.</span>
+      <span class="pillars-intro-hint">Klick auf eine Säule, um <b>Massnahmen</b> & <b>Roadmap-Wellen</b> zu fokussieren.</span>
+      <button type="button" id="pillarsClear" class="pillars-clear-btn" aria-label="Alle Säulen anzeigen">
+        <span class="pillars-clear-x">×</span>
+        <span>Alle Säulen anzeigen</span>
+      </button>
     </div>
     <div class="pillars-strip">
       <button type="button" class="pillar-btn" data-pillar="1">
@@ -1250,15 +1263,22 @@ sections.forEach(id => {
 // ── DREI SÄULEN: KLICK-FILTER ──
 (function(){
   const buttons = document.querySelectorAll('.pillar-btn');
+  const clearBtn = document.getElementById('pillarsClear');
   let active = null;
+
+  function clearFilter() {
+    document.body.classList.remove('pillar-filter-1','pillar-filter-2','pillar-filter-3');
+    buttons.forEach(b => b.classList.remove('on'));
+    active = null;
+  }
+
+  if (clearBtn) clearBtn.addEventListener('click', clearFilter);
+
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       const p = btn.dataset.pillar;
       if (active === p) {
-        // toggle off
-        document.body.classList.remove('pillar-filter-1','pillar-filter-2','pillar-filter-3');
-        buttons.forEach(b => b.classList.remove('on'));
-        active = null;
+        clearFilter();
       } else {
         document.body.classList.remove('pillar-filter-1','pillar-filter-2','pillar-filter-3');
         document.body.classList.add('pillar-filter-' + p);
