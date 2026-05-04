@@ -5,6 +5,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 const PAGES = {
   pillars: { title: 'The Pillars', sub: 'Drei Säulen · Systembild · Wechselwirkungen', file: '/files/drei_saeulen.html' },
+  'next-steps': { title: 'Next Steps 2026', sub: 'Quartalsplanung Q2 / Q3 / Q4 · Massnahmen · Risiken · Anträge GL', file: '/files/next_steps_2026.html' },
   frame: { title: 'The Frame', sub: 'Strategische Einordnung', file: '/files/digitaler_rahmen.html' },
   architektur: { title: 'Architektur', sub: 'Vier Schichten · Vier Stufen · 3D Explorer', file: '/files/architektur.html' },
   reason: { title: 'The Reason Why', sub: 'Analyse & Begründung', file: '/files/app_begruendung.html' },
@@ -17,7 +18,7 @@ const PAGES = {
   organigramm: { title: 'SCNAT Organigramm', sub: 'Bereiche · Plattformen · Foren · Kommissionen', file: '/files/organigramm.html' },
 };
 
-const PAGE_ORDER = ['pillars', 'frame', 'architektur', 'reason', 'where', 'details', 'recherche', 'process', 'how-built', 'speech-to-text', 'organigramm'];
+const PAGE_ORDER = ['pillars', 'next-steps', 'frame', 'architektur', 'reason', 'where', 'details', 'recherche', 'process', 'how-built', 'speech-to-text', 'organigramm'];
 
 export default function CpAdminStuffView() {
   const { page } = useParams();
@@ -73,7 +74,7 @@ export default function CpAdminStuffView() {
           src={iframeSrc}
           title={config.title}
           className="flex-1 w-full border-0 bg-bg-base"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"
         />
       </div>
     );
@@ -95,7 +96,7 @@ export default function CpAdminStuffView() {
         src={iframeSrc}
         title={config.title}
         className="flex-1 w-full border-0 bg-bg-base min-h-0"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"
       />
     </div>
   );

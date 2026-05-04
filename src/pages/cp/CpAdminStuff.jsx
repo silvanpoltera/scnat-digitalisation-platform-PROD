@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic, Network, GitBranch, Columns3 } from 'lucide-react';
+import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic, Network, GitBranch, Columns3, Compass } from 'lucide-react';
 
 const CARDS = [
   {
@@ -18,6 +18,19 @@ const CARDS = [
   },
   {
     num: '02',
+    section: 'Quartalsplanung 2026',
+    title: 'Next Steps 2026',
+    sub: 'Q2 / Q3 / Q4 · Massnahmen · Risiken · Anträge GL',
+    desc: '12 priorisierte Massnahmen in 6 Clustern, gestaffelt in drei Wellen. Inkl. Ausgangslage, 8 Risiken (sachlich benannt) und drei Anträgen an die Geschäftsleitung. Direkt-Sprung zu jedem Briefing in cp/admin-details.',
+    primary: { to: '/cp/admin-stuff/next-steps', label: 'Öffnen' },
+    secondary: { to: '/cp/admin-stuff/next-steps#massnahmen', label: 'Zu den Massnahmen' },
+    visual: 'next-steps',
+    quickIcon: Compass,
+    quickColor: 'text-status-blue',
+    accentBg: 'bg-status-blue/8',
+  },
+  {
+    num: '03',
     section: 'Strategische Einordnung',
     title: 'The Frame',
     sub: 'Der digitale Rahmen · Gesamtbild',
@@ -30,7 +43,7 @@ const CARDS = [
     accentBg: 'bg-scnat-red/8',
   },
   {
-    num: '03',
+    num: '04',
     section: 'Zielarchitektur',
     title: 'Architektur',
     sub: 'Vier Schichten · Vier Stufen · 3D Explorer',
@@ -42,7 +55,7 @@ const CARDS = [
     accentBg: 'bg-purple-500/8',
   },
   {
-    num: '04',
+    num: '05',
     section: 'Analyse & Begründung',
     title: 'The Reason Why',
     sub: 'Was die Zahlen sagen · Pitch-Unterlage',
@@ -55,7 +68,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '05',
+    num: '06',
     section: 'Standort & Infrastruktur',
     title: 'Where',
     sub: 'Positionierung · Verortung · Kontext',
@@ -67,7 +80,7 @@ const CARDS = [
     accentBg: 'bg-scnat-teal/8',
   },
   {
-    num: '06',
+    num: '07',
     section: 'Technische Details',
     title: 'The Details',
     sub: 'Sicherheit · Betrieb · Publishing · Governance',
@@ -90,7 +103,7 @@ const CARDS = [
     accentBg: 'bg-status-green/8',
   },
   {
-    num: '07',
+    num: '08',
     section: 'Technologie & Prozess',
     title: 'How it gets Built',
     sub: 'Tech Stack · Codex · The Super Mini PAI',
@@ -102,7 +115,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '08',
+    num: '09',
     section: 'KI-Tools · Analyse',
     title: 'Speech-to-Text',
     sub: '9 Tools · SaaS · API · Lokal · CH-DE',
@@ -114,7 +127,7 @@ const CARDS = [
     accentBg: 'bg-status-green/8',
   },
   {
-    num: '09',
+    num: '10',
     section: 'Organisation',
     title: 'SCNAT Organigramm',
     sub: 'Bereiche · Plattformen · Foren · Kommissionen',
@@ -442,6 +455,38 @@ function PillarsVisual() {
   );
 }
 
+function NextStepsVisual() {
+  const WAVES = [
+    { q: 'Q2', label: 'Fundament', count: 6, color: 'rgba(74,144,217,', dark: '#4A90D9' },
+    { q: 'Q3', label: 'Befähigung', count: 5, color: 'rgba(212,136,42,', dark: '#D4882A' },
+    { q: 'Q4', label: 'Weichen', count: 1, color: 'rgba(124,92,191,', dark: '#7C5CBF' },
+  ];
+  return (
+    <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
+      {WAVES.map((w, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-2 rounded-sm px-2 py-1.5"
+          style={{
+            background: w.color + '0.08)',
+            border: `1px solid ${w.color}0.40)`,
+            borderLeft: `3px solid ${w.dark}`,
+            animation: `layerFloat 6s ease-in-out ${i * 0.25}s infinite`,
+          }}
+        >
+          <span className="font-mono text-[10px] font-semibold tracking-wider" style={{ color: w.dark }}>{w.q}</span>
+          <span className="text-[9px] text-txt-secondary flex-1 truncate uppercase tracking-wide">{w.label}</span>
+          <span className="font-mono text-[9px] text-txt-tertiary">{w.count}</span>
+        </div>
+      ))}
+      <div className="flex items-center justify-between mt-1 px-1">
+        <span className="text-[8px] font-mono text-txt-tertiary uppercase tracking-wider">12 Massnahmen</span>
+        <span className="text-[8px] font-mono text-txt-tertiary">2026</span>
+      </div>
+    </div>
+  );
+}
+
 function CardVisual({ type }) {
   if (type === 'layers') return <LayersVisual />;
   if (type === 'stats') return <StatsVisual />;
@@ -452,6 +497,7 @@ function CardVisual({ type }) {
   if (type === 'architektur') return <ArchitekturVisual />;
   if (type === 'organigramm') return <OrganigrammVisual />;
   if (type === 'pillars') return <PillarsVisual />;
+  if (type === 'next-steps') return <NextStepsVisual />;
   return null;
 }
 
@@ -464,7 +510,7 @@ export default function CpAdminStuff() {
           <h2 className="text-xl font-heading font-semibold text-txt-primary flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-scnat-red" /> Admin Stuff
           </h2>
-          <p className="text-xs text-txt-secondary mt-0.5">9 Dokumente · Systembild, Strategie, Architektur, Begründung, Standort, Details, Technologie, KI-Analyse und Organigramm</p>
+          <p className="text-xs text-txt-secondary mt-0.5">10 Dokumente · Systembild, Quartalsplanung, Strategie, Architektur, Begründung, Standort, Details, Technologie, KI-Analyse und Organigramm</p>
         </div>
       </div>
 

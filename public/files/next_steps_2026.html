@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<script>
+(function(){
+  try{var p=new URLSearchParams(window.location.search);if(p.get('theme')==='light')document.documentElement.classList.add('light');}catch(e){}
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b);document.documentElement.classList.toggle('light',b);}catch(e){}}
+  sync();
+  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Steps 2026 – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.10);
+  --red-mid:rgba(234,81,90,0.25);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+  --purple:#7C5CBF;
+  --nav-bg:rgba(12,14,16,.96);
+  --grid-mask-stop:black;
+}
+
+html.theme-bright,
+html.light{
+  --bg:#F8F9FA;
+  --surface:#FFFFFF;
+  --elevated:#F3F4F6;
+  --subtle:#EAECEF;
+  --b-faint:#E5E7EB;
+  --b-def:#D1D5DB;
+  --b-strong:#9CA3AF;
+  --red:#DC2626;
+  --red-dim:rgba(220,38,38,0.06);
+  --red-mid:rgba(220,38,38,0.22);
+  --anth:#6B7280;
+  --text:#1F2937;
+  --text2:#4B5563;
+  --text3:#9CA3AF;
+  --ok:#059669;
+  --warn:#B45309;
+  --info:#2563EB;
+  --purple:#7C3AED;
+  --nav-bg:rgba(248,249,250,.94);
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;overflow-x:hidden;scroll-behavior:smooth}
+body{min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* ── GRID BG ── */
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--b-faint) 1px,transparent 1px),linear-gradient(90deg,var(--b-faint) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent 70%);pointer-events:none;z-index:0;opacity:.4}
+html.theme-bright .grid-bg,
+html.light .grid-bg{opacity:.6}
+
+/* ── TOP NAV ── */
+.topnav{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--b-faint);padding:0 2rem;display:flex;align-items:center;height:52px;gap:2rem}
+.topnav-brand{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;border-right:1px solid var(--b-faint);padding-right:2rem;white-space:nowrap}
+.topnav-brand b{color:var(--text2);font-weight:500}
+.topnav-links{display:flex;gap:0;flex:1;overflow-x:auto;scrollbar-width:none}
+.topnav-links::-webkit-scrollbar{display:none}
+.topnav-link{font-size:.8rem;color:var(--text2);padding:.4rem .9rem;border-radius:3px;transition:all .15s;white-space:nowrap;cursor:pointer;background:transparent;border:none;font-family:inherit}
+.topnav-link:hover{color:var(--text);background:var(--elevated)}
+.topnav-link.active{color:var(--red);background:var(--red-dim)}
+.topnav-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);white-space:nowrap}
+.topnav-meta .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:.4rem;vertical-align:middle;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── HERO ── */
+.hero{max-width:1100px;margin:0 auto;padding:5rem 2rem 3rem;position:relative;z-index:1}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.9rem}
+.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:700;line-height:1.02;margin-bottom:1.2rem;letter-spacing:-0.02em}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-sub{font-size:1rem;color:var(--text2);line-height:1.85;max-width:640px;margin-bottom:2.5rem}
+.hero-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.hero-meta span b{color:var(--text2);font-weight:500;margin-left:.3rem}
+
+/* ── BIG NUMBERS ── */
+.numbers-strip{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b-faint);border:1px solid var(--b-faint);border-radius:4px;overflow:hidden}
+.numbers-strip-wrap{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;position:relative;z-index:1}
+.numbers-strip{padding:0;margin:0}
+.num-cell{background:var(--surface);padding:1.75rem 1.5rem;display:flex;flex-direction:column;gap:.4rem}
+.num-val{font-size:2.6rem;font-weight:700;line-height:1;letter-spacing:-0.03em}
+.num-val.red{color:var(--red)}
+.num-val.purple{color:var(--purple)}
+.num-val.info{color:var(--info)}
+.num-val.warn{color:var(--warn)}
+.num-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
+.num-sub{font-size:.78rem;color:var(--text2);line-height:1.5;margin-top:.3rem}
+
+/* ── SECTION ── */
+.section{max-width:1100px;margin:0 auto;padding:4rem 2rem;position:relative;z-index:1}
+.section-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.section-line{flex:0 0 28px;height:1px;background:var(--b-def)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3)}
+.section-title{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;line-height:1.15;margin-bottom:1rem;letter-spacing:-0.01em}
+.section-lead{font-size:.92rem;color:var(--text2);line-height:1.85;max-width:680px;margin-bottom:2.5rem}
+hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0;max-width:1100px;margin-left:auto;margin-right:auto}
+
+/* ── MGMT SUMMARY: ERFOLGSFAKTOREN ── */
+.factors{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.factor{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color .2s,background .2s}
+.factor::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)}
+.factor:nth-child(2)::before{background:var(--info)}
+.factor:nth-child(3)::before{background:var(--purple)}
+.factor:hover{border-color:var(--b-strong);background:var(--elevated)}
+.factor-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.6rem;letter-spacing:.1em}
+.factor-title{font-weight:600;font-size:1rem;margin-bottom:.6rem;line-height:1.3}
+.factor-text{font-size:.83rem;color:var(--text2);line-height:1.7}
+
+/* ── AUSGANGSLAGE: STÄRKEN/LÜCKEN ── */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.split-col{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;overflow:hidden}
+.split-head{padding:1rem 1.25rem;border-bottom:1px solid var(--b-faint);display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.split-head-title{font-weight:600;font-size:.92rem;display:flex;align-items:center;gap:.6rem}
+.split-dot{width:8px;height:8px;border-radius:2px}
+.split-col.ok .split-dot{background:var(--ok)}
+.split-col.warn .split-dot{background:var(--warn)}
+.split-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:2px;text-transform:uppercase;letter-spacing:.08em}
+.split-col.ok .split-tag{background:rgba(61,170,117,.12);color:var(--ok);border:1px solid rgba(61,170,117,.25)}
+.split-col.warn .split-tag{background:rgba(212,136,42,.12);color:var(--warn);border:1px solid rgba(212,136,42,.25)}
+html.theme-bright .split-col.ok .split-tag,
+html.light .split-col.ok .split-tag{background:rgba(5,150,105,.10);border-color:rgba(5,150,105,.25)}
+html.theme-bright .split-col.warn .split-tag,
+html.light .split-col.warn .split-tag{background:rgba(180,83,9,.10);border-color:rgba(180,83,9,.25)}
+.split-body{padding:.5rem 0}
+.split-item{padding:1rem 1.25rem;border-bottom:1px solid var(--b-faint)}
+.split-item:last-child{border-bottom:none}
+.split-item-title{font-weight:600;font-size:.85rem;margin-bottom:.4rem}
+.split-item-text{font-size:.8rem;color:var(--text2);line-height:1.7}
+
+/* ── MASSNAHMEN FILTER ── */
+.filter-wrap{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--b-def);border-radius:4px}
+.filter-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-right:.25rem}
+.fchip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:2px;border:1px solid var(--b-def);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
+.fchip:hover{border-color:var(--b-strong);color:var(--text)}
+.fchip.on{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.filter-sep{width:1px;height:18px;background:var(--b-faint);margin:0 .25rem}
+.filter-count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)}
+.filter-count b{color:var(--text2);font-weight:500}
+
+/* ── MASSNAHMEN GRID ── */
+.mass-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.mass-card{
+  background:var(--surface);border:1px solid var(--b-def);border-radius:4px;
+  overflow:hidden;cursor:pointer;position:relative;
+  transition:border-color .2s,background .2s;
+}
+.mass-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px}
+.mass-card.cluster-strategie::before{background:var(--red)}
+.mass-card.cluster-komm::before{background:var(--info)}
+.mass-card.cluster-kultur::before{background:var(--purple)}
+.mass-card.cluster-infra::before{background:var(--warn)}
+.mass-card.cluster-prozess::before{background:var(--ok)}
+.mass-card.cluster-daten::before{background:var(--anth)}
+.mass-card:hover{border-color:var(--b-strong);background:var(--elevated)}
+.mass-card.hidden{display:none}
+.mass-card.expanded{border-color:var(--b-strong)}
+.mass-head{padding:1rem 1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.mass-head-left{flex:1;min-width:0}
+.mass-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.3rem;letter-spacing:.05em}
+.mass-title{font-size:.92rem;font-weight:600;line-height:1.3;margin-bottom:.45rem}
+.mass-cluster{font-size:.72rem;color:var(--text2);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.mass-tags{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.welle-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 7px;border-radius:2px;white-space:nowrap;border:1px solid var(--b-def);color:var(--text2)}
+.welle-tag.q2{border-color:rgba(74,144,217,.3);color:var(--info);background:rgba(74,144,217,.06)}
+.welle-tag.q3{border-color:rgba(212,136,42,.3);color:var(--warn);background:rgba(212,136,42,.06)}
+.welle-tag.q4{border-color:rgba(124,92,191,.3);color:var(--purple);background:rgba(124,92,191,.06)}
+.welle-tag.q23{background:linear-gradient(90deg,rgba(74,144,217,.1),rgba(212,136,42,.1));border-color:rgba(212,136,42,.3);color:var(--text2)}
+.welle-tag.q34{background:linear-gradient(90deg,rgba(212,136,42,.1),rgba(124,92,191,.1));border-color:rgba(124,92,191,.3);color:var(--text2)}
+html.theme-bright .welle-tag.q2,
+html.light .welle-tag.q2{border-color:rgba(37,99,235,.3);background:rgba(37,99,235,.06)}
+html.theme-bright .welle-tag.q3,
+html.light .welle-tag.q3{border-color:rgba(180,83,9,.3);background:rgba(180,83,9,.06)}
+html.theme-bright .welle-tag.q4,
+html.light .welle-tag.q4{border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.06)}
+
+.status-tag{font-family:'JetBrains Mono',monospace;font-size:8.5px;padding:2px 6px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.status-tag.bearbeitung{background:rgba(61,170,117,.1);color:var(--ok);border:1px solid rgba(61,170,117,.25)}
+.status-tag.priorisiert{background:rgba(74,144,217,.1);color:var(--info);border:1px solid rgba(74,144,217,.25)}
+.status-tag.planung{background:rgba(124,92,191,.1);color:var(--purple);border:1px solid rgba(124,92,191,.25)}
+.status-tag.backlog{background:rgba(90,97,107,.15);color:var(--text2);border:1px solid var(--b-def)}
+html.theme-bright .status-tag.bearbeitung,
+html.light .status-tag.bearbeitung{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.25)}
+html.theme-bright .status-tag.priorisiert,
+html.light .status-tag.priorisiert{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.25)}
+html.theme-bright .status-tag.planung,
+html.light .status-tag.planung{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.25)}
+html.theme-bright .status-tag.backlog,
+html.light .status-tag.backlog{background:rgba(0,0,0,.04)}
+
+.mass-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .45s cubic-bezier(.22,1,.36,1);
+}
+.mass-card.expanded .mass-body{max-height:520px}
+.mass-body-inner{padding:0 1.25rem 1.1rem;border-top:1px solid var(--b-faint);padding-top:1rem;font-size:.83rem;color:var(--text2);line-height:1.75}
+
+/* ── MASS DETAIL LINK ── */
+.mass-detail-link{
+  display:inline-flex;align-items:center;gap:.45rem;
+  margin-top:1rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  color:var(--red);
+  background:var(--red-dim);
+  border:1px solid var(--red-mid);
+  padding:.5rem .9rem;
+  border-radius:3px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:500;
+  transition:all .15s;
+  text-decoration:none;
+}
+.mass-detail-link:hover{
+  background:rgba(234,81,90,.18);
+  border-color:var(--red);
+  color:var(--text);
+  transform:translateX(2px);
+}
+html.theme-bright .mass-detail-link:hover,
+html.light .mass-detail-link:hover{background:rgba(220,38,38,.12)}
+.mass-detail-link .arr{transition:transform .2s;font-size:.85rem;line-height:1}
+.mass-detail-link:hover .arr{transform:translateX(3px)}
+
+/* ── TIMELINE ── */
+.timeline-wrap{margin-bottom:1rem}
+.timeline-note{background:rgba(212,136,42,.06);border:1px solid rgba(212,136,42,.2);border-radius:3px;padding:.85rem 1.1rem;font-size:.82rem;color:var(--text2);line-height:1.7;margin-bottom:1.5rem}
+.timeline-note b{color:var(--warn);font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.35rem;font-weight:500}
+html.theme-bright .timeline-note,
+html.light .timeline-note{background:rgba(180,83,9,.05);border-color:rgba(180,83,9,.2)}
+
+.waves{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;position:relative}
+.wave{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;overflow:hidden;position:relative}
+.wave::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.wave.w1::before{background:var(--info)}
+.wave.w2::before{background:var(--warn)}
+.wave.w3::before{background:var(--purple)}
+.wave-head{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--b-faint)}
+.wave-q{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;margin-bottom:.4rem}
+.wave.w1 .wave-q{color:var(--info)}
+.wave.w2 .wave-q{color:var(--warn)}
+.wave.w3 .wave-q{color:var(--purple)}
+.wave-title{font-weight:600;font-size:1rem;margin-bottom:.4rem;line-height:1.3}
+.wave-period{font-size:.75rem;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.wave-focus{padding:.85rem 1.25rem;border-bottom:1px solid var(--b-faint);font-size:.82rem;color:var(--text2);line-height:1.65;background:var(--subtle)}
+.wave-list{padding:.5rem 0}
+.wave-item{padding:.8rem 1.25rem;border-bottom:1px solid var(--b-faint);display:flex;align-items:flex-start;gap:.75rem}
+.wave-item:last-child{border-bottom:none}
+.wave-item-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);flex-shrink:0;letter-spacing:.05em;padding-top:1px}
+.wave-item-text{font-size:.8rem;color:var(--text)}
+.wave-item-text small{display:block;font-size:.72rem;color:var(--text3);margin-top:.2rem;font-family:'JetBrains Mono',monospace}
+
+/* ── RISIKEN ── */
+.risk-filter{display:flex;gap:.5rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10px}
+.risk-filter-label{color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-right:.25rem}
+.rchip{padding:5px 11px;border-radius:2px;border:1px solid var(--b-def);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit;font-size:10px}
+.rchip:hover{border-color:var(--b-strong);color:var(--text)}
+.rchip.on.all{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.rchip.on.hoch{border-color:var(--red);color:var(--red);background:rgba(234,81,90,.12)}
+.rchip.on.mittel{border-color:var(--warn);color:var(--warn);background:rgba(212,136,42,.12)}
+.rchip.on.tief{border-color:var(--ok);color:var(--ok);background:rgba(61,170,117,.12)}
+html.theme-bright .rchip.on.hoch,
+html.light .rchip.on.hoch{background:rgba(220,38,38,.08)}
+html.theme-bright .rchip.on.mittel,
+html.light .rchip.on.mittel{background:rgba(180,83,9,.08)}
+html.theme-bright .rchip.on.tief,
+html.light .rchip.on.tief{background:rgba(5,150,105,.08)}
+
+.risk-list{display:flex;flex-direction:column;gap:.6rem}
+.risk-card{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color .2s,background .2s}
+.risk-card:hover{border-color:var(--b-strong);background:var(--elevated)}
+.risk-card.expanded{border-color:var(--b-strong)}
+.risk-card.hidden{display:none}
+.risk-head{padding:1rem 1.25rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:1rem;align-items:center}
+.risk-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.05em}
+.risk-title{font-weight:600;font-size:.92rem;line-height:1.3}
+.risk-meter{width:80px;height:5px;background:var(--b-def);border-radius:1px;overflow:hidden;position:relative}
+.risk-meter-fill{height:100%;border-radius:1px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.risk-meter-fill.hoch{background:var(--red);width:90%}
+.risk-meter-fill.mittel{background:var(--warn);width:60%}
+.risk-meter-fill.tief{background:var(--ok);width:30%}
+.risk-badge{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:3px 9px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:.08em}
+.risk-badge.hoch{background:rgba(234,81,90,.12);color:var(--red);border:1px solid rgba(234,81,90,.3)}
+.risk-badge.mittel{background:rgba(212,136,42,.12);color:var(--warn);border:1px solid rgba(212,136,42,.3)}
+.risk-badge.tief{background:rgba(61,170,117,.12);color:var(--ok);border:1px solid rgba(61,170,117,.3)}
+html.theme-bright .risk-badge.hoch,
+html.light .risk-badge.hoch{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.3)}
+html.theme-bright .risk-badge.mittel,
+html.light .risk-badge.mittel{background:rgba(180,83,9,.08);border-color:rgba(180,83,9,.3)}
+html.theme-bright .risk-badge.tief,
+html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.3)}
+.risk-chev{font-size:.7rem;color:var(--text3);transition:transform .3s}
+.risk-card.expanded .risk-chev{transform:rotate(90deg)}
+.risk-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.22,1,.36,1)}
+.risk-card.expanded .risk-body{max-height:600px}
+.risk-body-inner{padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--b-faint);display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.risk-block-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.5rem}
+.risk-block-text{font-size:.82rem;color:var(--text2);line-height:1.75}
+
+/* ── ANTRÄGE ── */
+.gl-context{background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--anth);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.85rem;color:var(--text2);line-height:1.85}
+.gl-context b{color:var(--text);font-weight:600}
+
+.antraege{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem}
+.antrag{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;position:relative;overflow:hidden}
+.antrag::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red)}
+.antrag:nth-child(2)::before{background:var(--info)}
+.antrag:nth-child(3)::before{background:var(--purple)}
+.antrag-num{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.4rem;min-width:60px}
+.antrag-num-big{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:500;color:var(--red);line-height:1;letter-spacing:-0.02em}
+.antrag:nth-child(2) .antrag-num-big{color:var(--info)}
+.antrag:nth-child(3) .antrag-num-big{color:var(--purple)}
+.antrag-num-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em}
+.antrag-title{font-weight:600;font-size:1.05rem;margin-bottom:.7rem;line-height:1.3}
+.antrag-text{font-size:.85rem;color:var(--text2);line-height:1.85}
+.antrag-text + .antrag-text{margin-top:.6rem}
+
+.kern{background:var(--red-dim);border:1px solid var(--red-mid);border-radius:4px;padding:1.5rem 1.75rem;margin-bottom:1.5rem}
+.kern-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem}
+.kern-title{font-weight:600;font-size:1.1rem;margin-bottom:.6rem;line-height:1.3}
+.kern-text{font-size:.88rem;color:var(--text2);line-height:1.85}
+.kern-text + .kern-text{margin-top:.6rem}
+.kern-text strong{color:var(--text);font-weight:600}
+
+/* ── SCHLUSS ── */
+.schluss{background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:2rem 2.25rem;margin-top:1.5rem}
+.schluss-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.7rem}
+.schluss-text{font-size:.95rem;color:var(--text2);line-height:1.95}
+.schluss-text strong{color:var(--text);font-weight:600}
+
+/* ── FOOTER ── */
+.footer{max-width:1100px;margin:0 auto;padding:3rem 2rem 4rem;border-top:1px solid var(--b-faint);position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap}
+.footer-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;line-height:1.8}
+.footer-meta b{color:var(--text2);font-weight:500}
+.footer-author{font-size:.82rem;color:var(--text2)}
+.footer-author b{color:var(--text);font-weight:600}
+.footer-author small{display:block;color:var(--text3);font-size:.72rem;margin-top:.2rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:880px){
+  .topnav{padding:0 1rem;gap:1rem;height:48px}
+  .topnav-brand{font-size:10px;padding-right:1rem}
+  .topnav-meta{display:none}
+  .topnav-link{padding:.35rem .7rem;font-size:.75rem}
+  .hero{padding:3rem 1.25rem 2rem}
+  .numbers-strip{padding:0 1.25rem 3rem;grid-template-columns:repeat(2,1fr)}
+  .num-val{font-size:2.1rem}
+  .section{padding:3rem 1.25rem}
+  .factors{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+  .mass-grid{grid-template-columns:1fr}
+  .waves{grid-template-columns:1fr}
+  .risk-head{grid-template-columns:auto 1fr auto auto;gap:.75rem}
+  .risk-meter{display:none}
+  .risk-body-inner{grid-template-columns:1fr;gap:1rem}
+  .antrag{grid-template-columns:1fr;gap:1rem}
+  .antrag-num{flex-direction:row;justify-content:flex-start}
+  .schluss{padding:1.5rem}
+  .footer{padding:2rem 1.25rem 3rem}
+}
+@media(max-width:520px){
+  .hero h1{font-size:2rem}
+  .num-cell{padding:1.25rem 1rem}
+  .num-val{font-size:1.8rem}
+  .section{padding:2.5rem 1rem}
+  .filter-wrap{padding:.75rem .85rem}
+  .mass-head{padding:.85rem 1rem;gap:.5rem}
+  .mass-body-inner{padding:.85rem 1rem 1rem}
+  .risk-head{padding:.85rem 1rem;gap:.5rem}
+  .risk-body-inner{padding:.85rem 1rem 1rem}
+  .wave-head,.wave-focus,.wave-item{padding-left:1rem;padding-right:1rem}
+  .antrag{padding:1rem}
+  .kern{padding:1.25rem}
+  .schluss{padding:1.25rem}
+  .gl-context{padding:1rem 1.1rem}
+  .mass-detail-link{font-size:.68rem;padding:.45rem .75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND -->
+<div class="grid-bg"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-brand">SCNAT · <b>Digitalisierung</b></div>
+  <div class="topnav-links">
+    <button class="topnav-link active" data-target="hero">Übersicht</button>
+    <button class="topnav-link" data-target="summary">Summary</button>
+    <button class="topnav-link" data-target="ausgangslage">Ausgangslage</button>
+    <button class="topnav-link" data-target="massnahmen">Massnahmen</button>
+    <button class="topnav-link" data-target="zeitplan">Zeitplan</button>
+    <button class="topnav-link" data-target="risiken">Risiken</button>
+    <button class="topnav-link" data-target="antraege">Anträge GL</button>
+  </div>
+  <div class="topnav-meta"><span class="dot"></span>v1.0 · April 2026</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="eyebrow">Quartalsplanung Q2 – Q4 2026</div>
+  <h1>Next Steps<br><em>2026</em></h1>
+  <p class="hero-sub">Massnahmenportfolio, Roadmap und Risiken für die Quartale Q2, Q3 und Q4 2026. Gesamtüberblick über die priorisierten Digitalisierungsmassnahmen der SCNAT, deren zeitliche Verortung sowie eine ehrliche Einschätzung der strukturellen Voraussetzungen, die den Umsetzungserfolg beeinflussen.</p>
+  <div class="hero-meta">
+    <span>Version<b>1.0</b></span>
+    <span>Datum<b>20. April 2026</b></span>
+    <span>Status<b>Zur Lektüre Geschäftsleitung</b></span>
+    <span>Verfasser<b>Silvan Poltera</b></span>
+  </div>
+</section>
+
+<!-- BIG NUMBERS -->
+<div class="numbers-strip">
+  <div class="num-cell">
+    <div class="num-val red">12</div>
+    <div class="num-label">Priorisierte Massnahmen</div>
+    <div class="num-sub">Sprint-tauglich aufbereitet, mit Briefing</div>
+  </div>
+  <div class="num-cell">
+    <div class="num-val purple">6</div>
+    <div class="num-label">Handlungscluster</div>
+    <div class="num-sub">Strategie, Kommunikation, Kultur, Infrastruktur, Prozesse, Daten</div>
+  </div>
+  <div class="num-cell">
+    <div class="num-val info">3</div>
+    <div class="num-label">Quartale Umsetzungshorizont</div>
+    <div class="num-sub">Drei Wellen Q2 / Q3 / Q4 2026</div>
+  </div>
+  <div class="num-cell">
+    <div class="num-val warn">8.1</div>
+    <div class="num-label">Ø Score Wirkung × (11 − Aufwand)</div>
+    <div class="num-sub">Primär intern via Change Agent Netzwerk</div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- MGMT SUMMARY -->
+<section class="section" id="summary">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Management Summary</div>
+  </div>
+  <div class="section-title">Drei Erfolgsfaktoren entscheiden über die Wirkung</div>
+  <p class="section-lead">Nach der strategischen Vorarbeit der letzten Monate liegt ein priorisiertes, sprint-taugliches Portfolio vor. Strategie, Handlungsfelder und Bewertung sind dokumentiert. Die Plattform digitalisierung.scnat.ch ist technisch einsatzbereit, das Change Agent Netzwerk konzipiert, erste Sprints laufen.</p>
+
+  <div class="factors">
+    <div class="factor">
+      <div class="factor-num">01 / Multiplikatoren</div>
+      <div class="factor-title">Change Agent Netzwerk als aktiver Multiplikator</div>
+      <div class="factor-text">Eine Task Force zur Unterstützung der Digitalisierung in allen Abteilungen – nicht als Etikett, sondern mit Zeitbudget und Mandat.</div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">02 / Schnittstellen</div>
+      <div class="factor-title">Funktionierendes Zusammenspiel mit der IT</div>
+      <div class="factor-text">Rollen, Schnittstellen und Reaktionszeiten zwischen Digitalisierung und IT-Betrieb müssen klar definiert sein.</div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">03 / Mandat</div>
+      <div class="factor-title">Sichtbares Commitment der Geschäftsleitung</div>
+      <div class="factor-text">Klares Mandat zu den getroffenen Prioritäten – auch wenn strukturelle Fragen im Hintergrund unbequem werden könnten.</div>
+    </div>
+  </div>
+
+  <div class="gl-context">
+    <b>Ehrlicher Blick auf die Risiken:</b> Die grössten Umsetzungsrisiken liegen nicht in den Massnahmen selbst, sondern in den Rahmenbedingungen: eine strukturell überlastete IT mit Fokus auf das auslaufende Xojo-Konsolidierungsprojekt, offene Rollenklärungen zwischen Digitalisierung und IT-Betrieb, und Basis-Infrastruktur (Cloud-Kollaboration, Raumreservation, Abwesenheiten), die erst teilweise auf modernem Stand ist. Diese Punkte werden im Abschnitt Risiken transparent und lösungsorientiert adressiert.
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- AUSGANGSLAGE -->
+<section class="section" id="ausgangslage">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Bestandsaufnahme</div>
+  </div>
+  <div class="section-title">Ausgangslage – nüchtern betrachtet</div>
+  <p class="section-lead">Eine nüchterne Bestandsaufnahme der digitalen Voraussetzungen bei SCNAT, auf deren Basis die Priorisierung und Sequenzierung der Massnahmen erfolgt.</p>
+
+  <div class="split">
+    <div class="split-col ok">
+      <div class="split-head">
+        <div class="split-head-title"><span class="split-dot"></span>Stärken</div>
+        <span class="split-tag">Vorhanden / im Aufbau</span>
+      </div>
+      <div class="split-body">
+        <div class="split-item">
+          <div class="split-item-title">Digitalisierungsplattform bereits vorhanden</div>
+          <div class="split-item-text">digitalisierung.scnat.ch ist technisch einsatzbereit – mit Toolübersicht, Massnahmentracking, KI-Hub, Schulungskalender und FAQ. Zentraler Info- und Wissenshub, auf den alle Kommunikations- und Befähigungsmassnahmen aufsetzen.</div>
+        </div>
+        <div class="split-item">
+          <div class="split-item-title">Strategie und Prioritäten dokumentiert</div>
+          <div class="split-item-text">Digitalisierungsstrategie erarbeitet, sechs Handlungsfelder definiert, Massnahmenportfolio nach Wirkung und Aufwand bewertet und sprintweise gegliedert. Jede Massnahme verfügt über vollständiges Briefing.</div>
+        </div>
+        <div class="split-item">
+          <div class="split-item-title">Change Agent Netzwerk konzipiert</div>
+          <div class="split-item-text">Pro Abteilung eine digital affine Person, ~10 % Zeitbudget, Rolle als Antenne, Multiplikator und Feedbackkanal. Monatliche Change Agent Meetings sichern das Alignment. Aktivierung steht in den kommenden Wochen an.</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-col warn">
+      <div class="split-head">
+        <div class="split-head-title"><span class="split-dot"></span>Lücken & Abhängigkeiten</div>
+        <span class="split-tag">Adressieren</span>
+      </div>
+      <div class="split-body">
+        <div class="split-item">
+          <div class="split-item-title">IT-Kapazität durch PPO & Xojo gebunden</div>
+          <div class="split-item-text">Das seit zwölf Jahren laufende Xojo-Konsolidierungsprojekt (PPO, Abschluss 2026) bindet nahezu die gesamte IT-Kapazität. Akkumulierter Backlog in Kernsystemen SCNAT-DB und Portal begrenzt operative Reaktionsfähigkeit.</div>
+        </div>
+        <div class="split-item">
+          <div class="split-item-title">Basis-Services nicht durchgängig digital</div>
+          <div class="split-item-text">Grundlegende Prozesse wie Raumreservation, Abwesenheitsnotizen oder digitale Arbeitsinstrumente sind nicht auf dem Stand, den Mitarbeitende heute erwarten. Cloud-Kollaboration weit von modernen Standards entfernt.</div>
+        </div>
+        <div class="split-item">
+          <div class="split-item-title">Toollandschaft gewachsen, aber ungeordnet</div>
+          <div class="split-item-text">Zahlreiche Tools sind über die Jahre abteilungsweise eingeführt worden – häufig ausserhalb des formellen Beschaffungsprozesses. Rund zwanzig IT-Ausnahmen im Betrieb. Massnahme M-09 schafft Q3 die Faktenbasis.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- MASSNAHMEN -->
+<section class="section" id="massnahmen">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Portfolio</div>
+  </div>
+  <div class="section-title">Zwölf Massnahmen in sechs Clustern</div>
+  <p class="section-lead">Jede Massnahme ist eigenständig geplant, in einem vierwöchigen Sprint umsetzbar und nach dem Schema Wirkung × (11 − Aufwand) bewertet. Klick auf eine Karte zeigt die Kurzbeschreibung – das ausführliche Briefing mit Scope, Optionen, Ressourcenplan und Erfolgsmessung erreichst du über den <em style="color:var(--red);font-style:normal">Detail-Briefing</em> Button.</p>
+
+  <div class="filter-wrap">
+    <span class="filter-label">Cluster</span>
+    <button class="fchip on" data-filter="all">Alle</button>
+    <span class="filter-sep"></span>
+    <button class="fchip" data-filter="strategie">Strategie & Steuerung</button>
+    <button class="fchip" data-filter="komm">Kommunikation</button>
+    <button class="fchip" data-filter="kultur">Kultur & Befähigung</button>
+    <button class="fchip" data-filter="infra">Infrastruktur</button>
+    <button class="fchip" data-filter="prozess">Prozesse</button>
+    <button class="fchip" data-filter="daten">Daten & Wissen</button>
+    <span class="filter-count"><b id="filterCount">12</b> / 12 Massnahmen</span>
+  </div>
+
+  <div class="mass-grid" id="massGrid">
+
+    <!-- M-02 -->
+    <div class="mass-card cluster-strategie" data-cluster="strategie">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-02</div>
+          <div class="mass-title">Ressourcenabklärung mit klarem Konzept</div>
+          <div class="mass-cluster">Strategie & Steuerung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag bearbeitung">In Bearbeitung</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Saubere Aufstellung der für die Digitalisierung verfügbaren Ressourcen: Personen, Zeitbudgets, Budget, Mandat. Grundlage für verlässliche Sprintplanung und GL-Berichtswesen.
+        <a href="/cp/admin-details/ressourcen" target="_top" class="mass-detail-link">Detail-Briefing M-02 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-07 -->
+    <div class="mass-card cluster-strategie" data-cluster="strategie">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-07</div>
+          <div class="mass-title">KI-Strategie SCNAT</div>
+          <div class="mass-cluster">Strategie & Steuerung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag priorisiert">Priorisiert</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Rahmen für den KI-Einsatz: DSG- und DSGVO-konforme Tool-Klassifikation in drei Stufen, Governance-Dokument, Leitplanken für Mitarbeitende. Fundament für den KI-Lernpfad (M-08) und alle folgenden KI-Massnahmen.
+        <a href="/cp/admin-details/ki-strategie" target="_top" class="mass-detail-link">Detail-Briefing M-07 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-01 -->
+    <div class="mass-card cluster-komm" data-cluster="komm">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-01</div>
+          <div class="mass-title">Kommunikation Digitale Transformation</div>
+          <div class="mass-cluster">Kommunikation & Transparenz</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag bearbeitung">In Bearbeitung</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Regelmässige, nachvollziehbare Kommunikation des Digitalisierungsfortschritts über die Plattform (Neuigkeiten, News Ticker, In-App Notification) sowie ein manueller E-Mail-Kanal als Übergangslösung bis zur Mailserver-Integration.
+        <a href="/cp/admin-details/kommunikation" target="_top" class="mass-detail-link">Detail-Briefing M-01 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-04 -->
+    <div class="mass-card cluster-komm" data-cluster="komm">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-04</div>
+          <div class="mass-title">Einführung Digitalisierungsplattform</div>
+          <div class="mass-cluster">Kommunikation & Transparenz</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag priorisiert">Priorisiert</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Koordinierter interner Launch von digitalisierung.scnat.ch: Launch-Event, Walkthrough-Video, 1-Pager. Change Agents als Multiplikatoren, Kommunikationsabteilung als Partnerin, GL-Mandat als Legitimation.
+        <a href="/cp/admin-details/plattform" target="_top" class="mass-detail-link">Detail-Briefing M-04 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-05 -->
+    <div class="mass-card cluster-komm" data-cluster="komm">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-05</div>
+          <div class="mass-title">Übersicht digitale Tools</div>
+          <div class="mass-cluster">Kommunikation & Transparenz</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag backlog">Backlog</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Sichtbare, gepflegte Tool-Matrix auf der Plattform mit Bewertungen nach Nutzung, Zufriedenheit und Interesse. Erste Version bereits umgesetzt, nun Aktualisierung und Verankerung als lebendes System.
+        <a href="/cp/admin-details/tools" target="_top" class="mass-detail-link">Detail-Briefing M-05 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-03 -->
+    <div class="mass-card cluster-kultur" data-cluster="kultur">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-03</div>
+          <div class="mass-title">Team Change Agents</div>
+          <div class="mass-cluster">Digitale Kultur & Befähigung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q2">Q2</span>
+          <span class="status-tag priorisiert">Priorisiert</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Aktivierung des Change Agent Netzwerks: pro Abteilung eine digital affine Person mit rund zehn Prozent Zeitbudget. Monatliches Change Agent Meeting, klare Rolle als Antenne, Multiplikator und Feedbackkanal.
+        <a href="/cp/admin-details/change-agents" target="_top" class="mass-detail-link">Detail-Briefing M-03 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-08 -->
+    <div class="mass-card cluster-kultur" data-cluster="kultur">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-08</div>
+          <div class="mass-title">KI Lernpfad für Mitarbeitende</div>
+          <div class="mass-cluster">Digitale Kultur & Befähigung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q23">Q2 / Q3</span>
+          <span class="status-tag planung">In Planung</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Dreistufiger Lernpfad (Level 1 Grundlagen, Level 2 Anwendung, Level 3 Fortgeschritten) auf dem bestehenden KI-Hub. Hybrider Ansatz mit externen Trainings aus dem Raum Bern und internen KI-Spezialisten als Referenten.
+        <a href="/cp/admin-details/ki-lernpfad" target="_top" class="mass-detail-link">Detail-Briefing M-08 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-12 -->
+    <div class="mass-card cluster-infra" data-cluster="infra">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-12</div>
+          <div class="mass-title">Lead Applikationslandschaft</div>
+          <div class="mass-cluster">Infrastruktur & Beschaffung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q23">Q2 / Q3</span>
+          <span class="status-tag priorisiert">Priorisiert</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Klärung der Verantwortlichkeiten für die gesamte Applikationslandschaft. Silvan als Triage-Owner für eingehende Anforderungen, positioniert als Entlastung der IT, nicht als zusätzliche Hierarchie. Anpassung an die Ergebnisse der SCNAT-DB-Analyse.
+        <a href="/cp/admin-details/applikationslandschaft" target="_top" class="mass-detail-link">Detail-Briefing M-12 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-10 -->
+    <div class="mass-card cluster-infra" data-cluster="infra">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-10</div>
+          <div class="mass-title">Beschaffungsprozess definieren</div>
+          <div class="mass-cluster">Infrastruktur & Beschaffung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q3">Q3</span>
+          <span class="status-tag backlog">Backlog</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Standardprozess für die Beschaffung digitaler Tools – mit Sourcing-Strategie, Anforderungsaufnahme, IT-Review und DSG-Check. Sekundär Anbindung an SCNAT-DB, wo Datenübernahme relevant ist.
+        <a href="/cp/admin-details/beschaffung" target="_top" class="mass-detail-link">Detail-Briefing M-10 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-09 -->
+    <div class="mass-card cluster-infra" data-cluster="infra">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-09</div>
+          <div class="mass-title">Analyse Tools & Software</div>
+          <div class="mass-cluster">Infrastruktur & Beschaffung</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q3">Q3</span>
+          <span class="status-tag backlog">Backlog</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Systematische Bewertung der bestehenden Toollandschaft: Nutzung, Redundanzen, Lücken. Entscheidungsgrundlage für Konsolidierung, Ablösung oder gezielte Erweiterung. Baut auf M-05 auf.
+        <a href="/cp/admin-details/analyse-tools" target="_top" class="mass-detail-link">Detail-Briefing M-09 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-11 -->
+    <div class="mass-card cluster-prozess" data-cluster="prozess">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-11</div>
+          <div class="mass-title">Prozessdigitalisierung (Drei Evergreens)</div>
+          <div class="mass-cluster">Prozesse & Methoden</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q3">Q3</span>
+          <span class="status-tag planung">In Planung</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Grössere Massnahme mit drei Teilinitiativen. Archivstrategie und digitale Ablage. Beitragswesen – dokumentierter IST-Prozess mit 106 Beitragsempfängern, ~1.5 Mio. CHF Volumen, 16 Dokumenten pro Mailing, ~0.6 FTE interner Aufwand; Ziel: Masterdatenbank-Anbindung und Abacus-Import. Eventmanagement – geeignetes Tooling evaluieren und einführen. Das KI-Team übernimmt OCR, RAG und Automatisierungen als Querschnittsaufgabe.
+        <a href="/cp/admin-details/prozessdigitalisierung" target="_top" class="mass-detail-link">Detail-Briefing M-11 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+    <!-- M-06 -->
+    <div class="mass-card cluster-daten" data-cluster="daten">
+      <div class="mass-head">
+        <div class="mass-head-left">
+          <div class="mass-id">M-06</div>
+          <div class="mass-title">Konzept technologische Zukunft SCNAT-DB & Portale</div>
+          <div class="mass-cluster">Daten & Wissen</div>
+        </div>
+        <div class="mass-tags">
+          <span class="welle-tag q34">Q3 / Q4</span>
+          <span class="status-tag backlog">Backlog</span>
+        </div>
+      </div>
+      <div class="mass-body"><div class="mass-body-inner">
+        Strategische Weichenstellung für das zentrale Kernsystem nach Abschluss des Xojo-Konsolidierungsprojekts: Weiterentwicklung oder Ablösung? Evaluation moderner Technologien, Architekturoptionen und Übergangspfade. Voraussetzung: Abschluss Xojo-Projekt (geplant Ende 2026).
+        <a href="/cp/admin-details/db-portale" target="_top" class="mass-detail-link">Detail-Briefing M-06 <span class="arr">→</span></a>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ZEITPLAN -->
+<section class="section" id="zeitplan">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Roadmap</div>
+  </div>
+  <div class="section-title">Drei Wellen, gestaffelt nach Abhängigkeiten</div>
+  <p class="section-lead">Die Massnahmen sind so sequenziert, dass Abhängigkeiten berücksichtigt werden und in jedem Monat sichtbare Ergebnisse entstehen. Innerhalb eines Clusters laufen Massnahmen so weit sinnvoll parallel, zwischen den Clustern wird gestaffelt, um Ressourcen nicht zu überlasten.</p>
+
+  <div class="timeline-note">
+    <b>Hinweis zur Realität</b>
+    Dieser Zeitplan gilt explizit nur als Orientierung. Die aktuellen Voraussetzungen in der SCNAT – insbesondere die IT-Kapazitätssituation – werden eine vollständige Umsetzung in dieser Taktung wohl kaum zulassen.
+  </div>
+
+  <div class="waves">
+    <div class="wave w1">
+      <div class="wave-head">
+        <div class="wave-q">Welle 1 · Q2 2026</div>
+        <div class="wave-title">Fundament & Aktivierung</div>
+        <div class="wave-period">April – Juni</div>
+      </div>
+      <div class="wave-focus">Change Agents aktivieren, Plattform launchen, Kommunikation etablieren, KI-Rahmen setzen.</div>
+      <div class="wave-list">
+        <div class="wave-item"><span class="wave-item-id">M-02</span><span class="wave-item-text">Ressourcenabklärung<small>laufend bis Mai</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-01</span><span class="wave-item-text">Kommunikation Digitale Transformation<small>fortlaufend</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-03</span><span class="wave-item-text">Team Change Agents<small>Aktivierung im Mai</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-04</span><span class="wave-item-text">Einführung Digitalisierungsplattform<small>Launch Mai / Juni</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-07</span><span class="wave-item-text">KI-Strategie<small>Erarbeitung Mai / Juni</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-05</span><span class="wave-item-text">Übersicht digitale Tools<small>Refresh Mai</small></span></div>
+      </div>
+    </div>
+
+    <div class="wave w2">
+      <div class="wave-head">
+        <div class="wave-q">Welle 2 · Q3 2026</div>
+        <div class="wave-title">Befähigung & Strukturen</div>
+        <div class="wave-period">Juli – September</div>
+      </div>
+      <div class="wave-focus">KI-Lernpfad ausrollen, Applikationslandschaft klären, Beschaffung professionalisieren, Tool-Audit.</div>
+      <div class="wave-list">
+        <div class="wave-item"><span class="wave-item-id">M-08</span><span class="wave-item-text">KI Lernpfad<small>Aufbau & Pilot Juli / August</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-12</span><span class="wave-item-text">Lead Applikationslandschaft<small>Rollenklärung ab Juni</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-10</span><span class="wave-item-text">Beschaffungsprozess<small>Definition Juli / August</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-09</span><span class="wave-item-text">Analyse Tools & Software<small>Audit August / September</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">M-11</span><span class="wave-item-text">Prozessdigitalisierung Evergreens<small>Start Juli, drei Teilinitiativen</small></span></div>
+      </div>
+    </div>
+
+    <div class="wave w3">
+      <div class="wave-head">
+        <div class="wave-q">Welle 3 · Q4 2026</div>
+        <div class="wave-title">Weichenstellung Kernsystem</div>
+        <div class="wave-period">ab Oktober</div>
+      </div>
+      <div class="wave-focus">Nach Abschluss des Xojo-Projekts: strategische Entscheide zur technologischen Zukunft der Kernsysteme.</div>
+      <div class="wave-list">
+        <div class="wave-item"><span class="wave-item-id">M-06</span><span class="wave-item-text">Konzept DB & Portale<small>Konzeptphase Q4</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">···</span><span class="wave-item-text">Folgemassnahmen aus Welle 2<small>Umsetzung</small></span></div>
+        <div class="wave-item"><span class="wave-item-id">···</span><span class="wave-item-text">Mailserver-Integration Plattform<small>Folgemassnahme M-01</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- RISIKEN -->
+<section class="section" id="risiken">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Risiken & Abhängigkeiten</div>
+  </div>
+  <div class="section-title">Acht Risiken, sachlich benannt</div>
+  <p class="section-lead">Die grössten Risiken liegen nicht in den Massnahmen selbst, sondern in den organisatorischen und technischen Rahmenbedingungen. Die Darstellung benennt diese Risiken sachlich und ohne Schuldzuweisung – mit dem Ziel, sie als gemeinsam zu lösende Herausforderungen auf die GL-Agenda zu bringen. Klick auf eine Karte zeigt Beobachtung & Mitigation.</p>
+
+  <div class="gl-context">
+    <b>Kontext für die Geschäftsleitung:</b> Die nachfolgenden Risiken sind das Ergebnis langjährig gewachsener Strukturen, nicht individueller Fehler. Sie lassen sich nicht durch einzelne Massnahmen lösen, sondern benötigen ein klares Mandat der GL für Rollen- und Prioritätsklärungen, sowie eine realistische Einschätzung der aktuellen Kapazität im IT- und Digitalisierungsbereich. Transparenz an dieser Stelle ist Voraussetzung für verlässliche Planung.
+  </div>
+
+  <div class="risk-filter">
+    <span class="risk-filter-label">Filter</span>
+    <button class="rchip on all" data-rfilter="all">Alle (8)</button>
+    <button class="rchip" data-rfilter="hoch">Hoch (3)</button>
+    <button class="rchip" data-rfilter="mittel">Mittel (4)</button>
+    <button class="rchip" data-rfilter="tief">Tief (1)</button>
+  </div>
+
+  <div class="risk-list" id="riskList">
+
+    <div class="risk-card" data-severity="hoch">
+      <div class="risk-head">
+        <span class="risk-num">R-01</span>
+        <span class="risk-title">IT-Kapazität strukturell belegt</span>
+        <div class="risk-meter"><div class="risk-meter-fill hoch"></div></div>
+        <span class="risk-badge hoch">Hoch</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Die IT-Abteilung ist durch das seit zwölf Jahren laufende PPO und das Xojo-Konsolidierungsprojekt sowie den akkumulierten Backlog der Kernsysteme SCNAT-DB und Portal nahezu vollständig gebunden. Mehrere hundert offene Tasks dokumentieren diese Lage. Neue Digitalisierungsanfragen konkurrieren unvermeidlich mit der Kernaufgabe, die Bestandsysteme betriebsfähig zu halten. Zusätzlich wird die Überarbeitung der DB- und Portalstruktur diskutiert, was weitere Ressourcen bindet.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Zusätzliche Ressourcen sowie externe Dienstleister für klar abgrenzbare Teilleistungen einsetzen (Budget vorhanden), Silvan als Triage-Owner für Applikationsanfragen, Fokus der IT auf Betrieb, PPO-Abschluss und Xojo-Zukunft akzeptieren, neue Themen entlang klar definierter Schnittstellen einsteuern. Bei Xojo-Überarbeitung muss zwingend zusätzliche Flexibilität bei der Anbindung neuer Umsysteme sichergestellt werden.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="hoch">
+      <div class="risk-head">
+        <span class="risk-num">R-02</span>
+        <span class="risk-title">Reaktionszeiten bei Arbeitsinstrumenten</span>
+        <div class="risk-meter"><div class="risk-meter-fill hoch"></div></div>
+        <span class="risk-badge hoch">Hoch</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Aus der laufenden Umsetzung: Anfragen zur Bereitstellung benötigter Arbeitsinstrumente (Software, Lizenzen, Zugänge) bleiben länger als drei Wochen unbeantwortet. Das verzögert nicht nur die eigene Arbeitsfähigkeit, sondern könnte auch unklare Signale an die Belegschaft senden, welche Digitalisierungsprojekte wirklich Priorität haben. Die Ursache liegt in der Gesamtlast, nicht im Einzelfall.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Definierter Beschaffungsprozess (M-10) mit verbindlichen Reaktions-SLAs, klare Eskalationswege an die GL, vorübergehend externe Beschaffung für Arbeitsinstrumente der Digitalisierungsfunktion – bis der Prozess steht.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="hoch">
+      <div class="risk-head">
+        <span class="risk-num">R-03</span>
+        <span class="risk-title">Rollenabgrenzung Digitalisierung und IT-Betrieb</span>
+        <div class="risk-meter"><div class="risk-meter-fill hoch"></div></div>
+        <span class="risk-badge hoch">Hoch</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Zwischen der Funktion Digitalisierung und dem IT-Betrieb fehlt aktuell eine formal verankerte Schnittstellenbeschreibung. Das führt zu Unklarheit darüber, wer welche Entscheide trifft, wer welche Aufgaben operativ verantwortet und wo Überschneidungen bestehen. In Verbindung mit der hohen Kapazitätslast der IT entsteht daraus ein latenter Konflikt, den informelle Kommunikation allein nicht auflöst.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Schnellstmöglich seitens GL die Rahmenbedingungen, Verantwortlichkeiten und Kompetenzen definieren und kommunizieren: Digitalisierung als Taktgeber und Triage mit klaren Kompetenzen bis hin zur IT-Arbeit; IT als operativer Betreiber mit Veto in Sicherheits- und Architekturfragen.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="mittel">
+      <div class="risk-head">
+        <span class="risk-num">R-04</span>
+        <span class="risk-title">Basis-Services unter modernem Erwartungshorizont</span>
+        <div class="risk-meter"><div class="risk-meter-fill mittel"></div></div>
+        <span class="risk-badge mittel">Mittel</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Grundlegende Services wie Raumreservation, Abwesenheitsnotizen und digitale Kollaboration sind nicht auf dem Stand, den Mitarbeitende heute erwarten. Eine strukturierte Einführung in Cloud-Kollaborationsumgebungen ist weit von einem modernen Standard entfernt. Das bremst die Belegschaft im Alltag und setzt den Digitalisierungsmassnahmen einen Rahmen, in dem moderne Beispiele oft nur partiell umsetzbar sind.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Pragmatische Zwischenlösungen auf der Digitalisierungsplattform (FAQ, Prozessseiten), parallele Prüfung einer Cloud-Einführung durch IT, gezielte Pilotierung auf Abteilungsebene via Change Agents. Nicht prioritär – kann aber im Bereich der Archivierung zu einem zentralen Thema werden.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="mittel">
+      <div class="risk-head">
+        <span class="risk-num">R-05</span>
+        <span class="risk-title">Know-how in modernen Technologien</span>
+        <div class="risk-meter"><div class="risk-meter-fill mittel"></div></div>
+        <span class="risk-badge mittel">Mittel</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Der Fokus der letzten Jahre lag aus nachvollziehbaren Gründen auf Betrieb und Konsolidierung des Bestands. Die Folge: Erfahrung mit Cloud-Native-Architekturen, CI/CD, Container-Betrieb, modernem Web-Stack und KI-Integration ist intern nur punktuell aufgebaut. Keine Frage persönlicher Fähigkeit, sondern eine Folge der Aufgabenverteilung – muss parallel zum laufenden Betrieb aktiv adressiert werden.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Gezielter Einsatz externer Expertise für Wissenstransfer (nicht nur Umsetzung), KI-Spezialisten im Change Agent Netzwerk als interne Katalysatoren, Schulungsbudget und Fokus auf Zukunftstechnologien nach Abschluss des Xojo-Projekts.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="mittel">
+      <div class="risk-head">
+        <span class="risk-num">R-06</span>
+        <span class="risk-title">Sicherheit zwischen On-Premise und moderner Souveränität</span>
+        <div class="risk-meter"><div class="risk-meter-fill mittel"></div></div>
+        <span class="risk-badge mittel">Mittel</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Die bestehende IT-Strategie setzt stark auf On-Premise-Lösungen, begründet mit Datensouveränität und Kontrolle. Dieser Grundsatz ist legitim. Zunehmend existieren jedoch Schweizer Cloud-Anbieter wie Infomaniak oder Exoscale mit DSG- und DSGVO-Konformität und physischer Datenhaltung in der Schweiz, die beides bieten: Souveränität und Modernität. Ein systematischer, faktenbasierter Vergleich der Optionen steht aus – und wird, je länger er fehlt, zum Flaschenhals für neue Lösungen.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Evaluation CH-Cloud-Anbieter entlang konkreter Anwendungsfälle (Kollaboration, Mail, Backup), dokumentierter DSG-Vergleich On-Premise vs. CH-Cloud als Entscheidungsgrundlage. Kein Dogma, sondern situative Wahl nach Anwendungsfall.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="mittel">
+      <div class="risk-head">
+        <span class="risk-num">R-07</span>
+        <span class="risk-title">Wahrnehmung der Digitalisierungsfunktion</span>
+        <div class="risk-meter"><div class="risk-meter-fill mittel"></div></div>
+        <span class="risk-badge mittel">Mittel</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Neu aufgebaute Digitalisierungsfunktionen werden in gewachsenen IT-Umgebungen häufig zunächst als Konkurrenz um Zuständigkeiten und Budgets wahrgenommen – nicht als Entlastung. Ohne aktive Gegensteuerung entstehen Reibungsverluste, die weit grössere Kosten verursachen als das Problem, das sie auslösen. Real, aber gut steuerbar.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">GL-mandatierte Rollenklärung (siehe R-03), transparente Kommunikation der Aufgabenteilung (Digitalisierung als Taktgeber, IT als Betreiber), frühe gemeinsame Erfolge sichtbar machen, Digitalisierungsfunktion konsequent als IT-Entlastung bei neuen Themen positionieren.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="risk-card" data-severity="tief">
+      <div class="risk-head">
+        <span class="risk-num">R-08</span>
+        <span class="risk-title">Plattform-Nutzungsgrad in der Startphase</span>
+        <div class="risk-meter"><div class="risk-meter-fill tief"></div></div>
+        <span class="risk-badge tief">Tief</span>
+        <span class="risk-chev">▶</span>
+      </div>
+      <div class="risk-body"><div class="risk-body-inner">
+        <div>
+          <div class="risk-block-label">Beobachtung</div>
+          <div class="risk-block-text">Eine Plattform, die nicht genutzt wird, entfaltet keine Wirkung – unabhängig von der Qualität der Inhalte. In der Startphase besteht das Risiko, dass die Digitalisierungsplattform nur von einer digital-affinen Minderheit regelmässig besucht wird, während der Rest der Belegschaft sie übersieht.</div>
+        </div>
+        <div>
+          <div class="risk-block-label">Mitigation</div>
+          <div class="risk-block-text">Koordinierter Launch (M-04), parallele E-Mail-Kommunikation bis zur Mailserver-Integration, Change Agents als aktive Multiplikatoren in den Abteilungen, wiederkehrende sichtbare Updates im vierwöchigen Takt.</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ANTRÄGE GL -->
+<section class="section" id="antraege">
+  <div class="section-header">
+    <div class="section-line"></div>
+    <div class="section-label">Handlungsempfehlung</div>
+  </div>
+  <div class="section-title">Drei Anträge an die Geschäftsleitung</div>
+  <p class="section-lead">Aus dem Portfolio, der Zeitplanung und der Risikoanalyse ergeben sich drei konkrete Anträge an die Geschäftsleitung, die über den Erfolg der kommenden Monate entscheiden.</p>
+
+  <div class="kern">
+    <div class="kern-label">Kernempfehlung</div>
+    <div class="kern-title">Portfolio bestätigen, Rahmenbedingungen aktiv gestalten</div>
+    <div class="kern-text">Das vorliegende Portfolio ist bereit für die Umsetzung. Die einzelnen Massnahmen sind geplant, ressourciert und sprint-tauglich aufbereitet. Für die erfolgreiche Realisierung ist jedoch nicht nur die Bestätigung der Prioritäten nötig, sondern auch die aktive Adressierung der strukturellen Rahmenbedingungen, insbesondere im Zusammenspiel mit der IT.</div>
+    <div class="kern-text">Die Empfehlung ist klar: <strong>Strategie jetzt umsetzen, parallel die Strukturfragen gezielt angehen.</strong> Nicht das eine gegen das andere, sondern beides als Teil derselben Transformation. Nur so wird aus einem guten Plan nachhaltige Wirkung.</div>
+  </div>
+
+  <div class="antraege">
+    <div class="antrag">
+      <div class="antrag-num">
+        <span class="antrag-num-big">01</span>
+        <span class="antrag-num-label">Antrag</span>
+      </div>
+      <div class="antrag-content">
+        <div class="antrag-title">Portfolio und Prioritäten bestätigen</div>
+        <div class="antrag-text">Die GL bestätigt das vorliegende Massnahmenportfolio mit Welle 1 (Q2), Welle 2 (Q3) und Welle 3 (Q4). Die Digitalisierungsfunktion arbeitet das Portfolio sprint-basiert ab und berichtet nach vorgeschlagenem PM-Framework & Sprint Design quartalsmässig an die GL (Steering Committee). Abweichungen und Blocker werden transparent gemeldet.</div>
+      </div>
+    </div>
+
+    <div class="antrag">
+      <div class="antrag-num">
+        <span class="antrag-num-big">02</span>
+        <span class="antrag-num-label">Antrag</span>
+      </div>
+      <div class="antrag-content">
+        <div class="antrag-title">Rollen und Schnittstellen formal klären</div>
+        <div class="antrag-text">Die GL klärt formal (vor Q2) die Rollen, Schnittstellen und Entscheidungswege zwischen Digitalisierung und IT-Betrieb, inklusive Reaktions-SLAs für Arbeitsinstrumente und eines Eskalationspfads. Das Ergebnis wird schriftlich festgehalten und als Rahmen für alle folgenden Massnahmen vorerst als Arbeitsrahmen gültig.</div>
+      </div>
+    </div>
+
+    <div class="antrag">
+      <div class="antrag-num">
+        <span class="antrag-num-big">03</span>
+        <span class="antrag-num-label">Antrag</span>
+      </div>
+      <div class="antrag-content">
+        <div class="antrag-title">Entscheid Kernsystem-Zukunft auf Q4 terminieren</div>
+        <div class="antrag-text">Die GL nimmt den Abschluss des Xojo-Konsolidierungsprojekts (geplant Ende 2026) zum Anlass, den strategischen Entscheid über die technologische Zukunft von SCNAT-DB und Portal (M-06) bewusst auf Q4 zu terminieren. Die Vorbereitung der Entscheidungsgrundlage erfolgt ab Q3, inklusive Evaluation von Optimierungsschritten weiterer infrastruktureller Instrumente wie Serverinfrastrukturen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="schluss">
+    <div class="schluss-label">Schlussbemerkung</div>
+    <div class="schluss-text">Die Digitalisierung bei SCNAT ist weder ein Sprint noch ein Selbstläufer. Sie verlangt <strong>Disziplin in der Umsetzung</strong> und <strong>Mut in den Strukturfragen</strong>. Das vorliegende Portfolio macht sichtbar, was möglich ist. Die Rahmenbedingungen entscheiden, wie viel davon Wirkung entfaltet. Mit einem klaren GL-Commitment zu beiden Ebenen – Inhalt und Struktur – steht einer erfolgreichen Transformation nichts im Weg.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-meta">
+    SCNAT · Digitalisierung<br>
+    <b>Next Steps 2026</b> · Version 1.0 · 20.04.2026
+  </div>
+  <div class="footer-author">
+    <b>Silvan Poltera</b>
+    <small>Verantwortlicher Digitalisierung · silvan.poltera@scnat.ch</small>
+  </div>
+</footer>
+
+<script>
+// ── TOPNAV ACTIVE STATE & SCROLL ──
+const navLinks = document.querySelectorAll('.topnav-link');
+const navMap = {};
+navLinks.forEach(link => {
+  const target = link.dataset.target;
+  navMap[target] = link;
+  link.addEventListener('click', () => {
+    const el = document.getElementById(target);
+    if (el) {
+      const offset = el.getBoundingClientRect().top + window.scrollY - 60;
+      window.scrollTo({top: offset, behavior: 'smooth'});
+    }
+  });
+});
+
+const sections = ['hero','summary','ausgangslage','massnahmen','zeitplan','risiken','antraege'];
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      if (navMap[e.target.id]) navMap[e.target.id].classList.add('active');
+    }
+  });
+}, {threshold: 0.3, rootMargin: '-20% 0px -50% 0px'});
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) secObserver.observe(el);
+});
+
+// ── MASSNAHMEN: FILTER ──
+const fchips = document.querySelectorAll('.fchip');
+const massCards = document.querySelectorAll('.mass-card');
+const filterCount = document.getElementById('filterCount');
+
+fchips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    fchips.forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+    const f = chip.dataset.filter;
+    let visible = 0;
+    massCards.forEach(card => {
+      const show = (f === 'all') || card.dataset.cluster === f;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    filterCount.textContent = visible;
+  });
+});
+
+// ── MASSNAHMEN: EXPAND (ignoriert Klicks auf Links/Buttons) ──
+massCards.forEach(card => {
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a, button')) return;
+    const wasOpen = card.classList.contains('expanded');
+    massCards.forEach(c => c.classList.remove('expanded'));
+    if (!wasOpen) card.classList.add('expanded');
+  });
+});
+
+// ── RISIKEN: FILTER ──
+const rchips = document.querySelectorAll('.rchip');
+const riskCards = document.querySelectorAll('.risk-card');
+
+rchips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    rchips.forEach(c => {
+      c.classList.remove('on');
+      ['all','hoch','mittel','tief'].forEach(cls => c.classList.remove(cls));
+    });
+    chip.classList.add('on', chip.dataset.rfilter);
+    const f = chip.dataset.rfilter;
+    riskCards.forEach(card => {
+      const show = (f === 'all') || card.dataset.severity === f;
+      card.classList.toggle('hidden', !show);
+    });
+  });
+});
+
+// ── RISIKEN: EXPAND ──
+riskCards.forEach(card => {
+  card.querySelector('.risk-head').addEventListener('click', () => {
+    const wasOpen = card.classList.contains('expanded');
+    riskCards.forEach(c => c.classList.remove('expanded'));
+    if (!wasOpen) card.classList.add('expanded');
+  });
+});
+
+// ── RISK METER ANIMATE ON SCROLL ──
+const riskObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.risk-meter-fill').forEach(bar => {
+        const cls = bar.classList.contains('hoch') ? 90 : bar.classList.contains('mittel') ? 60 : 30;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = cls + '%'; }, 100);
+      });
+      riskObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.2});
+const riskList = document.getElementById('riskList');
+if (riskList) riskObserver.observe(riskList);
+</script>
+
+</body>
+</html>
