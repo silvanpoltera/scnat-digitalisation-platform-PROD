@@ -15,7 +15,7 @@ const DEFAULT_CP = [
   'cp-dashboard', 'cp-live-infos', 'cp-news', 'cp-nachrichten',
   'cp-content', 'cp-events', 'cp-antraege', 'cp-users', 'cp-changes',
   'cp-massnahmen', 'cp-sprints', 'cp-themen', 'cp-scnat-db',
-  'cp-sichtbarkeit', 'cp-admin-stuff',
+  'cp-sichtbarkeit', 'cp-admin-stuff', 'cp-admin-details',
 ];
 
 const ALL_VALID_KEYS = new Set([...DEFAULT_PORTAL, ...DEFAULT_CP]);
@@ -43,9 +43,23 @@ function sanitizeGroup(items) {
     .map(item => ({ key: String(item.key), visible: item.visible === true }));
 }
 
+function ensureDefaults(data) {
+  // Selbstheilung: fehlende Default-Keys werden automatisch (sichtbar) angefügt,
+  // damit neu in DEFAULT_PORTAL/DEFAULT_CP definierte Sektionen nicht aus Versehen verschluckt werden.
+  const portalKeys = new Set(data.portal.map(s => s.key));
+  const cpKeys = new Set(data.cp.map(s => s.key));
+  for (const key of DEFAULT_PORTAL) {
+    if (!portalKeys.has(key)) data.portal.push({ key, visible: true });
+  }
+  for (const key of DEFAULT_CP) {
+    if (!cpKeys.has(key)) data.cp.push({ key, visible: true });
+  }
+  return data;
+}
+
 router.get('/', (_req, res) => {
   const raw = readJSON(FILE);
-  res.json(migrate(raw));
+  res.json(ensureDefaults(migrate(raw)));
 });
 
 router.put('/', requireAuth, requireAdmin, (req, res) => {
