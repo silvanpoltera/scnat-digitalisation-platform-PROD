@@ -1,6 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { ChevronLeft, ChevronRight, MapPin, Clock, Users, X, ThumbsUp, Plus, Trash2, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Clock, Users, X, ThumbsUp, Plus, Trash2, TrendingUp, MessageSquare } from 'lucide-react';
+
+const THEMA_STATUS = {
+  geplant:       { label: 'Geplant',      cls: 'bg-status-blue/15 text-status-blue' },
+  'in-umsetzung':{ label: 'In Umsetzung', cls: 'bg-status-yellow/15 text-status-yellow' },
+  erledigt:      { label: 'Erledigt',     cls: 'bg-status-green/15 text-status-green' },
+  abgelehnt:     { label: 'Abgelehnt',    cls: 'bg-scnat-red/15 text-scnat-red' },
+};
 import PageHeader from '../components/PageHeader';
 
 function CalendarView({ events, onSelect }) {
@@ -217,26 +224,47 @@ function ThemenVoting() {
         {themen.map(t => {
           const liked = t.likes?.includes(user?.id);
           const canDelete = (t.typ !== 'vordefiniert') && ((t.likes?.length || 0) === 0 || t.erstelltVon === user?.id || user?.role === 'admin');
+          const status = THEMA_STATUS[t.status];
           return (
-            <div key={t.id} className="bg-bg-surface border border-bd-faint rounded-sm px-4 py-3 flex items-start gap-3">
-              <button
-                onClick={() => handleLike(t.id)}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-sm transition-colors ${
-                  liked ? 'bg-scnat-red/15 text-scnat-red' : 'text-txt-tertiary hover:text-scnat-red hover:bg-scnat-red/10'
-                }`}
-              >
-                <ThumbsUp className="w-4 h-4" />
-                <span className="text-xs font-mono">{t.likes?.length || 0}</span>
-              </button>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-txt-primary font-medium">{t.titel}</span>
-                  {t.typ === 'vordefiniert' && <span className="text-[9px] font-mono bg-bg-elevated text-txt-tertiary px-1 py-0.5 rounded-sm">vordefiniert</span>}
+            <div key={t.id} className="bg-bg-surface border border-bd-faint rounded-sm px-4 py-3">
+              <div className="flex items-start gap-3">
+                <button
+                  onClick={() => handleLike(t.id)}
+                  className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-sm transition-colors ${
+                    liked ? 'bg-scnat-red/15 text-scnat-red' : 'text-txt-tertiary hover:text-scnat-red hover:bg-scnat-red/10'
+                  }`}
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                  <span className="text-xs font-mono">{t.likes?.length || 0}</span>
+                </button>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm text-txt-primary font-medium">{t.titel}</span>
+                    {t.typ === 'vordefiniert' && <span className="text-[9px] font-mono bg-bg-elevated text-txt-tertiary px-1 py-0.5 rounded-sm">vordefiniert</span>}
+                    {status && (
+                      <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-sm ${status.cls}`}>{status.label}</span>
+                    )}
+                  </div>
+                  {t.beschreibung && <p className="text-xs text-txt-secondary mt-0.5">{t.beschreibung}</p>}
                 </div>
-                {t.beschreibung && <p className="text-xs text-txt-secondary mt-0.5">{t.beschreibung}</p>}
+                {canDelete && (
+                  <button onClick={() => handleDelete(t.id)} className="text-txt-tertiary hover:text-scnat-red p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                )}
               </div>
-              {canDelete && (
-                <button onClick={() => handleDelete(t.id)} className="text-txt-tertiary hover:text-scnat-red p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+
+              {t.adminAntwort && (
+                <div className="mt-3 ml-12 bg-status-green/5 border-l-2 border-status-green/40 rounded-sm px-3 py-2">
+                  <div className="flex items-center gap-1.5 text-[10px] font-mono text-status-green mb-1">
+                    <MessageSquare className="w-3 h-3" />
+                    Antwort vom Team
+                    {t.adminUpdatedAt && (
+                      <span className="text-txt-tertiary ml-auto">
+                        {new Date(t.adminUpdatedAt).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-txt-secondary leading-relaxed whitespace-pre-wrap">{t.adminAntwort}</p>
+                </div>
               )}
             </div>
           );

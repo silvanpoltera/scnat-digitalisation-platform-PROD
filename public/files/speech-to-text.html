@@ -240,7 +240,7 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:2rem 0}
 <div class="hero">
   <div class="eyebrow">KI-Tools · Analyse · April 2026</div>
   <h1>Speech-to-Text<br><em>Tool-Analyse</em></h1>
-  <p class="hero-sub">Neun Lösungen im Vergleich – von schlüsselfertigem SaaS bis zum lokal betriebenen Modell. Bewertet nach WER, Kosten, Datenschutz und Schweizerdeutsch-Tauglichkeit.</p>
+  <p class="hero-sub">Zehn Lösungen im Vergleich – von schlüsselfertigem SaaS bis zum lokal betriebenen Modell. Bewertet nach WER, Kosten, Datenschutz und Schweizerdeutsch-Tauglichkeit.</p>
 </div>
 
 <!-- DECISION HELPER -->
@@ -338,6 +338,54 @@ hr.sep{border:none;border-top:1px solid var(--b-faint);margin:2rem 0}
           <div class="pc-item con">Kein globaler Spitzen-WER</div>
           <div class="pc-item con">Diarization begrenzt</div>
           <div class="pc-item con">Laufende Kosten ~CHF 29/Mt.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tool-card saas" data-cat="saas" data-chde="1" data-gratis="0" data-keincloud="1" onclick="toggleCard(this)">
+    <div class="card-head">
+      <div><div class="card-name">SwissGPT Listener (AlpineAI)</div><div class="card-tagline">Souveräne CH-Plattform · Listener + Chat + Assistenten</div></div>
+      <span class="rec-badge rec-scnat">Souverän · Swiss SaaS</span>
+      <button class="cmp-btn" onclick="toggleCompare(event,this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Vergleichen</button>
+    </div>
+    <div class="card-specs">
+      <div class="spec"><div class="spec-label">WER (DE)</div><div class="spec-val">k. A. (proprietär)</div></div>
+      <div class="spec"><div class="spec-label">Modellgrösse</div><div class="spec-val">n/a (SaaS)</div></div>
+      <div class="spec"><div class="spec-label">Kosten</div><div class="spec-val warn">CHF 89/Mt. (Premium, inkl. Listener)</div></div>
+      <div class="spec"><div class="spec-label">GPU nötig</div><div class="spec-val good">Nein</div></div>
+    </div>
+    <div class="card-langs">
+      <span class="lang ok">DE ✓✓</span>
+      <span class="lang part">CH-DE ✓ (Landessprachen)</span>
+      <span class="lang ok">FR ✓</span>
+      <span class="lang ok">IT ✓</span>
+      <span class="lang ok">EN ✓</span>
+    </div>
+    <div class="card-radar"><svg class="radar-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="radar-legend">
+        <div class="radar-leg-item">Datenschutz<div class="radar-leg-bar" style="width:95%;background:var(--ok)"></div><span class="radar-leg-val">9.5</span></div>
+        <div class="radar-leg-item">CH-DE<div class="radar-leg-bar" style="width:60%;background:var(--warn)"></div><span class="radar-leg-val">6.0</span></div>
+        <div class="radar-leg-item">Einfachheit<div class="radar-leg-bar" style="width:90%;background:var(--ok)"></div><span class="radar-leg-val">9.0</span></div>
+        <div class="radar-leg-item">WER global<div class="radar-leg-bar" style="width:65%;background:var(--warn)"></div><span class="radar-leg-val">6.5</span></div>
+        <div class="radar-leg-item">Kosten<div class="radar-leg-bar" style="width:50%;background:var(--warn)"></div><span class="radar-leg-val">5.0</span></div>
+      </div>
+    </div>
+    <div class="card-expand-hint">Details <span class="expand-chevron">▾</span></div>
+    <div class="card-body"><div class="card-body-inner">
+      <div class="card-desc">Listener ist Teil der SwissGPT-Plattform von AlpineAI: Aufnahme von Sitzungen / Gesprächen, automatische Transkription und direkte Weiterverarbeitung zu Protokoll, Zusammenfassung oder Bericht – alles in einer Oberfläche zusammen mit Chat, Assistenten und Agenten. Daten in Schweizer Rechenzentren, ISO 27001, Verschlüsselung. Listener ab Premium-Plan (CHF 89/Mt.), Enterprise mit individuellem Pricing ab 10 Lizenzen. Verfügbar in allen Schweizer Landessprachen + Englisch; spezifische Schweizerdeutsch-Dialekt-Genauigkeit nicht öffentlich dokumentiert.</div>
+      <div class="card-pros-cons">
+        <div class="pros-cons-col"><div class="pros-cons-label pro">Vorteile</div>
+          <div class="pc-item pro">Daten 100% in der Schweiz, ISO 27001</div>
+          <div class="pc-item pro">Listener + Chat + Assistenten in einer Plattform</div>
+          <div class="pc-item pro">Direkte Weiterverarbeitung (Protokoll, Summary)</div>
+          <div class="pc-item pro">revDSG-konform · Souveräne CH-Lösung</div>
+        </div>
+        <div class="pros-cons-col"><div class="pros-cons-label con">Einschränkungen</div>
+          <div class="pc-item con">Kein öffentlicher WER-Benchmark</div>
+          <div class="pc-item con">CH-DE-Dialekt nicht spezifisch trainiert</div>
+          <div class="pc-item con">Nur als Bundle (kein Standalone-Listener)</div>
+          <div class="pc-item con">Höherer Preis als reine STT-Tools</div>
         </div>
       </div>
     </div></div>
@@ -930,6 +978,7 @@ function clearCompare() {
 
 const toolData = {
   'töggl.ch':                  { wer:'~8–12% CH-DE', kosten:'~CHF 29/Mt.',    gpu:'Nein',                    lizenz:'Proprietär', chde:'✓✓ nativ', datenschutz:'🇨🇭 in CH'},
+  'SwissGPT Listener (AlpineAI)':{ wer:'k. A.',       kosten:'CHF 89/Mt. (Premium)', gpu:'Nein',              lizenz:'Proprietär', chde:'✓ Landessprachen', datenschutz:'🇨🇭 in CH (ISO 27001)'},
   'Speechmatics Web-Portal':   { wer:'~4% DE',       kosten:'8h gratis + pay', gpu:'Nein',                    lizenz:'Proprietär', chde:'—',         datenschutz:'EU'},
   'Notta.ai':                  { wer:'~5–8% EN',      kosten:'Free + $9/Mt.',  gpu:'Nein',                    lizenz:'Proprietär', chde:'—',         datenschutz:'USA (AWS)'},
   'ElevenLabs Scribe v2':      { wer:'2.3%',          kosten:'$0.22/h',        gpu:'Nein (cloud)',            lizenz:'Proprietär', chde:'—',         datenschutz:'Cloud (US)'},

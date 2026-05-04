@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, Trash2, Users, Calendar, Clock, MapPin, ChevronDown, UserPlus, UserMinus, Search, X } from 'lucide-react';
+import { Plus, Trash2, Users, Calendar, Clock, MapPin, ChevronDown, UserPlus, UserMinus, Search, X, Send, Megaphone, Check, AlertTriangle } from 'lucide-react';
 
 export default function CpEvents() {
   const [events, setEvents] = useState([]);
@@ -10,6 +10,9 @@ export default function CpEvents() {
   const [addingUserTo, setAddingUserTo] = useState(null);
   const [userSearch, setUserSearch] = useState('');
   const [form, setForm] = useState({ titel: '', datum: '', zeit: '', ort: '', maxTeilnehmer: 15, beschreibung: '' });
+  const [notifyingEvent, setNotifyingEvent] = useState(null);
+  const [notifyForm, setNotifyForm] = useState({ title: '', message: '', priority: 'normal' });
+  const [notifyState, setNotifyState] = useState({ sending: false, error: '', success: '' });
 
   const load = () => {
     fetch('/api/events', { credentials: 'include' }).then(r => r.json()).then(setEvents).catch(() => {});
@@ -53,6 +56,51 @@ export default function CpEvents() {
     load();
   };
 
+  const openNotify = (ev) => {
+    setNotifyingEvent(ev.id);
+    setAddingUserTo(null);
+    setNotifyForm({ title: `Info zu: ${ev.titel}`, message: '', priority: 'normal' });
+    setNotifyState({ sending: false, error: '', success: '' });
+  };
+
+  const closeNotify = () => {
+    setNotifyingEvent(null);
+    setNotifyState({ sending: false, error: '', success: '' });
+  };
+
+  const handleSendNotify = async (ev) => {
+    if (!notifyForm.title.trim() || !notifyForm.message.trim()) return;
+    const regsCount = ev.anmeldungen?.length || 0;
+    if (regsCount === 0) {
+      setNotifyState({ sending: false, error: 'Keine angemeldeten User für dieses Event.', success: '' });
+      return;
+    }
+    setNotifyState({ sending: true, error: '', success: '' });
+    try {
+      const res = await fetch('/api/inbox/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          title: notifyForm.title.trim(),
+          message: notifyForm.message.trim(),
+          priority: notifyForm.priority,
+          targetType: 'event',
+          targetEventId: ev.id,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Fehler ${res.status}`);
+      }
+      setNotifyState({ sending: false, error: '', success: `Nachricht an ${regsCount} ${regsCount === 1 ? 'Person' : 'Personen'} gesendet.` });
+      setNotifyForm({ title: '', message: '', priority: 'normal' });
+      setTimeout(() => closeNotify(), 2200);
+    } catch (err) {
+      setNotifyState({ sending: false, error: err.message || 'Senden fehlgeschlagen', success: '' });
+    }
+  };
+
   const handleAddUser = async (eventId, userId) => {
     const res = await fetch('/api/registrations/admin', {
       method: 'POST',
@@ -92,6 +140,7 @@ export default function CpEvents() {
     const pct = ev.maxTeilnehmer ? Math.round((regsCount / ev.maxTeilnehmer) * 100) : 0;
     const isExpanded = expandedEvent === ev.id;
     const isAddingUser = addingUserTo === ev.id;
+    const isNotifying = notifyingEvent === ev.id;
 
     return (
       <div key={ev.id} className={`bg-bg-surface border border-bd-faint rounded-sm overflow-hidden ${isPast ? 'opacity-60' : ''}`}>
@@ -134,10 +183,19 @@ export default function CpEvents() {
                 <Users className="w-3 h-3" />
                 Anmeldungen ({evRegs.length})
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap justify-end">
+                {evRegs.length > 0 && (
+                  <button
+                    onClick={() => isNotifying ? closeNotify() : openNotify(ev)}
+                    className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm transition-colors ${isNotifying ? 'bg-scnat-orange/15 text-scnat-orange' : 'text-scnat-orange hover:bg-scnat-orange/10'}`}
+                  >
+                    <Megaphone className="w-3.5 h-3.5" />
+                    <span>Nachricht</span>
+                  </button>
+                )}
                 {!isPast && (
                   <button
-                    onClick={() => { setAddingUserTo(isAddingUser ? null : ev.id); setUserSearch(''); }}
+                    onClick={() => { setAddingUserTo(isAddingUser ? null : ev.id); setUserSearch(''); setNotifyingEvent(null); }}
                     className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm transition-colors ${isAddingUser ? 'bg-scnat-teal/15 text-scnat-teal' : 'text-scnat-teal hover:bg-scnat-teal/10'}`}
                   >
                     <UserPlus className="w-3.5 h-3.5" />
@@ -153,6 +211,72 @@ export default function CpEvents() {
                 </button>
               </div>
             </div>
+
+            {/* Notify panel — sends message to all registered participants via inbox */}
+            {isNotifying && (
+              <div className="mb-3 bg-bg-surface border border-scnat-orange/30 rounded-sm p-3">
+                <div className="flex items-center justify-between mb-2.5">
+                  <h5 className="text-xs font-heading font-semibold text-txt-primary flex items-center gap-1.5">
+                    <Megaphone className="w-3.5 h-3.5 text-scnat-orange" />
+                    Nachricht an {evRegs.length} {evRegs.length === 1 ? 'angemeldete Person' : 'angemeldete Personen'}
+                  </h5>
+                  <button onClick={closeNotify} className="text-txt-tertiary hover:text-txt-primary p-0.5">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input
+                      value={notifyForm.title}
+                      onChange={e => setNotifyForm({ ...notifyForm, title: e.target.value })}
+                      placeholder="Betreff"
+                      className={`sm:col-span-2 ${inputCls}`}
+                    />
+                    <select
+                      value={notifyForm.priority}
+                      onChange={e => setNotifyForm({ ...notifyForm, priority: e.target.value })}
+                      className={inputCls}
+                    >
+                      <option value="normal">Normal</option>
+                      <option value="important">Wichtig</option>
+                    </select>
+                  </div>
+                  <textarea
+                    value={notifyForm.message}
+                    onChange={e => setNotifyForm({ ...notifyForm, message: e.target.value })}
+                    placeholder="Nachricht (z.B. Raumänderung, Erinnerung, Info zu Unterlagen…)"
+                    rows={3}
+                    className={`resize-none ${inputCls}`}
+                  />
+                  {notifyState.error && (
+                    <div className="flex items-center gap-2 text-xs text-scnat-red bg-scnat-red/10 border border-scnat-red/20 rounded-sm px-2.5 py-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{notifyState.error}</span>
+                    </div>
+                  )}
+                  {notifyState.success && (
+                    <div className="flex items-center gap-2 text-xs text-status-green bg-status-green/10 border border-status-green/20 rounded-sm px-2.5 py-1.5">
+                      <Check className="w-3.5 h-3.5 shrink-0" />
+                      <span>{notifyState.success}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] text-txt-tertiary">
+                      Erscheint im Inbox/Nachrichten-Bereich aller Angemeldeten.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleSendNotify(ev)}
+                      disabled={notifyState.sending || !notifyForm.title.trim() || !notifyForm.message.trim()}
+                      className="flex items-center gap-1.5 bg-scnat-orange text-white text-xs px-3 py-1.5 rounded-sm hover:bg-scnat-orange/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      {notifyState.sending ? 'Sende…' : 'Senden'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Add user panel */}
             {isAddingUser && (

@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
-import { requireAuth } from '../auth.js';
+import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const FILE = 'schulungsthemen.json';
+
+const ALLOWED_STATUS = ['offen', 'geplant', 'in-umsetzung', 'erledigt', 'abgelehnt'];
 
 router.get('/', requireAuth, (_req, res) => {
   const data = readJSON(FILE);
@@ -43,6 +45,29 @@ router.post('/:id/like', requireAuth, (req, res) => {
   const idx = item.likes.indexOf(req.user.id);
   if (idx >= 0) item.likes.splice(idx, 1);
   else item.likes.push(req.user.id);
+
+  writeJSON(FILE, data);
+  res.json(item);
+});
+
+router.patch('/:id', requireAuth, requireAdmin, (req, res) => {
+  const data = readJSON(FILE);
+  const item = data.find(t => t.id === req.params.id);
+  if (!item) return res.status(404).json({ error: 'Nicht gefunden' });
+
+  const { status, adminAntwort } = sanitize(req.body);
+
+  if (status !== undefined) {
+    if (status !== '' && !ALLOWED_STATUS.includes(status)) {
+      return res.status(400).json({ error: 'Ungültiger Status' });
+    }
+    item.status = status || null;
+  }
+  if (adminAntwort !== undefined) {
+    item.adminAntwort = adminAntwort ? String(adminAntwort).trim() : '';
+  }
+  item.adminUpdatedAt = new Date().toISOString();
+  item.adminUpdatedBy = req.user.name || 'Admin';
 
   writeJSON(FILE, data);
   res.json(item);
