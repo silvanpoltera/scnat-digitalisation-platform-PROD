@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><script>(function(){var p=new URLSearchParams(window.location.search);if(p.get("theme")==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important;transition:none!important}aside.sg~.sp{margin-left:0!important}";document.head.appendChild(s)}})()</script>
+<head><script>(function(){var p=new URLSearchParams(window.location.search);var theme=p.get("theme");if(theme==="light")document.documentElement.classList.add("light");if(window.self!==window.top){document.documentElement.classList.add("in-iframe");var s=document.createElement("style");s.id="_ifc";s.textContent="aside.sg{width:0!important;min-width:0!important;overflow:hidden!important;border-right-color:transparent!important;transition:none!important}aside.sg~.sp{margin-left:0!important}";document.head.appendChild(s)}if(theme){document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("theme=")!==-1||h.charAt(0)==="#"||h.indexOf("://")!==-1||h.indexOf("mailto:")===0||h.indexOf("javascript:")===0||h.indexOf("/cp/")===0)return;var sep=h.indexOf("?")!==-1?"&":"?";a.setAttribute("href",h+sep+"theme="+theme)},true)}})()</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
 <title>Übersicht – SCNAT Digitalisierungsplattform</title>
@@ -671,7 +671,6 @@ html.light [style*="color:#ECEEF1"],html.light [style*="color: #ECEEF1"]{color:#
 </main>
 </div>
 </div>
-</div>
 <footer class="sf-bar">
 <div class="sf-l">SCNAT · Akademie der Naturwissenschaften Schweiz · Bern</div>
 <div class="sf-r">
@@ -680,6 +679,7 @@ html.light [style*="color:#ECEEF1"],html.light [style*="color: #ECEEF1"]{color:#
 <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--st3)">2026.04</span>
 </div>
 </footer>
+</div>
 </div>
 </div>
 <script>
