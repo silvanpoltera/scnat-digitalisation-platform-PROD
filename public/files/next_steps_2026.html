@@ -1284,14 +1284,12 @@ sections.forEach(id => {
         document.body.classList.add('pillar-filter-' + p);
         buttons.forEach(b => b.classList.toggle('on', b === btn));
         active = p;
-        // smooth scroll the massnahmen heading into view (so the user sees the effect)
-        const target = document.getElementById('massnahmen');
-        if (target) {
-          const grid = document.getElementById('massGrid');
-          if (grid) {
-            const top = grid.getBoundingClientRect().top + window.scrollY - 120;
-            window.scrollTo({top, behavior:'smooth'});
-          }
+        // Sanft zur Pillars-Sektion scrollen, damit die aktivierte Säule sichtbar bleibt
+        // und die gefilterten Massnahmen direkt darunter erscheinen.
+        const pillars = document.querySelector('.pillars-section');
+        if (pillars) {
+          const top = pillars.getBoundingClientRect().top + window.scrollY - 24;
+          window.scrollTo({top, behavior:'smooth'});
         }
       }
     });
