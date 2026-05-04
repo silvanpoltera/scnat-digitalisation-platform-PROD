@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import NetworkBackground, { NetworkGrid } from '../components/NetworkBackground';
 import { ScnatMark } from '../components/ScnatLogo';
@@ -7,6 +8,7 @@ import { ScnatMark } from '../components/ScnatLogo';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -64,13 +66,25 @@ export default function Login() {
             </div>
             <div>
               <label className="block text-sm text-txt-secondary mb-1.5">Passwort</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 pr-10 rounded-sm focus:border-scnat-red focus:outline-none transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
+                  title={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-txt-tertiary hover:text-scnat-red rounded-sm transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
             <button
               type="submit"

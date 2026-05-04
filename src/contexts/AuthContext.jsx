@@ -15,13 +15,30 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
+    let res;
+    try {
+      res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+    } catch {
+      throw new Error('Server nicht erreichbar. Bitte Verbindung prüfen und nochmal versuchen.');
+    }
+
+    // Robust gegen Non-JSON-Antworten (z.B. Wartungs-HTML während Deployment)
+    const text = await res.text();
+    let data = {};
+    if (text) {
+      try { data = JSON.parse(text); }
+      catch {
+        if (res.status === 503 || /maintenance|wartung/i.test(text)) {
+          throw new Error('Plattform wird gerade aktualisiert. Bitte in einem Moment nochmal versuchen.');
+        }
+        throw new Error(`Server-Fehler (${res.status}). Bitte später erneut versuchen.`);
+      }
+    }
     if (!res.ok) throw new Error(data.error || 'Login fehlgeschlagen');
     setUser(data.user);
     return data.user;
