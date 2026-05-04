@@ -23,7 +23,9 @@ function enrichMassnahmen(sprint) {
 }
 
 router.get('/', requireAuth, (req, res) => {
-  let sprints = readJSON(FILE).filter(s => s.status !== 'archived');
+  let sprints = readJSON(FILE);
+  const showArchived = req.user?.role === 'admin' && req.query.includeArchived === 'true';
+  if (!showArchived) sprints = sprints.filter(s => s.status !== 'archived');
   if (req.user?.role !== 'admin') sprints = sprints.filter(s => !s.isAdminSprint);
   const allMassnahmen = readJSON('massnahmen.json');
   const enriched = sprints.map(s => ({

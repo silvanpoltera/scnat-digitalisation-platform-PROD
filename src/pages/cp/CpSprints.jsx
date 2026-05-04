@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Pencil, Archive, ChevronDown, ChevronRight, Shield } from 'lucide-react';
+import { Plus, Pencil, Archive, ArchiveRestore, ChevronDown, ChevronRight, Shield } from 'lucide-react';
 import CpSprintGantt from '../../components/sprints/CpSprintGantt';
 
 const SPRINT_STATUS_STYLES = {
@@ -35,7 +35,7 @@ export default function CpSprints() {
   const [typeFilter, setTypeFilter] = useState('all');
 
   useEffect(() => {
-    fetch('/api/sprints', { credentials: 'include' })
+    fetch('/api/sprints?includeArchived=true', { credentials: 'include' })
       .then(r => r.json())
       .then(data => {
         setSprints(data);
@@ -62,8 +62,18 @@ export default function CpSprints() {
       credentials: 'include',
       body: JSON.stringify({ status: 'archived' }),
     });
-    setSprints(prev => prev.filter(s => s.id !== id));
+    setSprints(prev => prev.map(s => s.id === id ? { ...s, status: 'archived' } : s));
     setArchiveConfirm(null);
+  };
+
+  const handleRestore = async (id) => {
+    await fetch(`/api/sprints/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'planned' }),
+    });
+    setSprints(prev => prev.map(s => s.id === id ? { ...s, status: 'planned' } : s));
   };
 
   const updateMassnahmeStatus = useCallback(async (sprintId, massnahmeId, newStatus) => {
@@ -105,13 +115,21 @@ export default function CpSprints() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (typeFilter === 'sprints') return sprints.filter(s => !s.isAdminSprint);
-    if (typeFilter === 'admin') return sprints.filter(s => s.isAdminSprint);
-    return sprints;
+    let list = sprints;
+    if (typeFilter === 'archived') {
+      list = list.filter(s => s.status === 'archived');
+    } else {
+      list = list.filter(s => s.status !== 'archived');
+      if (typeFilter === 'sprints') list = list.filter(s => !s.isAdminSprint);
+      else if (typeFilter === 'admin') list = list.filter(s => s.isAdminSprint);
+    }
+    return list;
   }, [sprints, typeFilter]);
 
-  const adminCount = sprints.filter(s => s.isAdminSprint).length;
-  const normalCount = sprints.length - adminCount;
+  const activeSprints = sprints.filter(s => s.status !== 'archived');
+  const adminCount = activeSprints.filter(s => s.isAdminSprint).length;
+  const normalCount = activeSprints.length - adminCount;
+  const archivedCount = sprints.filter(s => s.status === 'archived').length;
 
   if (loading) {
     return (
@@ -126,7 +144,7 @@ export default function CpSprints() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-xl font-bold mb-1">Sprint-Verwaltung</h1>
-          <p className="text-sm text-txt-secondary">{sprints.length} Sprints</p>
+          <p className="text-sm text-txt-secondary">{activeSprints.length} Sprints{archivedCount > 0 && <span className="text-txt-tertiary"> · {archivedCount} archiviert</span>}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -147,11 +165,12 @@ export default function CpSprints() {
       </div>
 
       {/* Type filter tabs */}
-      <div className="flex items-center gap-1.5 mb-5">
+      <div className="flex items-center gap-1.5 mb-5 flex-wrap">
         {[
-          { key: 'all', label: 'Alle', count: sprints.length },
+          { key: 'all', label: 'Alle', count: activeSprints.length },
           { key: 'sprints', label: 'Sprints', count: normalCount },
           { key: 'admin', label: 'Admin Sprints', count: adminCount },
+          ...(archivedCount > 0 ? [{ key: 'archived', label: 'Archiviert', count: archivedCount }] : []),
         ].map(t => (
           <button
             key={t.key}
@@ -160,11 +179,14 @@ export default function CpSprints() {
               typeFilter === t.key
                 ? t.key === 'admin'
                   ? 'border-purple-500/40 bg-purple-500/15 text-purple-400 font-medium'
-                  : 'border-scnat-red/40 bg-scnat-red/10 text-scnat-red font-medium'
+                  : t.key === 'archived'
+                    ? 'border-bd-strong bg-bg-elevated text-txt-secondary font-medium'
+                    : 'border-scnat-red/40 bg-scnat-red/10 text-scnat-red font-medium'
                 : 'border-bd-default text-txt-tertiary hover:text-txt-secondary'
             }`}
           >
             {t.key === 'admin' && <Shield className="w-3 h-3 inline mr-1 -mt-0.5" />}
+            {t.key === 'archived' && <Archive className="w-3 h-3 inline mr-1 -mt-0.5" />}
             {t.label} · {t.count}
           </button>
         ))}
@@ -225,10 +247,29 @@ export default function CpSprints() {
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </Link>
-                  {archiveConfirm === sp.id ? (
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => handleArchive(sp.id)} className="text-[10px] font-mono text-scnat-red hover:underline">Ja</button>
-                      <button onClick={() => setArchiveConfirm(null)} className="text-[10px] font-mono text-txt-tertiary hover:underline">Nein</button>
+                  {sp.status === 'archived' ? (
+                    <button
+                      onClick={() => handleRestore(sp.id)}
+                      className="flex items-center gap-1 text-[10px] font-mono px-2 py-1.5 rounded-sm text-status-green border border-status-green/30 hover:bg-status-green/10 transition-colors"
+                      title="Sprint wiederherstellen"
+                    >
+                      <ArchiveRestore className="w-3 h-3" /> Wiederherstellen
+                    </button>
+                  ) : archiveConfirm === sp.id ? (
+                    <div className="flex items-center gap-1.5 bg-scnat-red/5 border border-scnat-red/30 rounded-sm px-2 py-1">
+                      <span className="text-[10px] font-mono text-scnat-red whitespace-nowrap">Sprint archivieren?</span>
+                      <button
+                        onClick={() => handleArchive(sp.id)}
+                        className="text-[10px] font-mono font-semibold text-white bg-scnat-red hover:bg-scnat-red/90 px-2 py-0.5 rounded-sm transition-colors"
+                      >
+                        Ja, archivieren
+                      </button>
+                      <button
+                        onClick={() => setArchiveConfirm(null)}
+                        className="text-[10px] font-mono text-txt-secondary hover:text-txt-primary px-1.5 py-0.5 rounded-sm transition-colors"
+                      >
+                        Abbrechen
+                      </button>
                     </div>
                   ) : (
                     <button
