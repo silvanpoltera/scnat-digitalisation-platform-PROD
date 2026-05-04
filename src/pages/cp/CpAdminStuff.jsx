@@ -250,7 +250,7 @@ function CubeVisual() {
             <span className="text-[9px] font-mono font-semibold text-scnat-red uppercase tracking-wider mb-0.5">Einleitung</span>
             <span className="text-[8px] text-txt-secondary leading-snug">Starke Basis</span>
           </div>
-          <div className="absolute w-[110px] h-[110px]" style={{ transform: 'rotateX(-90deg) translateZ(55px)', background: 'rgba(0,0,0,0.15)', backfaceVisibility: 'hidden' }} />
+          <div className="absolute w-[110px] h-[110px]" style={{ transform: 'rotateX(-90deg) translateZ(55px)', background: 'var(--border-default)', opacity: 0.6, backfaceVisibility: 'hidden' }} />
         </div>
       </div>
       <p className="text-[9px] font-mono text-txt-tertiary">Hover · 5 Blöcke</p>
