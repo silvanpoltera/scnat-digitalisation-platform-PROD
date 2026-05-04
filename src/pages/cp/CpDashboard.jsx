@@ -20,15 +20,15 @@ function StatCard({ label, value, icon: Icon, color = 'text-txt-tertiary', sub, 
   return (
     <Wrapper
       {...(to ? { to } : {})}
-      className={`bg-bg-surface border border-bd-faint rounded-sm p-4 ${to ? 'hover:border-bd-strong transition-colors cursor-pointer' : ''}`}
+      className={`bg-bg-surface border border-bd-faint rounded-sm p-4 min-w-0 overflow-hidden ${to ? 'hover:border-bd-strong transition-colors cursor-pointer' : ''}`}
     >
       <div className="flex items-center justify-between mb-2">
-        <Icon className={`w-4 h-4 ${color}`} />
-        {to && <ArrowRight className="w-3 h-3 text-txt-tertiary" />}
+        <Icon className={`w-4 h-4 shrink-0 ${color}`} />
+        {to && <ArrowRight className="w-3 h-3 text-txt-tertiary shrink-0" />}
       </div>
-      <p className="text-2xl font-heading font-semibold text-txt-primary">{value}</p>
-      <p className="text-xs text-txt-secondary mt-0.5">{label}</p>
-      {sub && <p className="text-[10px] text-txt-tertiary mt-1">{sub}</p>}
+      <p className="text-2xl font-heading font-semibold text-txt-primary leading-tight">{value}</p>
+      <p className="text-xs text-txt-secondary mt-0.5 leading-tight break-words" title={label}>{label}</p>
+      {sub && <p className="text-[10px] text-txt-tertiary mt-1 leading-tight break-words" title={sub}>{sub}</p>}
     </Wrapper>
   );
 }
@@ -146,10 +146,10 @@ export default function CpDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         <StatCard label="Sprints" value={sprints.length} icon={CalendarRange} color="text-scnat-orange" sub={`${sprints.filter(s => s.status === 'active').length} aktiv`} to="/cp/sprints" />
         <StatCard label="Events" value={eventStats.total} icon={Calendar} color="text-scnat-teal" sub={`${eventStats.upcoming} bevorstehend`} to="/cp/events" />
-        <StatCard label="Anmeldungen" value={eventStats.totalRegs} icon={Users} color="text-scnat-green" sub={`${eventStats.fillRate}% Auslastung`} />
-        <StatCard label="Anträge" value={requestStats.total} icon={Inbox} color="text-scnat-orange" sub={`${requestStats.offen} offen`} to="/cp/antraege" />
+        <StatCard label="Anmeldungen" value={eventStats.totalRegs} icon={Users} color="text-scnat-green" sub={`${eventStats.fillRate}% Auslastung`} to="/cp/events" />
+        <StatCard label="Software Anträge" value={requestStats.total} icon={Inbox} color="text-scnat-orange" sub={`${requestStats.offen} offen`} to="/cp/antraege" />
         <StatCard label="Massnahmen" value={massnahmenStats.total} icon={BarChart3} color="text-scnat-red" sub={`${massnahmenStats.inUmsetzung} in Umsetzung`} to="/cp/massnahmen" />
-        <StatCard label="Schulungsthemen" value={themen.length} icon={MessageSquare} color="text-scnat-cyan" sub={`${themen.reduce((s, t) => s + (t.likes?.length || 0), 0)} Votes`} to="/cp/themen" />
+        <StatCard label="Schulungs Themen" value={themen.length} icon={MessageSquare} color="text-scnat-cyan" sub={`${themen.reduce((s, t) => s + (t.likes?.length || 0), 0)} Votes`} to="/cp/themen" />
         <StatCard label="Changes" value={changeStats.total} icon={GitPullRequest} color="text-scnat-cyan" sub={`${changeStats.eingereicht} neu`} to="/cp/changes" />
         <StatCard label="Software-Votes" value={softwareStats.totalVotes} icon={Monitor} color="text-status-blue" sub={`${softwareStats.uniqueSoftware} Apps bewertet`} />
       </div>
