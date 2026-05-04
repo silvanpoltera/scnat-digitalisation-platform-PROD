@@ -25,6 +25,8 @@
     --status-green: #2ECC71;
     --status-yellow: #F39C12;
     --status-blue: #3498DB;
+    --status-purple: #A855F7;
+    --status-amber: #FBBF24;
 
     --background: 210 14% 6%;
     --foreground: 218 14% 93%;
@@ -62,6 +64,8 @@
     --status-green: #1B8A4A;
     --status-yellow: #B27308;
     --status-blue: #2471A3;
+    --status-purple: #7C3AED;
+    --status-amber: #B45309;
 
     --background: 220 10% 96%;
     --foreground: 216 12% 11%;

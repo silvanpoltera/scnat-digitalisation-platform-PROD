@@ -71,6 +71,8 @@ export default {
           green: 'var(--status-green)',
           yellow: 'var(--status-yellow)',
           blue: 'var(--status-blue)',
+          purple: 'var(--status-purple)',
+          amber: 'var(--status-amber)',
         },
       },
       borderRadius: {
