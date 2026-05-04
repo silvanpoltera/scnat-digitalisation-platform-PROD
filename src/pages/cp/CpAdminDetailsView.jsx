@@ -5,18 +5,18 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 const PAGES = {
   'uebersicht':            { title: 'Übersicht',                              sub: 'Dashboard aller Massnahmen',  file: '/files/admin-details/index.html' },
-  'kommunikation':         { title: 'Kommunikation Digitale Transformation',  sub: 'Massnahme 01',               file: '/files/admin-details/massnahme-kommunikation-digitale-transformation.html' },
-  'ressourcen':            { title: 'Ressourcenabklärung',                     sub: 'Massnahme 02',               file: '/files/admin-details/massnahme-ressourcenabklaerung.html' },
-  'change-agents':         { title: 'Team Change Agents',                     sub: 'Massnahme 03',               file: '/files/admin-details/massnahme-change-agents.html' },
-  'plattform':             { title: 'Einführung Digitalisierungsplattform',    sub: 'Massnahme 04',               file: '/files/admin-details/einfuehrung-digitalisierungsplattform.html' },
-  'tools':                 { title: 'Übersicht digitale Tools',                sub: 'Massnahme 05',               file: '/files/admin-details/massnahme-tool-uebersicht.html' },
-  'db-portale':            { title: 'DB & Portale Konzept',                   sub: 'Massnahme 06',               file: '/files/admin-details/massnahme-db-portale.html' },
-  'ki-strategie':          { title: 'KI-Strategie & Befähigung',              sub: 'Massnahme 07',               file: '/files/admin-details/ki-strategie-befaehigung.html' },
-  'ki-lernpfad':           { title: 'KI Lernpfad',                            sub: 'Massnahme 08',               file: '/files/admin-details/massnahme-ki-lernpfad.html' },
-  'analyse-tools':         { title: 'Analyse Tools & Software',               sub: 'Massnahme 09',               file: '/files/admin-details/massnahme-analyse-tools-software.html' },
-  'beschaffung':           { title: 'Beschaffungsprozess',                    sub: 'Massnahme 10',               file: '/files/admin-details/massnahme-beschaffungsprozess.html' },
-  'prozessdigitalisierung': { title: 'Prozessdigitalisierung',                sub: 'Massnahme 11',               file: '/files/admin-details/prozessdigitalisierung-evergreens.html' },
-  'applikationslandschaft': { title: 'Lead Applikationslandschaft',            sub: 'Massnahme 12',               file: '/files/admin-details/massnahme-lead-applikationslandschaft.html' },
+  'kommunikation':         { title: 'Kommunikation Digitale Transformation',  sub: 'M03',                        file: '/files/admin-details/massnahme-kommunikation-digitale-transformation.html' },
+  'ressourcen':            { title: 'Ressourcenabklärung',                     sub: 'M07',                        file: '/files/admin-details/massnahme-ressourcenabklaerung.html' },
+  'change-agents':         { title: 'Team Change Agents',                     sub: 'M30',                        file: '/files/admin-details/massnahme-change-agents.html' },
+  'plattform':             { title: 'Einführung Digitalisierungsplattform',    sub: 'M29',                        file: '/files/admin-details/einfuehrung-digitalisierungsplattform.html' },
+  'tools':                 { title: 'Übersicht digitale Tools',                sub: 'M06',                        file: '/files/admin-details/massnahme-tool-uebersicht.html' },
+  'db-portale':            { title: 'DB & Portale Konzept',                   sub: 'M31',                        file: '/files/admin-details/massnahme-db-portale.html' },
+  'ki-strategie':          { title: 'KI-Strategie & Befähigung',              sub: 'M05',                        file: '/files/admin-details/ki-strategie-befaehigung.html' },
+  'ki-lernpfad':           { title: 'KI Lernpfad',                            sub: 'M01',                        file: '/files/admin-details/massnahme-ki-lernpfad.html' },
+  'analyse-tools':         { title: 'Analyse Tools & Software',               sub: 'M32',                        file: '/files/admin-details/massnahme-analyse-tools-software.html' },
+  'beschaffung':           { title: 'Beschaffungsprozess',                    sub: 'M08',                        file: '/files/admin-details/massnahme-beschaffungsprozess.html' },
+  'prozessdigitalisierung': { title: 'Prozessdigitalisierung',                sub: 'M04',                        file: '/files/admin-details/prozessdigitalisierung-evergreens.html' },
+  'applikationslandschaft': { title: 'Lead Applikationslandschaft',            sub: 'M02',                        file: '/files/admin-details/massnahme-lead-applikationslandschaft.html' },
 };
 
 const PAGE_ORDER = [

@@ -2,19 +2,19 @@ import { Link } from 'react-router-dom';
 import { ClipboardList, ArrowRight, LayoutGrid } from 'lucide-react';
 
 const CARDS = [
-  { num: '00', slug: 'uebersicht',            title: 'Übersicht',                              sub: 'Dashboard aller Massnahmen',           accent: 'text-scnat-red',     bg: 'bg-scnat-red/8',     highlight: true },
-  { num: '01', slug: 'kommunikation',          title: 'Kommunikation Digitale Transformation',  sub: 'Strategie · Narrativ · Kanäle',        accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
-  { num: '02', slug: 'ressourcen',             title: 'Ressourcenabklärung',                     sub: 'Bedarf · Konzept · Priorisierung',     accent: 'text-status-green',  bg: 'bg-status-green/8'  },
-  { num: '03', slug: 'change-agents',          title: 'Team Change Agents',                     sub: 'Rollen · Netzwerk · Befähigung',       accent: 'text-status-purple', bg: 'bg-status-purple/8' },
-  { num: '04', slug: 'plattform',              title: 'Einführung Digitalisierungsplattform',    sub: 'Rollout · Onboarding · Betrieb',       accent: 'text-scnat-red',     bg: 'bg-scnat-red/8'     },
-  { num: '05', slug: 'tools',                  title: 'Übersicht digitale Tools',                sub: 'Inventar · Bewertung · Empfehlung',    accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
-  { num: '06', slug: 'db-portale',             title: 'DB & Portale Konzept',                   sub: 'Zukunftskonzept · Technologie',        accent: 'text-status-amber',  bg: 'bg-status-amber/8'  },
-  { num: '07', slug: 'ki-strategie',           title: 'KI-Strategie & Befähigung',              sub: 'Strategie · Programm · Governance',    accent: 'text-status-green',  bg: 'bg-status-green/8'  },
-  { num: '08', slug: 'ki-lernpfad',            title: 'KI Lernpfad',                            sub: 'Befähigung · Module · Praxis',         accent: 'text-status-purple', bg: 'bg-status-purple/8' },
-  { num: '09', slug: 'analyse-tools',          title: 'Analyse Tools & Software',               sub: 'Evaluation · Kriterien · Vergleich',   accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
-  { num: '10', slug: 'beschaffung',            title: 'Beschaffungsprozess',                    sub: 'Digitalisierung · Prozess · Ablauf',   accent: 'text-scnat-red',     bg: 'bg-scnat-red/8'     },
-  { num: '11', slug: 'prozessdigitalisierung', title: 'Prozessdigitalisierung',                 sub: 'Evergreens · Optimierung · Workflows', accent: 'text-status-amber',  bg: 'bg-status-amber/8'  },
-  { num: '12', slug: 'applikationslandschaft', title: 'Lead Applikationslandschaft',             sub: 'Governance · Portfolio · Steuerung',   accent: 'text-status-green',  bg: 'bg-status-green/8'  },
+  { num: '—',   slug: 'uebersicht',            title: 'Übersicht',                              sub: 'Dashboard aller Massnahmen',           accent: 'text-scnat-red',     bg: 'bg-scnat-red/8',     highlight: true },
+  { num: 'M03', slug: 'kommunikation',          title: 'Kommunikation Digitale Transformation',  sub: 'Strategie · Narrativ · Kanäle',        accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
+  { num: 'M07', slug: 'ressourcen',             title: 'Ressourcenabklärung',                     sub: 'Bedarf · Konzept · Priorisierung',     accent: 'text-status-green',  bg: 'bg-status-green/8'  },
+  { num: 'M30', slug: 'change-agents',          title: 'Team Change Agents',                     sub: 'Rollen · Netzwerk · Befähigung',       accent: 'text-status-purple', bg: 'bg-status-purple/8' },
+  { num: 'M29', slug: 'plattform',              title: 'Einführung Digitalisierungsplattform',    sub: 'Rollout · Onboarding · Betrieb',       accent: 'text-scnat-red',     bg: 'bg-scnat-red/8'     },
+  { num: 'M06', slug: 'tools',                  title: 'Übersicht digitale Tools',                sub: 'Inventar · Bewertung · Empfehlung',    accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
+  { num: 'M31', slug: 'db-portale',             title: 'DB & Portale Konzept',                   sub: 'Zukunftskonzept · Technologie',        accent: 'text-status-amber',  bg: 'bg-status-amber/8'  },
+  { num: 'M05', slug: 'ki-strategie',           title: 'KI-Strategie & Befähigung',              sub: 'Strategie · Programm · Governance',    accent: 'text-status-green',  bg: 'bg-status-green/8'  },
+  { num: 'M01', slug: 'ki-lernpfad',            title: 'KI Lernpfad',                            sub: 'Befähigung · Module · Praxis',         accent: 'text-status-purple', bg: 'bg-status-purple/8' },
+  { num: 'M32', slug: 'analyse-tools',          title: 'Analyse Tools & Software',               sub: 'Evaluation · Kriterien · Vergleich',   accent: 'text-status-blue',   bg: 'bg-status-blue/8'   },
+  { num: 'M08', slug: 'beschaffung',            title: 'Beschaffungsprozess',                    sub: 'Digitalisierung · Prozess · Ablauf',   accent: 'text-scnat-red',     bg: 'bg-scnat-red/8'     },
+  { num: 'M04', slug: 'prozessdigitalisierung', title: 'Prozessdigitalisierung',                 sub: 'Evergreens · Optimierung · Workflows', accent: 'text-status-amber',  bg: 'bg-status-amber/8'  },
+  { num: 'M02', slug: 'applikationslandschaft', title: 'Lead Applikationslandschaft',             sub: 'Governance · Portfolio · Steuerung',   accent: 'text-status-green',  bg: 'bg-status-green/8'  },
 ];
 
 
