@@ -1,10 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic, Network, GitBranch } from 'lucide-react';
+import { Layers, PieChart, Box, ArrowRight, ChevronRight, FolderOpen, MapPin, Wrench, Mic, Network, GitBranch, Columns3 } from 'lucide-react';
 
 const CARDS = [
   {
     num: '01',
+    section: 'Systembild',
+    title: 'The Pillars',
+    sub: 'Drei Säulen · im Zusammenspiel',
+    desc: 'Massnahmen, DB & Portale, Infrastruktur – drei Dimensionen der digitalen Transformation. 3D-Szene mit Wechselwirkungen, Ressourcenverteilung, Voraussetzungen und gemeinsamem Fundament aus Prozessen und Methoden.',
+    primary: { to: '/cp/admin-stuff/pillars', label: 'Öffnen' },
+    secondary: { to: '/cp/admin-stuff/pillars#wechsel', label: 'Zu den Wechselwirkungen' },
+    visual: 'pillars',
+    quickIcon: Columns3,
+    quickColor: 'text-purple-500',
+    accentBg: 'bg-purple-500/8',
+  },
+  {
+    num: '02',
     section: 'Strategische Einordnung',
     title: 'The Frame',
     sub: 'Der digitale Rahmen · Gesamtbild',
@@ -17,7 +30,7 @@ const CARDS = [
     accentBg: 'bg-scnat-red/8',
   },
   {
-    num: '02',
+    num: '03',
     section: 'Zielarchitektur',
     title: 'Architektur',
     sub: 'Vier Schichten · Vier Stufen · 3D Explorer',
@@ -29,7 +42,7 @@ const CARDS = [
     accentBg: 'bg-purple-500/8',
   },
   {
-    num: '03',
+    num: '04',
     section: 'Analyse & Begründung',
     title: 'The Reason Why',
     sub: 'Was die Zahlen sagen · Pitch-Unterlage',
@@ -42,7 +55,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '04',
+    num: '05',
     section: 'Standort & Infrastruktur',
     title: 'Where',
     sub: 'Positionierung · Verortung · Kontext',
@@ -54,7 +67,7 @@ const CARDS = [
     accentBg: 'bg-scnat-teal/8',
   },
   {
-    num: '05',
+    num: '06',
     section: 'Technische Details',
     title: 'The Details',
     sub: 'Sicherheit · Betrieb · Publishing · Governance',
@@ -77,7 +90,7 @@ const CARDS = [
     accentBg: 'bg-status-green/8',
   },
   {
-    num: '06',
+    num: '07',
     section: 'Technologie & Prozess',
     title: 'How it gets Built',
     sub: 'Tech Stack · Codex · The Super Mini PAI',
@@ -89,7 +102,7 @@ const CARDS = [
     accentBg: 'bg-status-blue/8',
   },
   {
-    num: '07',
+    num: '08',
     section: 'KI-Tools · Analyse',
     title: 'Speech-to-Text',
     sub: '9 Tools · SaaS · API · Lokal · CH-DE',
@@ -101,7 +114,7 @@ const CARDS = [
     accentBg: 'bg-status-green/8',
   },
   {
-    num: '08',
+    num: '09',
     section: 'Organisation',
     title: 'SCNAT Organigramm',
     sub: 'Bereiche · Plattformen · Foren · Kommissionen',
@@ -400,6 +413,35 @@ function OrganigrammVisual() {
   );
 }
 
+function PillarsVisual() {
+  const PILLARS = [
+    { color: 'rgba(124,92,191,', dark: '#7C5CBF', label: 'Massnahmen', height: 78 },
+    { color: 'rgba(212,136,42,', dark: '#D4882A', label: 'DB · Portale', height: 60 },
+    { color: 'rgba(234,81,90,', dark: '#EA515A', label: 'Infrastruktur', height: 88 },
+  ];
+  return (
+    <div className="flex flex-col items-center gap-2 w-full max-w-[200px]">
+      <div className="flex items-end justify-center gap-2 h-[100px]">
+        {PILLARS.map((p, i) => (
+          <div
+            key={i}
+            className="w-9 rounded-sm relative"
+            style={{
+              height: `${p.height}%`,
+              background: `linear-gradient(180deg, ${p.color}0.20) 0%, ${p.color}0.06) 100%)`,
+              border: `1px solid ${p.color}0.40)`,
+              borderTop: `2px solid ${p.dark}`,
+              animation: `layerFloat 6s ease-in-out ${i * 0.3}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="w-full h-[3px] rounded-sm bg-bd-faint border border-bd-faint" />
+      <p className="text-[8px] font-mono text-txt-tertiary tracking-wider uppercase mt-0.5">Fundament · Prozesse</p>
+    </div>
+  );
+}
+
 function CardVisual({ type }) {
   if (type === 'layers') return <LayersVisual />;
   if (type === 'stats') return <StatsVisual />;
@@ -409,6 +451,7 @@ function CardVisual({ type }) {
   if (type === 'none') return <WhereVisual />;
   if (type === 'architektur') return <ArchitekturVisual />;
   if (type === 'organigramm') return <OrganigrammVisual />;
+  if (type === 'pillars') return <PillarsVisual />;
   return null;
 }
 
@@ -421,7 +464,7 @@ export default function CpAdminStuff() {
           <h2 className="text-xl font-heading font-semibold text-txt-primary flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-scnat-red" /> Admin Stuff
           </h2>
-          <p className="text-xs text-txt-secondary mt-0.5">8 Dokumente · Strategie, Architektur, Begründung, Standort, Details, Technologie, KI-Analyse und Organigramm</p>
+          <p className="text-xs text-txt-secondary mt-0.5">9 Dokumente · Systembild, Strategie, Architektur, Begründung, Standort, Details, Technologie, KI-Analyse und Organigramm</p>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const PAGES = {
+  pillars: { title: 'The Pillars', sub: 'Drei Säulen · Systembild · Wechselwirkungen', file: '/files/drei_saeulen.html' },
   frame: { title: 'The Frame', sub: 'Strategische Einordnung', file: '/files/digitaler_rahmen.html' },
   architektur: { title: 'Architektur', sub: 'Vier Schichten · Vier Stufen · 3D Explorer', file: '/files/architektur.html' },
   reason: { title: 'The Reason Why', sub: 'Analyse & Begründung', file: '/files/app_begruendung.html' },
@@ -16,7 +17,7 @@ const PAGES = {
   organigramm: { title: 'SCNAT Organigramm', sub: 'Bereiche · Plattformen · Foren · Kommissionen', file: '/files/organigramm.html' },
 };
 
-const PAGE_ORDER = ['frame', 'architektur', 'reason', 'where', 'details', 'recherche', 'process', 'how-built', 'speech-to-text', 'organigramm'];
+const PAGE_ORDER = ['pillars', 'frame', 'architektur', 'reason', 'where', 'details', 'recherche', 'process', 'how-built', 'speech-to-text', 'organigramm'];
 
 export default function CpAdminStuffView() {
   const { page } = useParams();

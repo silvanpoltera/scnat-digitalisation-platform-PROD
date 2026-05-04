@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<script>
+(function(){
+  try{var p=new URLSearchParams(window.location.search);if(p.get('theme')==='light')document.documentElement.classList.add('light');}catch(e){}
+  function sync(){try{var b=parent.document.documentElement.classList.contains('theme-bright');document.documentElement.classList.toggle('theme-bright',b);document.documentElement.classList.toggle('light',b);}catch(e){}}
+  sync();
+  try{new MutationObserver(sync).observe(parent.document.documentElement,{attributes:true,attributeFilter:['class']})}catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drei Säulen – SCNAT Digitalisierung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.10);
+  --red-mid:rgba(234,81,90,0.25);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+  --purple:#7C5CBF;
+
+  /* Säulen-Farben */
+  --p1:#7C5CBF;  /* Massnahmen */
+  --p1-dim:rgba(124,92,191,0.10);
+  --p1-mid:rgba(124,92,191,0.30);
+  --p2:#D4882A;  /* DB & Portale */
+  --p2-dim:rgba(212,136,42,0.10);
+  --p2-mid:rgba(212,136,42,0.30);
+  --p3:#EA515A;  /* Infrastruktur */
+  --p3-dim:rgba(234,81,90,0.10);
+  --p3-mid:rgba(234,81,90,0.30);
+
+  --nav-bg:rgba(12,14,16,0.92);
+  --tag-bg:rgba(0,0,0,0.20);
+}
+
+html.theme-bright,
+html.light{
+  --bg:#F8F9FA;
+  --surface:#FFFFFF;
+  --elevated:#F3F4F6;
+  --subtle:#E8EAED;
+  --b-faint:#E5E7EB;
+  --b-def:#D1D5DB;
+  --b-strong:#9CA3AF;
+  --red:#DC2626;
+  --red-dim:rgba(220,38,38,0.06);
+  --red-mid:rgba(220,38,38,0.20);
+  --anth:#6B7280;
+  --text:#1F2937;
+  --text2:#4B5563;
+  --text3:#9CA3AF;
+  --ok:#059669;
+  --warn:#B45309;
+  --info:#2563EB;
+  --purple:#7C3AED;
+
+  --p1:#7C3AED;
+  --p1-dim:rgba(124,58,237,0.07);
+  --p1-mid:rgba(124,58,237,0.25);
+  --p2:#B45309;
+  --p2-dim:rgba(180,83,9,0.07);
+  --p2-mid:rgba(180,83,9,0.25);
+  --p3:#DC2626;
+  --p3-dim:rgba(220,38,38,0.07);
+  --p3-mid:rgba(220,38,38,0.25);
+
+  --nav-bg:rgba(248,249,250,0.92);
+  --tag-bg:rgba(0,0,0,0.04);
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+body{min-height:100vh}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:3rem 2rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 50%, rgba(124,92,191,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 70% 50%, rgba(234,81,90,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 40%, rgba(212,136,42,0.04) 0%, transparent 70%);
+  pointer-events:none;
+}
+html.theme-bright .hero-bg,
+html.light .hero-bg{
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 50%, rgba(124,58,237,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 70% 50%, rgba(220,38,38,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 40%, rgba(180,83,9,0.06) 0%, transparent 70%);
+}
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--b-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--b-faint) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 75%);
+  pointer-events:none;
+}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1.5rem;position:relative;z-index:1}
+.hero h1{font-size:clamp(2.4rem,7vw,5rem);font-weight:700;line-height:1.05;margin-bottom:1.5rem;max-width:820px;position:relative;z-index:1}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--p1),var(--p2) 50%,var(--p3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:560px;line-height:1.8;margin-bottom:3rem;position:relative;z-index:1}
+.scroll-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer;position:relative;z-index:1}
+.scroll-hint .arrow{width:1px;height:40px;background:linear-gradient(var(--b-def),transparent);margin:0 auto}
+
+/* ── SECTION ── */
+.section{max-width:1000px;margin:0 auto;padding:6rem 2rem}
+.section.wide{max-width:1100px}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);margin-bottom:1.2rem}
+.section-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:1rem}
+.section-lead{font-size:.95rem;color:var(--text2);line-height:1.8;max-width:620px;margin-bottom:3rem}
+hr.sep{border:none;border-top:1px solid var(--b-faint);margin:0}
+
+/* ── 3D SCENE ── */
+.scene-wrap{
+  position:relative;
+  max-width:820px;
+  margin:0 auto 3rem;
+  display:flex;
+  flex-direction:column;
+}
+.scene{
+  perspective:1400px;
+  perspective-origin:50% 50%;
+  width:100%;
+  max-width:780px;
+  margin:0 auto;
+  height:340px;
+  position:relative;
+  cursor:grab;
+  user-select:none;
+  overflow:visible;
+}
+.scene:active{cursor:grabbing}
+.stage{
+  transform-style:preserve-3d;
+  transform:rotateX(-10deg) rotateY(-18deg);
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+  width:100%;
+  height:100%;
+  position:relative;
+}
+.stage.dragging{transition:none}
+
+/* Bodenschein */
+.ground-glow{
+  position:absolute;
+  left:50%;bottom:0;
+  width:680px;height:40px;
+  transform:translateX(-50%) rotateX(90deg);
+  transform-origin:center top;
+  background:radial-gradient(ellipse 60% 80% at 50% 0%, rgba(234,81,90,0.12) 0%, transparent 70%);
+  pointer-events:none;
+  transform-style:preserve-3d;
+}
+html.theme-bright .ground-glow,
+html.light .ground-glow{
+  background:radial-gradient(ellipse 60% 80% at 50% 0%, rgba(220,38,38,0.10) 0%, transparent 70%);
+}
+
+/* Prozess-Fundament */
+.process-base{
+  max-width:780px;
+  margin:.75rem auto 0;
+  position:relative;
+}
+.process-base-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text3);letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:.5rem;padding:0 .25rem;
+}
+.process-base-label span:last-child{color:var(--text2);letter-spacing:.08em}
+.process-bar{
+  background:linear-gradient(180deg,var(--surface),var(--elevated));
+  border:1px solid var(--b-def);
+  border-radius:4px;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  overflow:hidden;
+  position:relative;
+}
+.process-bar::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--b-strong),transparent);
+  opacity:.4;
+}
+.proc-cell{
+  padding:1rem .75rem;
+  text-align:center;
+  border-right:1px solid var(--b-faint);
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+}
+.proc-cell:last-child{border-right:none}
+.proc-cell-icon{
+  width:22px;height:22px;border-radius:4px;
+  background:var(--subtle);border:1px solid var(--b-def);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);
+}
+.proc-cell-icon svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.6;fill:none}
+.proc-cell-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;
+  color:var(--text);
+  letter-spacing:.04em;
+  line-height:1.3;
+}
+.proc-cell-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:7.5px;
+  color:var(--text3);
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+/* Säulen */
+.pillar{
+  position:absolute;
+  width:var(--w);
+  height:var(--h);
+  transform-style:preserve-3d;
+  cursor:pointer;
+  transition:filter .3s;
+}
+.pillar:hover{filter:brightness(1.15)}
+html.theme-bright .pillar:hover,
+html.light .pillar:hover{filter:brightness(1.05)}
+.pillar .face{
+  position:absolute;
+  box-sizing:border-box;
+  backface-visibility:visible;
+  overflow:hidden;
+}
+.pillar .face.front{
+  width:var(--w);
+  height:var(--h);
+  top:0;left:0;
+  transform:translateZ(calc(var(--d) / 2));
+  display:flex;flex-direction:column;
+  padding:1rem .85rem;
+  gap:.5rem;
+}
+.pillar .face.back{
+  width:var(--w);
+  height:var(--h);
+  top:0;left:0;
+  transform:translateZ(calc(var(--d) / -2)) rotateY(180deg);
+  display:flex;flex-direction:column;
+  padding:1rem .85rem;
+  align-items:flex-end;
+}
+.pillar .face.right{
+  width:var(--d);
+  height:var(--h);
+  top:0;right:0;
+  transform:rotateY(90deg) translateZ(calc(var(--d) / 2));
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:.85rem .7rem;
+}
+.pillar .face.left{
+  width:var(--d);
+  height:var(--h);
+  top:0;left:0;
+  transform:rotateY(-90deg) translateZ(calc(var(--d) / 2));
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:.85rem .7rem;
+}
+.pillar .face.top{
+  width:var(--w);
+  height:var(--d);
+  top:0;left:0;
+  transform:rotateX(90deg) translateZ(calc(var(--d) / 2));
+  transform-origin:top center;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Pillar 1: Massnahmen (purple) */
+.pillar-1{--w:150px;--d:100px;--h:230px; --c:var(--p1); --c-dim:var(--p1-dim); --c-mid:var(--p1-mid);}
+.pillar-1 .face.front{background:linear-gradient(180deg,rgba(124,92,191,0.20) 0%,rgba(124,92,191,0.08) 100%);border:1px solid var(--c-mid);border-top:2px solid var(--c)}
+.pillar-1 .face.back{background:linear-gradient(180deg,rgba(124,92,191,0.10),rgba(124,92,191,0.04));border:1px solid var(--c-mid)}
+.pillar-1 .face.right{background:linear-gradient(90deg,rgba(124,92,191,0.16),rgba(124,92,191,0.06));border:1px solid var(--c-mid)}
+.pillar-1 .face.left{background:linear-gradient(90deg,rgba(124,92,191,0.06),rgba(124,92,191,0.16));border:1px solid var(--c-mid)}
+.pillar-1 .face.top{background:rgba(124,92,191,0.28);border:1px solid var(--c)}
+
+/* Pillar 2: DB & Portale (orange) */
+.pillar-2{--w:150px;--d:100px;--h:200px; --c:var(--p2); --c-dim:var(--p2-dim); --c-mid:var(--p2-mid);}
+.pillar-2 .face.front{background:linear-gradient(180deg,rgba(212,136,42,0.20) 0%,rgba(212,136,42,0.08) 100%);border:1px solid var(--c-mid);border-top:2px solid var(--c)}
+.pillar-2 .face.back{background:linear-gradient(180deg,rgba(212,136,42,0.10),rgba(212,136,42,0.04));border:1px solid var(--c-mid)}
+.pillar-2 .face.right{background:linear-gradient(90deg,rgba(212,136,42,0.16),rgba(212,136,42,0.06));border:1px solid var(--c-mid)}
+.pillar-2 .face.left{background:linear-gradient(90deg,rgba(212,136,42,0.06),rgba(212,136,42,0.16));border:1px solid var(--c-mid)}
+.pillar-2 .face.top{background:rgba(212,136,42,0.28);border:1px solid var(--c)}
+
+/* Pillar 3: Infrastruktur (red) */
+.pillar-3{--w:150px;--d:100px;--h:250px; --c:var(--p3); --c-dim:var(--p3-dim); --c-mid:var(--p3-mid);}
+.pillar-3 .face.front{background:linear-gradient(180deg,rgba(234,81,90,0.22) 0%,rgba(234,81,90,0.08) 100%);border:1px solid var(--c-mid);border-top:2px solid var(--c)}
+.pillar-3 .face.back{background:linear-gradient(180deg,rgba(234,81,90,0.10),rgba(234,81,90,0.04));border:1px solid var(--c-mid)}
+.pillar-3 .face.right{background:linear-gradient(90deg,rgba(234,81,90,0.16),rgba(234,81,90,0.06));border:1px solid var(--c-mid)}
+.pillar-3 .face.left{background:linear-gradient(90deg,rgba(234,81,90,0.06),rgba(234,81,90,0.16));border:1px solid var(--c-mid)}
+.pillar-3 .face.top{background:rgba(234,81,90,0.28);border:1px solid var(--c)}
+
+/* Light-mode: tone the pillar gradients via the matching brand colors */
+html.theme-bright .pillar-1 .face.front,
+html.light .pillar-1 .face.front{background:linear-gradient(180deg,rgba(124,58,237,0.18) 0%,rgba(124,58,237,0.06) 100%)}
+html.theme-bright .pillar-1 .face.back,
+html.light .pillar-1 .face.back{background:linear-gradient(180deg,rgba(124,58,237,0.08),rgba(124,58,237,0.03))}
+html.theme-bright .pillar-1 .face.right,
+html.light .pillar-1 .face.right{background:linear-gradient(90deg,rgba(124,58,237,0.14),rgba(124,58,237,0.05))}
+html.theme-bright .pillar-1 .face.left,
+html.light .pillar-1 .face.left{background:linear-gradient(90deg,rgba(124,58,237,0.05),rgba(124,58,237,0.14))}
+html.theme-bright .pillar-1 .face.top,
+html.light .pillar-1 .face.top{background:rgba(124,58,237,0.22)}
+
+html.theme-bright .pillar-2 .face.front,
+html.light .pillar-2 .face.front{background:linear-gradient(180deg,rgba(180,83,9,0.18) 0%,rgba(180,83,9,0.06) 100%)}
+html.theme-bright .pillar-2 .face.back,
+html.light .pillar-2 .face.back{background:linear-gradient(180deg,rgba(180,83,9,0.08),rgba(180,83,9,0.03))}
+html.theme-bright .pillar-2 .face.right,
+html.light .pillar-2 .face.right{background:linear-gradient(90deg,rgba(180,83,9,0.14),rgba(180,83,9,0.05))}
+html.theme-bright .pillar-2 .face.left,
+html.light .pillar-2 .face.left{background:linear-gradient(90deg,rgba(180,83,9,0.05),rgba(180,83,9,0.14))}
+html.theme-bright .pillar-2 .face.top,
+html.light .pillar-2 .face.top{background:rgba(180,83,9,0.22)}
+
+html.theme-bright .pillar-3 .face.front,
+html.light .pillar-3 .face.front{background:linear-gradient(180deg,rgba(220,38,38,0.20) 0%,rgba(220,38,38,0.07) 100%)}
+html.theme-bright .pillar-3 .face.back,
+html.light .pillar-3 .face.back{background:linear-gradient(180deg,rgba(220,38,38,0.08),rgba(220,38,38,0.03))}
+html.theme-bright .pillar-3 .face.right,
+html.light .pillar-3 .face.right{background:linear-gradient(90deg,rgba(220,38,38,0.14),rgba(220,38,38,0.05))}
+html.theme-bright .pillar-3 .face.left,
+html.light .pillar-3 .face.left{background:linear-gradient(90deg,rgba(220,38,38,0.05),rgba(220,38,38,0.14))}
+html.theme-bright .pillar-3 .face.top,
+html.light .pillar-3 .face.top{background:rgba(220,38,38,0.22)}
+
+/* Pillar content */
+.p-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c);opacity:.9;text-transform:uppercase}
+.p-title{font-size:.95rem;font-weight:700;line-height:1.15;color:var(--text)}
+.p-sub{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text2);letter-spacing:.05em;line-height:1.35;margin-top:auto}
+.p-tag-list{display:flex;flex-direction:column;gap:3px;margin-top:.35rem}
+.p-tag{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text2);letter-spacing:.04em;opacity:.85;padding:1px 4px;border-left:1px solid var(--c);background:var(--tag-bg)}
+.p-side-label{writing-mode:vertical-rl;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c);text-transform:uppercase;opacity:.85}
+.p-side-stat{display:flex;flex-direction:column;gap:2px}
+.p-side-stat-label{font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.p-side-stat-val{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);font-weight:500}
+.p-top-marker{width:40%;height:3px;background:var(--c);border-radius:1px;opacity:.8}
+
+/* Säulen-Positionen */
+.scene .pillar{left:50%;transform:translateX(-50%)}
+.pillar-1{bottom:8px;margin-left:-210px}
+.pillar-2{bottom:8px;margin-left:0px}
+.pillar-3{bottom:8px;margin-left:210px}
+
+.scene-hint{
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--text3);
+  letter-spacing:.05em;
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+.legend{
+  display:flex;justify-content:center;gap:1.5rem;margin-bottom:3rem;flex-wrap:wrap;
+}
+.legend-item{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text2);letter-spacing:.05em;text-transform:uppercase;
+}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* Pillar tooltip */
+.pillar-tooltip{
+  background:var(--elevated);
+  border:1px solid var(--b-def);
+  border-left:3px solid var(--red);
+  border-radius:4px;
+  padding:1.5rem 1.75rem;
+  margin-bottom:2rem;
+  transition:all .3s;
+}
+.pillar-tooltip-head{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
+.pillar-tooltip-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em}
+.pillar-tooltip-title{font-weight:700;font-size:1.05rem}
+.pillar-tooltip-text{font-size:.88rem;color:var(--text2);line-height:1.7}
+
+/* ── DETAIL CARDS ── */
+.pillar-cards{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--b-faint);
+  border:1px solid var(--b-faint);
+  border-radius:6px;overflow:hidden;
+  margin-bottom:3rem;
+}
+.pc{
+  background:var(--surface);
+  padding:2rem 1.75rem;
+  display:flex;flex-direction:column;
+  position:relative;
+  min-height:360px;
+}
+.pc::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--pc-color);
+}
+.pc-1{--pc-color:var(--p1);--pc-dim:var(--p1-dim)}
+.pc-2{--pc-color:var(--p2);--pc-dim:var(--p2-dim)}
+.pc-3{--pc-color:var(--p3);--pc-dim:var(--p3-dim)}
+.pc-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pc-color);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.75rem}
+.pc-title{font-size:1.1rem;font-weight:700;line-height:1.2;margin-bottom:.25rem}
+.pc-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;margin-bottom:1.25rem}
+.pc-desc{font-size:.83rem;color:var(--text2);line-height:1.65;margin-bottom:1.25rem;flex:1}
+.pc-meta{display:flex;flex-direction:column;gap:.5rem;padding-top:1rem;border-top:1px solid var(--b-faint)}
+.pc-meta-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:.75rem}
+.pc-meta-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.pc-meta-val{color:var(--text);font-weight:500}
+.pc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:1rem}
+.pc-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text2);padding:2px 7px;border:1px solid var(--b-def);border-radius:2px;background:var(--pc-dim)}
+
+/* ── FUNDAMENT SECTION ── */
+.fundament-grid{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  gap:1px;background:var(--b-faint);
+  border:1px solid var(--b-faint);
+  border-radius:6px;overflow:hidden;
+  margin-bottom:2rem;
+}
+.fund-card{
+  background:var(--surface);
+  padding:1.5rem 1.25rem;
+  text-align:center;
+  transition:background .2s;
+}
+.fund-card:hover{background:var(--elevated)}
+.fund-icon{
+  width:32px;height:32px;
+  margin:0 auto 1rem;
+  border:1px solid var(--b-def);
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);
+}
+.fund-title{font-size:.82rem;font-weight:600;margin-bottom:.3rem;line-height:1.2}
+.fund-desc{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text3);letter-spacing:.03em;line-height:1.45}
+
+.fundament-note{
+  background:var(--red-dim);
+  border:1px solid var(--red-mid);
+  border-radius:4px;
+  padding:1.25rem 1.5rem;
+  font-size:.85rem;
+  color:var(--text2);
+  line-height:1.65;
+}
+.fundament-note strong{color:var(--text)}
+
+/* ── WECHSELWIRKUNGEN ── */
+.wirk-tabs{
+  display:flex;gap:0;margin-bottom:1.5rem;
+  border-bottom:1px solid var(--b-def);
+}
+.wirk-tab{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.75rem 1.25rem;
+  background:none;border:none;
+  color:var(--text3);cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:all .2s;
+}
+.wirk-tab:hover{color:var(--text2)}
+.wirk-tab.active{color:var(--text);border-bottom-color:var(--red)}
+.wirk-tab.active.pos{border-bottom-color:var(--ok);color:var(--ok)}
+.wirk-tab.active.neg{border-bottom-color:var(--red);color:var(--red)}
+
+.wirk-panel{display:none}
+.wirk-panel.active{display:grid}
+
+.wirk-grid{
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+.wirk-card{
+  background:var(--surface);
+  border:1px solid var(--b-def);
+  border-radius:4px;
+  padding:1.25rem;
+  position:relative;
+  transition:border-color .2s;
+}
+.wirk-card.pos{border-left:3px solid var(--ok)}
+.wirk-card.neg{border-left:3px solid var(--red)}
+.wirk-from-to{
+  display:flex;align-items:center;gap:.5rem;
+  margin-bottom:.75rem;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.05em;
+}
+.wirk-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.wirk-arrow{color:var(--text3);font-size:.85rem}
+.wirk-label{color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-size:9.5px}
+.wirk-title{font-size:.88rem;font-weight:600;margin-bottom:.4rem;line-height:1.3}
+.wirk-desc{font-size:.78rem;color:var(--text2);line-height:1.65}
+
+/* ── RESSOURCEN ── */
+.ressource-wrap{
+  background:var(--surface);
+  border:1px solid var(--b-def);
+  border-radius:6px;
+  padding:2rem 2rem 1.5rem;
+  margin-bottom:2rem;
+}
+.ressource-head{
+  display:grid;grid-template-columns:130px 1fr 1fr;
+  gap:1rem;margin-bottom:1rem;
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  color:var(--text3);letter-spacing:.08em;text-transform:uppercase;
+  padding-bottom:.75rem;border-bottom:1px solid var(--b-faint);
+}
+.ressource-row{
+  display:grid;grid-template-columns:130px 1fr 1fr;
+  gap:1rem;align-items:center;
+  padding:.65rem 0;
+}
+.ressource-label{font-size:.82rem;color:var(--text);font-weight:500}
+.ressource-bar-wrap{display:flex;align-items:center;gap:.5rem}
+.ressource-bar{
+  flex:1;height:10px;
+  background:var(--b-def);border-radius:1px;
+  overflow:hidden;position:relative;
+}
+.ressource-fill{
+  height:100%;border-radius:1px;
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);
+  width:0%;
+}
+.ressource-val{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text2);min-width:32px;text-align:right;
+}
+.ressource-note{
+  font-size:.78rem;color:var(--text2);line-height:1.65;
+  padding:.85rem 1rem;margin-top:.5rem;
+  background:rgba(212,136,42,0.06);
+  border:1px solid rgba(212,136,42,0.2);
+  border-radius:3px;
+}
+html.theme-bright .ressource-note,
+html.light .ressource-note{
+  background:rgba(180,83,9,0.06);
+  border-color:rgba(180,83,9,0.2);
+}
+.ressource-note .note-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--warn);text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:.3rem;display:block;
+}
+
+/* ── PRIORITÄTEN ── */
+.prio-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1rem;margin-bottom:2rem;
+}
+.prio-card{
+  background:var(--surface);
+  border:1px solid var(--b-def);
+  border-radius:4px;
+  padding:1.5rem;
+  position:relative;
+  overflow:hidden;
+}
+.prio-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+  background:var(--pc-color);
+}
+.prio-card.pc-1::before{background:var(--p1)}
+.prio-card.pc-2::before{background:var(--p2)}
+.prio-card.pc-3::before{background:var(--p3)}
+.prio-head{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text3);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.prio-title{font-size:.95rem;font-weight:600;margin-bottom:1rem;line-height:1.25}
+.prio-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.prio-item{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.78rem;color:var(--text2);line-height:1.5;
+}
+.prio-check{
+  flex-shrink:0;margin-top:3px;
+  width:12px;height:12px;border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;
+}
+.prio-check.ok{background:rgba(61,170,117,0.15);border:1px solid rgba(61,170,117,0.4);color:var(--ok)}
+.prio-check.warn{background:rgba(212,136,42,0.15);border:1px solid rgba(212,136,42,0.4);color:var(--warn)}
+.prio-check.risk{background:rgba(234,81,90,0.15);border:1px solid rgba(234,81,90,0.4);color:var(--red)}
+html.theme-bright .prio-check.ok,
+html.light .prio-check.ok{background:rgba(5,150,105,0.10);border-color:rgba(5,150,105,0.35)}
+html.theme-bright .prio-check.warn,
+html.light .prio-check.warn{background:rgba(180,83,9,0.10);border-color:rgba(180,83,9,0.35)}
+html.theme-bright .prio-check.risk,
+html.light .prio-check.risk{background:rgba(220,38,38,0.10);border-color:rgba(220,38,38,0.35)}
+
+/* ── FAZIT ── */
+.final{background:var(--red-dim);border:1px solid var(--red-mid);border-radius:4px;padding:2rem;margin-bottom:2rem}
+.final h3{font-size:1.05rem;font-weight:600;margin-bottom:.75rem}
+.final p{font-size:.88rem;color:var(--text2);line-height:1.8}
+.final strong{color:var(--text)}
+
+/* ── TOP NAV ── */
+.topnav{
+  position:sticky;top:0;z-index:200;
+  background:var(--nav-bg);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--b-faint);
+  padding:0 2rem;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+.topnav-brand{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;
+  padding-right:2rem;border-right:1px solid var(--b-faint);
+  margin-right:2rem;white-space:nowrap;
+}
+.topnav-links{display:flex;gap:0;flex:1;overflow-x:auto}
+.topnav-link{
+  font-size:.82rem;color:var(--text2);
+  text-decoration:none;padding:.4rem 1rem;
+  border-radius:3px;transition:all .15s;
+  white-space:nowrap;
+}
+.topnav-link:hover{color:var(--text);background:var(--elevated)}
+.topnav-link.active{color:var(--red);background:var(--red-dim)}
+
+/* ── FLOATING NAV ── */
+.floatnav{
+  position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:.5rem;z-index:100;
+}
+.nav-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--b-strong);
+  cursor:pointer;transition:all .2s;border:none;padding:0;
+}
+.nav-dot.active{background:var(--red);transform:scale(1.4)}
+.nav-dot:hover{background:var(--text2)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .pillar-cards{grid-template-columns:1fr}
+  .wirk-grid{grid-template-columns:1fr}
+  .fundament-grid{grid-template-columns:repeat(3,1fr)}
+  .prio-grid{grid-template-columns:1fr}
+  .scene{height:340px;max-width:640px}
+  .pillar-1{--w:130px;--d:85px;--h:200px;margin-left:-180px}
+  .pillar-2{--w:130px;--d:85px;--h:170px;margin-left:0}
+  .pillar-3{--w:130px;--d:85px;--h:215px;margin-left:180px}
+  .ground-glow{width:580px}
+  .process-bar{grid-template-columns:repeat(3,1fr)}
+  .proc-cell{border-right:1px solid var(--b-faint)}
+  .proc-cell:nth-child(3n){border-right:none}
+  .proc-cell:nth-child(-n+3){border-bottom:1px solid var(--b-faint)}
+}
+@media(max-width:720px){
+  .scene{height:300px;max-width:540px}
+  .pillar-1{--w:115px;--d:75px;--h:180px;margin-left:-155px}
+  .pillar-2{--w:115px;--d:75px;--h:150px;margin-left:0}
+  .pillar-3{--w:115px;--d:75px;--h:195px;margin-left:155px}
+  .ground-glow{width:500px}
+}
+@media(max-width:640px){
+  .floatnav{display:none}
+  .hero{padding:3rem 1.25rem 1.5rem}
+  .section{padding:3rem 1.25rem}
+  .ressource-head,.ressource-row{grid-template-columns:90px 1fr 1fr}
+  .fundament-grid{grid-template-columns:repeat(2,1fr)}
+  .topnav{padding:0 1rem}
+  .topnav-brand{margin-right:1rem;padding-right:1rem}
+  .scene{height:260px;max-width:460px}
+  .pillar-1{--w:100px;--d:65px;--h:155px;margin-left:-130px}
+  .pillar-2{--w:100px;--d:65px;--h:130px;margin-left:0}
+  .pillar-3{--w:100px;--d:65px;--h:170px;margin-left:130px}
+  .ground-glow{width:420px}
+  .process-bar{grid-template-columns:repeat(2,1fr)}
+  .proc-cell:nth-child(2n){border-right:none}
+  .proc-cell:nth-child(2n+1){border-right:1px solid var(--b-faint)}
+  .proc-cell:nth-child(-n+4){border-bottom:1px solid var(--b-faint)}
+  .proc-cell-label{font-size:9px}
+  .p-title{font-size:.82rem}
+  .p-tag{font-size:7px}
+}
+@media(max-width:480px){
+  .scene{height:230px;max-width:380px}
+  .pillar-1{--w:88px;--d:55px;--h:135px;margin-left:-110px}
+  .pillar-2{--w:88px;--d:55px;--h:115px;margin-left:0}
+  .pillar-3{--w:88px;--d:55px;--h:150px;margin-left:110px}
+  .ground-glow{width:340px}
+  .section-title{font-size:clamp(1.35rem,7vw,2rem)}
+  .hero-title{font-size:clamp(1.8rem,9vw,2.8rem)}
+  .proc-cell{padding:.75rem .4rem}
+  .proc-cell-label{font-size:8.5px;line-height:1.25}
+  .proc-cell-sub{font-size:7px}
+  .topnav-link{font-size:10.5px;padding:0 .5rem}
+  .p-title{font-size:.72rem}
+  .p-tag{display:none}
+  .p-sub{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <span class="topnav-brand">SCNAT · Digitalisierung</span>
+  <div class="topnav-links">
+    <a href="admin.html" class="topnav-link">Hub</a>
+    <a href="digitaler_rahmen.html" class="topnav-link">Rahmen</a>
+    <a href="drei_saeulen.html" class="topnav-link active">Drei Säulen</a>
+    <a href="app_begruendung.html" class="topnav-link">App-Begründung</a>
+    <a href="speech-to-text.html" class="topnav-link">STT-Analyse</a>
+  </div>
+</nav>
+
+<!-- FLOATING NAV -->
+<nav class="floatnav" aria-label="Seitennavigation">
+  <button class="nav-dot active" onclick="scrollToSec('hero')" title="Intro"></button>
+  <button class="nav-dot" onclick="scrollToSec('saeulen')" title="Säulen"></button>
+  <button class="nav-dot" onclick="scrollToSec('details')" title="Details"></button>
+  <button class="nav-dot" onclick="scrollToSec('fundament')" title="Fundament"></button>
+  <button class="nav-dot" onclick="scrollToSec('wechsel')" title="Wechselwirkungen"></button>
+  <button class="nav-dot" onclick="scrollToSec('ressourcen')" title="Ressourcen"></button>
+  <button class="nav-dot" onclick="scrollToSec('voraussetzungen')" title="Voraussetzungen"></button>
+  <button class="nav-dot" onclick="scrollToSec('fazit')" title="Fazit"></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-eyebrow">SCNAT Digitalisierung · Systembild</div>
+  <h1>Drei Säulen<br><em>im Zusammenspiel</em></h1>
+  <p class="hero-sub">Massnahmen, Systeme, Infrastruktur – drei Dimensionen der digitalen Transformation bei der SCNAT. Jede hat eigene Priorität, Ressourcenbedarf und Modernisierungsdruck. Keine funktioniert ohne die anderen.</p>
+  <div class="scroll-hint" onclick="document.getElementById('saeulen').scrollIntoView({behavior:'smooth'})">
+    <span>Erkunden</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- SÄULEN: 3D SCENE -->
+<section class="section wide" id="saeulen">
+  <div class="section-label">Das Gesamtbild</div>
+  <div class="section-title">Das Gefüge der SCNAT-IT</div>
+  <p class="section-lead">Drei Säulen stehen auf einem gemeinsamen Fundament aus Prozessen und Methoden. Sie sind unterschiedlich alt, unterschiedlich dringlich und unterschiedlich verstanden – aber sie tragen die digitale Zukunft der SCNAT gemeinsam.</p>
+
+  <div class="scene-wrap">
+    <div class="scene" id="scene">
+      <div class="stage" id="stage">
+
+        <div class="ground-glow"></div>
+
+        <!-- Säule 1: Massnahmen -->
+        <div class="pillar pillar-1" onclick="openPillar(1)">
+          <div class="face front">
+            <div class="p-num">Säule 01</div>
+            <div class="p-title">Massnahmen zur Digitalisierung</div>
+            <div class="p-tag-list">
+              <div class="p-tag">Kultur &amp; Mindset</div>
+              <div class="p-tag">KI-Enablement</div>
+              <div class="p-tag">Schulungen</div>
+              <div class="p-tag">Change Mgmt</div>
+            </div>
+            <div class="p-sub">Strategie &amp; Menschen</div>
+          </div>
+          <div class="face back"><div class="p-num">01</div></div>
+          <div class="face left">
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Horizont</div>
+              <div class="p-side-stat-val">laufend</div>
+            </div>
+            <div class="p-side-label">Massnahmen</div>
+          </div>
+          <div class="face right">
+            <div class="p-side-label">Priorität · hoch</div>
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Reifegrad</div>
+              <div class="p-side-stat-val">im Aufbau</div>
+            </div>
+          </div>
+          <div class="face top"><div class="p-top-marker"></div></div>
+        </div>
+
+        <!-- Säule 2: DB & Portale -->
+        <div class="pillar pillar-2" onclick="openPillar(2)">
+          <div class="face front">
+            <div class="p-num">Säule 02</div>
+            <div class="p-title">DB &amp; Portale</div>
+            <div class="p-tag-list">
+              <div class="p-tag">Xojo-Konsolidierung</div>
+              <div class="p-tag">CMS / Frontends</div>
+              <div class="p-tag">Datenmodell</div>
+              <div class="p-tag">Migration?</div>
+            </div>
+            <div class="p-sub">Kernsysteme · historisch</div>
+          </div>
+          <div class="face back"><div class="p-num">02</div></div>
+          <div class="face left">
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Alter</div>
+              <div class="p-side-stat-val">12+ Jahre</div>
+            </div>
+            <div class="p-side-label">DB &amp; Portale</div>
+          </div>
+          <div class="face right">
+            <div class="p-side-label">Priorität · mittel</div>
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Risiko</div>
+              <div class="p-side-stat-val">Klumpen</div>
+            </div>
+          </div>
+          <div class="face top"><div class="p-top-marker"></div></div>
+        </div>
+
+        <!-- Säule 3: Infrastruktur -->
+        <div class="pillar pillar-3" onclick="openPillar(3)">
+          <div class="face front">
+            <div class="p-num">Säule 03</div>
+            <div class="p-title">Infrastruktur</div>
+            <div class="p-tag-list">
+              <div class="p-tag">On-prem Server</div>
+              <div class="p-tag">Mailserver</div>
+              <div class="p-tag">Netzwerk &amp; Hosting</div>
+              <div class="p-tag">Sicherheit</div>
+            </div>
+            <div class="p-sub">Fundament · kritisch</div>
+          </div>
+          <div class="face back"><div class="p-num">03</div></div>
+          <div class="face left">
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Betrieb</div>
+              <div class="p-side-stat-val">manuell</div>
+            </div>
+            <div class="p-side-label">Infrastruktur</div>
+          </div>
+          <div class="face right">
+            <div class="p-side-label">Priorität · hoch</div>
+            <div class="p-side-stat">
+              <div class="p-side-stat-label">Modernisierung</div>
+              <div class="p-side-stat-val">überfällig</div>
+            </div>
+          </div>
+          <div class="face top"><div class="p-top-marker"></div></div>
+        </div>
+
+      </div>
+    </div>
+    <p class="scene-hint">↔ Ziehen zum Drehen &nbsp;·&nbsp; Säule anklicken für Details</p>
+
+    <!-- Prozess-Fundament -->
+    <div class="process-base">
+      <div class="process-base-label">
+        <span>Fundament · Prozesse &amp; Methoden</span>
+        <span>trägt alle drei Säulen</span>
+      </div>
+      <div class="process-bar">
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div>
+          <div class="proc-cell-label">Anforderungs-<br>management</div>
+          <div class="proc-cell-sub">Input</div>
+        </div>
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 6v12h18V6M7 10v6M12 10v6M17 10v6"/></svg></div>
+          <div class="proc-cell-label">Projekt-<br>management</div>
+          <div class="proc-cell-sub">Steuerung</div>
+        </div>
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M6 4h9l5 5v11H6zM15 4v5h5"/></svg></div>
+          <div class="proc-cell-label">Spezifi-<br>kationen</div>
+          <div class="proc-cell-sub">Klarheit</div>
+        </div>
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7l3 3M21 12a9 9 0 0 1-15 6.7l-3-3M18 2v6h-6M6 22v-6h6"/></svg></div>
+          <div class="proc-cell-label">Change<br>Management</div>
+          <div class="proc-cell-sub">Übergang</div>
+        </div>
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V6z"/></svg></div>
+          <div class="proc-cell-label">Governance<br>&amp; Standards</div>
+          <div class="proc-cell-sub">Leitplanken</div>
+        </div>
+        <div class="proc-cell">
+          <div class="proc-cell-icon"><svg viewBox="0 0 24 24"><path d="M4 4h11l5 5v11H4zM4 10h16M8 14h8M8 18h5"/></svg></div>
+          <div class="proc-cell-label">Doku<br>&amp; Wissen</div>
+          <div class="proc-cell-sub">Gedächtnis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legende -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--p1)"></span>Massnahmen</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--p2)"></span>DB &amp; Portale</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--p3)"></span>Infrastruktur</div>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="pillar-tooltip" id="pillarTooltip" style="display:none">
+    <div class="pillar-tooltip-head">
+      <span class="pillar-tooltip-num" id="ttNum"></span>
+      <span class="pillar-tooltip-title" id="ttTitle"></span>
+    </div>
+    <div class="pillar-tooltip-text" id="ttText"></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- DETAILS -->
+<section class="section" id="details">
+  <div class="section-label">Was jede Säule ausmacht</div>
+  <div class="section-title">Drei Dimensionen, drei Logiken</div>
+  <p class="section-lead">Jede Säule folgt einer eigenen Logik: eigene Stakeholder, eigene Zeitrhythmen, eigener Modernisierungspfad. Nur wer diese Unterschiede versteht, kann sie koordiniert steuern.</p>
+
+  <div class="pillar-cards">
+
+    <div class="pc pc-1">
+      <div class="pc-eyebrow">Säule 01</div>
+      <div class="pc-title">Massnahmen zur Digitalisierung</div>
+      <div class="pc-sub">Kultur · Menschen · KI · Change</div>
+      <p class="pc-desc">Die sichtbare Bewegung. Menschen befähigen, neue Arbeitsweisen etablieren, KI nutzbar machen, digitale Kultur entwickeln. Kein Projekt mit Enddatum, sondern ein laufender Prozess.</p>
+      <div class="pc-meta">
+        <div class="pc-meta-row"><span class="pc-meta-label">Treiber</span><span class="pc-meta-val">Strategie · Menschen</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Horizont</span><span class="pc-meta-val">laufend</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Sichtbarkeit</span><span class="pc-meta-val">hoch</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Abhängigkeit</span><span class="pc-meta-val">Infra &amp; Tools</span></div>
+      </div>
+      <div class="pc-tags">
+        <span class="pc-tag">Schulungen</span>
+        <span class="pc-tag">KI-Lernpfad</span>
+        <span class="pc-tag">Portal</span>
+        <span class="pc-tag">Kommunikation</span>
+      </div>
+    </div>
+
+    <div class="pc pc-2">
+      <div class="pc-eyebrow">Säule 02</div>
+      <div class="pc-title">DB &amp; Portale</div>
+      <div class="pc-sub">Xojo · CMS · Datenmodell · Frontends</div>
+      <p class="pc-desc">Das historisch Gewachsene. Funktional, kritisch für den Alltag, aber gebunden an Spezialwissen und lange Konsolidierungsphasen. Der Technologieentscheid – weiterentwickeln oder ablösen – steht an.</p>
+      <div class="pc-meta">
+        <div class="pc-meta-row"><span class="pc-meta-label">Treiber</span><span class="pc-meta-val">Fachbereiche · Daten</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Horizont</span><span class="pc-meta-val">5–10 Jahre</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Sichtbarkeit</span><span class="pc-meta-val">mittel</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Risiko</span><span class="pc-meta-val">Spezialwissen</span></div>
+      </div>
+      <div class="pc-tags">
+        <span class="pc-tag">Xojo-Zukunft</span>
+        <span class="pc-tag">CMS-Strategie</span>
+        <span class="pc-tag">Schnittstellen</span>
+        <span class="pc-tag">Datenqualität</span>
+      </div>
+    </div>
+
+    <div class="pc pc-3">
+      <div class="pc-eyebrow">Säule 03</div>
+      <div class="pc-title">Infrastruktur</div>
+      <div class="pc-sub">On-prem · Hosting · Netzwerk · Betrieb</div>
+      <p class="pc-desc">Das Fundament unter allem. Souverän, kontrolliert – aber alt, manuell gepflegt, personenabhängig. Modernisierung ohne Verlust von Datensouveränität ist das zentrale Thema.</p>
+      <div class="pc-meta">
+        <div class="pc-meta-row"><span class="pc-meta-label">Treiber</span><span class="pc-meta-val">IT · Sicherheit</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Horizont</span><span class="pc-meta-val">3–7 Jahre</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Sichtbarkeit</span><span class="pc-meta-val">gering</span></div>
+        <div class="pc-meta-row"><span class="pc-meta-label">Risiko</span><span class="pc-meta-val">Klumpen · Betrieb</span></div>
+      </div>
+      <div class="pc-tags">
+        <span class="pc-tag">Swiss Cloud</span>
+        <span class="pc-tag">Automatisierung</span>
+        <span class="pc-tag">Mailserver</span>
+        <span class="pc-tag">CI/CD</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- FUNDAMENT -->
+<section class="section" id="fundament">
+  <div class="section-label">Was alles trägt</div>
+  <div class="section-title">Das gemeinsame Fundament</div>
+  <p class="section-lead">Keine Säule steht für sich allein. Alle drei setzen dieselben Grundlagen voraus – Prozesse und Methoden, die sauber laufen müssen, damit Massnahmen wirken, Systeme stabil bleiben und Infrastruktur verlässlich ist.</p>
+
+  <div class="fundament-grid">
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </div>
+      <div class="fund-title">Anforderungs-<br>management</div>
+      <div class="fund-desc">Was wollen wir eigentlich? Klar formuliert, dokumentiert, nachvollziehbar.</div>
+    </div>
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <div class="fund-title">Projekt-<br>management</div>
+      <div class="fund-desc">Wer macht was, bis wann, mit welchem Budget – und wer entscheidet.</div>
+    </div>
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+      </div>
+      <div class="fund-title">Spezifi-<br>kationen</div>
+      <div class="fund-desc">Die gemeinsame Sprache zwischen Fachbereich, IT und Umsetzung.</div>
+    </div>
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-9-9"/><polyline points="21 3 21 12 12 12"/></svg>
+      </div>
+      <div class="fund-title">Change<br>Management</div>
+      <div class="fund-desc">Veränderungen begleiten, nicht nur verordnen. Menschen mitnehmen.</div>
+    </div>
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="fund-title">Governance<br>&amp; Standards</div>
+      <div class="fund-desc">Regeln, Verantwortlichkeiten, Entscheidungswege – bevor das Chaos entsteht.</div>
+    </div>
+
+    <div class="fund-card">
+      <div class="fund-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <div class="fund-title">Doku<br>&amp; Wissen</div>
+      <div class="fund-desc">Wissen aus Köpfen in Artefakte bringen. Damit Fluktuation kein Risiko ist.</div>
+    </div>
+
+  </div>
+
+  <div class="fundament-note">
+    <strong>Warum das zählt:</strong> Wenn das Fundament bröckelt, wird jede Säule teurer, langsamer und riskanter. Ein KI-Schulungsprogramm ohne klare Verantwortlichkeiten bleibt wirkungslos. Ein Datenbank-Refactoring ohne sauberes Anforderungsmanagement endet als neue Altlast. Ein Hosting-Wechsel ohne dokumentierte Spezifikationen ist ein Blindflug.
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- WECHSELWIRKUNGEN -->
+<section class="section" id="wechsel">
+  <div class="section-label">Wie die Säulen interagieren</div>
+  <div class="section-title">Wechselwirkungen – positiv und negativ</div>
+  <p class="section-lead">Die Säulen sind nicht isoliert. Sie verstärken sich oder behindern sich – je nachdem, wie bewusst sie aufeinander abgestimmt werden.</p>
+
+  <div class="wirk-tabs" role="tablist">
+    <button class="wirk-tab active pos" onclick="switchWirk(this,'pos')">Positive Verstärkung</button>
+    <button class="wirk-tab neg" onclick="switchWirk(this,'neg')">Negative Spannung</button>
+  </div>
+
+  <!-- POSITIVE -->
+  <div class="wirk-panel wirk-grid active" id="wirk-pos">
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+      </div>
+      <div class="wirk-title">KI-Nutzung erzeugt Modernisierungsdruck</div>
+      <div class="wirk-desc">Wer mit KI arbeiten will, stösst schnell an Infrastruktur-Grenzen. Das schafft konkrete, verständliche Argumente für Modernisierung – jenseits abstrakter Technikthemen.</div>
+    </div>
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+      </div>
+      <div class="wirk-title">Neue Basis ermöglicht Refactoring</div>
+      <div class="wirk-desc">Eine modernisierte Hosting- und Betriebsumgebung macht DB-Migrationen überhaupt erst planbar. CI/CD, saubere Umgebungen und Monitoring sind Voraussetzung.</div>
+    </div>
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+      </div>
+      <div class="wirk-title">Saubere Daten ermöglichen bessere Massnahmen</div>
+      <div class="wirk-desc">Wenn das Datenmodell stimmt und Portale verlässlich sind, können Schulungen konkreter werden, KI-Anwendungen realistischer – und Nutzer entwickeln Vertrauen.</div>
+    </div>
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+      </div>
+      <div class="wirk-title">Neue Kompetenzen entlasten Altsystem</div>
+      <div class="wirk-desc">Wenn mehr Personen digital arbeiten können, sinkt die Konzentration auf wenige Spezialisten. Schulungen bauen das Klumpenrisiko schrittweise ab.</div>
+    </div>
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+      </div>
+      <div class="wirk-title">Moderne Tools machen Massnahmen real</div>
+      <div class="wirk-desc">Ohne stabile Infrastruktur bleiben Digitalisierungs-Massnahmen Theorie. Eine performante Basis erlaubt konkrete Werkzeuge, die Menschen im Alltag nutzen können.</div>
+    </div>
+
+    <div class="wirk-card pos">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+        <span class="wirk-arrow">→</span>
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+      </div>
+      <div class="wirk-title">DB-Entscheid zwingt Infrastruktur-Klärung</div>
+      <div class="wirk-desc">Der anstehende Technologieentscheid zu Xojo / CMS macht Hosting-Fragen unausweichlich. Das kann den Anstoss für die überfällige Infrastruktur-Diskussion geben.</div>
+    </div>
+
+  </div>
+
+  <!-- NEGATIVE -->
+  <div class="wirk-panel wirk-grid" id="wirk-neg">
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+      </div>
+      <div class="wirk-title">Xojo-Wartung bindet Kapazität</div>
+      <div class="wirk-desc">Solange die Konsolidierung läuft, bleiben wenige Spezialisten gebunden. Ressourcen für neue Massnahmen, KI oder Modernisierung werden knapp.</div>
+    </div>
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+      </div>
+      <div class="wirk-title">On-prem-Grenzen blockieren moderne Tools</div>
+      <div class="wirk-desc">Viele aktuelle Werkzeuge – insbesondere KI-gestützte – setzen moderne Infrastruktur voraus. Eigene Mailserver und restriktive Netze erschweren Integrationen.</div>
+    </div>
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+      </div>
+      <div class="wirk-title">Strategie ohne Basis wirkt kurzatmig</div>
+      <div class="wirk-desc">Wenn Schulungen und Kultur-Massnahmen nicht auf modernisierter Infrastruktur aufsetzen, entsteht Frust – das Gelernte lässt sich im Alltag nicht umsetzen.</div>
+    </div>
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+      </div>
+      <div class="wirk-title">Manueller Betrieb verhindert DB-Evolution</div>
+      <div class="wirk-desc">Ohne CI/CD, automatisierte Tests und saubere Umgebungen wird jede DB-Änderung zum Hochrisiko-Eingriff. Das führt zu Stillstand statt Weiterentwicklung.</div>
+    </div>
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p1)"></span>
+        <span class="wirk-label">Massnahmen</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+      </div>
+      <div class="wirk-title">Neue Anforderungen überlasten Altsysteme</div>
+      <div class="wirk-desc">Digitale Massnahmen erzeugen neue Anforderungen – an Datenzugriff, Schnittstellen, Performance. Altsysteme können das oft nicht tragen.</div>
+    </div>
+
+    <div class="wirk-card neg">
+      <div class="wirk-from-to">
+        <span class="wirk-dot" style="background:var(--p2)"></span>
+        <span class="wirk-label">DB &amp; Portale</span>
+        <span class="wirk-arrow">⊗</span>
+        <span class="wirk-dot" style="background:var(--p3)"></span>
+        <span class="wirk-label">Infrastruktur</span>
+      </div>
+      <div class="wirk-title">Altlasten zementieren Infrastruktur-Abhängigkeit</div>
+      <div class="wirk-desc">Solange Xojo und proprietäres CMS laufen, ist ein Hosting-Wechsel schwer. Die DB-Entscheidung und der Infrastruktur-Entscheid sind gekoppelt – und blockieren sich gegenseitig.</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- RESSOURCEN -->
+<section class="section" id="ressourcen">
+  <div class="section-label">Die ehrliche Frage</div>
+  <div class="section-title">Wer bekommt wie viel?</div>
+  <p class="section-lead">Die drei Säulen konkurrieren um dieselben begrenzten Ressourcen: Menschen, Zeit, Budget, Aufmerksamkeit der Führung. Eine transparente Einordnung hilft, bewusst zu priorisieren – statt schleichend die laute Säule zu bevorzugen.</p>
+
+  <div class="ressource-wrap">
+    <div class="ressource-head">
+      <div></div>
+      <div>Heute · geschätzt</div>
+      <div>Nachhaltig · Ziel</div>
+    </div>
+
+    <div class="ressource-row" id="resRow1">
+      <div class="ressource-label" style="color:var(--p1)">Massnahmen</div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="15" style="background:var(--p1)"></div></div>
+        <div class="ressource-val">15%</div>
+      </div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="35" style="background:var(--p1)"></div></div>
+        <div class="ressource-val">35%</div>
+      </div>
+    </div>
+
+    <div class="ressource-row">
+      <div class="ressource-label" style="color:var(--p2)">DB &amp; Portale</div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="55" style="background:var(--p2)"></div></div>
+        <div class="ressource-val">55%</div>
+      </div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="30" style="background:var(--p2)"></div></div>
+        <div class="ressource-val">30%</div>
+      </div>
+    </div>
+
+    <div class="ressource-row">
+      <div class="ressource-label" style="color:var(--p3)">Infrastruktur</div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="30" style="background:var(--p3)"></div></div>
+        <div class="ressource-val">30%</div>
+      </div>
+      <div class="ressource-bar-wrap">
+        <div class="ressource-bar"><div class="ressource-fill" data-target="35" style="background:var(--p3)"></div></div>
+        <div class="ressource-val">35%</div>
+      </div>
+    </div>
+
+    <div class="ressource-note">
+      <span class="note-label">Einordnung</span>
+      Die Werte sind eine strategische Einschätzung, keine Messung. Kernbotschaft: Die Konsolidierung der DB-Systeme bindet heute den grössten Teil der IT-Kapazität. Ein nachhaltiges Gleichgewicht entsteht erst, wenn diese Last aktiv reduziert wird – sonst bleibt kaum Raum für Neues.
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- VORAUSSETZUNGEN -->
+<section class="section" id="voraussetzungen">
+  <div class="section-label">Was jede Säule für die Zukunft braucht</div>
+  <div class="section-title">Voraussetzungen für eine nachhaltige Modernisierung</div>
+  <p class="section-lead">Jede Säule hat eigene Voraussetzungen für die nächsten Jahre. Erst wenn diese bewusst adressiert werden, tragen die Säulen das Gewicht einer modernen, souveränen SCNAT-Digitalisierung.</p>
+
+  <div class="prio-grid">
+
+    <div class="prio-card pc-1">
+      <div class="prio-head">Säule 01 · Massnahmen</div>
+      <div class="prio-title">Was es braucht</div>
+      <ul class="prio-list">
+        <li class="prio-item"><span class="prio-check ok">✓</span><span>Klarer Auftrag, unterstützt durch Geschäftsleitung</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Koordination mit IT, damit Tools verfügbar sind</span></li>
+        <li class="prio-item"><span class="prio-check ok">✓</span><span>Kontinuierliche Schulungs- und Kommunikationsformate</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Messbarkeit – nicht als Kontrolle, sondern als Feedback</span></li>
+        <li class="prio-item"><span class="prio-check risk">!</span><span>Realistisches Zeitbudget der Mitarbeitenden</span></li>
+      </ul>
+    </div>
+
+    <div class="prio-card pc-2">
+      <div class="prio-head">Säule 02 · DB &amp; Portale</div>
+      <div class="prio-title">Was es braucht</div>
+      <ul class="prio-list">
+        <li class="prio-item"><span class="prio-check risk">!</span><span>Technologieentscheid Xojo / CMS – weiterentwickeln oder ablösen</span></li>
+        <li class="prio-item"><span class="prio-check risk">!</span><span>Abbau des Klumpenrisikos auf Spezialwissen</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Dokumentation von Datenmodell und Schnittstellen</span></li>
+        <li class="prio-item"><span class="prio-check ok">✓</span><span>Saubere Anforderungen aus den Fachbereichen</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Migrations- oder Modernisierungspfad mit Meilensteinen</span></li>
+      </ul>
+    </div>
+
+    <div class="prio-card pc-3">
+      <div class="prio-head">Säule 03 · Infrastruktur</div>
+      <div class="prio-title">Was es braucht</div>
+      <ul class="prio-list">
+        <li class="prio-item"><span class="prio-check risk">!</span><span>Souveränitäts- und Hosting-Strategie – inklusive Swiss-Cloud-Option</span></li>
+        <li class="prio-item"><span class="prio-check risk">!</span><span>Automatisierung des Betriebs (CI/CD, Monitoring, Patches)</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Evaluation der Mailserver-Zukunft</span></li>
+        <li class="prio-item"><span class="prio-check warn">~</span><span>Sicherheitsstandards und Incident Response</span></li>
+        <li class="prio-item"><span class="prio-check ok">✓</span><span>Klare Trennung von Entwicklung, Test und Produktion</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- FAZIT -->
+<section class="section" id="fazit">
+  <div class="section-label">Was das bedeutet</div>
+  <div class="section-title">Drei Säulen, ein gemeinsamer Plan</div>
+
+  <div class="final">
+    <h3>Die Säulen müssen zusammen gedacht werden.</h3>
+    <p>Jede für sich ist wichtig. Aber jede Säule einzeln zu planen, ohne die anderen mitzudenken, führt zu Reibungsverlusten: konkurrierende Ressourcen, widersprüchliche Anforderungen, Massnahmen ohne Basis, Modernisierung ohne Zweck.</p>
+  </div>
+
+  <div class="final" style="border-color:rgba(61,170,117,.2);background:rgba(61,170,117,.05)">
+    <h3 style="color:var(--ok)">Gleichzeitig: Nicht alles auf einmal.</h3>
+    <p>Koordiniert denken heisst nicht, alles parallel umzusetzen. Es heisst, Abhängigkeiten zu kennen, bewusste Reihenfolgen festzulegen und zu akzeptieren, dass eine starke Säule die anderen stützen muss, bis sie nachziehen.</p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:1.75rem;margin-top:1rem">
+    <div class="section-label" style="margin-bottom:.6rem">Der nächste Schritt</div>
+    <p style="font-size:.88rem;color:var(--text2);line-height:1.85">
+      Ein gemeinsames Koordinationsformat für alle drei Säulen – mit klaren Verantwortlichen, transparenten Abhängigkeiten und regelmässiger Standortbestimmung. <strong style="color:var(--text)">Nicht als neues Projekt, sondern als Führungsinstrument.</strong> So wird aus drei getrennten Baustellen ein gemeinsames Bauvorhaben.
+    </p>
+  </div>
+</section>
+
+<script>
+const scene = document.getElementById('scene');
+const stage = document.getElementById('stage');
+let dragging=false,startX=0,startY=0,rotX=-10,rotY=-18;
+
+function setRot(){
+  stage.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+}
+
+scene.addEventListener('mousedown',e=>{
+  dragging=true;startX=e.clientX;startY=e.clientY;
+  stage.classList.add('dragging');
+  e.preventDefault();
+});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  rotY=-18+dx*0.3; rotX=-10-dy*0.2;
+  rotX=Math.max(-25,Math.min(10,rotX));
+  rotY=Math.max(-60,Math.min(30,rotY));
+  setRot();
+});
+window.addEventListener('mouseup',()=>{
+  dragging=false;
+  stage.classList.remove('dragging');
+});
+
+scene.addEventListener('touchstart',e=>{
+  startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+  stage.classList.add('dragging');
+},{passive:true});
+scene.addEventListener('touchmove',e=>{
+  const dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;
+  rotY=-18+dx*0.3;rotX=-10-dy*0.2;
+  rotX=Math.max(-25,Math.min(10,rotX));
+  rotY=Math.max(-60,Math.min(30,rotY));
+  setRot();
+},{passive:true});
+scene.addEventListener('touchend',()=>{
+  stage.classList.remove('dragging');
+});
+
+const pillarData = {
+  1:{num:'Säule 01 · Massnahmen', title:'Menschen, Kultur, KI, Change',
+     text:'Die sichtbare Bewegung der Digitalisierung. Schulungen, Kommunikation, neue Arbeitsweisen, KI-Enablement. Läuft kontinuierlich und ist stark sichtbar – weil sie direkt das Erleben der Mitarbeitenden prägt. Abhängig von funktionierender Infrastruktur und verfügbaren Tools.'},
+  2:{num:'Säule 02 · DB & Portale', title:'Kernsysteme mit 12+ Jahren Geschichte',
+     text:'Xojo-Datenbank, proprietäres CMS, React-Frontends. Historisch gewachsen, funktional, aber gebunden an Spezialwissen. Der Technologieentscheid für die nächsten 10 Jahre steht an – weiterentwickeln oder schrittweise ablösen. Bindet aktuell den grössten Teil der IT-Kapazität.'},
+  3:{num:'Säule 03 · Infrastruktur', title:'On-prem, souverän, modernisierungsbedürftig',
+     text:'Eigene Server, eigene Mailserver, eigenes Netzwerk. Datensouveränität als Prinzip – aber manueller Betrieb, veraltete Tooling, Klumpenrisiko im Betriebswissen. Der blinde Fleck unter allem: kritisch, aber wenig sichtbar. Swiss Cloud kann Brücke zwischen Souveränität und Modernität sein.'}
+};
+function openPillar(n){
+  const d = pillarData[n];
+  const tt = document.getElementById('pillarTooltip');
+  document.getElementById('ttNum').textContent = d.num;
+  document.getElementById('ttTitle').textContent = d.title;
+  document.getElementById('ttText').textContent = d.text;
+  const colors = {1:'var(--p1)',2:'var(--p2)',3:'var(--p3)'};
+  tt.style.borderLeftColor = colors[n];
+  tt.style.display = 'block';
+  tt.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function switchWirk(btn,which){
+  document.querySelectorAll('.wirk-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.wirk-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('wirk-'+which).classList.add('active');
+}
+
+const resObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.ressource-fill').forEach(bar=>{
+        bar.style.width = bar.dataset.target + '%';
+      });
+      resObs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+const resWrap = document.querySelector('.ressource-wrap');
+if(resWrap) resObs.observe(resWrap);
+
+function scrollToSec(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+const sections=['hero','saeulen','details','fundament','wechsel','ressourcen','voraussetzungen','fazit'];
+const dots=document.querySelectorAll('.nav-dot');
+const secObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx=sections.indexOf(e.target.id);
+      if(idx>-1) dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+  });
+},{threshold:.4});
+sections.forEach(id=>{const el=document.getElementById(id);if(el)secObserver.observe(el)});
+</script>
+</body>
+</html>
