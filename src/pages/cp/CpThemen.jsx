@@ -180,7 +180,7 @@ export default function CpThemen() {
                       value={edit.adminAntwort}
                       onChange={e => setEdit(s => ({ ...s, adminAntwort: e.target.value }))}
                       rows={3}
-                      placeholder="z.B. „Wird im Q2 als Halbtagskurs angeboten." oder „Danke für den Vorschlag, aktuell nicht priorisiert.""
+                      placeholder={'z.B. „Wird im Q2 als Halbtagskurs angeboten." oder „Danke für den Vorschlag, aktuell nicht priorisiert."'}
                       className="w-full bg-bg-surface border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-teal focus:outline-none resize-none"
                     />
                   </div>
