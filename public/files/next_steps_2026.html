@@ -107,6 +107,66 @@ html.in-iframe .hero{padding-top:3rem}
 .num-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
 .num-sub{font-size:.78rem;color:var(--text2);line-height:1.5;margin-top:.3rem}
 
+/* ── PILLARS STRIP ── */
+.pillars-section{max-width:calc(1100px - 4rem);margin:0 auto;padding:0 0 1.5rem;position:relative;z-index:1}
+.pillars-intro{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+.pillars-intro .section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3)}
+.pillars-intro-hint{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
+.pillars-intro-hint b{color:var(--text2)}
+.pillars-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+.pillar-btn{
+  position:relative;background:var(--surface);border:1px solid var(--b-def);border-radius:4px;
+  padding:1.1rem 1.1rem 1.1rem 3.2rem;cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;gap:.25rem;text-align:left;font-family:inherit;color:inherit;
+  overflow:hidden;
+}
+.pillar-btn:hover{border-color:var(--c-mid);transform:translateY(-1px)}
+.pillar-btn.on{border-color:var(--c);background:linear-gradient(180deg,var(--c-dim),var(--surface) 70%);box-shadow:0 0 0 1px var(--c) inset}
+.pillar-btn[data-pillar="1"]{--c:var(--purple);--c-dim:rgba(124,92,191,0.10);--c-mid:rgba(124,92,191,0.45)}
+.pillar-btn[data-pillar="2"]{--c:var(--warn);--c-dim:rgba(212,136,42,0.10);--c-mid:rgba(212,136,42,0.45)}
+.pillar-btn[data-pillar="3"]{--c:var(--red);--c-dim:var(--red-dim);--c-mid:var(--red-mid)}
+html.theme-bright .pillar-btn[data-pillar="1"],
+html.light .pillar-btn[data-pillar="1"]{--c-dim:rgba(124,58,237,0.08);--c-mid:rgba(124,58,237,0.35)}
+html.theme-bright .pillar-btn[data-pillar="2"],
+html.light .pillar-btn[data-pillar="2"]{--c-dim:rgba(180,83,9,0.08);--c-mid:rgba(180,83,9,0.35)}
+.pillar-art{position:absolute;left:.85rem;bottom:0;top:0;width:1.65rem;display:flex;align-items:flex-end;pointer-events:none}
+.pillar-art::before{content:'';display:block;width:100%;background:linear-gradient(180deg,var(--c) 0%,var(--c-mid) 60%,var(--c-dim) 100%);border-top-left-radius:3px;border-top-right-radius:3px;opacity:.85}
+.pillar-btn[data-pillar="1"] .pillar-art::before{height:75%}
+.pillar-btn[data-pillar="2"] .pillar-art::before{height:60%}
+.pillar-btn[data-pillar="3"] .pillar-art::before{height:88%}
+.pillar-btn .pillar-art::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--b-def)}
+.pillar-num{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--text3)}
+.pillar-title{font-size:1.05rem;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-.005em}
+.pillar-btn.on .pillar-title{color:var(--c)}
+.pillar-sub{font-size:.74rem;color:var(--text2);line-height:1.45}
+.pillar-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c);margin-top:.45rem;display:flex;align-items:center;gap:.4rem}
+.pillar-count b{font-size:1rem;font-weight:700}
+.pillar-count .arr{margin-left:auto;opacity:0;transition:opacity .15s,transform .15s;transform:translateX(-4px)}
+.pillar-btn.on .pillar-count .arr{opacity:1;transform:translateX(0)}
+
+/* Dim non-matching items when a pillar is active */
+body.pillar-filter-1 .mass-card:not(.cluster-strategie):not(.cluster-komm):not(.cluster-kultur):not(.cluster-prozess),
+body.pillar-filter-2 .mass-card:not(.cluster-daten),
+body.pillar-filter-3 .mass-card:not(.cluster-infra){opacity:.22;filter:grayscale(.4);transition:opacity .25s,filter .25s}
+body.pillar-filter-1 .mass-card.cluster-strategie,
+body.pillar-filter-1 .mass-card.cluster-komm,
+body.pillar-filter-1 .mass-card.cluster-kultur,
+body.pillar-filter-1 .mass-card.cluster-prozess,
+body.pillar-filter-2 .mass-card.cluster-daten,
+body.pillar-filter-3 .mass-card.cluster-infra{transition:opacity .25s,filter .25s}
+
+body.pillar-filter-1 .wave-item:not([data-pillar="1"]),
+body.pillar-filter-2 .wave-item:not([data-pillar="2"]),
+body.pillar-filter-3 .wave-item:not([data-pillar="3"]){opacity:.22;transition:opacity .25s}
+body.pillar-filter-1 .wave-item[data-pillar="1"],
+body.pillar-filter-2 .wave-item[data-pillar="2"],
+body.pillar-filter-3 .wave-item[data-pillar="3"]{transition:opacity .25s}
+
+/* Mobile */
+@media(max-width:760px){
+  .pillars-strip{grid-template-columns:1fr;gap:.6rem}
+}
+
 /* ── SECTION ── */
 .section{max-width:1100px;margin:0 auto;padding:4rem 2rem;position:relative;z-index:1}
 .section-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
@@ -555,6 +615,37 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
   <div class="section-title">Zwölf Massnahmen in sechs Clustern</div>
   <p class="section-lead">Jede Massnahme ist eigenständig geplant, in einem vierwöchigen Sprint umsetzbar und nach dem Schema Wirkung × (11 − Aufwand) bewertet. Klick auf eine Karte zeigt die Kurzbeschreibung – das ausführliche Briefing mit Scope, Optionen, Ressourcenplan und Erfolgsmessung erreichst du über den <em style="color:var(--red);font-style:normal">Detail-Briefing</em> Button.</p>
 
+  <!-- DREI SÄULEN INTERAKTIV -->
+  <div class="pillars-section">
+    <div class="pillars-intro">
+      <span class="section-label">Auf welcher Säule?</span>
+      <span class="pillars-intro-hint">Klick auf eine Säule, um <b>Massnahmen</b> & <b>Roadmap-Wellen</b> zu fokussieren – nochmal Klick, um alle wieder anzuzeigen.</span>
+    </div>
+    <div class="pillars-strip">
+      <button type="button" class="pillar-btn" data-pillar="1">
+        <div class="pillar-art"></div>
+        <div class="pillar-num">Säule 01</div>
+        <div class="pillar-title">Massnahmen</div>
+        <div class="pillar-sub">Menschen · Kultur · KI · Change</div>
+        <div class="pillar-count"><b>8</b> Massnahmen<span class="arr">→</span></div>
+      </button>
+      <button type="button" class="pillar-btn" data-pillar="2">
+        <div class="pillar-art"></div>
+        <div class="pillar-num">Säule 02</div>
+        <div class="pillar-title">DB &amp; Portale</div>
+        <div class="pillar-sub">Kernsysteme · 12+ Jahre Geschichte</div>
+        <div class="pillar-count"><b>1</b> Massnahme<span class="arr">→</span></div>
+      </button>
+      <button type="button" class="pillar-btn" data-pillar="3">
+        <div class="pillar-art"></div>
+        <div class="pillar-num">Säule 03</div>
+        <div class="pillar-title">Infrastruktur</div>
+        <div class="pillar-sub">On-prem · souverän · modernisierungsbedürftig</div>
+        <div class="pillar-count"><b>3</b> Massnahmen<span class="arr">→</span></div>
+      </button>
+    </div>
+  </div>
+
   <div class="filter-wrap">
     <span class="filter-label">Cluster</span>
     <button class="fchip on" data-filter="all">Alle</button>
@@ -826,12 +917,12 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
       </div>
       <div class="wave-focus">Change Agents aktivieren, Plattform launchen, Kommunikation etablieren, KI-Rahmen setzen.</div>
       <div class="wave-list">
-        <div class="wave-item"><span class="wave-item-id">M-07</span><span class="wave-item-text">Ressourcenabklärung<small>laufend bis Mai</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-03</span><span class="wave-item-text">Kommunikation Digitale Transformation<small>fortlaufend</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-30</span><span class="wave-item-text">Team Change Agents<small>Aktivierung im Mai</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-29</span><span class="wave-item-text">Einführung Digitalisierungsplattform<small>Launch Mai / Juni</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-05</span><span class="wave-item-text">KI-Strategie<small>Erarbeitung Mai / Juni</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-06</span><span class="wave-item-text">Übersicht digitale Tools<small>Refresh Mai</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-07</span><span class="wave-item-text">Ressourcenabklärung<small>laufend bis Mai</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-03</span><span class="wave-item-text">Kommunikation Digitale Transformation<small>fortlaufend</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-30</span><span class="wave-item-text">Team Change Agents<small>Aktivierung im Mai</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-29</span><span class="wave-item-text">Einführung Digitalisierungsplattform<small>Launch Mai / Juni</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-05</span><span class="wave-item-text">KI-Strategie<small>Erarbeitung Mai / Juni</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-06</span><span class="wave-item-text">Übersicht digitale Tools<small>Refresh Mai</small></span></div>
       </div>
     </div>
 
@@ -843,11 +934,11 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
       </div>
       <div class="wave-focus">KI-Lernpfad ausrollen, Applikationslandschaft klären, Beschaffung professionalisieren, Tool-Audit.</div>
       <div class="wave-list">
-        <div class="wave-item"><span class="wave-item-id">M-01</span><span class="wave-item-text">KI Lernpfad<small>Aufbau & Pilot Juli / August</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-02</span><span class="wave-item-text">Lead Applikationslandschaft<small>Rollenklärung ab Juni</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-08</span><span class="wave-item-text">Beschaffungsprozess<small>Definition Juli / August</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-32</span><span class="wave-item-text">Analyse Tools & Software<small>Audit August / September</small></span></div>
-        <div class="wave-item"><span class="wave-item-id">M-04</span><span class="wave-item-text">Prozessdigitalisierung Evergreens<small>Start Juli, drei Teilinitiativen</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-01</span><span class="wave-item-text">KI Lernpfad<small>Aufbau & Pilot Juli / August</small></span></div>
+        <div class="wave-item" data-pillar="3"><span class="wave-item-id">M-02</span><span class="wave-item-text">Lead Applikationslandschaft<small>Rollenklärung ab Juni</small></span></div>
+        <div class="wave-item" data-pillar="3"><span class="wave-item-id">M-08</span><span class="wave-item-text">Beschaffungsprozess<small>Definition Juli / August</small></span></div>
+        <div class="wave-item" data-pillar="3"><span class="wave-item-id">M-32</span><span class="wave-item-text">Analyse Tools & Software<small>Audit August / September</small></span></div>
+        <div class="wave-item" data-pillar="1"><span class="wave-item-id">M-04</span><span class="wave-item-text">Prozessdigitalisierung Evergreens<small>Start Juli, drei Teilinitiativen</small></span></div>
       </div>
     </div>
 
@@ -859,7 +950,7 @@ html.light .risk-badge.tief{background:rgba(5,150,105,.08);border-color:rgba(5,1
       </div>
       <div class="wave-focus">Nach Abschluss des Xojo-Projekts: strategische Entscheide zur technologischen Zukunft der Kernsysteme.</div>
       <div class="wave-list">
-        <div class="wave-item"><span class="wave-item-id">M-31</span><span class="wave-item-text">Konzept DB & Portale<small>Konzeptphase Q4</small></span></div>
+        <div class="wave-item" data-pillar="2"><span class="wave-item-id">M-31</span><span class="wave-item-text">Konzept DB & Portale<small>Konzeptphase Q4</small></span></div>
         <div class="wave-item"><span class="wave-item-id">···</span><span class="wave-item-text">Folgemassnahmen aus Welle 2<small>Umsetzung</small></span></div>
         <div class="wave-item"><span class="wave-item-id">···</span><span class="wave-item-text">Mailserver-Integration Plattform<small>Folgemassnahme M-03</small></span></div>
       </div>
@@ -1155,6 +1246,37 @@ sections.forEach(id => {
   const el = document.getElementById(id);
   if (el) secObserver.observe(el);
 });
+
+// ── DREI SÄULEN: KLICK-FILTER ──
+(function(){
+  const buttons = document.querySelectorAll('.pillar-btn');
+  let active = null;
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.pillar;
+      if (active === p) {
+        // toggle off
+        document.body.classList.remove('pillar-filter-1','pillar-filter-2','pillar-filter-3');
+        buttons.forEach(b => b.classList.remove('on'));
+        active = null;
+      } else {
+        document.body.classList.remove('pillar-filter-1','pillar-filter-2','pillar-filter-3');
+        document.body.classList.add('pillar-filter-' + p);
+        buttons.forEach(b => b.classList.toggle('on', b === btn));
+        active = p;
+        // smooth scroll the massnahmen heading into view (so the user sees the effect)
+        const target = document.getElementById('massnahmen');
+        if (target) {
+          const grid = document.getElementById('massGrid');
+          if (grid) {
+            const top = grid.getBoundingClientRect().top + window.scrollY - 120;
+            window.scrollTo({top, behavior:'smooth'});
+          }
+        }
+      }
+    });
+  });
+})();
 
 // ── MASSNAHMEN: FILTER ──
 const fchips = document.querySelectorAll('.fchip');
