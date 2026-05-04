@@ -61,12 +61,39 @@ MAINT
 sudo nginx -t && sudo systemctl reload nginx
 echo "   Maintenance page active"
 
-# ── 2. Pull latest code ──────────────────────────────────────────────
-echo "→ git pull"
-# data/*.json may have live changes from the running app – use checkout
-# to accept incoming code and then re-apply live data afterwards
-git checkout -- data/ 2>/dev/null || true
+# ── 2a. Backup live data BEFORE any git operation ────────────────────
+# data/*.json is modified by the running app and these changes are NOT
+# committed to git. Old logic (git checkout -- data/) wiped them.
+# New logic: (a) snapshot data/ to a timestamped folder, (b) stash any
+# working-tree/staged changes in data/, (c) pull, (d) pop stash so live
+# data wins. If stash-pop conflicts, fall back to the snapshot.
+echo "→ Backup data/"
+BACKUP_ROOT="/opt/scnat-data-backups"
+BACKUP_DIR="$BACKUP_ROOT/$(date +%Y%m%d-%H%M%S)"
+sudo mkdir -p "$BACKUP_ROOT"
+sudo chown -R silvanpoltera:silvanpoltera "$BACKUP_ROOT"
+mkdir -p "$BACKUP_DIR"
+cp -a data/. "$BACKUP_DIR/"
+echo "   data/ snapshot → $BACKUP_DIR"
+
+# Housekeeping: keep last 60 snapshots
+ls -1dt "$BACKUP_ROOT"/*/ 2>/dev/null | tail -n +61 | xargs -r rm -rf
+
+# ── 2b. Pull latest code, preserve live data via stash ───────────────
+echo "→ git pull (with data/ stash protection)"
+DATA_DIRTY=0
+if ! git diff --quiet -- data/ || ! git diff --cached --quiet -- data/; then
+  DATA_DIRTY=1
+  git stash push -m "deploy-data-$(date +%s)" -- data/ || DATA_DIRTY=0
+fi
 git pull origin main
+if [ "$DATA_DIRTY" = "1" ]; then
+  if ! git stash pop; then
+    echo "!! stash pop conflict – restoring data/ from snapshot $BACKUP_DIR"
+    cp -af "$BACKUP_DIR/." data/
+    git stash drop 2>/dev/null || true
+  fi
+fi
 
 # ── 3. Install dependencies ──────────────────────────────────────────
 echo "→ npm install"
