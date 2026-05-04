@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Trash2, ThumbsUp, MessageSquare, Check, ChevronDown, ChevronUp, Save, X, Mail, User, Calendar, CalendarPlus } from 'lucide-react';
+import { Trash2, ThumbsUp, MessageSquare, Check, ChevronDown, ChevronUp, Save, X, Mail, User, Calendar, CalendarPlus, BookOpen, Lightbulb, Inbox } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: '',             label: 'Offen',         badge: 'bg-bg-elevated text-txt-tertiary' },
@@ -37,11 +37,16 @@ export default function CpThemen() {
 
   useEffect(() => { load(); }, []);
 
-  const stats = useMemo(() => {
+  const { vordefinierte, userVorschlaege, stats } = useMemo(() => {
+    const vordefinierte = themen.filter(t => t.typ === 'vordefiniert');
     const userVorschlaege = themen.filter(t => t.typ !== 'vordefiniert');
     const offene = userVorschlaege.filter(t => !t.status).length;
     const beantwortet = userVorschlaege.filter(t => t.status || t.adminAntwort).length;
-    return { total: themen.length, vorschlaege: userVorschlaege.length, offene, beantwortet };
+    return {
+      vordefinierte,
+      userVorschlaege,
+      stats: { vordefiniert: vordefinierte.length, vorschlaege: userVorschlaege.length, offene, beantwortet },
+    };
   }, [themen]);
 
   const handleDelete = async (id) => {
@@ -167,32 +172,81 @@ export default function CpThemen() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6">
         <div className="bg-bg-surface border border-bd-faint rounded-sm p-3 text-center">
-          <p className="text-xl font-heading font-semibold text-txt-primary">{stats.total}</p>
-          <p className="text-[10px] text-txt-tertiary">Themen total</p>
+          <p className="text-xl font-heading font-semibold text-status-blue">{stats.vordefiniert}</p>
+          <p className="text-[10px] text-txt-tertiary">Vordefinierte Themen</p>
         </div>
         <div className="bg-bg-surface border border-bd-faint rounded-sm p-3 text-center">
           <p className="text-xl font-heading font-semibold text-scnat-orange">{stats.vorschlaege}</p>
           <p className="text-[10px] text-txt-tertiary">User-Vorschläge</p>
         </div>
         <div className="bg-bg-surface border border-bd-faint rounded-sm p-3 text-center">
-          <p className="text-xl font-heading font-semibold text-scnat-red">{stats.offene}</p>
-          <p className="text-[10px] text-txt-tertiary">Noch offen</p>
+          <p className={`text-xl font-heading font-semibold ${stats.vorschlaege === 0 ? 'text-txt-tertiary/50' : 'text-scnat-red'}`}>
+            {stats.vorschlaege === 0 ? '–' : stats.offene}
+          </p>
+          <p className="text-[10px] text-txt-tertiary">{stats.vorschlaege === 0 ? 'Noch offen' : `Noch offen (von ${stats.vorschlaege})`}</p>
         </div>
         <div className="bg-bg-surface border border-bd-faint rounded-sm p-3 text-center">
-          <p className="text-xl font-heading font-semibold text-status-green">{stats.beantwortet}</p>
+          <p className={`text-xl font-heading font-semibold ${stats.vorschlaege === 0 ? 'text-txt-tertiary/50' : 'text-status-green'}`}>
+            {stats.vorschlaege === 0 ? '–' : stats.beantwortet}
+          </p>
           <p className="text-[10px] text-txt-tertiary">Beantwortet</p>
         </div>
       </div>
 
-      <div className="space-y-2">
-        {themen.map(t => {
-          const meta = statusMeta(t.status);
-          const isExpanded = expandedId === t.id;
-          const isVordef = t.typ === 'vordefiniert';
-          const isCreatingEvent = creatingEventFor === t.id;
+      {/* Vordefinierte Themen */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <BookOpen className="w-3.5 h-3.5 text-status-blue" />
+          <h3 className="text-xs font-heading font-semibold text-txt-primary uppercase tracking-wider">
+            Vordefinierte Themen
+          </h3>
+          <span className="text-[10px] font-mono text-txt-tertiary">({vordefinierte.length})</span>
+          <span className="text-[10px] text-txt-tertiary ml-2">— vom Team gepflegt, immer auf der Schulungen-Seite sichtbar</span>
+        </div>
+        <div className="space-y-2">
+          {vordefinierte.map(t => renderItem(t))}
+          {vordefinierte.length === 0 && (
+            <p className="text-xs text-txt-tertiary italic px-3 py-2">Keine vordefinierten Themen.</p>
+          )}
+        </div>
+      </div>
 
-          return (
-            <div key={t.id} className="bg-bg-surface border border-bd-faint rounded-sm">
+      {/* User-Vorschläge */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Lightbulb className="w-3.5 h-3.5 text-scnat-orange" />
+          <h3 className="text-xs font-heading font-semibold text-txt-primary uppercase tracking-wider">
+            User-Vorschläge
+          </h3>
+          <span className="text-[10px] font-mono text-txt-tertiary">({userVorschlaege.length})</span>
+          <span className="text-[10px] text-txt-tertiary ml-2">— von Mitarbeitenden über die Schulungen-Seite eingereicht</span>
+        </div>
+        <div className="space-y-2">
+          {userVorschlaege.map(t => renderItem(t))}
+          {userVorschlaege.length === 0 && (
+            <div className="bg-bg-surface border border-dashed border-bd-faint rounded-sm px-4 py-6 text-center">
+              <Inbox className="w-6 h-6 text-txt-tertiary mx-auto mb-2 opacity-50" />
+              <p className="text-sm text-txt-secondary mb-1">Noch keine User-Vorschläge</p>
+              <p className="text-[11px] text-txt-tertiary leading-relaxed max-w-md mx-auto">
+                Sobald jemand auf der Schulungen-Seite (Tab „Themen wünschen") einen Vorschlag einreicht,
+                erscheint er hier. Du siehst dann <strong className="text-txt-secondary">Name + Mail-Kontakt</strong> der
+                vorschlagenden Person und kannst Status setzen, antworten oder direkt eine Schulung daraus erstellen.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  function renderItem(t) {
+    const meta = statusMeta(t.status);
+    const isExpanded = expandedId === t.id;
+    const isVordef = t.typ === 'vordefiniert';
+    const isCreatingEvent = creatingEventFor === t.id;
+
+    return (
+      <div key={t.id} className="bg-bg-surface border border-bd-faint rounded-sm">
               <div className="px-4 py-3 flex items-center gap-3">
                 <div className="flex items-center gap-1 text-txt-secondary shrink-0">
                   <ThumbsUp className="w-3.5 h-3.5" />
@@ -420,17 +474,7 @@ export default function CpThemen() {
                   )}
                 </div>
               )}
-            </div>
-          );
-        })}
-
-        {themen.length === 0 && (
-          <div className="text-center py-12">
-            <MessageSquare className="w-8 h-8 text-txt-tertiary mx-auto mb-3" />
-            <p className="text-sm text-txt-secondary">Noch keine Schulungsthemen vorhanden.</p>
-          </div>
-        )}
       </div>
-    </div>
-  );
+    );
+  }
 }
