@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 
-const NotificationContext = createContext({ count: 0, inboxCount: 0, refresh: () => {} });
+const NotificationContext = createContext({ count: 0, inboxCount: 0, adminCount: 0, refresh: () => {} });
 
 export function NotificationProvider({ children }) {
   const { user } = useAuth();
   const [count, setCount] = useState(0);
   const [inboxCount, setInboxCount] = useState(0);
+  const [adminCount, setAdminCount] = useState(0);
 
   const refresh = useCallback(() => {
     if (!user) return;
@@ -19,6 +20,18 @@ export function NotificationProvider({ children }) {
       .then(r => r.ok ? r.json() : { count: 0 })
       .then(d => setInboxCount(d.count || 0))
       .catch(() => setInboxCount(0));
+
+    if (user.role === 'admin') {
+      fetch('/api/notifications/admin', { credentials: 'include' })
+        .then(r => r.ok ? r.json() : {})
+        .then(d => {
+          const total = Object.values(d || {}).reduce((s, n) => s + (Number(n) || 0), 0);
+          setAdminCount(total);
+        })
+        .catch(() => setAdminCount(0));
+    } else {
+      setAdminCount(0);
+    }
   }, [user]);
 
   useEffect(() => {
@@ -36,15 +49,16 @@ export function NotificationProvider({ children }) {
 
   useEffect(() => {
     if (!('setAppBadge' in navigator)) return;
-    if (totalCount > 0) {
-      navigator.setAppBadge(totalCount).catch(() => {});
+    const badgeTotal = totalCount + adminCount;
+    if (badgeTotal > 0) {
+      navigator.setAppBadge(badgeTotal).catch(() => {});
     } else {
       navigator.clearAppBadge().catch(() => {});
     }
-  }, [totalCount]);
+  }, [totalCount, adminCount]);
 
   return (
-    <NotificationContext.Provider value={{ count: totalCount, inboxCount, refresh, markSeen }}>
+    <NotificationContext.Provider value={{ count: totalCount, inboxCount, adminCount, refresh, markSeen }}>
       {children}
     </NotificationContext.Provider>
   );

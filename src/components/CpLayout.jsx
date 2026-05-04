@@ -9,6 +9,7 @@ import ScnatLogo from './ScnatLogo';
 import { ScnatMark } from './ScnatLogo';
 import { useTheme } from '../contexts/ThemeContext';
 import { useVisibility } from '../contexts/VisibilityContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import { getSectionMeta, CP_BADGE_KEYS } from '../config/sections';
 
 const SECTION_MAP = {
@@ -24,6 +25,7 @@ export default function CpLayout() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { cp, isVisible } = useVisibility();
+  const { refresh: refreshNotifications } = useNotifications();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [badges, setBadges] = useState({});
   const [collapsed, setCollapsed] = useState(() => {
@@ -69,6 +71,7 @@ export default function CpLayout() {
         body: JSON.stringify({ section }),
       }).then(() => {
         setBadges(prev => ({ ...prev, [section]: 0 }));
+        refreshNotifications();
       }).catch(() => {});
     }
   }, [location.pathname]);

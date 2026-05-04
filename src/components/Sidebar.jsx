@@ -17,7 +17,7 @@ import { getSectionMeta } from '../config/sections';
 export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { count: notifCount } = useNotifications();
+  const { count: notifCount, adminCount } = useNotifications();
   const { theme, toggleTheme } = useTheme();
   const { portal, isVisible } = useVisibility();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -185,13 +185,30 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           {user?.role === 'admin' && (
             <Link
               to="/cp"
-              title="Control Panel"
-              className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-scnat-red hover:text-scnat-red/80 rounded-sm hover:bg-scnat-red/10 transition-colors mb-1 ${
+              title={adminCount > 0 ? `Control Panel · ${adminCount} neue ${adminCount === 1 ? 'Meldung' : 'Meldungen'}` : 'Control Panel'}
+              className={`relative w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-scnat-red hover:text-scnat-red/80 rounded-sm hover:bg-scnat-red/10 transition-colors mb-1 ${
                 collapsed ? 'md:justify-center md:px-0 md:py-2 md:gap-0' : ''
               }`}
             >
-              <Settings className="w-3.5 h-3.5 shrink-0" />
+              <span className="relative shrink-0">
+                <Settings className="w-3.5 h-3.5" />
+                {adminCount > 0 && (
+                  <span
+                    aria-hidden
+                    className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-scnat-red ring-2 ring-bg-surface"
+                  />
+                )}
+              </span>
               <span className={collapsed ? 'md:hidden' : ''}>Control Panel</span>
+              {adminCount > 0 && (
+                <span
+                  className={`ml-auto bg-scnat-red text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm leading-none min-w-[16px] text-center ${
+                    collapsed ? 'md:hidden' : ''
+                  }`}
+                >
+                  {adminCount > 99 ? '99+' : adminCount}
+                </span>
+              )}
             </Link>
           )}
 
