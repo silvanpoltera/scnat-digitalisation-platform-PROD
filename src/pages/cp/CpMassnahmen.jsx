@@ -1,10 +1,77 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap, Shield, MessageSquare, Send, Trash2 } from 'lucide-react';
+import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap, Shield, MessageSquare, Send, Trash2, Eye, FileText } from 'lucide-react';
 import { DndContext, DragOverlay, closestCenter, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, useDraggable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { PRIO_OPTIONS, PRIO_LABEL, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS, KANBAN_COLUMNS, TAG_OPTIONS, CLUSTER_OPTIONS } from '../../lib/constants';
 import CommentSection from '../../components/cp/CommentSection';
+import RichText, { autoFormatDescription } from '../../components/RichText';
+
+function DescriptionField({ value, onChange }) {
+  const [preview, setPreview] = useState(false);
+  const taRef = useRef(null);
+
+  const autoResize = (el) => {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight + 2, 600) + 'px';
+  };
+
+  useEffect(() => { if (!preview) autoResize(taRef.current); }, [value, preview]);
+
+  const handleAutoFormat = () => {
+    const next = autoFormatDescription(value || '');
+    onChange(next);
+    setTimeout(() => autoResize(taRef.current), 0);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <label className="block text-[10px] text-txt-tertiary font-mono">Beschreibung</label>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleAutoFormat}
+            disabled={!value}
+            className="flex items-center gap-1 text-[10px] font-mono text-txt-tertiary hover:text-scnat-red disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-0.5 rounded-sm hover:bg-bg-elevated transition-colors"
+            title="Erkennt 1)/2)/3)-Sektionen und kurze Sub-Labels und macht daraus Markdown."
+          >
+            <Sparkles className="w-3 h-3" /> Auto-Format
+          </button>
+          <button
+            type="button"
+            onClick={() => setPreview(p => !p)}
+            className={`flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-sm transition-colors ${
+              preview ? 'bg-scnat-red/15 text-scnat-red' : 'text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated'
+            }`}
+            title="Live-Vorschau ein-/ausblenden"
+          >
+            {preview ? <FileText className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+            {preview ? 'Bearbeiten' : 'Vorschau'}
+          </button>
+        </div>
+      </div>
+      {preview ? (
+        <div className="w-full bg-bg-elevated border border-bd-faint rounded-sm px-3 py-2 min-h-[120px] max-h-[600px] overflow-y-auto">
+          {value && value.trim()
+            ? <RichText value={value} />
+            : <p className="text-xs text-txt-tertiary italic">Keine Beschreibung.</p>}
+        </div>
+      ) : (
+        <textarea
+          ref={taRef}
+          value={value || ''}
+          onChange={e => onChange(e.target.value)}
+          onInput={e => autoResize(e.currentTarget)}
+          rows={4}
+          placeholder={`Markdown unterstützt: ## Heading · **fett** · [Text](https://...) · - Liste\nLeerzeile = neuer Absatz. Klick »Auto-Format« nach dem Einfügen von Klartext.`}
+          className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-[13px] leading-relaxed font-mono px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none resize-none min-h-[120px]"
+        />
+      )}
+    </div>
+  );
+}
 
 function SortableItem({ m, index }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
@@ -568,10 +635,7 @@ function KanbanDetailPanel({ m, sprintMap, assignableSprints, onClose, onSave, o
               <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Titel</label>
               <input value={edit.titel || ''} onChange={e => update('titel', e.target.value)} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none" />
             </div>
-            <div>
-              <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Beschreibung</label>
-              <textarea value={edit.beschreibung || ''} onChange={e => update('beschreibung', e.target.value)} rows={2} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none resize-none" />
-            </div>
+            <DescriptionField value={edit.beschreibung} onChange={v => update('beschreibung', v)} />
           </div>
 
           {/* Type, Status, Prio, Cluster row */}
@@ -1544,8 +1608,7 @@ export default function CpMassnahmen() {
                       <input value={m.titel} onChange={e => updateLocal(m.id, 'titel', e.target.value)} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none" />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Beschreibung</label>
-                      <textarea value={m.beschreibung} onChange={e => updateLocal(m.id, 'beschreibung', e.target.value)} rows={2} className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-xs px-2.5 py-1.5 rounded-sm focus:border-scnat-red focus:outline-none resize-none" />
+                      <DescriptionField value={m.beschreibung} onChange={v => updateLocal(m.id, 'beschreibung', v)} />
                     </div>
                     <div>
                       <label className="block text-[10px] text-txt-tertiary font-mono mb-1">Cluster</label>

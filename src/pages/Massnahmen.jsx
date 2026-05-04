@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Star, Activity, Database, Filter, ArrowUpDown, PlusCircle, Sparkles, Zap, Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PageHeader from '../components/PageHeader';
+import RichText from '../components/RichText';
 import { CLUSTER_COLORS, PRIO_ORDER, PRIO_LABEL } from '../lib/constants';
 
 function PrioBar({ value, max = 10, color = '#EA515A' }) {
@@ -227,7 +228,7 @@ function MatrixView({ items, sprintMap }) {
                 )}
               </div>
               <h4 className="text-sm font-heading font-semibold text-txt-primary mb-1">{selectedItem.titel}</h4>
-              <p className="text-xs text-txt-secondary leading-relaxed">{selectedItem.beschreibung}</p>
+              <RichText value={selectedItem.beschreibung} className="text-xs" />
               {selectedItem.notiz && <p className="text-[11px] text-txt-tertiary mt-2 italic">→ {selectedItem.notiz}</p>}
             </div>
             <div className="w-full sm:w-28 sm:shrink-0 space-y-1">
@@ -271,7 +272,7 @@ function MassnahmenCard({ m, index, variant = 'primary', sprintNames }) {
           <h4 className="text-sm font-heading font-semibold text-txt-primary">{m.titel}</h4>
         </div>
       </div>
-      <p className="text-xs text-txt-secondary leading-relaxed mb-3">{m.beschreibung}</p>
+      <div className="mb-3"><RichText value={m.beschreibung} className="text-xs" /></div>
       <div className="flex items-center gap-3">
         <div className="flex-1">
           <span className="text-[10px] text-txt-tertiary">Wirkung</span>
