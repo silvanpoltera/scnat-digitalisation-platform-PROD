@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap, Shield, MessageSquare, Send, Trash2, Eye, FileText } from 'lucide-react';
+import { Save, Plus, X, ChevronDown, ChevronRight, Star, Activity, Database, Search, Sparkles, GripVertical, ArrowUpDown, List, LayoutGrid, AlertCircle, Check, Zap, Shield, MessageSquare, Send, Trash2, Eye, FileText, Bold, Italic, Link2, Code, Heading2, Heading3, ListOrdered } from 'lucide-react';
 import { DndContext, DragOverlay, closestCenter, closestCorners, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, useDraggable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -7,7 +7,53 @@ import { PRIO_OPTIONS, PRIO_LABEL, STATUS_OPTIONS, STATUS_LABELS, STATUS_COLORS,
 import CommentSection from '../../components/cp/CommentSection';
 import RichText, { autoFormatDescription } from '../../components/RichText';
 
-function DescriptionField({ value, onChange }) {
+// Helpers for the toolbar editor (operate on a textarea)
+function wrapSelection(ta, before, after = before, placeholder = '') {
+  const v = ta.value;
+  const s = ta.selectionStart;
+  const e = ta.selectionEnd;
+  const sel = v.slice(s, e);
+  // toggle: already wrapped → unwrap
+  const beforeIs = v.slice(Math.max(0, s - before.length), s) === before;
+  const afterIs = v.slice(e, e + after.length) === after;
+  if (beforeIs && afterIs && sel.length) {
+    const next = v.slice(0, s - before.length) + sel + v.slice(e + after.length);
+    return { value: next, selStart: s - before.length, selEnd: e - before.length };
+  }
+  const inner = sel || placeholder;
+  const next = v.slice(0, s) + before + inner + after + v.slice(e);
+  return {
+    value: next,
+    selStart: s + before.length,
+    selEnd: s + before.length + inner.length,
+  };
+}
+
+function toggleLinePrefix(ta, prefix, exclusiveGroup = /^(#{1,6}\s+|[-*]\s+)/) {
+  const v = ta.value;
+  const s = ta.selectionStart;
+  const e = ta.selectionEnd;
+  const lineStart = v.lastIndexOf('\n', s - 1) + 1;
+  let lineEnd = e;
+  while (lineEnd < v.length && v[lineEnd] !== '\n') lineEnd++;
+  const block = v.slice(lineStart, lineEnd);
+  const lines = block.split('\n');
+  const allHave = lines.every(l => l.startsWith(prefix) || l.trim() === '');
+  const newLines = lines.map(l => {
+    if (l.trim() === '') return l;
+    if (allHave) return l.startsWith(prefix) ? l.slice(prefix.length) : l;
+    const cleaned = l.replace(exclusiveGroup, '');
+    return prefix + cleaned;
+  });
+  const nb = newLines.join('\n');
+  return {
+    value: v.slice(0, lineStart) + nb + v.slice(lineEnd),
+    selStart: lineStart,
+    selEnd: lineStart + nb.length,
+  };
+}
+
+function DescriptionField({ value, onChange, label = 'Beschreibung' }) {
   const [preview, setPreview] = useState(false);
   const taRef = useRef(null);
 
@@ -19,30 +65,94 @@ function DescriptionField({ value, onChange }) {
 
   useEffect(() => { if (!preview) autoResize(taRef.current); }, [value, preview]);
 
+  const apply = useCallback((fn) => {
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.focus();
+    const result = fn(ta);
+    if (!result) return;
+    onChange(result.value);
+    requestAnimationFrame(() => {
+      ta.setSelectionRange(result.selStart, result.selEnd);
+      autoResize(ta);
+    });
+  }, [onChange]);
+
+  const cmdBold = () => apply(ta => wrapSelection(ta, '**', '**', 'fett'));
+  const cmdItalic = () => apply(ta => wrapSelection(ta, '*', '*', 'kursiv'));
+  const cmdCode = () => apply(ta => wrapSelection(ta, '`', '`', 'code'));
+  const cmdH2 = () => apply(ta => toggleLinePrefix(ta, '## '));
+  const cmdH3 = () => apply(ta => toggleLinePrefix(ta, '### '));
+  const cmdList = () => apply(ta => toggleLinePrefix(ta, '- '));
+  const cmdLink = () => {
+    const ta = taRef.current;
+    if (!ta) return;
+    const sel = ta.value.slice(ta.selectionStart, ta.selectionEnd) || 'Link-Text';
+    // eslint-disable-next-line no-alert
+    const url = window.prompt('URL eingeben:', 'https://');
+    if (!url) return;
+    apply(t => {
+      const v = t.value;
+      const s = t.selectionStart;
+      const e = t.selectionEnd;
+      const insert = `[${sel}](${url})`;
+      return {
+        value: v.slice(0, s) + insert + v.slice(e),
+        selStart: s + 1,
+        selEnd: s + 1 + sel.length,
+      };
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    const meta = e.metaKey || e.ctrlKey;
+    if (!meta) return;
+    if (e.key === 'b' || e.key === 'B') { e.preventDefault(); cmdBold(); }
+    else if (e.key === 'i' || e.key === 'I') { e.preventDefault(); cmdItalic(); }
+    else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); cmdLink(); }
+  };
+
   const handleAutoFormat = () => {
     const next = autoFormatDescription(value || '');
     onChange(next);
     setTimeout(() => autoResize(taRef.current), 0);
   };
 
+  const tbBtn = "p-1 rounded-sm text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated transition-colors disabled:opacity-40 disabled:cursor-not-allowed";
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
-        <label className="block text-[10px] text-txt-tertiary font-mono">Beschreibung</label>
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={handleAutoFormat}
-            disabled={!value}
-            className="flex items-center gap-1 text-[10px] font-mono text-txt-tertiary hover:text-scnat-red disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-0.5 rounded-sm hover:bg-bg-elevated transition-colors"
-            title="Erkennt 1)/2)/3)-Sektionen und kurze Sub-Labels und macht daraus Markdown."
-          >
-            <Sparkles className="w-3 h-3" /> Auto-Format
-          </button>
+      <div className="flex items-center justify-between mb-1 gap-2 flex-wrap">
+        <label className="block text-[10px] text-txt-tertiary font-mono shrink-0">{label}</label>
+        <div className="flex items-center gap-0.5 ml-auto">
+          {!preview && (
+            <>
+              <div className="flex items-center bg-bg-elevated border border-bd-faint rounded-sm p-0.5 mr-1">
+                <button type="button" onClick={cmdBold} className={tbBtn} title="Fett (⌘B)"><Bold className="w-3.5 h-3.5" /></button>
+                <button type="button" onClick={cmdItalic} className={tbBtn} title="Kursiv (⌘I)"><Italic className="w-3.5 h-3.5" /></button>
+                <span className="w-px h-3.5 bg-bd-faint mx-0.5" />
+                <button type="button" onClick={cmdH2} className={tbBtn} title="Überschrift"><Heading2 className="w-3.5 h-3.5" /></button>
+                <button type="button" onClick={cmdH3} className={tbBtn} title="Unter-Überschrift"><Heading3 className="w-3.5 h-3.5" /></button>
+                <span className="w-px h-3.5 bg-bd-faint mx-0.5" />
+                <button type="button" onClick={cmdList} className={tbBtn} title="Liste"><ListOrdered className="w-3.5 h-3.5" /></button>
+                <button type="button" onClick={cmdLink} className={tbBtn} title="Link einfügen (⌘K)"><Link2 className="w-3.5 h-3.5" /></button>
+                <button type="button" onClick={cmdCode} className={tbBtn} title="Code"><Code className="w-3.5 h-3.5" /></button>
+              </div>
+              <button
+                type="button"
+                onClick={handleAutoFormat}
+                disabled={!value}
+                className="flex items-center gap-1 text-[10px] font-mono text-txt-tertiary hover:text-scnat-red disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1 rounded-sm hover:bg-bg-elevated transition-colors"
+                title="Klartext mit »1) Titel« / kurzen Labels in Markdown umwandeln."
+              >
+                <Sparkles className="w-3 h-3" /> Auto
+              </button>
+            </>
+          )}
           <button
             type="button"
             onClick={() => setPreview(p => !p)}
-            className={`flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-sm transition-colors ${
+            className={`flex items-center gap-1 text-[10px] font-mono px-1.5 py-1 rounded-sm transition-colors ${
               preview ? 'bg-scnat-red/15 text-scnat-red' : 'text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated'
             }`}
             title="Live-Vorschau ein-/ausblenden"
@@ -64,8 +174,9 @@ function DescriptionField({ value, onChange }) {
           value={value || ''}
           onChange={e => onChange(e.target.value)}
           onInput={e => autoResize(e.currentTarget)}
+          onKeyDown={handleKeyDown}
           rows={4}
-          placeholder={`Markdown unterstützt: ## Heading · **fett** · [Text](https://...) · - Liste\nLeerzeile = neuer Absatz. Klick »Auto-Format« nach dem Einfügen von Klartext.`}
+          placeholder={`Tipp: Text markieren und Symbole oben benutzen, oder ⌘B / ⌘I / ⌘K.\nKlick »Auto« nachdem du Klartext mit »1) Titel« eingefügt hast.`}
           className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-[13px] leading-relaxed font-mono px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none resize-none min-h-[120px]"
         />
       )}
