@@ -307,7 +307,7 @@ export default function MeineUebersicht() {
                     }
                   </button>
                   {expandedInbox === msg.id && (
-                    <div className="px-4 pb-4 pt-1 border-t border-bd-faint">
+                    <div className="pl-9 pr-4 pb-4 pt-3 border-t border-bd-faint">
                       <p className="text-sm text-txt-secondary leading-relaxed whitespace-pre-wrap">{msg.message}</p>
                     </div>
                   )}
