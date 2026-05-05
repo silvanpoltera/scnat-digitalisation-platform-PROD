@@ -21,17 +21,20 @@ const STATUS_DOT_COLORS = {
   completed: '#008770',
 };
 
+// minColPx = minimum width per column (week or month). When the resulting
+// chart is wider than the available container width, the timeline area
+// becomes horizontally scrollable while the sprint-name labels stay sticky.
 const ZOOM_LEVELS = [
-  { days: 365, label: '12 M', dayPx: null },
-  { days: 273, label: '9 M', dayPx: null },
-  { days: 182, label: '6 M', dayPx: null },
-  { days: 112, label: '16 W', dayPx: null },
-  { days: 84,  label: '12 W', dayPx: null },
-  { days: 56,  label: '8 W', dayPx: null },
-  { days: 42,  label: '6 W', dayPx: null },
-  { days: 28,  label: '4 W', dayPx: null },
-  { days: 21,  label: '3 W', dayPx: null },
-  { days: 14,  label: '2 W', dayPx: null },
+  { days: 365, label: '12 M', minColPx: 80 },  // 12 monthly columns
+  { days: 273, label: '9 M',  minColPx: 90 },
+  { days: 182, label: '6 M',  minColPx: 110 },
+  { days: 112, label: '16 W', minColPx: 70 },
+  { days: 84,  label: '12 W', minColPx: 80 },
+  { days: 56,  label: '8 W',  minColPx: 90 },
+  { days: 42,  label: '6 W',  minColPx: 100 },
+  { days: 28,  label: '4 W',  minColPx: 120 },
+  { days: 21,  label: '3 W',  minColPx: 140 },
+  { days: 14,  label: '2 W',  minColPx: 160 },
 ];
 const DEFAULT_ZOOM = 6;
 const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
@@ -157,92 +160,123 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
           todayPct={todayPct}
           pct={pct}
           labelW={typeof window !== 'undefined' && window.innerWidth < 768 ? LABEL_W_MOBILE : LABEL_W}
+          minColPx={ZOOM_LEVELS[zoom].minColPx}
         />
       </div>
     </div>
   );
 }
 
-function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW }) {
+function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW, minColPx }) {
+  // Compute the minimum width the timeline area needs based on the number of
+  // columns and per-column min width. When this exceeds the available space
+  // the wrapper scrolls horizontally; otherwise columns flex to fit.
+  const minTimelineW = (weeks?.length || 0) * (minColPx || 60);
+  // Sticky-label background must mask the grid lines + bars below.
+  const stickyBg = 'bg-bg-base';
+
   return (
     <div className="w-full">
-      {/* KW Header */}
-      <div className="flex relative mb-2" style={{ paddingLeft: labelW }}>
-        {weeks.map((w, i) => (
-          <div
-            key={i}
-            className={`flex-1 text-center font-mono text-[9px] tracking-wide ${w.isToday ? 'text-scnat-red font-medium' : 'text-txt-tertiary'}`}
-          >
-            {w.label}
-          </div>
-        ))}
-      </div>
-
-      {/* Body */}
-      <div className="relative">
-        {/* Grid columns */}
-        <div className="absolute top-0 bottom-0 flex pointer-events-none z-0" style={{ left: labelW, right: 0 }}>
-          {weeks.map((w, i) => (
-            <div key={i} className={`flex-1 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint'}`} />
-          ))}
-        </div>
-
-        {/* Today line */}
-        <div
-          className="absolute top-0 bottom-0 border-l-[1.5px] border-dashed border-scnat-red z-[2] pointer-events-none"
-          style={{ left: `calc(${labelW}px + (100% - ${labelW}px) * ${todayPct / 100})` }}
-        />
-
-        {/* Sprint rows */}
-        {sprints.map(sp => {
-          const start = new Date(sp.startDate + 'T00:00:00');
-          const end = new Date(sp.endDate + 'T23:59:59');
-          const left = pct(start);
-          const right = pct(end);
-          const width = Math.max(right - left, 4);
-          const isOpen = expandedIds.has(sp.id);
-          const dotColor = STATUS_DOT_COLORS[sp.status] || '#4E535D';
-          const barBg = hexToRgba(sp.clusterColor || '#4E535D', 0.3);
-          const barBorder = hexToRgba(sp.clusterColor || '#4E535D', isOpen ? 0.8 : 0.4);
-
-          return (
-            <div key={sp.id} className="flex items-center mb-2 relative z-[1]">
-              <div className="shrink-0 pr-3" style={{ width: labelW }}>
-                <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
-                  {sp.name}
-                  {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
-                </div>
-                <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
-                  {sp.massnahmen.length} Massnahmen · {formatDate(start)} → {formatDate(end)}
-                </div>
+      <div
+        className="overflow-x-auto overflow-y-visible gantt-scroll"
+        style={{ scrollbarWidth: 'thin' }}
+      >
+        <style>{`
+          .gantt-scroll::-webkit-scrollbar { height: 8px; }
+          .gantt-scroll::-webkit-scrollbar-track { background: transparent; }
+          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-default,#3a3f4a); border-radius: 4px; }
+          .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong,#555a66); }
+        `}</style>
+        <div style={{ minWidth: labelW + minTimelineW }}>
+          {/* KW / Month Header */}
+          <div className="flex relative mb-2 sticky top-0 z-[3] bg-bg-base" style={{ paddingLeft: labelW }}>
+            {weeks.map((w, i) => (
+              <div
+                key={i}
+                className={`flex-1 text-center font-mono text-[9px] tracking-wide ${w.isToday ? 'text-scnat-red font-medium' : 'text-txt-tertiary'}`}
+                style={{ minWidth: minColPx }}
+              >
+                {w.label}
               </div>
-              <div className="flex-1 h-10 relative flex items-center">
+            ))}
+          </div>
+
+          {/* Body */}
+          <div className="relative">
+            {/* Grid columns */}
+            <div className="absolute top-0 bottom-0 flex pointer-events-none z-0" style={{ left: labelW, right: 0 }}>
+              {weeks.map((w, i) => (
                 <div
-                  onClick={() => onToggle(sp.id)}
-                  className="absolute h-[30px] rounded-[3px] flex items-center px-2 sm:px-3 gap-1.5 sm:gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
-                  style={{
-                    left: `${left}%`,
-                    width: `${width}%`,
-                    background: barBg,
-                    borderColor: barBorder,
-                  }}
-                >
-                  <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
-                  <span className="text-[10px] sm:text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
-                  <span className="font-mono text-[7px] sm:text-[8px] bg-bg-base/40 text-txt-secondary px-1 sm:px-1.5 py-0.5 rounded-sm whitespace-nowrap shrink-0">
-                    {sp.massnahmen.length} M
-                  </span>
-                </div>
-              </div>
+                  key={i}
+                  className={`flex-1 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint'}`}
+                  style={{ minWidth: minColPx }}
+                />
+              ))}
             </div>
-          );
-        })}
 
-        {sprints.length === 0 && (
-          <div className="py-12 text-center text-sm text-txt-tertiary" style={{ paddingLeft: labelW }}>
-            Keine Sprints in diesem Zeitraum
+            {/* Today line */}
+            <div
+              className="absolute top-0 bottom-0 border-l-[1.5px] border-dashed border-scnat-red z-[2] pointer-events-none"
+              style={{ left: `calc(${labelW}px + (100% - ${labelW}px) * ${todayPct / 100})` }}
+            />
+
+            {/* Sprint rows */}
+            {sprints.map(sp => {
+              const start = new Date(sp.startDate + 'T00:00:00');
+              const end = new Date(sp.endDate + 'T23:59:59');
+              const left = pct(start);
+              const right = pct(end);
+              const width = Math.max(right - left, 4);
+              const isOpen = expandedIds.has(sp.id);
+              const dotColor = STATUS_DOT_COLORS[sp.status] || '#4E535D';
+              const barBg = hexToRgba(sp.clusterColor || '#4E535D', 0.3);
+              const barBorder = hexToRgba(sp.clusterColor || '#4E535D', isOpen ? 0.8 : 0.4);
+
+              return (
+                <div key={sp.id} className="flex items-center mb-2 relative z-[1]">
+                  <div
+                    className={`shrink-0 pr-3 sticky left-0 z-[2] ${stickyBg}`}
+                    style={{ width: labelW }}
+                  >
+                    {/* Right-side fade so the bar appears to scroll behind the label */}
+                    <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, var(--bg-base), transparent)' }} />
+                    <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
+                      {sp.name}
+                      {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
+                    </div>
+                    <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
+                      {sp.massnahmen.length} Massnahmen · {formatDate(start)} → {formatDate(end)}
+                    </div>
+                  </div>
+                  <div className="flex-1 h-10 relative flex items-center">
+                    <div
+                      onClick={() => onToggle(sp.id)}
+                      className="absolute h-[30px] rounded-[3px] flex items-center px-2 sm:px-3 gap-1.5 sm:gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
+                      style={{
+                        left: `${left}%`,
+                        width: `${width}%`,
+                        background: barBg,
+                        borderColor: barBorder,
+                      }}
+                    >
+                      <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
+                      <span className="font-mono text-[7px] sm:text-[8px] bg-bg-base/40 text-txt-secondary px-1 sm:px-1.5 py-0.5 rounded-sm whitespace-nowrap shrink-0">
+                        {sp.massnahmen.length} M
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {sprints.length === 0 && (
+              <div className="py-12 text-center text-sm text-txt-tertiary" style={{ paddingLeft: labelW }}>
+                Keine Sprints in diesem Zeitraum
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

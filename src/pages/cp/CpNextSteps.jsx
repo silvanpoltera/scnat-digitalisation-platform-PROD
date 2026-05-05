@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronRight, ExternalLink,
-  Compass, Target, Users, Wrench, GitBranch, AlertTriangle, FileCheck,
-  Database, Server, Sparkles, Zap, Activity, Layers,
+  Compass, Target, Wrench, GitBranch, AlertTriangle, FileCheck,
+  Sparkles, Zap, Activity, Layers, BarChart3,
 } from 'lucide-react';
 import { CLUSTER_COLORS } from '../../lib/constants';
 import SprintTimeline from '../../components/sprints/SprintTimeline';
@@ -47,33 +47,6 @@ const GAPS = [
   { title: 'IT-Kapazität durch PPO & Xojo gebunden', text: 'Das seit zwölf Jahren laufende Xojo-Konsolidierungsprojekt (PPO, Abschluss 2026) bindet nahezu die gesamte IT-Kapazität. Akkumulierter Backlog in Kernsystemen SCNAT-DB und Portal begrenzt operative Reaktionsfähigkeit.' },
   { title: 'Basis-Services nicht durchgängig digital', text: 'Grundlegende Prozesse wie Raumreservation, Abwesenheitsnotizen oder digitale Arbeitsinstrumente sind nicht auf dem Stand, den Mitarbeitende heute erwarten. Cloud-Kollaboration weit von modernen Standards entfernt.' },
   { title: 'Toollandschaft gewachsen, aber ungeordnet', text: 'Zahlreiche Tools sind über die Jahre abteilungsweise eingeführt worden – häufig ausserhalb des formellen Beschaffungsprozesses. Rund zwanzig IT-Ausnahmen im Betrieb. Massnahme M-32 schafft Q3 die Faktenbasis.' },
-];
-
-const PILLARS = [
-  {
-    n: '01',
-    title: 'Massnahmen',
-    sub: 'Menschen · Kultur · KI · Change',
-    desc: 'Die Veränderungsdimension – Wirkung über Befähigung, Prozesse und kulturelle Verankerung.',
-    color: '#7C5CBF',
-    icon: Users,
-  },
-  {
-    n: '02',
-    title: 'DB & Portale',
-    sub: 'Kernsysteme · 12+ Jahre Geschichte',
-    desc: 'Das organisationsspezifische Rückgrat – langlebig, datenkritisch, modernisierungsbedürftig.',
-    color: '#D4882A',
-    icon: Database,
-  },
-  {
-    n: '03',
-    title: 'Infrastruktur',
-    sub: 'On-prem · souverän · modernisierungsbedürftig',
-    desc: 'Das Fundament – Server, Netzwerk, Betrieb. Stabil, aber alt und personenabhängig.',
-    color: '#EA515A',
-    icon: Server,
-  },
 ];
 
 const WAVES = [
@@ -195,6 +168,19 @@ function SectionHeader({ eyebrow, title, lead, icon: Icon }) {
   );
 }
 
+// ── PRIO BAR (mini horizontal progress bar with label) ─────────────────────
+function PrioBar({ value, max = 10, color }) {
+  if (!value) return <span className="text-[10px] text-txt-tertiary font-mono">–</span>;
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="flex-1 h-[5px] bg-bg-elevated rounded-sm overflow-hidden border border-bd-faint/50">
+        <div className="h-full rounded-sm transition-[width] duration-700" style={{ width: `${(value / max) * 100}%`, background: color }} />
+      </div>
+      <span className="text-[10px] text-txt-secondary w-5 text-right font-mono shrink-0">{value}</span>
+    </div>
+  );
+}
+
 // ── MASSNAHMEN MODULE (live data, compact matrix + Top 6/12) ──────────────
 function MassnahmenModule({ data, sprintMap }) {
   const [view, setView] = useState('matrix');
@@ -202,18 +188,37 @@ function MassnahmenModule({ data, sprintMap }) {
   const [hover, setHover] = useState(null);
   const [selected, setSelected] = useState(null);
 
+  // Welle filter applies only to matrix and top-list views.
+  // The 'bars' view always shows ALL massnahmen.
   const filtered = useMemo(() => {
     let r = data.filter(m => !m.isAdminTask);
+    if (view === 'bars') return r;
     if (welle === '6') r = r.filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 6);
     else if (welle === '12') r = r.filter(m => m.reihenfolge >= 1 && m.reihenfolge <= 12);
     return r;
-  }, [data, welle]);
+  }, [data, welle, view]);
 
   const topList = useMemo(() => {
     return [...filtered]
       .sort((a, b) => (a.reihenfolge ?? 99) - (b.reihenfolge ?? 99))
       .filter(m => m.reihenfolge);
   }, [filtered]);
+
+  // Group all (non-admin) massnahmen by cluster for the "bars" view.
+  const grouped = useMemo(() => {
+    const all = data.filter(m => !m.isAdminTask);
+    const g = {};
+    all.forEach(m => {
+      if (!g[m.cluster]) g[m.cluster] = [];
+      g[m.cluster].push(m);
+    });
+    return Object.entries(g)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([cluster, items]) => [
+        cluster,
+        [...items].sort((a, b) => (b.wirkung || 0) * (11 - (b.aufwand || 5)) - (a.wirkung || 0) * (11 - (a.aufwand || 5))),
+      ]);
+  }, [data]);
 
   const rated = filtered.filter(m => m.wirkung > 0 && m.aufwand > 0);
   const pad = 36;
@@ -229,40 +234,47 @@ function MassnahmenModule({ data, sprintMap }) {
         <div className="flex items-center gap-0.5 bg-bg-base border border-bd-faint rounded-sm p-0.5 ml-2">
           {[
             { id: 'matrix', label: 'Wirkung / Aufwand' },
-            { id: 'list', label: 'Top-Liste' },
-          ].map(v => (
-            <button
-              key={v.id}
-              onClick={() => setView(v.id)}
-              className={`px-2.5 py-1 text-[11px] font-medium rounded-sm transition-colors ${
-                view === v.id ? 'bg-bg-elevated text-txt-primary border border-bd-default' : 'text-txt-secondary hover:text-txt-primary border border-transparent'
-              }`}
-            >
-              {v.label}
-            </button>
-          ))}
+            { id: 'list',   label: 'Top-Liste' },
+            { id: 'bars',   label: 'Alle · Bewertung', icon: BarChart3 },
+          ].map(v => {
+            const Icon = v.icon;
+            return (
+              <button
+                key={v.id}
+                onClick={() => setView(v.id)}
+                className={`px-2.5 py-1 text-[11px] font-medium rounded-sm transition-colors flex items-center gap-1 ${
+                  view === v.id ? 'bg-bg-elevated text-txt-primary border border-bd-default' : 'text-txt-secondary hover:text-txt-primary border border-transparent'
+                }`}
+              >
+                {Icon && <Icon className="w-3 h-3" />}
+                {v.label}
+              </button>
+            );
+          })}
         </div>
-        <div className="flex items-center bg-bg-base border border-bd-faint rounded-sm p-0.5">
-          {[
-            { value: '', label: 'Alle' },
-            { value: '6', label: 'Top 6' },
-            { value: '12', label: 'Top 12' },
-          ].map(w => (
-            <button
-              key={w.value}
-              onClick={() => setWelle(w.value)}
-              className={`px-2 py-1 text-[10px] font-mono rounded-sm transition-colors ${
-                welle === w.value
-                  ? 'bg-scnat-red/15 text-scnat-red font-medium border border-scnat-red/30'
-                  : 'text-txt-tertiary hover:text-txt-secondary border border-transparent'
-              }`}
-            >
-              {w.value ? `★ ${w.label}` : w.label}
-            </button>
-          ))}
-        </div>
+        {view !== 'bars' && (
+          <div className="flex items-center bg-bg-base border border-bd-faint rounded-sm p-0.5">
+            {[
+              { value: '', label: 'Alle' },
+              { value: '6', label: 'Top 6' },
+              { value: '12', label: 'Top 12' },
+            ].map(w => (
+              <button
+                key={w.value}
+                onClick={() => setWelle(w.value)}
+                className={`px-2 py-1 text-[10px] font-mono rounded-sm transition-colors ${
+                  welle === w.value
+                    ? 'bg-scnat-red/15 text-scnat-red font-medium border border-scnat-red/30'
+                    : 'text-txt-tertiary hover:text-txt-secondary border border-transparent'
+                }`}
+              >
+                {w.value ? `★ ${w.label}` : w.label}
+              </button>
+            ))}
+          </div>
+        )}
         <span className="text-[10px] font-mono text-txt-tertiary ml-auto">
-          {filtered.length} Massnahmen
+          {view === 'bars' ? `${data.filter(m => !m.isAdminTask).length} Massnahmen total` : `${filtered.length} Massnahmen`}
         </span>
         <Link
           to="/massnahmen"
@@ -419,6 +431,104 @@ function MassnahmenModule({ data, sprintMap }) {
           ))}
         </div>
       )}
+
+      {view === 'bars' && (
+        <div>
+          {/* Summary stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-bd-faint border-b border-bd-faint">
+            {(() => {
+              const all = data.filter(m => !m.isAdminTask);
+              const rated = all.filter(m => m.wirkung > 0 && m.aufwand > 0);
+              const avgW = rated.length ? (rated.reduce((s, m) => s + m.wirkung, 0) / rated.length).toFixed(1) : '–';
+              const avgA = rated.length ? (rated.reduce((s, m) => s + m.aufwand, 0) / rated.length).toFixed(1) : '–';
+              const inUms = all.filter(m => m.status === 'in_umsetzung').length;
+              return [
+                { v: all.length, l: 'Massnahmen total', c: 'text-txt-primary' },
+                { v: avgW,       l: 'Ø Wirkung',        c: 'text-status-green' },
+                { v: avgA,       l: 'Ø Aufwand',        c: 'text-scnat-red' },
+                { v: inUms,      l: 'In Umsetzung',     c: 'text-status-blue' },
+              ].map((s, i) => (
+                <div key={i} className="bg-bg-surface px-3 py-2.5">
+                  <p className={`text-lg font-heading font-bold leading-none ${s.c}`}>{s.v}</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-txt-tertiary mt-1">{s.l}</p>
+                </div>
+              ));
+            })()}
+          </div>
+
+          {/* Cluster legend */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-2.5 border-b border-bd-faint bg-bg-elevated/20">
+            <span className="text-[9px] font-mono uppercase tracking-wider text-txt-tertiary">Bewertung</span>
+            <span className="flex items-center gap-1.5 text-[10px] text-txt-secondary">
+              <span className="w-2.5 h-1 rounded-sm" style={{ background: 'var(--status-green)' }} />
+              Wirkung
+            </span>
+            <span className="flex items-center gap-1.5 text-[10px] text-txt-secondary">
+              <span className="w-2.5 h-1 rounded-sm bg-scnat-red" />
+              Aufwand
+            </span>
+            <span className="text-[9px] font-mono text-txt-tertiary ml-auto">
+              Sortiert nach Wirkung × (11 − Aufwand)
+            </span>
+          </div>
+
+          <div className="divide-y divide-bd-faint">
+            {grouped.map(([cluster, items]) => (
+              <div key={cluster}>
+                <div className="flex items-center gap-2 px-4 py-2 bg-bg-elevated/40 border-b border-bd-faint sticky top-0 z-[1]">
+                  <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: CLUSTER_COLORS[cluster] || '#888' }} />
+                  <span className="text-[11px] font-heading font-semibold text-txt-primary">{cluster}</span>
+                  <span className="text-[10px] font-mono text-txt-tertiary ml-auto">{items.length} Massnahmen</span>
+                </div>
+                <div className="divide-y divide-bd-faint">
+                  {items.map(m => (
+                    <div key={m.id} className="px-4 py-2.5 grid grid-cols-1 sm:grid-cols-[1fr_220px] gap-2 sm:gap-4 hover:bg-bg-elevated/30 transition-colors">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                          <span className="text-[10px] font-mono text-txt-tertiary">{m.id.toUpperCase()}</span>
+                          <span className={`text-[9.5px] font-mono px-1.5 py-0.5 rounded-sm ${
+                            m.prioritaet === 'A' ? 'bg-scnat-red/15 text-scnat-red' :
+                            m.prioritaet === 'B' ? 'bg-status-yellow/15 text-status-yellow' :
+                            m.prioritaet === 'C' ? 'bg-status-blue/15 text-status-blue' :
+                            'bg-bg-elevated text-txt-tertiary'
+                          }`}>Prio {m.prioritaet}</span>
+                          {m.start_empfohlen && (
+                            <span className="text-[9px] font-mono bg-status-yellow/15 text-status-yellow px-1.5 py-0.5 rounded-sm">★ Start</span>
+                          )}
+                          {m.status === 'in_umsetzung' && (
+                            <span className="text-[9px] font-mono bg-status-green/15 text-status-green px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
+                              <Activity className="w-3 h-3" /> Aktiv
+                            </span>
+                          )}
+                          {m.isNew && (
+                            <span className="text-[9px] font-mono bg-scnat-teal/15 text-scnat-teal px-1.5 py-0.5 rounded-sm">NEU</span>
+                          )}
+                          {sprintMap[m.id] && (
+                            <span className="text-[9px] font-mono bg-[#F07800]/12 text-[#F07800] px-1.5 py-0.5 rounded-sm flex items-center gap-0.5" title={sprintMap[m.id].join(', ')}>
+                              <Zap className="w-3 h-3" /> Sprint
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[12.5px] text-txt-primary leading-snug font-medium">{m.titel}</p>
+                      </div>
+                      <div className="flex flex-col gap-1 sm:gap-1.5 sm:pt-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-mono uppercase tracking-wider text-txt-tertiary w-12 shrink-0">Wirkung</span>
+                          <PrioBar value={m.wirkung} color="var(--status-green)" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-mono uppercase tracking-wider text-txt-tertiary w-12 shrink-0">Aufwand</span>
+                          <PrioBar value={m.aufwand} color="#EA515A" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -509,35 +619,340 @@ function WhyModule() {
   );
 }
 
-// ── PILLARS ROW ─────────────────────────────────────────────────────────────
-function PillarsRow() {
+// ── PILLARS 3D SCENE ────────────────────────────────────────────────────────
+const PILLARS_3D = [
+  {
+    n: '01', title: 'Massnahmen', sub: 'Menschen · Kultur · KI · Change',
+    desc: 'Die Veränderungsdimension – Wirkung über Befähigung, Prozesse und kulturelle Verankerung.',
+    color: '#7C5CBF', rgb: '124,92,191',
+    width: 150, depth: 100, height: 230, x: -210,
+    sideLabel: 'Massnahmen',
+    tags: ['Kultur & Mindset', 'KI-Befähigung', 'Change Agents'],
+    stats: [['Anzahl', '8'], ['Ø Wirkung', '7.9'], ['Quartal', 'Q2 / Q3']],
+  },
+  {
+    n: '02', title: 'DB & Portale', sub: 'Kernsysteme · 12+ Jahre Geschichte',
+    desc: 'Das organisationsspezifische Rückgrat – langlebig, datenkritisch, modernisierungsbedürftig.',
+    color: '#D4882A', rgb: '212,136,42',
+    width: 150, depth: 100, height: 200, x: 0,
+    sideLabel: 'DB · Portale',
+    tags: ['Xojo · PPO', 'Beitragswesen', 'Migrationspfad'],
+    stats: [['Anzahl', '1'], ['Status', 'Konzept'], ['Quartal', 'Q4']],
+  },
+  {
+    n: '03', title: 'Infrastruktur', sub: 'On-prem · souverän · modernisierungsbedürftig',
+    desc: 'Das Fundament – Server, Netzwerk, Betrieb. Stabil, aber alt und personenabhängig.',
+    color: '#EA515A', rgb: '234,81,90',
+    width: 150, depth: 100, height: 250, x: 210,
+    sideLabel: 'Infrastruktur',
+    tags: ['Hosting', 'Netzwerk', 'Betrieb / SRE'],
+    stats: [['Anzahl', '3'], ['Cloud-Eval', 'CH-Cloud'], ['Quartal', 'Q3']],
+  },
+];
+
+const FUNDAMENT = [
+  ['Prozess', 'Standards'],
+  ['Methodik', 'Sprint · Agil'],
+  ['Schnittstelle', 'Rollen · SLA'],
+  ['Daten', 'DSG · Quality'],
+  ['Sicherheit', 'Governance'],
+  ['Spezifikation', 'API · Doc'],
+];
+
+function Pillars3D({ onSelect, selected }) {
+  const stageRef = useRef(null);
+  const sceneRef = useRef(null);
+  const stateRef = useRef({
+    dragging: false, lastX: 0, lastY: 0,
+    rotX: -10, rotY: -18,
+    autoAnim: true, raf: null, lastTs: 0,
+  });
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    const scene = sceneRef.current;
+    if (!stage || !scene) return;
+    const s = stateRef.current;
+
+    const apply = () => {
+      stage.style.transform = `rotateX(${s.rotX}deg) rotateY(${s.rotY}deg)`;
+    };
+
+    const tick = (ts) => {
+      if (!s.autoAnim) { s.raf = null; return; }
+      if (s.lastTs) {
+        const dt = (ts - s.lastTs) / 1000;
+        s.rotY += dt * 6; // 6°/s slow rotation
+        if (s.rotY > 180) s.rotY -= 360;
+        apply();
+      }
+      s.lastTs = ts;
+      s.raf = requestAnimationFrame(tick);
+    };
+
+    const startAuto = () => {
+      if (s.raf) return;
+      s.lastTs = 0;
+      s.autoAnim = true;
+      s.raf = requestAnimationFrame(tick);
+    };
+    const stopAuto = () => {
+      s.autoAnim = false;
+      if (s.raf) { cancelAnimationFrame(s.raf); s.raf = null; }
+    };
+
+    const onDown = (e) => {
+      stopAuto();
+      s.dragging = true;
+      s.lastX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+      s.lastY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
+      stage.classList.add('is-dragging');
+      e.preventDefault?.();
+    };
+    const onMove = (e) => {
+      if (!s.dragging) return;
+      const x = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+      const y = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
+      s.rotY += (x - s.lastX) * 0.45;
+      s.rotX -= (y - s.lastY) * 0.3;
+      s.rotX = Math.max(-50, Math.min(20, s.rotX));
+      s.lastX = x; s.lastY = y;
+      apply();
+    };
+    const onUp = () => {
+      if (!s.dragging) return;
+      s.dragging = false;
+      stage.classList.remove('is-dragging');
+      // resume auto-rotate after short delay
+      setTimeout(() => { if (!s.dragging) startAuto(); }, 2500);
+    };
+
+    const onEnter = () => stopAuto();
+    const onLeave = () => { if (!s.dragging) startAuto(); };
+
+    scene.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    scene.addEventListener('touchstart', onDown, { passive: false });
+    window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('touchend', onUp);
+    scene.addEventListener('mouseenter', onEnter);
+    scene.addEventListener('mouseleave', onLeave);
+
+    apply();
+    startAuto();
+
+    return () => {
+      stopAuto();
+      scene.removeEventListener('mousedown', onDown);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      scene.removeEventListener('touchstart', onDown);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onUp);
+      scene.removeEventListener('mouseenter', onEnter);
+      scene.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-      {PILLARS.map(p => {
-        const Icon = p.icon;
+    <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+      <style>{`
+        .pillars3d-scene { perspective: 1400px; perspective-origin: 50% 35%; }
+        .pillars3d-stage { transform-style: preserve-3d; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+        .pillars3d-stage.is-dragging { transition: none; }
+        .pillars3d-pillar { position:absolute; transform-style: preserve-3d; cursor: pointer; transition: filter .3s, transform .35s cubic-bezier(.22,1,.36,1); }
+        .pillars3d-pillar:hover { filter: brightness(1.18); transform: translate3d(0, -8px, 60px); }
+        .pillars3d-pillar.is-dim { filter: grayscale(.55) brightness(.7); opacity: .55; }
+        .pillars3d-pillar.is-active { filter: brightness(1.22) drop-shadow(0 0 18px var(--c, rgba(255,255,255,0.4))); transform: translate3d(0, -8px, 80px); }
+        .pillars3d-face { position: absolute; box-sizing: border-box; backface-visibility: visible; overflow: hidden; }
+        .pillars3d-ground {
+          position: absolute; left:50%; bottom:0; width:680px; height:40px;
+          transform: translateX(-50%) rotateX(90deg); transform-origin: center top;
+          background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(234,81,90,0.16) 0%, transparent 70%);
+          pointer-events:none; transform-style:preserve-3d;
+        }
+        @keyframes pillarRise { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      `}</style>
+
+      <div className="px-4 py-3 border-b border-bd-faint bg-bg-elevated/30 flex items-center gap-3 flex-wrap">
+        <span className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider">3D Scene</span>
+        <span className="text-[10px] text-txt-tertiary">·</span>
+        <span className="text-[11px] text-txt-secondary">Drag zum Rotieren · Hover hebt Säule · Klick aktiviert Detail</span>
+        {selected && (
+          <button
+            onClick={() => onSelect(null)}
+            className="ml-auto text-[10px] font-mono text-scnat-red hover:text-scnat-red/80 transition-colors flex items-center gap-1 px-2 py-0.5 border border-scnat-red/30 bg-scnat-red/10 rounded-sm"
+          >
+            × Auswahl aufheben
+          </button>
+        )}
+      </div>
+
+      <div className="relative px-4 pt-6 pb-4 bg-gradient-to-b from-bg-base/30 via-transparent to-bg-elevated/25">
+        <div
+          ref={sceneRef}
+          className="pillars3d-scene relative mx-auto select-none"
+          style={{ height: 360, maxWidth: 780, cursor: 'grab' }}
+        >
+          <div ref={stageRef} className="pillars3d-stage absolute inset-0">
+            <div className="pillars3d-ground" />
+
+            {PILLARS_3D.map(p => {
+              const isSelected = selected === p.n;
+              const isDimmed = selected && !isSelected;
+              return (
+                <div
+                  key={p.n}
+                  className={`pillars3d-pillar ${isSelected ? 'is-active' : ''} ${isDimmed ? 'is-dim' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); onSelect(isSelected ? null : p.n); }}
+                  style={{
+                    width: p.width, height: p.height,
+                    bottom: 8,
+                    left: '50%',
+                    marginLeft: p.x - p.width / 2,
+                    '--c': `rgba(${p.rgb},0.55)`,
+                  }}
+                >
+                  {/* FRONT */}
+                  <div className="pillars3d-face" style={{
+                    width: p.width, height: p.height, top: 0, left: 0,
+                    transform: `translateZ(${p.depth / 2}px)`,
+                    background: `linear-gradient(180deg, rgba(${p.rgb},0.22) 0%, rgba(${p.rgb},0.08) 100%)`,
+                    border: `1px solid rgba(${p.rgb},0.45)`,
+                    borderTop: `2px solid ${p.color}`,
+                    padding: '14px 12px',
+                    display: 'flex', flexDirection: 'column', gap: 6,
+                  }}>
+                    <div style={{ width: '40%', height: 3, background: p.color, borderRadius: 1, opacity: 0.85, marginBottom: 4 }} />
+                    <p className="font-mono uppercase" style={{ fontSize: 9, letterSpacing: '.14em', color: p.color, opacity: 0.9 }}>
+                      Säule {p.n}
+                    </p>
+                    <h4 className="font-heading font-bold text-txt-primary leading-tight" style={{ fontSize: 14 }}>
+                      {p.title}
+                    </h4>
+                    <div className="flex flex-col gap-1 mt-1">
+                      {p.tags.map((t, i) => (
+                        <span key={i} className="font-mono" style={{
+                          fontSize: 8.5, letterSpacing: '.04em',
+                          color: 'var(--text-secondary)',
+                          padding: '1.5px 5px',
+                          borderLeft: `1px solid ${p.color}`,
+                          background: `rgba(${p.rgb},0.08)`,
+                        }}>{t}</span>
+                      ))}
+                    </div>
+                    <p className="font-mono mt-auto" style={{ fontSize: 8.5, color: 'var(--text-tertiary)', letterSpacing: '.05em', lineHeight: 1.4 }}>
+                      {p.sub}
+                    </p>
+                  </div>
+
+                  {/* BACK */}
+                  <div className="pillars3d-face" style={{
+                    width: p.width, height: p.height, top: 0, left: 0,
+                    transform: `translateZ(-${p.depth / 2}px) rotateY(180deg)`,
+                    background: `linear-gradient(180deg, rgba(${p.rgb},0.10), rgba(${p.rgb},0.04))`,
+                    border: `1px solid rgba(${p.rgb},0.35)`,
+                  }} />
+
+                  {/* RIGHT */}
+                  <div className="pillars3d-face" style={{
+                    width: p.depth, height: p.height, top: 0, right: 0,
+                    transform: `rotateY(90deg) translateZ(${p.depth / 2}px)`,
+                    background: `linear-gradient(90deg, rgba(${p.rgb},0.18), rgba(${p.rgb},0.06))`,
+                    border: `1px solid rgba(${p.rgb},0.35)`,
+                    padding: '12px 10px',
+                    display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                  }}>
+                    <span className="font-mono uppercase" style={{
+                      writingMode: 'vertical-rl',
+                      fontSize: 9, letterSpacing: '.14em',
+                      color: p.color, opacity: 0.85,
+                    }}>{p.sideLabel}</span>
+                    <div className="flex flex-col gap-1.5">
+                      {p.stats.map(([l, v], i) => (
+                        <div key={i}>
+                          <p className="font-mono uppercase" style={{ fontSize: 7, color: 'var(--text-tertiary)', letterSpacing: '.08em' }}>{l}</p>
+                          <p className="font-mono text-txt-primary" style={{ fontSize: 9.5, fontWeight: 500 }}>{v}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* LEFT */}
+                  <div className="pillars3d-face" style={{
+                    width: p.depth, height: p.height, top: 0, left: 0,
+                    transform: `rotateY(-90deg) translateZ(${p.depth / 2}px)`,
+                    background: `linear-gradient(90deg, rgba(${p.rgb},0.06), rgba(${p.rgb},0.18))`,
+                    border: `1px solid rgba(${p.rgb},0.35)`,
+                  }} />
+
+                  {/* TOP */}
+                  <div className="pillars3d-face" style={{
+                    width: p.width, height: p.depth, top: 0, left: 0,
+                    transform: `rotateX(90deg) translateZ(${p.depth / 2}px)`,
+                    transformOrigin: 'top center',
+                    background: `rgba(${p.rgb},0.30)`,
+                    border: `1px solid ${p.color}`,
+                  }} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Foundation (Prozesse / Methoden) */}
+        <div className="max-w-[680px] mx-auto mt-1">
+          <div className="flex items-center justify-between mb-1.5 px-1">
+            <span className="text-[9px] font-mono uppercase tracking-[.14em] text-txt-tertiary">Fundament</span>
+            <span className="text-[9px] font-mono uppercase tracking-[.08em] text-txt-secondary">Prozesse · Methoden · Standards</span>
+          </div>
+          <div
+            className="grid grid-cols-3 sm:grid-cols-6 border border-bd-default rounded-sm overflow-hidden relative"
+            style={{ background: 'linear-gradient(180deg, var(--bg-surface), var(--bg-elevated))' }}
+          >
+            <span className="absolute left-0 right-0 top-0 h-px" style={{ background: 'linear-gradient(90deg,transparent,var(--border-strong),transparent)', opacity: .4 }} />
+            {FUNDAMENT.map(([label, sub], i) => (
+              <div
+                key={i}
+                className="px-3 py-3 text-center border-r border-bd-faint last:border-r-0 flex flex-col items-center gap-1"
+              >
+                <p className="text-[10px] font-mono text-txt-primary leading-tight">{label}</p>
+                <p className="text-[8.5px] font-mono uppercase tracking-wider text-txt-tertiary">{sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Detail panel for selected pillar */}
+      {selected && (() => {
+        const p = PILLARS_3D.find(x => x.n === selected);
+        if (!p) return null;
         return (
           <div
-            key={p.n}
-            className="bg-bg-surface border border-bd-faint rounded-sm p-4 relative overflow-hidden hover:border-bd-strong transition-colors"
+            className="border-t border-bd-faint px-4 py-4 bg-bg-elevated/30"
             style={{ borderTop: `2px solid ${p.color}` }}
           >
             <div className="flex items-start gap-3 mb-2">
-              <div
-                className="w-9 h-9 rounded-sm flex items-center justify-center shrink-0"
-                style={{ background: `${p.color}1f`, color: p.color }}
-              >
-                <Icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider">Säule {p.n}</p>
-                <h4 className="text-sm font-heading font-semibold text-txt-primary leading-tight">{p.title}</h4>
-                <p className="text-[10px] font-mono text-txt-tertiary mt-0.5">{p.sub}</p>
+              <div className="font-heading font-bold text-2xl leading-none" style={{ color: p.color }}>{p.n}</div>
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary">Säule</p>
+                <h4 className="text-base font-heading font-semibold text-txt-primary leading-tight">{p.title}</h4>
               </div>
             </div>
-            <p className="text-xs text-txt-secondary leading-relaxed">{p.desc}</p>
+            <p className="text-sm text-txt-secondary leading-relaxed">{p.desc}</p>
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              {p.stats.map(([l, v], i) => (
+                <div key={i} className="bg-bg-surface border border-bd-faint rounded-sm px-3 py-2">
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-txt-tertiary">{l}</p>
+                  <p className="text-sm font-heading font-semibold text-txt-primary mt-0.5">{v}</p>
+                </div>
+              ))}
+            </div>
           </div>
         );
-      })}
+      })()}
     </div>
   );
 }
@@ -591,6 +1006,7 @@ export default function CpNextSteps() {
   const [expandedRisk, setExpandedRisk] = useState(null);
   const [riskFilter, setRiskFilter] = useState('all');
   const [expandedSprintIds, setExpandedSprintIds] = useState(new Set());
+  const [pillarSelected, setPillarSelected] = useState(null);
   const sectionRefs = useRef({});
 
   useEffect(() => {
@@ -755,7 +1171,7 @@ export default function CpNextSteps() {
           title="Massnahmen, DB & Portale, Infrastruktur – im Zusammenspiel"
           lead="Die Digitalisierung der SCNAT spielt sich auf drei Säulen ab. Sie sind nicht isoliert: Modernisierung der Infrastruktur ermöglicht neue Massnahmen, ein modernisiertes Portal entlastet die Massnahmenarbeit, und kulturelle Befähigung ist die Voraussetzung dafür, dass technische Investitionen Wirkung entfalten. Wer eine Säule ignoriert, schwächt die anderen."
         />
-        <PillarsRow />
+        <Pillars3D selected={pillarSelected} onSelect={setPillarSelected} />
         <p className="text-[11px] text-txt-tertiary italic mt-3 leading-relaxed">
           → Die nachfolgende Stärken-/Lücken-Analyse betrachtet alle drei Säulen gemeinsam. Die meisten Risiken (siehe unten) entstehen genau an den Schnittstellen.
         </p>
