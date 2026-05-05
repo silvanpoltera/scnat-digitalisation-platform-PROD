@@ -2,6 +2,7 @@ import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import CpNextSteps from './CpNextSteps';
 
 const PAGES = {
   pillars: { title: 'The Pillars', sub: 'Drei Säulen · Systembild · Wechselwirkungen', file: '/files/drei_saeulen.html' },
@@ -53,6 +54,23 @@ export default function CpAdminStuffView() {
     );
   }
 
+  // Special-case: render Next Steps as a live React page so embedded modules
+  // (Massnahmen-Matrix, Sprint-Gantt, etc.) share data with the rest of the portal.
+  if (page === 'next-steps') {
+    return (
+      <div>
+        <NextStepsTopBar
+          config={config}
+          prevPage={prevPage}
+          nextPage={nextPage}
+          currentIndex={currentIndex}
+          navigate={navigate}
+        />
+        <CpNextSteps />
+      </div>
+    );
+  }
+
   const iframeTheme = theme === 'bright' ? 'light' : 'dark';
   const hash = location.hash || '';
   const iframeSrc = config.file + `?theme=${iframeTheme}` + hash;
@@ -98,6 +116,44 @@ export default function CpAdminStuffView() {
         className="flex-1 w-full border-0 bg-bg-base min-h-0"
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"
       />
+    </div>
+  );
+}
+
+function NextStepsTopBar({ config, prevPage, nextPage, currentIndex, navigate }) {
+  return (
+    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 h-10 -mx-4 md:-mx-6 -mt-4 md:-mt-6 mb-4 bg-bg-surface border-b border-bd-faint">
+      <Link
+        to="/cp/admin-stuff"
+        className="flex items-center gap-1.5 text-xs text-txt-secondary hover:text-txt-primary transition-colors shrink-0"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        <span className="hidden sm:inline">Übersicht</span>
+      </Link>
+      <div className="w-px h-4 bg-bd-faint shrink-0" />
+      <div className="flex items-center gap-0.5 shrink-0">
+        {prevPage ? (
+          <button
+            onClick={() => navigate(`/cp/admin-stuff/${prevPage}`)}
+            className="text-[10px] font-mono text-txt-tertiary hover:text-txt-primary px-1.5 py-0.5 hover:bg-bg-elevated rounded-sm transition-colors"
+          >‹</button>
+        ) : <span className="w-5" />}
+        <span className="text-[10px] font-mono text-txt-tertiary px-0.5">
+          {currentIndex + 1}/{PAGE_ORDER.length}
+        </span>
+        {nextPage ? (
+          <button
+            onClick={() => navigate(`/cp/admin-stuff/${nextPage}`)}
+            className="text-[10px] font-mono text-txt-tertiary hover:text-txt-primary px-1.5 py-0.5 hover:bg-bg-elevated rounded-sm transition-colors"
+          >›</button>
+        ) : <span className="w-5" />}
+      </div>
+      <div className="w-px h-4 bg-bd-faint shrink-0" />
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <p className="text-sm font-heading font-semibold text-txt-primary truncate">{config.title}</p>
+        <span className="text-[10px] font-mono text-txt-tertiary truncate hidden sm:inline">· {config.sub}</span>
+        <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-status-green/12 text-status-green border border-status-green/25 hidden md:inline">Live</span>
+      </div>
     </div>
   );
 }

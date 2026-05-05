@@ -18,10 +18,10 @@ const CARDS = [
   },
   {
     num: '02',
-    section: 'Quartalsplanung 2026',
+    section: 'Quartalsplanung 2026 · Live',
     title: 'Next Steps 2026',
-    sub: 'Q2 / Q3 / Q4 · Massnahmen · Risiken · Anträge GL',
-    desc: '12 priorisierte Massnahmen in 6 Clustern, gestaffelt in drei Wellen. Inkl. Ausgangslage, 8 Risiken (sachlich benannt) und drei Anträgen an die Geschäftsleitung. Direkt-Sprung zu jedem Briefing in cp/admin-details.',
+    sub: 'Q2 / Q3 / Q4 · Live-Massnahmen · Sprint-Gantt · KPIs · Risiken',
+    desc: '12 priorisierte Massnahmen in 6 Clustern, gestaffelt in drei Wellen. Live-Module aus /massnahmen (Wirkung × Aufwand Matrix, Top 6 / Top 12) und /sprints (Gantt) – Daten werden automatisch synchron gehalten. Inkl. KPI-Begründung, drei Säulen, Stärken/Lücken, 8 Risiken und drei Anträge an die GL. Sticky-Navigation für schnelles Hin- und Herspringen.',
     primary: { to: '/cp/admin-stuff/next-steps', label: 'Öffnen' },
     secondary: { to: '/cp/admin-stuff/next-steps#massnahmen', label: 'Zu den Massnahmen' },
     visual: 'next-steps',
