@@ -650,22 +650,12 @@ const PILLARS_3D = [
   },
 ];
 
-const FUNDAMENT = [
-  ['Prozess', 'Standards'],
-  ['Methodik', 'Sprint · Agil'],
-  ['Schnittstelle', 'Rollen · SLA'],
-  ['Daten', 'DSG · Quality'],
-  ['Sicherheit', 'Governance'],
-  ['Spezifikation', 'API · Doc'],
-];
-
 function Pillars3D({ onSelect, selected }) {
   const stageRef = useRef(null);
   const sceneRef = useRef(null);
   const stateRef = useRef({
     dragging: false, lastX: 0, lastY: 0,
     rotX: -10, rotY: -18,
-    autoAnim: true, raf: null, lastTs: 0,
   });
 
   useEffect(() => {
@@ -678,31 +668,7 @@ function Pillars3D({ onSelect, selected }) {
       stage.style.transform = `rotateX(${s.rotX}deg) rotateY(${s.rotY}deg)`;
     };
 
-    const tick = (ts) => {
-      if (!s.autoAnim) { s.raf = null; return; }
-      if (s.lastTs) {
-        const dt = (ts - s.lastTs) / 1000;
-        s.rotY += dt * 6; // 6°/s slow rotation
-        if (s.rotY > 180) s.rotY -= 360;
-        apply();
-      }
-      s.lastTs = ts;
-      s.raf = requestAnimationFrame(tick);
-    };
-
-    const startAuto = () => {
-      if (s.raf) return;
-      s.lastTs = 0;
-      s.autoAnim = true;
-      s.raf = requestAnimationFrame(tick);
-    };
-    const stopAuto = () => {
-      s.autoAnim = false;
-      if (s.raf) { cancelAnimationFrame(s.raf); s.raf = null; }
-    };
-
     const onDown = (e) => {
-      stopAuto();
       s.dragging = true;
       s.lastX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
       s.lastY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
@@ -716,6 +682,8 @@ function Pillars3D({ onSelect, selected }) {
       s.rotY += (x - s.lastX) * 0.45;
       s.rotX -= (y - s.lastY) * 0.3;
       s.rotX = Math.max(-50, Math.min(20, s.rotX));
+      // Clamp Y to prevent the "endless spin" feeling – stays around the front view.
+      s.rotY = Math.max(-65, Math.min(65, s.rotY));
       s.lastX = x; s.lastY = y;
       apply();
     };
@@ -723,12 +691,7 @@ function Pillars3D({ onSelect, selected }) {
       if (!s.dragging) return;
       s.dragging = false;
       stage.classList.remove('is-dragging');
-      // resume auto-rotate after short delay
-      setTimeout(() => { if (!s.dragging) startAuto(); }, 2500);
     };
-
-    const onEnter = () => stopAuto();
-    const onLeave = () => { if (!s.dragging) startAuto(); };
 
     scene.addEventListener('mousedown', onDown);
     window.addEventListener('mousemove', onMove);
@@ -736,22 +699,16 @@ function Pillars3D({ onSelect, selected }) {
     scene.addEventListener('touchstart', onDown, { passive: false });
     window.addEventListener('touchmove', onMove, { passive: true });
     window.addEventListener('touchend', onUp);
-    scene.addEventListener('mouseenter', onEnter);
-    scene.addEventListener('mouseleave', onLeave);
 
     apply();
-    startAuto();
 
     return () => {
-      stopAuto();
       scene.removeEventListener('mousedown', onDown);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
       scene.removeEventListener('touchstart', onDown);
       window.removeEventListener('touchmove', onMove);
       window.removeEventListener('touchend', onUp);
-      scene.removeEventListener('mouseenter', onEnter);
-      scene.removeEventListener('mouseleave', onLeave);
     };
   }, []);
 
@@ -778,7 +735,7 @@ function Pillars3D({ onSelect, selected }) {
       <div className="px-4 py-3 border-b border-bd-faint bg-bg-elevated/30 flex items-center gap-3 flex-wrap">
         <span className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider">3D Scene</span>
         <span className="text-[10px] text-txt-tertiary">·</span>
-        <span className="text-[11px] text-txt-secondary">Drag zum Rotieren · Hover hebt Säule · Klick aktiviert Detail</span>
+        <span className="text-[11px] text-txt-secondary">Ziehen zum Rotieren · Hover hebt Säule · Klick zeigt Details</span>
         {selected && (
           <button
             onClick={() => onSelect(null)}
@@ -789,7 +746,7 @@ function Pillars3D({ onSelect, selected }) {
         )}
       </div>
 
-      <div className="relative px-4 pt-6 pb-4 bg-gradient-to-b from-bg-base/30 via-transparent to-bg-elevated/25">
+      <div className="relative px-4 py-6 bg-gradient-to-b from-bg-base/30 via-transparent to-bg-elevated/25">
         <div
           ref={sceneRef}
           className="pillars3d-scene relative mx-auto select-none"
@@ -898,29 +855,6 @@ function Pillars3D({ onSelect, selected }) {
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Foundation (Prozesse / Methoden) */}
-        <div className="max-w-[680px] mx-auto mt-1">
-          <div className="flex items-center justify-between mb-1.5 px-1">
-            <span className="text-[9px] font-mono uppercase tracking-[.14em] text-txt-tertiary">Fundament</span>
-            <span className="text-[9px] font-mono uppercase tracking-[.08em] text-txt-secondary">Prozesse · Methoden · Standards</span>
-          </div>
-          <div
-            className="grid grid-cols-3 sm:grid-cols-6 border border-bd-default rounded-sm overflow-hidden relative"
-            style={{ background: 'linear-gradient(180deg, var(--bg-surface), var(--bg-elevated))' }}
-          >
-            <span className="absolute left-0 right-0 top-0 h-px" style={{ background: 'linear-gradient(90deg,transparent,var(--border-strong),transparent)', opacity: .4 }} />
-            {FUNDAMENT.map(([label, sub], i) => (
-              <div
-                key={i}
-                className="px-3 py-3 text-center border-r border-bd-faint last:border-r-0 flex flex-col items-center gap-1"
-              >
-                <p className="text-[10px] font-mono text-txt-primary leading-tight">{label}</p>
-                <p className="text-[8.5px] font-mono uppercase tracking-wider text-txt-tertiary">{sub}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>

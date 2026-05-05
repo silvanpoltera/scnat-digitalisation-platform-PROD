@@ -1,5 +1,21 @@
-import { useMemo, useState, useRef, useCallback } from 'react';
+import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+
+// Custom hook: tracks the inline width of a referenced element via ResizeObserver.
+function useElementWidth(ref) {
+  const [w, setW] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) setW(entry.contentRect.width);
+    });
+    ro.observe(el);
+    setW(el.getBoundingClientRect().width);
+    return () => ro.disconnect();
+  }, [ref]);
+  return w;
+}
 
 const DAY = 86400000;
 
@@ -168,115 +184,125 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
 }
 
 function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW, minColPx }) {
-  // Compute the minimum width the timeline area needs based on the number of
-  // columns and per-column min width. When this exceeds the available space
-  // the wrapper scrolls horizontally; otherwise columns flex to fit.
-  const minTimelineW = (weeks?.length || 0) * (minColPx || 60);
-  // Sticky-label background must mask the grid lines + bars below.
-  const stickyBg = 'bg-bg-base';
+  const wrapRef = useRef(null);
+  const wrapW = useElementWidth(wrapRef);
+
+  // Deterministic pixel-based layout:
+  //   colW = max(minColPx, fit-to-container width per column)
+  //   chartW = labelW + cols * colW
+  // When chartW > wrapW, the wrapper scrolls horizontally.
+  const cols = weeks?.length || 0;
+  const fitColW = cols > 0 ? Math.max(0, (wrapW - labelW) / cols) : 0;
+  const colW = Math.max(minColPx || 60, fitColW);
+  const timelineW = cols * colW;
+  const chartW = labelW + timelineW;
 
   return (
     <div className="w-full">
       <div
+        ref={wrapRef}
         className="overflow-x-auto overflow-y-visible gantt-scroll"
         style={{ scrollbarWidth: 'thin' }}
       >
         <style>{`
-          .gantt-scroll::-webkit-scrollbar { height: 8px; }
-          .gantt-scroll::-webkit-scrollbar-track { background: transparent; }
-          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-default,#3a3f4a); border-radius: 4px; }
+          .gantt-scroll::-webkit-scrollbar { height: 10px; }
+          .gantt-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 5px; }
+          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-default,#3a3f4a); border-radius: 5px; }
           .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong,#555a66); }
         `}</style>
-        <div style={{ minWidth: labelW + minTimelineW }}>
-          {/* KW / Month Header */}
-          <div className="flex relative mb-2 sticky top-0 z-[3] bg-bg-base" style={{ paddingLeft: labelW }}>
-            {weeks.map((w, i) => (
-              <div
-                key={i}
-                className={`flex-1 text-center font-mono text-[9px] tracking-wide ${w.isToday ? 'text-scnat-red font-medium' : 'text-txt-tertiary'}`}
-                style={{ minWidth: minColPx }}
-              >
-                {w.label}
-              </div>
-            ))}
-          </div>
-
-          {/* Body */}
-          <div className="relative">
-            {/* Grid columns */}
-            <div className="absolute top-0 bottom-0 flex pointer-events-none z-0" style={{ left: labelW, right: 0 }}>
+        {wrapW > 0 && (
+          <div style={{ width: chartW }}>
+            {/* KW / Month Header */}
+            <div className="flex mb-2" style={{ paddingLeft: labelW, width: chartW }}>
               {weeks.map((w, i) => (
                 <div
                   key={i}
-                  className={`flex-1 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint'}`}
-                  style={{ minWidth: minColPx }}
-                />
+                  className={`text-center font-mono text-[9px] tracking-wide shrink-0 ${w.isToday ? 'text-scnat-red font-medium' : 'text-txt-tertiary'}`}
+                  style={{ width: colW }}
+                >
+                  {w.label}
+                </div>
               ))}
             </div>
 
-            {/* Today line */}
-            <div
-              className="absolute top-0 bottom-0 border-l-[1.5px] border-dashed border-scnat-red z-[2] pointer-events-none"
-              style={{ left: `calc(${labelW}px + (100% - ${labelW}px) * ${todayPct / 100})` }}
-            />
-
-            {/* Sprint rows */}
-            {sprints.map(sp => {
-              const start = new Date(sp.startDate + 'T00:00:00');
-              const end = new Date(sp.endDate + 'T23:59:59');
-              const left = pct(start);
-              const right = pct(end);
-              const width = Math.max(right - left, 4);
-              const isOpen = expandedIds.has(sp.id);
-              const dotColor = STATUS_DOT_COLORS[sp.status] || '#4E535D';
-              const barBg = hexToRgba(sp.clusterColor || '#4E535D', 0.3);
-              const barBorder = hexToRgba(sp.clusterColor || '#4E535D', isOpen ? 0.8 : 0.4);
-
-              return (
-                <div key={sp.id} className="flex items-center mb-2 relative z-[1]">
+            {/* Body */}
+            <div className="relative" style={{ width: chartW }}>
+              {/* Grid columns */}
+              <div className="absolute top-0 bottom-0 flex pointer-events-none z-0" style={{ left: labelW, width: timelineW }}>
+                {weeks.map((w, i) => (
                   <div
-                    className={`shrink-0 pr-3 sticky left-0 z-[2] ${stickyBg}`}
-                    style={{ width: labelW }}
-                  >
-                    {/* Right-side fade so the bar appears to scroll behind the label */}
-                    <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, var(--bg-base), transparent)' }} />
-                    <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
-                      {sp.name}
-                      {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
-                    </div>
-                    <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
-                      {sp.massnahmen.length} Massnahmen · {formatDate(start)} → {formatDate(end)}
-                    </div>
-                  </div>
-                  <div className="flex-1 h-10 relative flex items-center">
-                    <div
-                      onClick={() => onToggle(sp.id)}
-                      className="absolute h-[30px] rounded-[3px] flex items-center px-2 sm:px-3 gap-1.5 sm:gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
-                      style={{
-                        left: `${left}%`,
-                        width: `${width}%`,
-                        background: barBg,
-                        borderColor: barBorder,
-                      }}
-                    >
-                      <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
-                      <span className="text-[10px] sm:text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
-                      <span className="font-mono text-[7px] sm:text-[8px] bg-bg-base/40 text-txt-secondary px-1 sm:px-1.5 py-0.5 rounded-sm whitespace-nowrap shrink-0">
-                        {sp.massnahmen.length} M
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {sprints.length === 0 && (
-              <div className="py-12 text-center text-sm text-txt-tertiary" style={{ paddingLeft: labelW }}>
-                Keine Sprints in diesem Zeitraum
+                    key={i}
+                    className={`shrink-0 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint'}`}
+                    style={{ width: colW }}
+                  />
+                ))}
               </div>
-            )}
+
+              {/* Today line */}
+              <div
+                className="absolute top-0 bottom-0 border-l-[1.5px] border-dashed border-scnat-red z-[2] pointer-events-none"
+                style={{ left: labelW + (timelineW * todayPct) / 100 }}
+              />
+
+              {/* Sprint rows */}
+              {sprints.map(sp => {
+                const start = new Date(sp.startDate + 'T00:00:00');
+                const end = new Date(sp.endDate + 'T23:59:59');
+                const leftPct = pct(start);
+                const rightPct = pct(end);
+                const barLeft = (timelineW * leftPct) / 100;
+                const barWidth = Math.max((timelineW * (rightPct - leftPct)) / 100, 4);
+                const isOpen = expandedIds.has(sp.id);
+                const dotColor = STATUS_DOT_COLORS[sp.status] || '#4E535D';
+                const barBg = hexToRgba(sp.clusterColor || '#4E535D', 0.3);
+                const barBorder = hexToRgba(sp.clusterColor || '#4E535D', isOpen ? 0.8 : 0.4);
+
+                return (
+                  <div key={sp.id} className="flex items-center mb-2 relative z-[1]" style={{ width: chartW }}>
+                    <div
+                      className="shrink-0 pr-3 sticky left-0 z-[2] bg-bg-base self-stretch flex flex-col justify-center"
+                      style={{ width: labelW }}
+                    >
+                      <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
+                        {sp.name}
+                        {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
+                      </div>
+                      <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
+                        {sp.massnahmen.length} M · {formatDate(start)} → {formatDate(end)}
+                      </div>
+                      {/* Right edge shadow so bars appear to slide under the label */}
+                      <div className="absolute top-0 bottom-0 right-0 w-2 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.18))' }} />
+                    </div>
+                    <div className="h-10 relative flex items-center shrink-0" style={{ width: timelineW }}>
+                      <div
+                        onClick={() => onToggle(sp.id)}
+                        className="absolute h-[30px] rounded-[3px] flex items-center px-2 sm:px-3 gap-1.5 sm:gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
+                        style={{
+                          left: barLeft,
+                          width: barWidth,
+                          background: barBg,
+                          borderColor: barBorder,
+                        }}
+                      >
+                        <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-txt-primary truncate">{sp.name}</span>
+                        <span className="font-mono text-[7px] sm:text-[8px] bg-bg-base/40 text-txt-secondary px-1 sm:px-1.5 py-0.5 rounded-sm whitespace-nowrap shrink-0">
+                          {sp.massnahmen.length} M
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {sprints.length === 0 && (
+                <div className="py-12 text-center text-sm text-txt-tertiary" style={{ paddingLeft: labelW }}>
+                  Keine Sprints in diesem Zeitraum
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
