@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
-import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, MapPin } from 'lucide-react';
 
-// Custom hook: tracks the inline width of a referenced element via ResizeObserver.
+// Tracks the inline width of a referenced element via ResizeObserver.
 function useElementWidth(ref) {
   const [w, setW] = useState(0);
   useEffect(() => {
@@ -15,6 +15,60 @@ function useElementWidth(ref) {
     return () => ro.disconnect();
   }, [ref]);
   return w;
+}
+
+// Drag-to-pan: grab the timeline anywhere (except interactive elements marked
+// with data-no-pan) and slide it horizontally. Suppresses the spurious click
+// that would otherwise fire after a drag. Cursor switches to grab/grabbing.
+function useDragPan(scrollRef) {
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.style.cursor = 'grab';
+
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    let didDrag = false;
+
+    const onDown = (e) => {
+      if (e.target.closest('[data-no-pan]') || e.target.closest('button')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      isDown = true;
+      didDrag = false;
+      startX = e.clientX;
+      startScroll = el.scrollLeft;
+      el.style.cursor = 'grabbing';
+      try { el.setPointerCapture(e.pointerId); } catch {}
+    };
+    const onMove = (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) didDrag = true;
+      el.scrollLeft = startScroll - dx;
+    };
+    const onUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      el.style.cursor = 'grab';
+      if (didDrag) {
+        const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
+        el.addEventListener('click', swallow, { capture: true, once: true });
+        setTimeout(() => el.removeEventListener('click', swallow, { capture: true }), 50);
+      }
+    };
+
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+    return () => {
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+    };
+  }, [scrollRef]);
 }
 
 const DAY = 86400000;
@@ -37,20 +91,20 @@ const STATUS_DOT_COLORS = {
   completed: '#008770',
 };
 
-// minColPx = minimum width per column (week or month). When the resulting
-// chart is wider than the available container width, the timeline area
-// becomes horizontally scrollable while the sprint-name labels stay sticky.
+// minColPx = minimum width per column. Above this, the chart gets wider than
+// the container and the timeline area becomes horizontally scrollable
+// (drag-to-pan + scrollbar); sprint-name labels stay sticky on the left.
 const ZOOM_LEVELS = [
-  { days: 365, label: '12 M', minColPx: 80 },  // 12 monthly columns
-  { days: 273, label: '9 M',  minColPx: 90 },
-  { days: 182, label: '6 M',  minColPx: 110 },
-  { days: 112, label: '16 W', minColPx: 70 },
-  { days: 84,  label: '12 W', minColPx: 80 },
-  { days: 56,  label: '8 W',  minColPx: 90 },
-  { days: 42,  label: '6 W',  minColPx: 100 },
-  { days: 28,  label: '4 W',  minColPx: 120 },
-  { days: 21,  label: '3 W',  minColPx: 140 },
-  { days: 14,  label: '2 W',  minColPx: 160 },
+  { days: 365, label: '12 M', minColPx: 110 },
+  { days: 273, label: '9 M',  minColPx: 130 },
+  { days: 182, label: '6 M',  minColPx: 160 },
+  { days: 112, label: '16 W', minColPx: 90 },
+  { days: 84,  label: '12 W', minColPx: 110 },
+  { days: 56,  label: '8 W',  minColPx: 130 },
+  { days: 42,  label: '6 W',  minColPx: 150 },
+  { days: 28,  label: '4 W',  minColPx: 180 },
+  { days: 21,  label: '3 W',  minColPx: 220 },
+  { days: 14,  label: '2 W',  minColPx: 260 },
 ];
 const DEFAULT_ZOOM = 6;
 const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
@@ -62,7 +116,7 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
+export default function SprintTimeline({ sprints, expandedIds, onToggle, stickyBg = 'var(--bg-surface)' }) {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const scrollRef = useRef(null);
   const today = useMemo(() => new Date(), []);
@@ -104,9 +158,6 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
 
   const todayPct = pct(today);
 
-  const LABEL_W = 180;
-  const LABEL_W_MOBILE = 120;
-
   const handleWheel = useCallback((e) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
@@ -121,10 +172,18 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
   const zoomOut = () => setZoom(prev => Math.max(0, prev - 1));
   const zoomReset = () => setZoom(DEFAULT_ZOOM);
 
+  const jumpToToday = () => {
+    const wrap = scrollRef.current?.querySelector('[data-gantt-scroll]');
+    if (!wrap) return;
+    const labelW = parseInt(wrap.dataset.labelW || '180', 10);
+    const target = labelW + (wrap.scrollWidth - labelW) * (todayPct / 100) - wrap.clientWidth / 2 + labelW / 2;
+    wrap.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  };
+
   return (
-    <div className="pb-6">
+    <div className="pb-6" style={{ '--gantt-sticky-bg': stickyBg }}>
       {/* Zoom Controls */}
-      <div className="flex items-center gap-1.5 px-4 md:px-8 mb-3">
+      <div className="flex items-center gap-1.5 px-3 pt-3 mb-3 flex-wrap">
         <div className="flex items-center bg-bg-surface border border-bd-faint rounded-[3px] overflow-hidden">
           <button
             onClick={zoomOut}
@@ -157,8 +216,16 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
         >
           <RotateCcw className="w-3 h-3" />
         </button>
-        <span className="text-[9px] font-mono text-txt-tertiary ml-1 hidden sm:inline">
-          Ctrl+Scroll zum Zoomen
+        <button
+          onClick={jumpToToday}
+          className="flex items-center gap-1 px-2 py-1 text-[10px] font-mono text-scnat-red hover:bg-scnat-red/10 border border-scnat-red/30 rounded-[3px] transition-colors"
+          title="Zu Heute scrollen"
+        >
+          <MapPin className="w-3 h-3" />
+          Heute
+        </button>
+        <span className="text-[9px] font-mono text-txt-tertiary ml-auto hidden sm:inline">
+          Ziehen zum Verschieben · Ctrl+Scroll zum Zoomen
         </span>
       </div>
 
@@ -166,7 +233,7 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
       <div
         ref={scrollRef}
         onWheel={handleWheel}
-        className="px-4 md:px-8"
+        className="px-3"
       >
         <GanttChart
           sprints={sprints}
@@ -175,7 +242,6 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
           weeks={weeks}
           todayPct={todayPct}
           pct={pct}
-          labelW={typeof window !== 'undefined' && window.innerWidth < 768 ? LABEL_W_MOBILE : LABEL_W}
           minColPx={ZOOM_LEVELS[zoom].minColPx}
         />
       </div>
@@ -183,9 +249,14 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle }) {
   );
 }
 
-function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labelW, minColPx }) {
+function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minColPx }) {
   const wrapRef = useRef(null);
   const wrapW = useElementWidth(wrapRef);
+  useDragPan(wrapRef);
+
+  // Responsive label width: shrink when container is narrow so the timeline
+  // gets a meaningful share of the screen on tablets/split-views.
+  const labelW = wrapW < 480 ? 110 : wrapW < 768 ? 140 : 180;
 
   // Deterministic pixel-based layout:
   //   colW = max(minColPx, fit-to-container width per column)
@@ -196,19 +267,23 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labe
   const colW = Math.max(minColPx || 60, fitColW);
   const timelineW = cols * colW;
   const chartW = labelW + timelineW;
+  const isScrollable = chartW > wrapW + 1;
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <div
         ref={wrapRef}
-        className="overflow-x-auto overflow-y-visible gantt-scroll"
+        data-gantt-scroll
+        data-label-w={labelW}
+        className="overflow-x-auto overflow-y-hidden gantt-scroll select-none"
         style={{ scrollbarWidth: 'thin' }}
       >
         <style>{`
           .gantt-scroll::-webkit-scrollbar { height: 10px; }
-          .gantt-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 5px; }
-          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-default,#3a3f4a); border-radius: 5px; }
-          .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong,#555a66); }
+          .gantt-scroll::-webkit-scrollbar-track { background: transparent; }
+          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--bd-default,#3a3f4a); border-radius: 5px; opacity: .6; }
+          .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--bd-strong,#555a66); }
+          .gantt-sticky-bg { background-color: var(--gantt-sticky-bg, var(--bg-surface, #fff)); }
         `}</style>
         {wrapW > 0 && (
           <div style={{ width: chartW }}>
@@ -232,7 +307,7 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labe
                 {weeks.map((w, i) => (
                   <div
                     key={i}
-                    className={`shrink-0 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint'}`}
+                    className={`shrink-0 ${w.isToday ? 'border-l-[1.5px] border-dashed border-scnat-red' : 'border-l border-bd-faint/60'}`}
                     style={{ width: colW }}
                   />
                 ))}
@@ -260,21 +335,24 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labe
                 return (
                   <div key={sp.id} className="flex items-center mb-2 relative z-[1]" style={{ width: chartW }}>
                     <div
-                      className="shrink-0 pr-3 sticky left-0 z-[2] bg-bg-base self-stretch flex flex-col justify-center"
+                      className="shrink-0 pr-3 sticky left-0 z-[2] gantt-sticky-bg self-stretch flex flex-col justify-center"
                       style={{ width: labelW }}
                     >
-                      <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1">
-                        {sp.name}
+                      <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1 min-w-0">
+                        <span className="truncate">{sp.name}</span>
                         {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
                       </div>
                       <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
                         {sp.massnahmen.length} M · {formatDate(start)} → {formatDate(end)}
                       </div>
-                      {/* Right edge shadow so bars appear to slide under the label */}
-                      <div className="absolute top-0 bottom-0 right-0 w-2 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.18))' }} />
+                      {/* Right-edge soft shadow only when scrollable */}
+                      {isScrollable && (
+                        <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.10))' }} />
+                      )}
                     </div>
                     <div className="h-10 relative flex items-center shrink-0" style={{ width: timelineW }}>
                       <div
+                        data-no-pan
                         onClick={() => onToggle(sp.id)}
                         className="absolute h-[30px] rounded-[3px] flex items-center px-2 sm:px-3 gap-1.5 sm:gap-2 cursor-pointer border transition-all overflow-hidden whitespace-nowrap hover:brightness-125"
                         style={{
@@ -304,6 +382,11 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, labe
           </div>
         )}
       </div>
+
+      {/* Right edge fade hint when more content is to the right */}
+      {isScrollable && (
+        <div className="absolute top-0 bottom-3 right-0 w-6 pointer-events-none z-[5]" style={{ background: 'linear-gradient(270deg, var(--gantt-sticky-bg, transparent), transparent)' }} />
+      )}
     </div>
   );
 }

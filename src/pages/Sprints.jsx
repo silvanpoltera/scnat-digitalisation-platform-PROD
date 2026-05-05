@@ -111,11 +111,14 @@ export default function Sprints() {
         onSearchChange={setSearchTerm}
       />
 
-      <SprintTimeline
-        sprints={activeSprints}
-        expandedIds={expandedIds}
-        onToggle={toggleExpand}
-      />
+      <div className="mx-4 md:mx-8 mb-4 bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+        <SprintTimeline
+          sprints={activeSprints}
+          expandedIds={expandedIds}
+          onToggle={toggleExpand}
+          stickyBg="var(--bg-surface)"
+        />
+      </div>
 
       {activeSprints.map(sp => (
         <SprintDetailPanel key={sp.id} sprint={sp} isOpen={expandedIds.has(sp.id)} />

@@ -32,22 +32,18 @@ const STATUS_DOT = {
   active: '#0098DA', planned: '#4E535D', review: '#F07800', completed: '#008770',
 };
 
-// minColPx = minimum horizontal space per column. When the chart needs more
-// width than the container offers, the timeline scrolls horizontally and
-// sprint-name labels stay sticky at the left edge.
 const ZOOM_LEVELS = [
-  { days: 365, label: '12 M', minColPx: 80 },
-  { days: 273, label: '9 M',  minColPx: 90 },
-  { days: 182, label: '6 M',  minColPx: 110 },
-  { days: 112, label: '16 W', minColPx: 70 },
-  { days: 84,  label: '12 W', minColPx: 80 },
-  { days: 56,  label: '8 W',  minColPx: 90 },
-  { days: 42,  label: '6 W',  minColPx: 100 },
-  { days: 28,  label: '4 W',  minColPx: 120 },
-  { days: 21,  label: '3 W',  minColPx: 140 },
+  { days: 365, label: '12 M', minColPx: 110 },
+  { days: 273, label: '9 M',  minColPx: 130 },
+  { days: 182, label: '6 M',  minColPx: 160 },
+  { days: 112, label: '16 W', minColPx: 90 },
+  { days: 84,  label: '12 W', minColPx: 110 },
+  { days: 56,  label: '8 W',  minColPx: 130 },
+  { days: 42,  label: '6 W',  minColPx: 150 },
+  { days: 28,  label: '4 W',  minColPx: 180 },
+  { days: 21,  label: '3 W',  minColPx: 220 },
 ];
 
-// Hook: track an element's content width via ResizeObserver.
 function useElementWidth(ref) {
   const [w, setW] = useState(0);
   useEffect(() => {
@@ -61,6 +57,51 @@ function useElementWidth(ref) {
     return () => ro.disconnect();
   }, [ref]);
   return w;
+}
+
+// Drag-to-pan: grab the timeline anywhere except bars (data-no-pan).
+function useDragPan(scrollRef) {
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.style.cursor = 'grab';
+
+    let isDown = false, startX = 0, startScroll = 0, didDrag = false;
+    const onDown = (e) => {
+      if (e.target.closest('[data-no-pan]') || e.target.closest('button')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      isDown = true; didDrag = false;
+      startX = e.clientX; startScroll = el.scrollLeft;
+      el.style.cursor = 'grabbing';
+      try { el.setPointerCapture(e.pointerId); } catch {}
+    };
+    const onMove = (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) didDrag = true;
+      el.scrollLeft = startScroll - dx;
+    };
+    const onUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      el.style.cursor = 'grab';
+      if (didDrag) {
+        const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
+        el.addEventListener('click', swallow, { capture: true, once: true });
+        setTimeout(() => el.removeEventListener('click', swallow, { capture: true }), 50);
+      }
+    };
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+    return () => {
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+    };
+  }, [scrollRef]);
 }
 const DEFAULT_ZOOM = 5;
 const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
@@ -175,17 +216,22 @@ export default function CpSprintGantt({ sprints, onDatesChange }) {
   );
 }
 
-function GanttBody({ sprints, weeks, todayPct, pct, labelW, minColPx, tlStart, tlDays, chartRef, onDatesChange }) {
+function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColPx, tlStart, tlDays, chartRef, onDatesChange }) {
   const wrapRef = useRef(null);
   const wrapW = useElementWidth(wrapRef);
+  useDragPan(wrapRef);
   const [drag, setDrag] = useState(null);
   const dragRef = useRef(null);
+
+  // Responsive label width: shrink on narrow containers
+  const labelW = wrapW < 480 ? 100 : wrapW < 768 ? 130 : labelWFixed;
 
   const cols = weeks?.length || 0;
   const fitColW = cols > 0 ? Math.max(0, (wrapW - labelW) / cols) : 0;
   const colW = Math.max(minColPx || 60, fitColW);
   const timelineW = cols * colW;
   const chartW = labelW + timelineW;
+  const isScrollable = chartW > wrapW + 1;
 
   const pxToDate = useCallback(
     (pxDelta, trackWidth) => {
@@ -278,17 +324,17 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW, minColPx, tlStart, t
   }, [handlePointerMove, handlePointerUp]);
 
   return (
-    <div className="w-full select-none">
+    <div className="w-full select-none relative">
       <div
         ref={wrapRef}
-        className="overflow-x-auto overflow-y-visible gantt-scroll"
+        className="overflow-x-auto overflow-y-hidden gantt-scroll"
         style={{ scrollbarWidth: 'thin' }}
       >
         <style>{`
           .gantt-scroll::-webkit-scrollbar { height: 10px; }
-          .gantt-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 5px; }
-          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-default,#3a3f4a); border-radius: 5px; }
-          .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong,#555a66); }
+          .gantt-scroll::-webkit-scrollbar-track { background: transparent; }
+          .gantt-scroll::-webkit-scrollbar-thumb { background: var(--bd-default,#3a3f4a); border-radius: 5px; opacity: .6; }
+          .gantt-scroll::-webkit-scrollbar-thumb:hover { background: var(--bd-strong,#555a66); }
         `}</style>
         {wrapW > 0 && (
           <div style={{ width: chartW }}>
@@ -342,9 +388,9 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW, minColPx, tlStart, t
                   <div key={sp.id} className="flex items-center mb-1.5 relative z-[1]" style={{ width: chartW }}>
                     {/* Label (sticky) */}
                     <div className="shrink-0 pr-3 sticky left-0 z-[2] bg-bg-surface self-stretch flex flex-col justify-center" style={{ width: labelW }}>
-                      <div className="text-[11px] font-medium truncate text-txt-primary leading-tight flex items-center gap-1">
-                        {sp.name}
-                        {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm">ADM</span>}
+                      <div className="text-[11px] font-medium truncate text-txt-primary leading-tight flex items-center gap-1 min-w-0">
+                        <span className="truncate">{sp.name}</span>
+                        {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
                       </div>
                       <div className="font-mono text-[8px] text-txt-tertiary truncate">
                         {fmtDate(start)} → {fmtDate(end)}
@@ -352,12 +398,15 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW, minColPx, tlStart, t
                           <span className="text-scnat-red ml-1 font-medium">verschieben...</span>
                         )}
                       </div>
-                      <div className="absolute top-0 bottom-0 right-0 w-2 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.18))' }} />
+                      {isScrollable && (
+                        <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.10))' }} />
+                      )}
                     </div>
 
                     {/* Track */}
                     <div className="h-9 relative flex items-center shrink-0" style={{ width: timelineW }} data-track>
                       <div
+                        data-no-pan
                         className={`absolute h-[28px] rounded-[3px] flex items-center gap-1.5 border transition-shadow overflow-hidden ${
                           isDragging ? 'shadow-lg ring-1 ring-white/10' : 'hover:shadow-md'
                         }`}

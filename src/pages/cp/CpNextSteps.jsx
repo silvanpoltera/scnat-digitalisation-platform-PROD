@@ -1186,13 +1186,11 @@ export default function CpNextSteps() {
             </Link>
           </div>
           {activeSprints.length > 0 ? (
-            <div className="-mx-2 sm:-mx-0">
-              <SprintTimeline
-                sprints={activeSprints}
-                expandedIds={expandedSprintIds}
-                onToggle={toggleSprint}
-              />
-            </div>
+            <SprintTimeline
+              sprints={activeSprints}
+              expandedIds={expandedSprintIds}
+              onToggle={toggleSprint}
+            />
           ) : (
             <p className="px-4 py-8 text-center text-sm text-txt-tertiary">Sprints werden geladen …</p>
           )}
