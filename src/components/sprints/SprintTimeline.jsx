@@ -91,22 +91,22 @@ const STATUS_DOT_COLORS = {
   completed: '#008770',
 };
 
-// minColPx = minimum width per column. Above this, the chart gets wider than
-// the container and the timeline area becomes horizontally scrollable
-// (drag-to-pan + scrollbar); sprint-name labels stay sticky on the left.
+// minColPx = minimum width per column. Kept compact so default view fits
+// many months of sprints on screen without endless horizontal scrolling.
+// Higher zoom levels increase column width for detailed inspection.
 const ZOOM_LEVELS = [
-  { days: 365, label: '12 M', minColPx: 110 },
-  { days: 273, label: '9 M',  minColPx: 130 },
-  { days: 182, label: '6 M',  minColPx: 160 },
-  { days: 112, label: '16 W', minColPx: 90 },
-  { days: 84,  label: '12 W', minColPx: 110 },
-  { days: 56,  label: '8 W',  minColPx: 130 },
-  { days: 42,  label: '6 W',  minColPx: 150 },
-  { days: 28,  label: '4 W',  minColPx: 180 },
-  { days: 21,  label: '3 W',  minColPx: 220 },
-  { days: 14,  label: '2 W',  minColPx: 260 },
+  { days: 365, label: '12 M', minColPx: 55 },
+  { days: 273, label: '9 M',  minColPx: 65 },
+  { days: 182, label: '6 M',  minColPx: 80 },
+  { days: 112, label: '16 W', minColPx: 45 },
+  { days: 84,  label: '12 W', minColPx: 55 },
+  { days: 56,  label: '8 W',  minColPx: 70 },
+  { days: 42,  label: '6 W',  minColPx: 90 },
+  { days: 28,  label: '4 W',  minColPx: 130 },
+  { days: 21,  label: '3 W',  minColPx: 170 },
+  { days: 14,  label: '2 W',  minColPx: 220 },
 ];
-const DEFAULT_ZOOM = 6;
+const DEFAULT_ZOOM = 4; // 12 W — good balance of overview and detail
 const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
 function hexToRgba(hex, alpha) {
@@ -281,17 +281,17 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
   const chartW = labelW + timelineW;
   const isScrollable = chartW > wrapW + 1;
 
-  // On first render where the chart is wider than the viewport, snap scroll
-  // position to "today" so the user lands in the relevant area instead of
-  // the very beginning of the (potentially long) timeline.
-  const didInitScroll = useRef(false);
+  // Snap scroll to "today" so the today-line lands just right of the sticky
+  // labels on initial render, and again whenever the chart range changes
+  // (e.g. zoom level / sprint set updated). Uses rAF so scroll happens after
+  // the layout is finalised.
   useEffect(() => {
-    if (didInitScroll.current) return;
     if (!wrapRef.current || !isScrollable || timelineW === 0) return;
     const wrap = wrapRef.current;
-    const targetLeft = labelW + (timelineW * todayPct) / 100 - 80;
-    wrap.scrollLeft = Math.max(0, targetLeft);
-    didInitScroll.current = true;
+    const target = (timelineW * todayPct) / 100 - 24;
+    requestAnimationFrame(() => {
+      wrap.scrollLeft = Math.max(0, target);
+    });
   }, [isScrollable, timelineW, labelW, todayPct]);
 
   return (

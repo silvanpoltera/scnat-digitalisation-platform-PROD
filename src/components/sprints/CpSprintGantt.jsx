@@ -33,15 +33,15 @@ const STATUS_DOT = {
 };
 
 const ZOOM_LEVELS = [
-  { days: 365, label: '12 M', minColPx: 110 },
-  { days: 273, label: '9 M',  minColPx: 130 },
-  { days: 182, label: '6 M',  minColPx: 160 },
-  { days: 112, label: '16 W', minColPx: 90 },
-  { days: 84,  label: '12 W', minColPx: 110 },
-  { days: 56,  label: '8 W',  minColPx: 130 },
-  { days: 42,  label: '6 W',  minColPx: 150 },
-  { days: 28,  label: '4 W',  minColPx: 180 },
-  { days: 21,  label: '3 W',  minColPx: 220 },
+  { days: 365, label: '12 M', minColPx: 55 },
+  { days: 273, label: '9 M',  minColPx: 65 },
+  { days: 182, label: '6 M',  minColPx: 80 },
+  { days: 112, label: '16 W', minColPx: 45 },
+  { days: 84,  label: '12 W', minColPx: 55 },
+  { days: 56,  label: '8 W',  minColPx: 70 },
+  { days: 42,  label: '6 W',  minColPx: 90 },
+  { days: 28,  label: '4 W',  minColPx: 130 },
+  { days: 21,  label: '3 W',  minColPx: 170 },
 ];
 
 function useElementWidth(ref) {
@@ -103,7 +103,7 @@ function useDragPan(scrollRef) {
     };
   }, [scrollRef]);
 }
-const DEFAULT_ZOOM = 5;
+const DEFAULT_ZOOM = 4; // 12 W — good balance of overview and detail
 const MONTH_LABELS = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
 export default function CpSprintGantt({ sprints, onDatesChange }) {
@@ -244,15 +244,15 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColP
   const chartW = labelW + timelineW;
   const isScrollable = chartW > wrapW + 1;
 
-  // Snap to today on first render when the chart is wider than the viewport.
-  const didInitScroll = useRef(false);
+  // Always snap to today on render so today's line lands just right of the
+  // sticky labels in the viewport.
   useEffect(() => {
-    if (didInitScroll.current) return;
     if (!wrapRef.current || !isScrollable || timelineW === 0) return;
     const wrap = wrapRef.current;
-    const targetLeft = labelW + (timelineW * todayPct) / 100 - 80;
-    wrap.scrollLeft = Math.max(0, targetLeft);
-    didInitScroll.current = true;
+    const target = (timelineW * todayPct) / 100 - 24;
+    requestAnimationFrame(() => {
+      wrap.scrollLeft = Math.max(0, target);
+    });
   }, [isScrollable, timelineW, labelW, todayPct]);
 
   const pxToDate = useCallback(
