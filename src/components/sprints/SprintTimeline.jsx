@@ -124,22 +124,34 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle, stickyB
   const { tlDays, tlStart, weeks } = useMemo(() => {
     const days = ZOOM_LEVELS[zoom].days;
     const leadDays = Math.max(7, Math.floor(days * 0.25));
-    const start = new Date(today.getTime() - leadDays * DAY);
+    // Initial window: today minus a lead-in, plus the zoom range.
+    let start = new Date(today.getTime() - leadDays * DAY);
+    let end = new Date(start.getTime() + days * DAY);
+
+    // Always extend to cover ALL sprints so the user can scroll to the last one.
+    for (const sp of sprints || []) {
+      if (!sp.startDate || !sp.endDate) continue;
+      const sStart = new Date(sp.startDate + 'T00:00:00');
+      const sEnd = new Date(sp.endDate + 'T23:59:59');
+      if (sStart < start) start = new Date(sStart.getTime() - 7 * DAY);
+      if (sEnd > end) end = new Date(sEnd.getTime() + 7 * DAY);
+    }
+
+    const totalDays = Math.max(1, Math.ceil((end - start) / DAY));
     const cols = [];
 
     if (days > 100) {
-      const ms = new Date(start.getFullYear(), start.getMonth(), 1);
-      const end = new Date(start.getTime() + days * DAY);
-      let d = new Date(ms);
+      // Monthly columns from the first day of start's month through end.
+      let d = new Date(start.getFullYear(), start.getMonth(), 1);
       while (d <= end) {
         cols.push({
-          label: MONTH_LABELS[d.getMonth()],
+          label: MONTH_LABELS[d.getMonth()] + (d.getMonth() === 0 ? ` ${String(d.getFullYear()).slice(2)}` : ''),
           isToday: d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear(),
         });
         d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
       }
     } else {
-      const numWeeks = Math.ceil(days / 7);
+      const numWeeks = Math.ceil(totalDays / 7);
       const todayKw = getKW(today);
       for (let w = 0; w < numWeeks; w++) {
         const d = new Date(start.getTime() + w * 7 * DAY);
@@ -148,8 +160,8 @@ export default function SprintTimeline({ sprints, expandedIds, onToggle, stickyB
       }
     }
 
-    return { tlDays: days, tlStart: start, weeks: cols };
-  }, [zoom, today]);
+    return { tlDays: totalDays, tlStart: start, weeks: cols };
+  }, [zoom, today, sprints]);
 
   function pct(date) {
     const offset = (date.getTime() - tlStart.getTime()) / DAY;
@@ -254,9 +266,9 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
   const wrapW = useElementWidth(wrapRef);
   useDragPan(wrapRef);
 
-  // Responsive label width: shrink when container is narrow so the timeline
-  // gets a meaningful share of the screen on tablets/split-views.
-  const labelW = wrapW < 480 ? 110 : wrapW < 768 ? 140 : 180;
+  // Responsive label width: 35% of container, clamped 90–180 px.
+  // Ensures the timeline area always has the majority of horizontal space.
+  const labelW = wrapW > 0 ? Math.max(90, Math.min(180, wrapW * 0.35)) : 180;
 
   // Deterministic pixel-based layout:
   //   colW = max(minColPx, fit-to-container width per column)
@@ -268,6 +280,19 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
   const timelineW = cols * colW;
   const chartW = labelW + timelineW;
   const isScrollable = chartW > wrapW + 1;
+
+  // On first render where the chart is wider than the viewport, snap scroll
+  // position to "today" so the user lands in the relevant area instead of
+  // the very beginning of the (potentially long) timeline.
+  const didInitScroll = useRef(false);
+  useEffect(() => {
+    if (didInitScroll.current) return;
+    if (!wrapRef.current || !isScrollable || timelineW === 0) return;
+    const wrap = wrapRef.current;
+    const targetLeft = labelW + (timelineW * todayPct) / 100 - 80;
+    wrap.scrollLeft = Math.max(0, targetLeft);
+    didInitScroll.current = true;
+  }, [isScrollable, timelineW, labelW, todayPct]);
 
   return (
     <div className="w-full relative">
@@ -335,7 +360,7 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
                 return (
                   <div key={sp.id} className="flex items-center mb-2 relative z-[1]" style={{ width: chartW }}>
                     <div
-                      className="shrink-0 pr-3 sticky left-0 z-[2] gantt-sticky-bg self-stretch flex flex-col justify-center"
+                      className="shrink-0 pr-3 sticky left-0 z-[2] gantt-sticky-bg self-stretch flex flex-col justify-center border-r border-bd-faint"
                       style={{ width: labelW }}
                     >
                       <div className="text-[12px] sm:text-[13px] font-medium truncate text-txt-primary flex items-center gap-1 min-w-0">
@@ -345,10 +370,6 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
                       <div className="font-mono text-[8px] sm:text-[9px] text-txt-tertiary truncate">
                         {sp.massnahmen.length} M · {formatDate(start)} → {formatDate(end)}
                       </div>
-                      {/* Right-edge soft shadow only when scrollable */}
-                      {isScrollable && (
-                        <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.10))' }} />
-                      )}
                     </div>
                     <div className="h-10 relative flex items-center shrink-0" style={{ width: timelineW }}>
                       <div
@@ -383,10 +404,6 @@ function GanttChart({ sprints, expandedIds, onToggle, weeks, todayPct, pct, minC
         )}
       </div>
 
-      {/* Right edge fade hint when more content is to the right */}
-      {isScrollable && (
-        <div className="absolute top-0 bottom-3 right-0 w-6 pointer-events-none z-[5]" style={{ background: 'linear-gradient(270deg, var(--gantt-sticky-bg, transparent), transparent)' }} />
-      )}
     </div>
   );
 }

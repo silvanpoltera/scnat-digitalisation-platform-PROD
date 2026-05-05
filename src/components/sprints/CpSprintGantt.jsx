@@ -114,22 +114,33 @@ export default function CpSprintGantt({ sprints, onDatesChange }) {
   const { tlDays, tlStart, weeks } = useMemo(() => {
     const days = ZOOM_LEVELS[zoom].days;
     const leadDays = Math.max(7, Math.floor(days * 0.25));
-    const start = new Date(today.getTime() - leadDays * DAY);
+    let start = new Date(today.getTime() - leadDays * DAY);
+    let end = new Date(start.getTime() + days * DAY);
+
+    // Extend timeline range to cover all sprints so the user can scroll to the
+    // last one even at small zoom levels.
+    for (const sp of sprints || []) {
+      if (!sp.startDate || !sp.endDate) continue;
+      const sStart = new Date(sp.startDate + 'T00:00:00');
+      const sEnd = new Date(sp.endDate + 'T23:59:59');
+      if (sStart < start) start = new Date(sStart.getTime() - 7 * DAY);
+      if (sEnd > end) end = new Date(sEnd.getTime() + 7 * DAY);
+    }
+
+    const totalDays = Math.max(1, Math.ceil((end - start) / DAY));
     const cols = [];
 
     if (days > 100) {
-      const ms = new Date(start.getFullYear(), start.getMonth(), 1);
-      const end = new Date(start.getTime() + days * DAY);
-      let d = new Date(ms);
+      let d = new Date(start.getFullYear(), start.getMonth(), 1);
       while (d <= end) {
         cols.push({
-          label: MONTH_LABELS[d.getMonth()],
+          label: MONTH_LABELS[d.getMonth()] + (d.getMonth() === 0 ? ` ${String(d.getFullYear()).slice(2)}` : ''),
           isToday: d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear(),
         });
         d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
       }
     } else {
-      const numWeeks = Math.ceil(days / 7);
+      const numWeeks = Math.ceil(totalDays / 7);
       const todayKw = getKW(today);
       for (let w = 0; w < numWeeks; w++) {
         const d = new Date(start.getTime() + w * 7 * DAY);
@@ -138,8 +149,8 @@ export default function CpSprintGantt({ sprints, onDatesChange }) {
       }
     }
 
-    return { tlDays: days, tlStart: start, weeks: cols };
-  }, [zoom, today]);
+    return { tlDays: totalDays, tlStart: start, weeks: cols };
+  }, [zoom, today, sprints]);
 
   const pct = useCallback(
     (date) => {
@@ -223,8 +234,8 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColP
   const [drag, setDrag] = useState(null);
   const dragRef = useRef(null);
 
-  // Responsive label width: shrink on narrow containers
-  const labelW = wrapW < 480 ? 100 : wrapW < 768 ? 130 : labelWFixed;
+  // Responsive label width: 35% of container, clamped 90–180 px.
+  const labelW = wrapW > 0 ? Math.max(90, Math.min(labelWFixed, wrapW * 0.35)) : labelWFixed;
 
   const cols = weeks?.length || 0;
   const fitColW = cols > 0 ? Math.max(0, (wrapW - labelW) / cols) : 0;
@@ -232,6 +243,17 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColP
   const timelineW = cols * colW;
   const chartW = labelW + timelineW;
   const isScrollable = chartW > wrapW + 1;
+
+  // Snap to today on first render when the chart is wider than the viewport.
+  const didInitScroll = useRef(false);
+  useEffect(() => {
+    if (didInitScroll.current) return;
+    if (!wrapRef.current || !isScrollable || timelineW === 0) return;
+    const wrap = wrapRef.current;
+    const targetLeft = labelW + (timelineW * todayPct) / 100 - 80;
+    wrap.scrollLeft = Math.max(0, targetLeft);
+    didInitScroll.current = true;
+  }, [isScrollable, timelineW, labelW, todayPct]);
 
   const pxToDate = useCallback(
     (pxDelta, trackWidth) => {
@@ -387,7 +409,7 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColP
                 return (
                   <div key={sp.id} className="flex items-center mb-1.5 relative z-[1]" style={{ width: chartW }}>
                     {/* Label (sticky) */}
-                    <div className="shrink-0 pr-3 sticky left-0 z-[2] bg-bg-surface self-stretch flex flex-col justify-center" style={{ width: labelW }}>
+                    <div className="shrink-0 pr-3 sticky left-0 z-[2] bg-bg-surface self-stretch flex flex-col justify-center border-r border-bd-faint" style={{ width: labelW }}>
                       <div className="text-[11px] font-medium truncate text-txt-primary leading-tight flex items-center gap-1 min-w-0">
                         <span className="truncate">{sp.name}</span>
                         {sp.isAdminSprint && <span className="text-[7px] font-mono bg-purple-500/15 text-purple-400 px-1 rounded-sm shrink-0">ADM</span>}
@@ -398,9 +420,6 @@ function GanttBody({ sprints, weeks, todayPct, pct, labelW: labelWFixed, minColP
                           <span className="text-scnat-red ml-1 font-medium">verschieben...</span>
                         )}
                       </div>
-                      {isScrollable && (
-                        <div className="absolute top-0 bottom-0 right-0 w-3 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.10))' }} />
-                      )}
                     </div>
 
                     {/* Track */}
