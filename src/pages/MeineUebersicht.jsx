@@ -1,9 +1,119 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, Megaphone, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Clock, MapPin, FileText, MessageSquare, Send, CheckCircle, XCircle, Loader2, GitPullRequest, Megaphone, ChevronDown, ChevronUp, Bell, BellOff, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import PageHeader from '../components/PageHeader';
+import {
+  isPushSupported,
+  isPushEnabled,
+  enablePush,
+  disablePush,
+  isIOS,
+  isStandalonePWA,
+  getNotificationPermission,
+} from '../lib/pushSubscription';
+
+function PushNotificationsCard() {
+  const [supported] = useState(isPushSupported());
+  const [enabled, setEnabled] = useState(false);
+  const [permission, setPermission] = useState(getNotificationPermission());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [iosHint] = useState(isIOS() && !isStandalonePWA());
+
+  useEffect(() => {
+    let cancel = false;
+    isPushEnabled().then(v => { if (!cancel) setEnabled(v); });
+    return () => { cancel = true; };
+  }, []);
+
+  const onEnable = async () => {
+    setBusy(true); setError('');
+    try {
+      await enablePush();
+      setEnabled(true);
+      setPermission(getNotificationPermission());
+    } catch (err) {
+      setError(err.message || 'Aktivierung fehlgeschlagen.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onDisable = async () => {
+    setBusy(true); setError('');
+    try {
+      await disablePush();
+      setEnabled(false);
+    } catch (err) {
+      setError(err.message || 'Deaktivierung fehlgeschlagen.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!supported) return null;
+
+  return (
+    <div className="mb-10 bg-bg-surface border border-bd-faint rounded-sm p-5">
+      <div className="flex items-start gap-3">
+        <div className="shrink-0 w-10 h-10 rounded-sm bg-scnat-red/10 flex items-center justify-center">
+          {enabled
+            ? <Bell className="w-5 h-5 text-scnat-red" />
+            : <BellOff className="w-5 h-5 text-txt-tertiary" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-heading font-semibold text-txt-primary">
+            Push-Benachrichtigungen
+          </h3>
+          <p className="text-xs text-txt-secondary mt-0.5 leading-relaxed">
+            Erhalte System-Benachrichtigungen auf deinem Gerät, sobald eine neue Nachricht, Antwort oder ein Status-Update kommt — auch bei geschlossener App.
+          </p>
+          {iosHint && (
+            <div className="mt-3 flex items-start gap-2 text-[11px] text-txt-secondary bg-bg-elevated/60 border border-bd-faint rounded-sm px-3 py-2">
+              <Info className="w-3.5 h-3.5 text-status-blue shrink-0 mt-0.5" />
+              <span>
+                Auf iPhone/iPad: Tippe auf das Teilen-Symbol in Safari und wähle <strong>„Zum Home-Bildschirm"</strong>. Push funktioniert anschliessend, sobald du die App vom Home-Bildschirm öffnest.
+              </span>
+            </div>
+          )}
+          {permission === 'denied' && (
+            <div className="mt-3 text-[11px] text-scnat-red bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2">
+              Benachrichtigungen sind in den Browser-Einstellungen blockiert. Bitte in den Site-Permissions erlauben.
+            </div>
+          )}
+          {error && (
+            <div className="mt-3 text-[11px] text-scnat-red bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2">
+              {error}
+            </div>
+          )}
+        </div>
+        <div className="shrink-0">
+          {enabled ? (
+            <button
+              onClick={onDisable}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-bd-faint text-txt-secondary rounded-sm hover:border-bd-strong hover:text-txt-primary transition-colors disabled:opacity-50"
+            >
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BellOff className="w-3.5 h-3.5" />}
+              Deaktivieren
+            </button>
+          ) : (
+            <button
+              onClick={onEnable}
+              disabled={busy || permission === 'denied' || iosHint}
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-scnat-red text-white rounded-sm hover:bg-scnat-darkred transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
+              Aktivieren
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const REQUEST_STATUS_COLORS = {
   'offen': 'bg-status-yellow/15 text-status-yellow',
@@ -110,6 +220,8 @@ export default function MeineUebersicht() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <PushNotificationsCard />
+
         {!hasContent && (
           <div className="text-center py-16">
             <FileText className="w-10 h-10 text-txt-tertiary mx-auto mb-4" />

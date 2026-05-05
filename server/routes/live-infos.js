@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize, isActive } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToAll, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'live-infos.json';
@@ -28,6 +29,16 @@ router.post('/', requireAuth, requireAdmin, (req, res) => {
   };
   data.push(item);
   writeJSON(FILE, data);
+
+  if (item.aktiv !== false && (item.priority === 'important' || item.priority === 'high')) {
+    fireAndForget(sendToAll({
+      title: item.tag ? `Live-Info: ${item.tag}` : 'Neue Live-Info',
+      body: item.text || '',
+      url: '/',
+      tag: `live-info-${item.id}`,
+    }));
+  }
+
   res.status(201).json(item);
 });
 

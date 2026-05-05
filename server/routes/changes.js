@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToUser, sendToAdmins, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'changes.json';
@@ -43,6 +44,14 @@ router.post('/', requireAuth, (req, res) => {
   };
   data.push(newItem);
   writeJSON(FILE, data);
+
+  fireAndForget(sendToAdmins({
+    title: 'Neuer Change-Vorschlag',
+    body: `${newItem.titel} — von ${newItem.kontakt || 'User'}`,
+    url: '/cp/changes',
+    tag: `change-new-${newItem.id}`,
+  }));
+
   res.status(201).json(newItem);
 });
 
@@ -62,6 +71,16 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   }
 
   writeJSON(FILE, data);
+
+  if (req.body.status && req.body.status !== oldStatus && data[idx].userId) {
+    fireAndForget(sendToUser(data[idx].userId, {
+      title: 'Status deines Change-Vorschlags geändert',
+      body: `${data[idx].titel || 'Change'} → ${data[idx].status}`,
+      url: '/meine-uebersicht',
+      tag: `change-status-${data[idx].id}`,
+    }));
+  }
+
   res.json(data[idx]);
 });
 
@@ -74,6 +93,16 @@ router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
   data[idx].antwort = antwort || '';
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
+
+  if (data[idx].userId) {
+    fireAndForget(sendToUser(data[idx].userId, {
+      title: 'Antwort auf deinen Change-Vorschlag',
+      body: data[idx].titel || 'Neue Antwort vom Team',
+      url: '/meine-uebersicht',
+      tag: `change-reply-${data[idx].id}`,
+    }));
+  }
+
   res.json(data[idx]);
 });
 

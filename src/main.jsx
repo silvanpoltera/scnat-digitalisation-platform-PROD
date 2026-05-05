@@ -16,6 +16,8 @@ if ('serviceWorker' in navigator) {
           }
         })
       })
+
+      import('@/lib/pushSubscription').then(m => m.syncExistingSubscription?.()).catch(() => {})
     })
   })
 }

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToAdmins, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'schulungsthemen.json';
@@ -46,6 +47,14 @@ router.post('/', requireAuth, (req, res) => {
   };
   data.push(newItem);
   writeJSON(FILE, data);
+
+  fireAndForget(sendToAdmins({
+    title: 'Neuer Schulungs-Vorschlag',
+    body: newItem.titel,
+    url: '/cp/themen',
+    tag: `themen-new-${newItem.id}`,
+  }));
+
   res.status(201).json(newItem);
 });
 

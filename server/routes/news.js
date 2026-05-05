@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize, isActive } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToAll, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'news.json';
@@ -40,6 +41,16 @@ router.post('/', requireAuth, requireAdmin, (req, res) => {
   };
   data.push(item);
   writeJSON(FILE, data);
+
+  if (item.aktiv !== false) {
+    fireAndForget(sendToAll({
+      title: item.title || 'Neue News',
+      body: item.teaser || '',
+      url: '/',
+      tag: `news-${item.id}`,
+    }));
+  }
+
   res.status(201).json(item);
 });
 

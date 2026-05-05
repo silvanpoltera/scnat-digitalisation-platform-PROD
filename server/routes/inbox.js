@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToUsers, fireAndForget } from '../push.js';
 
 const router = Router();
 const MESSAGES_FILE = 'inbox-messages.json';
@@ -163,6 +164,16 @@ router.post('/admin', requireAuth, requireAdmin, (req, res) => {
   const messages = getMessages();
   messages.push(newMsg);
   writeJSON(MESSAGES_FILE, messages);
+
+  const targetIds = resolveTargetUserIds(newMsg);
+  if (targetIds.length) {
+    fireAndForget(sendToUsers(targetIds, {
+      title: newMsg.title,
+      body: newMsg.message,
+      url: '/meine-uebersicht',
+      tag: `inbox-${newMsg.id}`,
+    }));
+  }
 
   res.json(newMsg);
 });

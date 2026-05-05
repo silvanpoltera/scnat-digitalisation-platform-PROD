@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scnat-portal-v2';
+const CACHE_NAME = 'scnat-portal-v3';
 
 const PRECACHE_URLS = [
   '/',
@@ -54,4 +54,72 @@ self.addEventListener('fetch', (event) => {
       return cached || fetched;
     })
   );
+});
+
+// ─── Web Push ────────────────────────────────────────────────────────
+
+self.addEventListener('push', (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (_) {
+    data = { title: 'SCNAT Portal', body: event.data ? event.data.text() : '' };
+  }
+
+  const {
+    title = 'SCNAT Portal',
+    body = '',
+    url = '/',
+    tag,
+    badgeCount,
+  } = data;
+
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, {
+      body,
+      tag,
+      icon: '/pwa-icon-192.png',
+      badge: '/pwa-icon-192.png',
+      data: { url },
+      renotify: !!tag,
+    });
+
+    if (typeof badgeCount === 'number' && 'setAppBadge' in self.navigator) {
+      try { await self.navigator.setAppBadge(badgeCount); } catch (_) {}
+    } else if ('setAppBadge' in self.navigator) {
+      try { await self.navigator.setAppBadge(); } catch (_) {}
+    }
+
+    const clientsList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clientsList) {
+      try { client.postMessage({ type: 'push-received', payload: data }); } catch (_) {}
+    }
+  })());
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = event.notification.data?.url || '/';
+
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const sameOrigin = all.find(c => new URL(c.url).origin === self.location.origin);
+    if (sameOrigin) {
+      try { await sameOrigin.focus(); } catch (_) {}
+      try { await sameOrigin.navigate(target); } catch (_) {}
+      return;
+    }
+    await self.clients.openWindow(target);
+  })());
+});
+
+self.addEventListener('pushsubscriptionchange', (event) => {
+  // The browser invalidated the subscription. We notify any open clients
+  // so they can re-subscribe via /api/push/subscribe on next interaction.
+  event.waitUntil((async () => {
+    const clientsList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clientsList) {
+      try { client.postMessage({ type: 'push-subscription-change' }); } catch (_) {}
+    }
+  })());
 });

@@ -40,6 +40,27 @@ export function NotificationProvider({ children }) {
     return () => clearInterval(interval);
   }, [refresh]);
 
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const onMessage = (event) => {
+      const type = event.data?.type;
+      if (type === 'push-received') {
+        refresh();
+      } else if (type === 'push-subscription-change') {
+        import('@/lib/pushSubscription').then(m => m.syncExistingSubscription?.());
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', onMessage);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', onMessage);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [refresh]);
+
   const markSeen = useCallback(() => {
     setCount(0);
     fetch('/api/notifications/seen', { method: 'POST', credentials: 'include' }).catch(() => {});

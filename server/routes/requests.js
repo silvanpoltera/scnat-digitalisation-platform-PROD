@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToUser, sendToAdmins, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'requests.json';
@@ -28,6 +29,14 @@ router.post('/', requireAuth, (req, res) => {
   };
   data.push(newItem);
   writeJSON(FILE, data);
+
+  fireAndForget(sendToAdmins({
+    title: 'Neuer Softwareantrag',
+    body: `${newItem.titel} — von ${newItem.userName || 'User'}`,
+    url: '/cp/antraege',
+    tag: `request-new-${newItem.id}`,
+  }));
+
   res.status(201).json(newItem);
 });
 
@@ -51,6 +60,16 @@ router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
   data[idx].statusUpdatedAt = new Date().toISOString();
   if (antwort !== undefined) data[idx].antwort = antwort;
   writeJSON(FILE, data);
+
+  if (data[idx].userId) {
+    fireAndForget(sendToUser(data[idx].userId, {
+      title: 'Status deines Antrags geändert',
+      body: `${data[idx].titel} → ${status}`,
+      url: '/meine-uebersicht',
+      tag: `request-status-${data[idx].id}`,
+    }));
+  }
+
   res.json(data[idx]);
 });
 
@@ -62,6 +81,16 @@ router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
   data[idx].antwort = antwort;
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
+
+  if (data[idx].userId) {
+    fireAndForget(sendToUser(data[idx].userId, {
+      title: 'Antwort auf deinen Antrag',
+      body: data[idx].titel || 'Neue Antwort vom Team',
+      url: '/meine-uebersicht',
+      tag: `request-reply-${data[idx].id}`,
+    }));
+  }
+
   res.json(data[idx]);
 });
 

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { sendToAdmins, fireAndForget } from '../push.js';
 
 const router = Router();
 
@@ -40,6 +41,13 @@ router.post('/', requireAuth, (req, res) => {
   if (!event.anmeldungen) event.anmeldungen = [];
   event.anmeldungen.push(reg.id);
   writeJSON('events.json', events);
+
+  fireAndForget(sendToAdmins({
+    title: 'Neue Event-Anmeldung',
+    body: `${reg.name} → ${event.titel}`,
+    url: '/cp/events',
+    tag: `event-reg-${reg.id}`,
+  }));
 
   res.status(201).json(reg);
 });
