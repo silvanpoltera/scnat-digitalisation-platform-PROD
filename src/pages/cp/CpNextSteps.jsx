@@ -116,7 +116,7 @@ const RISKS = [
 
 const ANTRAEGE = [
   { num: '01', title: 'Portfolio und Prioritäten bestätigen', text: 'Die GL bestätigt das vorliegende Massnahmenportfolio mit Welle 1 (Q2), Welle 2 (Q3) und Welle 3 (Q4). Die Digitalisierungsfunktion arbeitet das Portfolio sprint-basiert ab und berichtet quartalsmässig an die GL. Abweichungen und Blocker werden transparent gemeldet.', color: 'bg-scnat-red', text_color: 'text-scnat-red' },
-  { num: '02', title: 'Rollen und Schnittstellen formal klären',  text: 'Die GL klärt formal (vor Q2) die Rollen, Schnittstellen und Entscheidungswege zwischen Digitalisierung und IT-Betrieb, inklusive Reaktions-SLAs für Arbeitsinstrumente und eines Eskalationspfads. Das Ergebnis wird schriftlich festgehalten und gilt vorerst als Arbeitsrahmen.', color: 'bg-status-blue',  text_color: 'text-status-blue' },
+  { num: '02', title: 'Rollen und Schnittstellen formal klären',  text: 'Die GL klärt formal (ASAP) die Rollen, Schnittstellen und Entscheidungswege zwischen Digitalisierung und IT-Betrieb, inklusive Reaktions-SLAs für Arbeitsinstrumente und eines Eskalationspfads. Das Ergebnis wird schriftlich festgehalten und gilt vorerst als Arbeitsrahmen.', color: 'bg-status-blue',  text_color: 'text-status-blue' },
   { num: '03', title: 'Entscheid Kernsystem-Zukunft auf Q4 terminieren', text: 'Die GL nimmt den Abschluss des Xojo-Konsolidierungsprojekts (geplant Ende 2026) zum Anlass, den strategischen Entscheid über die technologische Zukunft von SCNAT-DB und Portal (M-31) bewusst auf Q4 zu terminieren. Die Vorbereitung der Entscheidungsgrundlage erfolgt ab Q3.', color: 'bg-purple-400', text_color: 'text-purple-400' },
 ];
 
