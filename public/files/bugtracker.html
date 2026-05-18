@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offene Fälle – Analyse Portal & Datenbank</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E10;
+  --surface:#141618;
+  --elevated:#1C1E22;
+  --subtle:#222529;
+  --b-faint:#1E2124;
+  --b-def:#2A2D34;
+  --b-strong:#5A616B;
+  --red:#EA515A;
+  --red-dim:rgba(234,81,90,0.10);
+  --red-mid:rgba(234,81,90,0.25);
+  --anth:#5A616B;
+  --text:#ECEEF1;
+  --text2:#8A8F9B;
+  --text3:#4E535D;
+  --ok:#3DAA75;
+  --warn:#D4882A;
+  --info:#4A90D9;
+  --purple:#7C5CBF;
+}
+
+html{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;overflow-x:hidden}
+body{min-height:100vh;padding-bottom:4rem}
+
+/* Hero */
+.hero{padding:5rem 2rem 4rem;border-bottom:1px solid var(--b-faint);position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 30%, rgba(234,81,90,0.05) 0%, transparent 70%);pointer-events:none}
+.grid-lines{position:absolute;inset:0;background-image:linear-gradient(var(--b-faint) 1px, transparent 1px),linear-gradient(90deg, var(--b-faint) 1px, transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 80%);pointer-events:none}
+.hero-wrap{max-width:1280px;margin:0 auto;position:relative}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.14em;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(2rem,5vw,3.6rem);font-weight:700;line-height:1.1;margin-bottom:1.2rem;max-width:900px}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:720px;line-height:1.75;margin-bottom:2.5rem}
+
+.section{max-width:1280px;margin:0 auto;padding:3rem 2rem}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);margin-bottom:.8rem}
+.section-title{font-size:1.6rem;font-weight:700;margin-bottom:.6rem;line-height:1.2}
+.section-lead{font-size:.9rem;color:var(--text2);max-width:680px;margin-bottom:2rem;line-height:1.7}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:1px;background:var(--b-faint);border:1px solid var(--b-faint);border-radius:4px;overflow:hidden;margin-bottom:2.5rem}
+.kpi{background:var(--surface);padding:1.4rem 1.3rem}
+.kpi-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.5rem}
+.kpi-value{font-size:2rem;font-weight:700;line-height:1;margin-bottom:.3rem}
+.kpi-value.red{color:var(--red)}
+.kpi-value.warn{color:var(--warn)}
+.kpi-value.ok{color:var(--ok)}
+.kpi-sub{font-size:.75rem;color:var(--text2)}
+
+.verdict{background:var(--elevated);border:1px solid var(--b-def);border-left:3px solid var(--red);border-radius:4px;padding:1.5rem 1.8rem;margin-bottom:2.5rem}
+.verdict-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.6rem}
+.verdict-text{font-size:.95rem;line-height:1.75;color:var(--text)}
+.verdict-text strong{color:var(--red);font-weight:600}
+
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:.8rem;margin-bottom:2.5rem}
+.cat-card{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.3rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cat-card:hover{border-color:var(--b-strong);background:var(--elevated)}
+.cat-card.active{border-color:var(--red);background:var(--elevated)}
+.cat-card.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}
+.cat-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.7rem}
+.cat-name{font-weight:600;font-size:.92rem;line-height:1.3}
+.cat-count{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--text);line-height:1}
+.cat-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:.3rem}
+.cat-desc{font-size:.78rem;color:var(--text2);line-height:1.55;margin-bottom:.8rem}
+.cat-bar{height:3px;background:var(--subtle);border-radius:1px;overflow:hidden}
+.cat-bar-fill{height:100%;background:var(--text3);transition:width .5s}
+.cat-card[data-cat="VERGESSEN"] .cat-bar-fill{background:var(--red)}
+.cat-card[data-cat="TEST_BOTTLENECK"] .cat-bar-fill{background:var(--warn)}
+.cat-card[data-cat="PING_PONG"] .cat-bar-fill{background:var(--warn)}
+.cat-card[data-cat="NIE_BEARBEITET"] .cat-bar-fill{background:var(--red)}
+.cat-card[data-cat="AKTIV"] .cat-bar-fill{background:var(--ok)}
+.cat-card[data-cat="TRIAGE"] .cat-bar-fill{background:var(--info)}
+.cat-card[data-cat="TEST_NEU"] .cat-bar-fill{background:var(--info)}
+.cat-card[data-cat="BESTAETIGT_WARTET"] .cat-bar-fill{background:var(--anth)}
+
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(380px, 1fr));gap:1rem;margin-bottom:2.5rem}
+.chart-card{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem}
+.chart-title{font-size:.85rem;font-weight:600;margin-bottom:.3rem}
+.chart-subtitle{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.3rem}
+
+.bar-row{display:flex;align-items:center;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--b-faint);font-size:.82rem}
+.bar-row:last-child{border-bottom:none}
+.bar-label{flex:0 0 130px;color:var(--text2);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:18px;background:var(--subtle);border-radius:2px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:var(--red);transition:width .8s cubic-bezier(.22,1,.36,1);border-radius:2px}
+.bar-fill.warn{background:var(--warn)}
+.bar-fill.info{background:var(--info)}
+.bar-fill.ok{background:var(--ok)}
+.bar-fill.anth{background:var(--anth)}
+.bar-val{flex:0 0 40px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text)}
+
+.timeline{display:flex;align-items:flex-end;gap:4px;height:140px;padding:.5rem 0}
+.tl-bar{flex:1;background:var(--anth);border-radius:2px 2px 0 0;position:relative;cursor:pointer;min-height:4px;transition:background .2s}
+.tl-bar:hover{background:var(--red)}
+.tl-bar-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3)}
+.tl-bar-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text2);opacity:0;transition:opacity .2s}
+.tl-bar:hover .tl-bar-val{opacity:1}
+.tl-wrap{padding:0 0 28px;margin-top:1rem}
+
+.table-controls{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem;padding:1rem;background:var(--surface);border:1px solid var(--b-def);border-radius:4px}
+.search-input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--b-def);border-radius:2px;padding:.55rem .8rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem}
+.search-input:focus{outline:none;border-color:var(--red)}
+.filter-select{background:var(--bg);border:1px solid var(--b-def);border-radius:2px;padding:.55rem .8rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer}
+.filter-select:focus{outline:none;border-color:var(--red)}
+.clear-btn{background:transparent;border:1px solid var(--b-def);border-radius:2px;padding:.55rem 1rem;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.72rem;cursor:pointer;text-transform:uppercase;letter-spacing:.05em;transition:all .2s}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+.results-count{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text3);margin-left:auto;text-transform:uppercase;letter-spacing:.05em}
+
+.bulk-bar{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;background:var(--elevated);border:1px solid var(--red);border-left:3px solid var(--red);border-radius:4px;margin-bottom:1rem;font-size:.82rem;color:var(--text)}
+.bulk-bar.hidden{display:none}
+.bulk-bar button{background:var(--red);color:#fff;border:none;border-radius:2px;padding:.45rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
+.bulk-bar button.ghost{background:transparent;border:1px solid var(--b-def);color:var(--text2)}
+.bulk-bar button:hover{filter:brightness(1.1)}
+.bulk-bar .ml-auto{margin-left:auto}
+
+.table-wrap{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;overflow:auto;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead{background:var(--elevated);border-bottom:1px solid var(--b-def)}
+th{text-align:left;padding:.85rem 1rem;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--text)}
+th.sort-asc::after{content:' ↑';color:var(--red)}
+th.sort-desc::after{content:' ↓';color:var(--red)}
+tbody tr{border-bottom:1px solid var(--b-faint);transition:background .15s}
+tbody tr:hover{background:var(--elevated)}
+tbody tr:last-child{border-bottom:none}
+tbody tr.closed{opacity:.5}
+tbody tr.closed td.titel{text-decoration:line-through}
+td{padding:.6rem 1rem;vertical-align:top;line-height:1.45}
+td.id{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text3);width:60px}
+td.titel{max-width:380px;font-size:.83rem}
+td.alter{font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:nowrap;width:90px}
+.alter-anc{color:var(--red);font-weight:500}
+.alter-st{color:var(--warn)}
+.alter-mid{color:var(--text2)}
+.alter-new{color:var(--ok)}
+
+.status-select{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:3px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;border:1px solid;background:transparent;cursor:pointer;max-width:170px}
+.status-select:focus{outline:none}
+.status-select.s-bestaetigt{color:var(--red);border-color:rgba(234,81,90,.3);background:rgba(234,81,90,.06)}
+.status-select.s-bereit-zum-testen{color:var(--warn);border-color:rgba(212,136,42,.3);background:rgba(212,136,42,.06)}
+.status-select.s-neu{color:var(--info);border-color:rgba(74,144,217,.3);background:rgba(74,144,217,.06)}
+.status-select.s-zusatzinformationen-angefordert{color:var(--purple);border-color:rgba(124,92,191,.3);background:rgba(124,92,191,.06)}
+.status-select.s-wird-getestet{color:var(--warn);border-color:rgba(212,136,42,.3);background:rgba(212,136,42,.06)}
+.status-select.s-wird-bearbeitet{color:var(--ok);border-color:rgba(61,170,117,.3);background:rgba(61,170,117,.06)}
+.status-select.s-umsetzung-geplant{color:var(--ok);border-color:rgba(61,170,117,.3);background:rgba(61,170,117,.06)}
+.status-select.s-in-ueberarbeitung{color:var(--ok);border-color:rgba(61,170,117,.3);background:rgba(61,170,117,.06)}
+.status-select.s-geprueft{color:var(--info);border-color:rgba(74,144,217,.3);background:rgba(74,144,217,.06)}
+.status-select.s-parkplatz-nicht-zugewiesen{color:var(--text3);border-color:var(--b-def)}
+.status-select.s-geschlossen{color:var(--text3);border-color:var(--b-def);background:var(--subtle)}
+.status-select.s-wont-fix{color:var(--text3);border-color:var(--b-def);background:var(--subtle)}
+
+.tag-mini{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 5px;border-radius:2px;margin-right:3px;border:1px solid}
+.t-repro{color:var(--warn);border-color:rgba(212,136,42,.4)}
+.t-blocker{color:var(--red);border-color:rgba(234,81,90,.4);background:rgba(234,81,90,.06)}
+.t-stoerend{color:var(--red);border-color:rgba(234,81,90,.3)}
+.t-kosmetisch{color:var(--text3);border-color:var(--b-def)}
+.t-ancient{color:var(--red);border-color:rgba(234,81,90,.4);background:rgba(234,81,90,.06)}
+.t-stale{color:var(--warn);border-color:rgba(212,136,42,.4)}
+
+.zuw-cell{font-size:.75rem;color:var(--text2);white-space:nowrap}
+.zuw-none{color:var(--text3);font-style:italic}
+
+.row-actions{display:flex;gap:.3rem;align-items:center}
+.row-btn{background:transparent;border:1px solid var(--b-def);color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.25rem .5rem;border-radius:2px;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.04em}
+.row-btn:hover{border-color:var(--red);color:var(--red)}
+.row-btn.reopen:hover{border-color:var(--ok);color:var(--ok)}
+
+.row-cb{cursor:pointer;accent-color:var(--red)}
+
+.notiz-cell{font-size:.72rem;color:var(--text3);font-style:italic;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.pagination{display:flex;gap:.4rem;justify-content:center;align-items:center;padding:.5rem;font-family:'JetBrains Mono',monospace;font-size:.75rem}
+.page-btn{background:var(--surface);border:1px solid var(--b-def);color:var(--text);padding:.35rem .8rem;border-radius:2px;cursor:pointer;font-family:inherit;font-size:inherit}
+.page-btn:hover{border-color:var(--red);color:var(--red)}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:var(--text3);padding:0 .8rem}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--elevated);border:1px solid var(--ok);border-left:3px solid var(--ok);color:var(--text);padding:.7rem 1rem;border-radius:4px;font-size:.82rem;opacity:0;transform:translateY(10px);transition:all .2s;pointer-events:none;z-index:1000}
+.toast.error{border-color:var(--red);border-left-color:var(--red)}
+.toast.show{opacity:1;transform:translateY(0)}
+
+dialog{background:var(--surface);color:var(--text);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem;max-width:480px;width:90%;font-family:'DM Sans',sans-serif}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+dialog h3{font-size:1rem;margin-bottom:.6rem}
+dialog p{font-size:.85rem;color:var(--text2);margin-bottom:1rem}
+dialog textarea{width:100%;background:var(--bg);border:1px solid var(--b-def);color:var(--text);padding:.5rem;border-radius:2px;font-family:inherit;font-size:.85rem;min-height:80px;resize:vertical}
+dialog .actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
+dialog button{font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:.5rem 1rem;border-radius:2px;border:1px solid var(--b-def);background:transparent;color:var(--text2);cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
+dialog button.primary{background:var(--red);border-color:var(--red);color:#fff}
+dialog button:hover{filter:brightness(1.15)}
+
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:1rem;margin-bottom:2rem}
+.insight{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;padding:1.5rem;border-left:3px solid var(--info)}
+.insight.red{border-left-color:var(--red)}
+.insight.warn{border-left-color:var(--warn)}
+.insight.ok{border-left-color:var(--ok)}
+.insight-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.6rem}
+.insight-title{font-size:1rem;font-weight:600;margin-bottom:.7rem;line-height:1.3}
+.insight-text{font-size:.85rem;color:var(--text2);line-height:1.7}
+.insight-text strong{color:var(--text)}
+
+.empf-list{background:var(--surface);border:1px solid var(--b-def);border-radius:4px;overflow:hidden}
+.empf-item{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;padding:1.3rem 1.5rem;border-bottom:1px solid var(--b-faint);align-items:start}
+.empf-item:last-child{border-bottom:none}
+.empf-num{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--red);line-height:1}
+.empf-title{font-weight:600;font-size:.95rem;margin-bottom:.4rem}
+.empf-desc{font-size:.82rem;color:var(--text2);line-height:1.7}
+.empf-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:3px 8px;border-radius:2px;border:1px solid;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;align-self:start;margin-top:.2rem}
+.empf-tag.quick{color:var(--ok);border-color:rgba(61,170,117,.4);background:rgba(61,170,117,.06)}
+.empf-tag.mid{color:var(--warn);border-color:rgba(212,136,42,.4);background:rgba(212,136,42,.06)}
+.empf-tag.deep{color:var(--red);border-color:rgba(234,81,90,.4);background:rgba(234,81,90,.06)}
+
+@media(max-width:760px){
+  .kpi-value{font-size:1.5rem}
+  td.titel{max-width:200px}
+  .hero{padding:3rem 1.2rem 2rem}
+  .section{padding:2rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-wrap">
+    <div class="hero-eyebrow">Bug-Tracker Analyse · <span id="dateLabel">Stand 18.05.2026</span></div>
+    <h1>500 offene Fälle. <em>Median-Alter 2.8 Jahre.</em></h1>
+    <p class="hero-sub">Bestandsaufnahme der offenen Tickets im Portal/Datenbank-Backlog. Statusänderungen und Schliessungen werden synchron in der Plattform gespeichert.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="verdict">
+    <div class="verdict-label">Diagnose</div>
+    <div class="verdict-text">
+      <strong>240 von 500 Tickets (48%)</strong> wurden seit über drei Jahren nicht mehr angefasst. <strong>177</strong> liegen als «Bestätigt» auf einem Toten Stapel. <strong>119</strong> sind angeblich gefixt («Bereit zum Testen»), warten aber im Schnitt seit fast einem Jahr darauf, dass jemand sie testet. Gleichzeitig sind nur <strong>23</strong> aktuell wirklich in Bearbeitung.
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Kennzahlen (offen)</div>
+  <h2 class="section-title">Status auf einen Blick</h2>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Kategorien</div>
+  <h2 class="section-title">Wo stehen die Tickets eigentlich?</h2>
+  <p class="section-lead">Klick eine Karte, um die zugehörigen Tickets in der Tabelle unten zu filtern.</p>
+  <div class="cat-grid" id="catGrid"></div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Verteilungen</div>
+  <h2 class="section-title">Wo hängt es genau?</h2>
+
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Verteilung nach Status</div><div class="chart-subtitle">offene Tickets · sortiert</div><div id="chartStatus"></div></div>
+    <div class="chart-card"><div class="chart-title">Alter seit letzter Aktualisierung</div><div class="chart-subtitle">je älter, desto roter</div><div id="chartAlter"></div></div>
+    <div class="chart-card"><div class="chart-title">Zugewiesen zu</div><div class="chart-subtitle">Top 10 · wer hat den Hut auf?</div><div id="chartZuw"></div></div>
+    <div class="chart-card"><div class="chart-title">Letzte Aktualisierung nach Jahr</div><div class="chart-subtitle">Aktivität über die Zeit</div><div id="chartJahre" class="tl-wrap"></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Vollständige Liste</div>
+  <h2 class="section-title">Alle Tickets</h2>
+  <p class="section-lead">Durchsuchen, filtern, sortieren. Status direkt im Dropdown ändern. Mehrfachauswahl per Checkbox für Bulk-Schliessen.</p>
+
+  <div class="table-controls">
+    <input type="text" class="search-input" id="search" placeholder="Suche in Titel oder ID...">
+    <select class="filter-select" id="filterStatus"><option value="">Alle Status</option></select>
+    <select class="filter-select" id="filterKat">
+      <option value="">Alle Kategorien</option>
+      <option value="VERGESSEN">Vergessen / Tot</option>
+      <option value="TEST_BOTTLENECK">Test-Bottleneck</option>
+      <option value="TEST_NEU">Test offen (jung)</option>
+      <option value="NIE_BEARBEITET">Nie bearbeitet</option>
+      <option value="PING_PONG">Ping-Pong</option>
+      <option value="BESTAETIGT_WARTET">Bestätigt (jünger)</option>
+      <option value="AKTIV">In Arbeit</option>
+      <option value="TRIAGE">In Triage</option>
+    </select>
+    <select class="filter-select" id="filterAlter">
+      <option value="">Alle Altersgruppen</option>
+      <option value="lt30">&lt; 30 Tage</option>
+      <option value="lt90">&lt; 90 Tage</option>
+      <option value="lt365">&lt; 1 Jahr</option>
+      <option value="gt1y">&gt; 1 Jahr</option>
+      <option value="gt3y">&gt; 3 Jahre</option>
+      <option value="gt5y">&gt; 5 Jahre</option>
+    </select>
+    <select class="filter-select" id="filterTag">
+      <option value="">Alle Tags</option>
+      <option value="REPRO">Repro-Bug</option>
+      <option value="BLOCKER">Blocker</option>
+      <option value="STÖREND">Störend</option>
+      <option value="KOSMETISCH">Kosmetisch</option>
+    </select>
+    <select class="filter-select" id="filterClosed">
+      <option value="open">Nur offene</option>
+      <option value="all">Alle</option>
+      <option value="closed">Nur geschlossene</option>
+    </select>
+    <button class="clear-btn" id="clearBtn">Reset</button>
+    <div class="results-count" id="resultsCount">– Tickets</div>
+  </div>
+
+  <div class="bulk-bar hidden" id="bulkBar">
+    <span id="bulkCount">0 ausgewählt</span>
+    <button id="bulkClose">Auswahl schliessen</button>
+    <button id="bulkReopen" class="ghost">Wieder öffnen</button>
+    <button id="bulkClear" class="ghost ml-auto">Auswahl aufheben</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px;"><input type="checkbox" id="cbAll" class="row-cb"></th>
+          <th data-sort="id">ID</th>
+          <th data-sort="titel">Titel</th>
+          <th data-sort="status">Status</th>
+          <th data-sort="zuw">Zugewiesen</th>
+          <th data-sort="alter_d" class="sort-desc">Alter</th>
+          <th data-sort="tags">Tags</th>
+          <th>Notiz</th>
+          <th>Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pagination"></div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Was sagt das?</div>
+  <h2 class="section-title">Befund &amp; Insights</h2>
+
+  <div class="insight-grid">
+    <div class="insight red"><div class="insight-label">Befund 01</div><div class="insight-title">Der Tracker ist primär ein Archiv</div><div class="insight-text"><strong>240 von 500 Tickets (48%) sind älter als 3 Jahre.</strong> Sie wurden gemeldet, vielleicht bestätigt, aber nichts ist passiert.</div></div>
+    <div class="insight warn"><div class="insight-label">Befund 02</div><div class="insight-title">Der Test-Schritt ist der grosse Engpass</div><div class="insight-text"><strong>169 Tickets stehen auf «Bereit zum Testen»</strong> – davon liegen <strong>119 seit mehr als einem halben Jahr</strong> dort.</div></div>
+    <div class="insight warn"><div class="insight-label">Befund 03</div><div class="insight-title">Praktisch keine Priorisierung</div><div class="insight-text"><strong>474 von 500 Tickets haben kein Prioritäts-Feld</strong>, 483 keine Dringlichkeit, 473 keine Kategorie.</div></div>
+    <div class="insight red"><div class="insight-label">Befund 04</div><div class="insight-title">19 garantiert reproduzierbare Bugs</div><div class="insight-text">Genau <strong>19 Tickets sind als «Geschieht immer» markiert</strong>. 17 davon sind älter als 5 Jahre. <strong>#840</strong> ist als «Verunmöglicht das Arbeiten» klassifiziert.</div></div>
+    <div class="insight"><div class="insight-label">Befund 05</div><div class="insight-title">Wenig echte Aktivität</div><div class="insight-text">Nur <strong>23 Tickets</strong> sind in einem aktiven Status. Das sind 4,6 % vom Backlog.</div></div>
+    <div class="insight"><div class="insight-label">Befund 06</div><div class="insight-title">Niemand antwortet auf Rückfragen</div><div class="insight-text"><strong>28 Tickets warten auf «Zusatzinformationen»</strong>. Median-Alter dieser Tickets: knapp 3 Jahre.</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">// Empfehlung</div>
+  <h2 class="section-title">Konkrete nächste Schritte</h2>
+  <div class="empf-list">
+    <div class="empf-item"><div class="empf-num">01</div><div><div class="empf-title">Massen-Close der «Bestätigt &gt; 3 Jahre»-Tickets</div><div class="empf-desc">177 Tickets als <em>Won't fix – ageing out</em> schliessen. Begründung: Wird im Rahmen der Systemablösung obsolet.</div></div><div class="empf-tag quick">Quick Win</div></div>
+    <div class="empf-item"><div class="empf-num">02</div><div><div class="empf-title">Test-Backlog priorisieren und in einer Session abarbeiten</div><div class="empf-desc">50 Tickets im Status «Bereit zum Testen» und jünger als 6 Monate – das ist der einzige sinnvoll zu testende Stapel.</div></div><div class="empf-tag quick">Quick Win</div></div>
+    <div class="empf-item"><div class="empf-num">03</div><div><div class="empf-title">«Zusatzinformationen angefordert» mit Frist schliessen</div><div class="empf-desc">28 Tickets sind seit Jahren bei den Meldern hängen. Eine Massen-Mail mit Frist «14 Tage zurückmelden, sonst close».</div></div><div class="empf-tag quick">Quick Win</div></div>
+    <div class="empf-item"><div class="empf-num">04</div><div><div class="empf-title">Die 19 reproduzierbaren Bugs einzeln durchgehen</div><div class="empf-desc">Insbesondere <strong>#840 (Login mit mehrfach registrierter Emailadresse)</strong>.</div></div><div class="empf-tag mid">Sprint</div></div>
+    <div class="empf-item"><div class="empf-num">05</div><div><div class="empf-title">Ticket-Hygiene-Regel für die Restlaufzeit definieren</div><div class="empf-desc">Drei Felder zwingend: Priorität, Reproduzierbarkeit, Kategorie.</div></div><div class="empf-tag mid">Prozess</div></div>
+    <div class="empf-item"><div class="empf-num">06</div><div><div class="empf-title">Mit Stef &amp; PPO-Leiter klären: was wandert ins Nachfolgesystem?</div><div class="empf-desc">Aus dem aufgeräumten Restbestand identifizieren, welche Probleme generisch sind.</div></div><div class="empf-tag deep">Strategisch</div></div>
+  </div>
+</section>
+
+<dialog id="closeDialog">
+  <h3>Ticket(s) schliessen</h3>
+  <p>Optional: kurze Begründung (z.B. <em>Won't fix – ageing out</em>).</p>
+  <textarea id="closeReason" placeholder="Grund (optional)"></textarea>
+  <div class="actions">
+    <button id="closeCancel">Abbrechen</button>
+    <button id="closeConfirm" class="primary">Schliessen</button>
+  </div>
+</dialog>
+
+<dialog id="notizDialog">
+  <h3>Notiz bearbeiten</h3>
+  <p>Notiz zum Ticket <span id="notizTitel"></span>.</p>
+  <textarea id="notizText"></textarea>
+  <div class="actions">
+    <button id="notizCancel">Abbrechen</button>
+    <button id="notizConfirm" class="primary">Speichern</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script id="bugtrackerData">
+window.BUGTRACKER_TASKS = [
+{"id":"3168","titel":"Mail aus Community ausgetreten\" ohne Angabe bei Organisationen\"","status":"Bereit zum Testen","zuw":null,"datum":"2026-05-11","alter_d":6,"haupt":"TEST_NEU","tags":[]},
+{"id":"3169","titel":"SO Logozeile Rechtschreibefehler Partner:innen","status":"Bereit zum Testen","zuw":null,"datum":"2026-05-07","alter_d":10,"haupt":"TEST_NEU","tags":[]},
+{"id":"3164","titel":"Suchtext von Mediendatei führt zu Absturz von Suchindex im Websystem","status":"Bereit zum Testen","zuw":null,"datum":"2026-04-20","alter_d":27,"haupt":"TEST_NEU","tags":[]},
+{"id":"3160","titel":"Crash beim Aufruf Tab Kontakte im Dossier Person ","status":"Bereit zum Testen","zuw":null,"datum":"2026-03-19","alter_d":59,"haupt":"TEST_NEU","tags":[]},
+{"id":"3163","titel":"Transaction Fehler beim Passwort-Reset aus der Datenbank","status":"Bereit zum Testen","zuw":null,"datum":"2026-03-17","alter_d":61,"haupt":"TEST_NEU","tags":[]},
+{"id":"2109","titel":"Löschen von Produkten in Transaktion kapseln","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-03-12","alter_d":66,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3155","titel":"Absturz nach schnellem Mehrfachklick auf Register Portale\"","status":"Bestätigt","zuw":"Anforderungs-Analysten","datum":"2026-02-27","alter_d":79,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3157","titel":"Unterseite Terms and Conditions rund machen","status":"Neu","zuw":"Anforderungs-Analysten","datum":"2026-02-27","alter_d":79,"haupt":"TRIAGE","tags":[]},
+{"id":"3146","titel":"Mein Konto Fehlermeldung beim Hinzufügen eines Profilbilds","status":"Geprüft","zuw":"Datenbank-Entwickler","datum":"2026-02-23","alter_d":83,"haupt":"AKTIV","tags":[]},
+{"id":"3159","titel":"Community Akteur trotz Fehlermeldung abgespeichert","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-02-20","alter_d":86,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3154","titel":"Tippfehler im Personen-Dossier","status":"Bereit zum Testen","zuw":null,"datum":"2026-02-09","alter_d":97,"haupt":"TEST_NEU","tags":[]},
+{"id":"2876","titel":"Absturz wenn ein Datensatz von mehrern Personen im Editor geöffnet wird","status":"Bereit zum Testen","zuw":null,"datum":"2026-02-03","alter_d":103,"haupt":"TEST_NEU","tags":[]},
+{"id":"3153","titel":"periodische Zugriffe, die keine Session starten","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-28","alter_d":109,"haupt":"TEST_NEU","tags":[]},
+{"id":"2667","titel":"Guidle bindet Bilder direkt aus unserem Backend ein","status":"Bestätigt","zuw":"Webredaktion","datum":"2026-01-27","alter_d":110,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3151","titel":"Mein Konto: Zwischengespeichertes Portrait verschwindet beim zweiten Speichern","status":"Neu","zuw":"Ticket Triage","datum":"2026-01-21","alter_d":116,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3150","titel":"Portraitbild ändern per MeinKonto ohne Urheberangabe","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-19","alter_d":118,"haupt":"TEST_NEU","tags":[]},
+{"id":"3091","titel":"Mein Konto Editoren: Mehrfaches Klicken auf Speichern notwendig bis keine Fehlermeldung mehr generiert wird","status":"Neu","zuw":"Datenbank-Entwickler","datum":"2026-01-19","alter_d":118,"haupt":"TRIAGE","tags":[]},
+{"id":"2984","titel":"Alles Fachwissen gelöscht im Alfa-Testsystem heute Nacht","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-16","alter_d":121,"haupt":"TEST_NEU","tags":[]},
+{"id":"3055","titel":"Neue Übersetzungen Consent-Banner","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-15","alter_d":122,"haupt":"TEST_NEU","tags":[]},
+{"id":"3147","titel":"Französischer Übersetzungsfehler Mein Konto Community Einladung","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-15","alter_d":122,"haupt":"TEST_NEU","tags":[]},
+{"id":"3145","titel":"Ausrufezeichen beim Speichern","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-13","alter_d":124,"haupt":"TEST_NEU","tags":[]},
+{"id":"3103","titel":"Fehlermeldung beim Speichern von thematischen Interessen im Mein Konto","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-01-13","alter_d":124,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3102","titel":"Fehlermeldung bei Änderung Portraitbild Mein Konto, obwohl Änderung verarbeitet wurde","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-01-13","alter_d":124,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3112","titel":"Fehler beim Speichen myAccount: duplicate contact","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-12","alter_d":125,"haupt":"TEST_NEU","tags":[]},
+{"id":"3113","titel":"Fehler beim Speichern: Lock not granted","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-12","alter_d":125,"haupt":"TEST_NEU","tags":[]},
+{"id":"3087","titel":"Mein Konto blockiert nach Hinzufügen weiterer Telefonkontaktangabe in umgeleiteten Kontakt","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-08","alter_d":129,"haupt":"TEST_NEU","tags":[]},
+{"id":"3144","titel":"Mein Konto Darstellungsfehler Community Einladung","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-08","alter_d":129,"haupt":"TEST_NEU","tags":[]},
+{"id":"2771","titel":"Fachwissen unvollständig gelöscht","status":"Neu","zuw":"Ticket Triage","datum":"2025-12-19","alter_d":149,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3123","titel":"Mein Konto Titeländerung in Grunddateneditor generiert kein Ticket ans Datenmanagement","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"3070","titel":"Bei mehreren Änderungen im Mein Konto wird nur Zwischenwert der letzten angezeigt","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"3097","titel":"Beim Ändern der thematischen Interessen im Mein Konto wird der Zwischenwert der Adressen gelöscht","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"3134","titel":"Fehlermeldungen in Chrome bezüglich local network","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-12","alter_d":156,"haupt":"TEST_NEU","tags":[]},
+{"id":"3130","titel":"Übersetzungsfehler Deutsch nicht identische Passwörter Mein Konto","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3129","titel":"Übersetzungsfehler französische Version Konto löschen\" Button\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3127","titel":"Italienischer Übersetzungsfehler Mein Konto Logout","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3126","titel":"interner Fehler beim Abonnieren","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-25","alter_d":173,"haupt":"TEST_NEU","tags":[]},
+{"id":"3132","titel":"Mein Konto Fachwissen Loop bei Kontoeröffnung","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-25","alter_d":173,"haupt":"TEST_NEU","tags":[]},
+{"id":"3084","titel":"Doppelte Mail an Datenmanagement für gleiche Sache","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-25","alter_d":173,"haupt":"TEST_NEU","tags":[]},
+{"id":"3057","titel":"Meldung an DM ohne ausstehende Änderungen","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-20","alter_d":178,"haupt":"TEST_NEU","tags":[]},
+{"id":"3062","titel":"Änderung Geschäftadresse Mein Konto bleibt in Bearbeitung und mit Zwischenwert","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-17","alter_d":181,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3085","titel":"Fehler bei  Erfassen von Fachwissen wenn nur 1 Detailkategorie ausgewählt","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-13","alter_d":185,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3135","titel":"Fehler bei Mein Konto Grunddateneditor","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-10","alter_d":188,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3125","titel":"interner Fehler beim Speichern von Kontaktangaben","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-07","alter_d":191,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3136","titel":"Fehler bei Löschen von Portrait Bild via MeinKonto","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-07","alter_d":191,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3131","titel":"Mein Konto Community Einladung mit Asterix am Ende des Einladungstext","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-04","alter_d":194,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3100","titel":"Mein Konto Interessensmodul und -editor - Übersetzungsfehler in französischer Version","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-03","alter_d":195,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3083","titel":"Abbestellen Abo Mein Konto wirft Fehlermeldung","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-29","alter_d":200,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3118","titel":"Consent Banner Text anpassen","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-28","alter_d":201,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3105","titel":"Fehler So Download/Links auf  Seite  Nutzungsbedingungen und Datenschutz Testsystem","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-14","alter_d":215,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3104","titel":"Organisationslogo erscheint nicht auf Community Detailseite im Web","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-06","alter_d":223,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3101","titel":"Mein Konto Löschfenster - Fehler in französischer Version","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3082","titel":"Fehlermeldung fehlerhafte französische Übersetzung","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3093","titel":"Einladung Eröffnung MeinKonto Mailing - Fehler in deutscher Version","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3092","titel":"Passwort Änderung Mailing - Fehler in italienischer Übersetzung","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3096","titel":"Einladung Community im Mein Konto - Fehler in französischer Version","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3099","titel":" Mein Konto Geschäftsadresse - Übersetzungsfehler in französischer Version","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2191","titel":"Umgang mit als Download/Link importierten eMail-Adressen aus dem MediaCenter","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-09-12","alter_d":247,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2790","titel":"Kontaktboxen bleiben bei Löschung eines Geschäfts- oder Privatkontaktes","status":"Bestätigt","zuw":"Ticket Triage","datum":"2025-09-12","alter_d":247,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3073","titel":"überschriebene Kontaktangaben von umgeleiteten Kontakten nicht im Web ersichtlich","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-09-09","alter_d":250,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3063","titel":"Privatkontakt nicht als Standard im Mein Konto setzbar","status":"Bereit zum Testen","zuw":null,"datum":"2025-08-26","alter_d":264,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3072","titel":"Fehler beim Versuch Seite im Editor öffnen ohne Rechte darauf zu haben","status":"Bereit zum Testen","zuw":null,"datum":"2025-07-31","alter_d":290,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3058","titel":"Einwilligung bei sekundären Kontakten","status":"Bereit zum Testen","zuw":null,"datum":"2025-07-04","alter_d":317,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3067","titel":"Organisationen mit OP listen alle Seiten als Abhängigkeit","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-07-01","alter_d":320,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3068","titel":"Abhängigkeit zu Heimorganisation trotz umgeleiteter Adresse","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-07-01","alter_d":320,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2952","titel":"SO Download/Links zeigt gelöschte Daten an","status":"Bereit zum Testen","zuw":null,"datum":"2025-04-16","alter_d":396,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3051","titel":"Zeile zu Nutzungsbedingungen wird nicht vollständig angezeigt ","status":"Bereit zum Testen","zuw":null,"datum":"2025-04-14","alter_d":398,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3053","titel":"Darstellungsfehler Bestätigungsmeldung Kontaktlöschung","status":"Bereit zum Testen","zuw":null,"datum":"2025-04-14","alter_d":398,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3032","titel":"Bedarf für Fachwissen weggefallen inkorrekt","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-31","alter_d":412,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2772","titel":"Fachwissen nicht als unnötig gekennzeichnet","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-31","alter_d":412,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3038","titel":"Text wird abgeschnitten: Medien-Dateien Grundeditor","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-10","alter_d":433,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3036","titel":"Passworte abgeschnitten","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-03","alter_d":440,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3025","titel":"myAccount: Fehler beim Speichern Fachwissen","status":"Bereit zum Testen","zuw":null,"datum":"2025-02-27","alter_d":444,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3023","titel":"myAccount: Fehler beim Abruf Interaktionen","status":"Bereit zum Testen","zuw":null,"datum":"2025-02-25","alter_d":446,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3024","titel":"Test-System sendet Mails ausserhalb SCNAT?!","status":"Bereit zum Testen","zuw":null,"datum":"2025-02-25","alter_d":446,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3031","titel":"Farben Symbolbild Karte","status":"Bereit zum Testen","zuw":null,"datum":"2025-02-25","alter_d":446,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2977","titel":"Kein Gegender bei Veranstaltungsreihen","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-30","alter_d":472,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3008","titel":"Mein Konto Portrait: Urheberangaben ohne Bild","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-16","alter_d":486,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2003","titel":"neue Organisation in Fachgremien der SCNAT wird nicht aktualisiert","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-01-09","alter_d":493,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2883","titel":"Linkchecker - Falsch erkannte Links ab 2022.2","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2024-11-15","alter_d":548,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2791","titel":"Der\" Kontakt bei Person: Aktualisierungen bei Entstehung / Wegfall\"","status":"Bereit zum Testen","zuw":null,"datum":"2024-09-16","alter_d":608,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3000","titel":"Alternatives-Einladungs","status":"Bereit zum Testen","zuw":null,"datum":"2024-09-10","alter_d":614,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3003","titel":"De/Publizeren von Mediendateien vom Typ E-Mail","status":"Neu","zuw":"Ticket Triage","datum":"2024-09-06","alter_d":618,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2834","titel":"Bild Upload: Schutzbereich nicht mehr transparent","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2024-08-28","alter_d":627,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2980","titel":"Sprach-Verschiebung in Mehrsprachigen Editoren","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2024-08-20","alter_d":635,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2707","titel":"Überschreiben von Inhalten beim Sprachwechsel im Editor SO Bild/Text","status":"Zusatzinformationen angefordert","zuw":"Webredaktion","datum":"2024-08-20","alter_d":635,"haupt":"PING_PONG","tags":[]},
+{"id":"2975","titel":"Der Portallog Import dauert zu lange","status":"Bereit zum Testen","zuw":null,"datum":"2024-08-08","alter_d":647,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2998","titel":"Abhängigkeiten SO Teaser / Slider zu Elementen","status":"Neu","zuw":"Ticket Triage","datum":"2024-08-06","alter_d":649,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2997","titel":"abgelaufene Daten aus SO Teaser und Slider löschen","status":"Neu","zuw":"Ticket Triage","datum":"2024-08-06","alter_d":649,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2951","titel":"Zeitraum für Mitgliederanzahl","status":"Bereit zum Testen","zuw":null,"datum":"2024-07-11","alter_d":675,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2992","titel":"Fehler in Darstellung Suchresultate Kontakte in Datenbank","status":"Neu","zuw":"Datenbank-Entwickler","datum":"2024-07-09","alter_d":677,"haupt":"TRIAGE","tags":[]},
+{"id":"2990","titel":"Für frisch erfasste Personen Nachforderung erfüllt Mail bekommen","status":"Bereit zum Testen","zuw":null,"datum":"2024-07-05","alter_d":681,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2903","titel":"Füllen von Fachwissen aktualisiert nicht Community auf dem Portal ","status":"Bereit zum Testen","zuw":null,"datum":"2024-07-05","alter_d":681,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2985","titel":"Statistik-Header bei Organisationen: cornercases","status":"Bereit zum Testen","zuw":null,"datum":"2024-06-10","alter_d":706,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2976","titel":"Aktionsdropdown Personen: Funktionen verschoben","status":"Bereit zum Testen","zuw":null,"datum":"2024-04-18","alter_d":759,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2794","titel":"Backup Testserver1 stösst an seine Grenzen","status":"Bereit zum Testen","zuw":null,"datum":"2024-04-04","alter_d":773,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2420","titel":"Punkt bei PD DR im Englischen entfernen","status":"Zusatzinformationen angefordert","zuw":"PPO-Leiter","datum":"2024-04-04","alter_d":773,"haupt":"PING_PONG","tags":[]},
+{"id":"2713","titel":"Suche / Filtersuche bei Interaktionen mit vielen Empfängern dauern sehr, sehr lange","status":"Zusatzinformationen angefordert","zuw":"Datenbank-Entwickler","datum":"2024-04-03","alter_d":774,"haupt":"PING_PONG","tags":[]},
+{"id":"2967","titel":"Detailansicht in Interaktion mit vielen Empfängern funktioniert nicht","status":"Zusatzinformationen angefordert","zuw":"Ticket Triage","datum":"2024-04-03","alter_d":774,"haupt":"PING_PONG","tags":[]},
+{"id":"2970","titel":"Token übersetzen für Release 2024.1","status":"Bereit zum Testen","zuw":null,"datum":"2024-03-14","alter_d":794,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2964","titel":"Übersetzungsfehler in Vorerfassungsmaske für Personen in dB","status":"Bereit zum Testen","zuw":null,"datum":"2024-03-14","alter_d":794,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2971","titel":"Anpassung Funktionsbeschreibungen für neutrale Anrede","status":"Wird getestet","zuw":null,"datum":"2024-03-14","alter_d":794,"haupt":"AKTIV","tags":[]},
+{"id":"2972","titel":"Spezial-Tokens die übersetzt werden müssen","status":"Bereit zum Testen","zuw":null,"datum":"2024-03-05","alter_d":803,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2963","titel":"Absturz DB bei Abbruch einer Parametisierung in gespeicherter Suche","status":"Bereit zum Testen","zuw":null,"datum":"2024-02-22","alter_d":815,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2966","titel":"Crash bei vielen gespeicherten Suchen","status":"Bereit zum Testen","zuw":null,"datum":"2024-02-20","alter_d":817,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2959","titel":"Loginseite Datenbank Fehler in italienischer Beschreibung","status":"Bereit zum Testen","zuw":null,"datum":"2024-02-15","alter_d":822,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2929","titel":"Sessions werden manchmal nicht geschlossen","status":"Bereit zum Testen","zuw":null,"datum":"2024-02-07","alter_d":830,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2907","titel":"Sporadische invalid Page structure\" Fehler\"","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2024-01-30","alter_d":838,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2616","titel":"Akkordeon: nach drei Elementen lässt sich kein Bild mehr erfassen","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2023-12-21","alter_d":878,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2108","titel":"Datenbank blockiert","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2023-10-02","alter_d":958,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"840","titel":"Login mit mehrfach registrierter Emailadresse","status":"Wird bearbeitet","zuw":"Tobias Bussmann","datum":"2023-08-04","alter_d":1017,"haupt":"AKTIV","tags":["REPRO","BLOCKER"]},
+{"id":"2878","titel":"Bit gewählter Wissenschaftler nicht automatisch bei aktiver Wahl vergeben","status":"Bereit zum Testen","zuw":null,"datum":"2023-08-04","alter_d":1017,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2924","titel":"Automatische Aktualisierung der Zugriffsstatistiken funktioniert nicht","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-25","alter_d":1088,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2877","titel":"Absturz bei Editoren Fachwissen und Nachwuchsförderung","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-24","alter_d":1089,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2920","titel":"Grafik Herkunft/Ursprung gewisse Typen nicht oder falsch klickbar","status":"Neu","zuw":"Datenbank-Entwickler","datum":"2023-05-23","alter_d":1090,"haupt":"TRIAGE","tags":[]},
+{"id":"2918","titel":"möglicher Optimierungsbedarf im Bereich Meta-Log Suchen","status":"Neu","zuw":"Ticket Triage","datum":"2023-05-22","alter_d":1091,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2916","titel":"Koordinate kann nicht aufgenommen werden","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-17","alter_d":1096,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"1980","titel":"gespeicherte Suche für regionales Angebot erstellen","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-15","alter_d":1098,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2649","titel":"FireFox Add-on verhindert Login","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-15","alter_d":1098,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2619","titel":"Überlappung bei regionalen Angeboten funktioniert nicht","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-12","alter_d":1101,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2854","titel":"Logrotation Script ist zu aggressiv","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-09","alter_d":1104,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2722","titel":"QS E-Mails: Attachments zuverlässiger erscheinen lassen","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2023-05-09","alter_d":1104,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2904","titel":"Person ohne Einwilligung auf dem Portal gezeigt","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-09","alter_d":1104,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2910","titel":"Interaktionen lassen sich nicht aufnehmen, wenn nur die SCNAT beteiligt ist","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-08","alter_d":1105,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2905","titel":"Angebot Nachwuchsförderung: Detailtypisierung fehlt in Dossier-Ansicht","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-08","alter_d":1105,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2767","titel":"Crash in Editor Nachwuchsförderung nach Löschen","status":"Bereit zum Testen","zuw":null,"datum":"2023-05-08","alter_d":1105,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"1851","titel":"Downloads-Statistik von Dokumenten Google Analytics","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2023-04-04","alter_d":1139,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2891","titel":"Linkchecker wird nie fertig","status":"Neu","zuw":"Ticket Triage","datum":"2023-02-23","alter_d":1179,"haupt":"NIE_BEARBEITET","tags":["STALE"]},
+{"id":"2299","titel":"Öffnen des Dossier-Einstiegs Interaktionen dauert sehr lange","status":"Bereit zum Testen","zuw":null,"datum":"2023-02-20","alter_d":1182,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2879","titel":"Ausweiten von Kriterien in parametrisierten Suchen nicht möglich","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2023-01-30","alter_d":1203,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2056","titel":"Dossier Veranstaltungen: Bei den zu letzt bearbeiteten Veranstaltungen werden Dauerangebote gezeigt und lassen sich öffnen","status":"Bereit zum Testen","zuw":null,"datum":"2023-01-27","alter_d":1206,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2868","titel":"Zugriffsrechte auf Interaktionen per gespeicherter Suche auszuhebeln","status":"Bereit zum Testen","zuw":null,"datum":"2022-12-20","alter_d":1244,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2827","titel":"Listen Scrollen nicht zum markierten Datensatz","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-12-20","alter_d":1244,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2828","titel":"Dossier Suche: Tab Verweise\" bleibt hängen\"","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-12-20","alter_d":1244,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2882","titel":"Verknüpfungen unter Wo publiziert\"","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-12-19","alter_d":1245,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2746","titel":"Seitenobjekt in Editor nicht dargestellt","status":"Wird getestet","zuw":null,"datum":"2022-12-19","alter_d":1245,"haupt":"AKTIV","tags":["STALE"]},
+{"id":"2830","titel":"gespeicherte Suche: Handverlesene Interaktionen nicht als abhängig dargestellt","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-12-13","alter_d":1251,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2846","titel":"Reihenseite in Menü anzeigen bei unveröffentlichten Seiten","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-12-13","alter_d":1251,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2695","titel":"Suchbegriff markieren, schliesst das Suchfenster","status":"Bestätigt","zuw":"Web-Entwickler","datum":"2022-12-07","alter_d":1257,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2860","titel":"Logozeile ohne Inhalt","status":"Bestätigt","zuw":"Webredaktion","datum":"2022-12-06","alter_d":1258,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2872","titel":"Person / Organisation Seitenobjekt-Editor, Konfiguration, Initial anzeigen\" geht noch nicht\"","status":"Bereit zum Testen","zuw":null,"datum":"2022-12-05","alter_d":1259,"haupt":"TEST_BOTTLENECK","tags":["STALE"]},
+{"id":"2847","titel":"Reihen brauchen Teaserbild oder doch nicht","status":"In Überarbeitung","zuw":"Webredaktion","datum":"2022-12-02","alter_d":1262,"haupt":"AKTIV","tags":["STALE"]},
+{"id":"1700","titel":"Erfassung mobile Elemente und Mediendateien. Icons funktionieren manchmal nicht","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-11-30","alter_d":1264,"haupt":"VERGESSEN","tags":["STÖREND","STALE"]},
+{"id":"2034","titel":"Suchgestützte Newsboxen aktualisieren nicht automatisch wenn sich deren Resultate ändern","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2022-10-13","alter_d":1312,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2389","titel":"App aktualisiert Inhalte bestehender Veranstaltungen nicht","status":"Bestätigt","zuw":"Marcel Falk","datum":"2022-09-30","alter_d":1325,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2666","titel":"App leitet Downloads direkt an unser Backend weiter","status":"Bestätigt","zuw":"Webredaktion","datum":"2022-09-30","alter_d":1325,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2068","titel":"Durch eine Änderung der Publikation wird keine Aktualisierung der Reihe ausgelöst","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2022-07-19","alter_d":1398,"haupt":"NIE_BEARBEITET","tags":["STALE"]},
+{"id":"2763","titel":"Fehler im SQL Log bei QS-Listen Erzeugung","status":"Wird getestet","zuw":null,"datum":"2022-06-03","alter_d":1444,"haupt":"AKTIV","tags":["STALE"]},
+{"id":"2529","titel":"Generierte Thumbnails abgeschnitten","status":"Wird getestet","zuw":null,"datum":"2022-06-03","alter_d":1444,"haupt":"AKTIV","tags":["STALE"]},
+{"id":"2797","titel":"Fehler im Log: you don't own a lock of type ExclusiveLock","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-29","alter_d":1479,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2799","titel":"Verknüpfungen können zu nicht publikationsfähigen Produkten erstellt werden","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-29","alter_d":1479,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2795","titel":"Fehler im Log: Type of PageObject could not be determined!","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-29","alter_d":1479,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2796","titel":"Fehler im Log: there is no transaction in progress","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-29","alter_d":1479,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2792","titel":"Adressdarstellung oft nicht korrekt\"","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-04-20","alter_d":1488,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2775","titel":"Insertions werden im dev-System nicht korrekt angezeigt","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-19","alter_d":1489,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2702","titel":"Zeilenumbrüche in mobilen Elementen und auf dem Web","status":"Zusatzinformationen angefordert","zuw":"Webredaktion","datum":"2022-04-12","alter_d":1496,"haupt":"PING_PONG","tags":["STALE"]},
+{"id":"2708","titel":"periodische hohe Zugriffe im Analytics","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-04-12","alter_d":1496,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2737","titel":"Suche: Verweise auf Kontakt","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-10","alter_d":1498,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2724","titel":"RichtText Editor: Verhalten von Backspace","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-04-07","alter_d":1501,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2699","titel":"Kontakte aus Suche im Dossier öffnen","status":"Zusatzinformationen angefordert","zuw":"PPO-Leiter","datum":"2022-04-07","alter_d":1501,"haupt":"PING_PONG","tags":["STALE"]},
+{"id":"2700","titel":"Alte Anlässe erscheinen auf Scienceguide","status":"Bestätigt","zuw":"Web-Entwickler","datum":"2022-04-07","alter_d":1501,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2734","titel":"Dossiers aktualisieren nicht bei erneutem Öffnen","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-04-07","alter_d":1501,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2660","titel":"Newsbox manuell ausgewählter Eintrag verschwindet","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2022-04-07","alter_d":1501,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2297","titel":"Editieren von Suchschritt: Anzeige der handverlesenen Produkte fehlt","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2022-03-16","alter_d":1523,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2694","titel":"Portal Suche hat noch Verbesserungs-Potential","status":"Bestätigt","zuw":"Webredaktion","datum":"2021-10-13","alter_d":1677,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2677","titel":"Wechsel des Organisationslogos führt zu fehlendem Logo auf dem Portal","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2021-09-07","alter_d":1713,"haupt":"VERGESSEN","tags":["STALE"]},
+{"id":"2289","titel":"Meldung beim Wegnavigieren aus Datenbank funktioniert nicht zuverlässig","status":"Zusatzinformationen angefordert","zuw":"Datenbank-Entwickler","datum":"2021-04-08","alter_d":1865,"haupt":"PING_PONG","tags":["ANCIENT"]},
+{"id":"1125","titel":"Link im Bild/Text: Linkziel von Extern auf Intern ändern","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2021-01-11","alter_d":1952,"haupt":"VERGESSEN","tags":["REPRO","KOSMETISCH","ANCIENT"]},
+{"id":"2081","titel":"Medien-Dateien die nicht mehr verwendet werden werden nicht vom Portal gelöscht","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2021-01-11","alter_d":1952,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2602","titel":"Anzeige Editor Akkordeon auf Windows","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2020-11-20","alter_d":2004,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2412","titel":"Verschachteln von Portalen ermöglichen","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2020-10-16","alter_d":2039,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2552","titel":"Einige Audios lassen sich nicht abspielen","status":"Zusatzinformationen angefordert","zuw":"Webredaktion","datum":"2020-10-08","alter_d":2047,"haupt":"PING_PONG","tags":["ANCIENT"]},
+{"id":"2551","titel":"Seitenobjekt Video nicht im CD-Layout","status":"Bestätigt","zuw":"Web-Entwickler","datum":"2020-09-11","alter_d":2074,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2550","titel":"Filter Produktetyp, -subtyp in der Suche nicht im CD-Layout","status":"Bestätigt","zuw":"Web-Entwickler","datum":"2020-09-11","alter_d":2074,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2483","titel":"Alpha Web – Footer-Inhalte und Formatierung","status":"Bestätigt","zuw":"Web-Entwickler","datum":"2020-09-08","alter_d":2077,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2025","titel":"Berechtigungsprüfung in SO verwendeter gespeicherter Suchen","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2020-06-24","alter_d":2153,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2457","titel":"alpha Web: Organisationsoverlay unterster Eintrag nicht anwählbar bei mobile quer","status":"Geprüft","zuw":"Web-Entwickler","datum":"2020-06-23","alter_d":2154,"haupt":"AKTIV","tags":["ANCIENT"]},
+{"id":"2422","titel":"Koordinate ändern: Steckbriefe nicht aktualisiert","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2020-06-11","alter_d":2166,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2443","titel":"Organisationshauptkontakt wird bei Mutation nicht aktualisiert","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2020-06-11","alter_d":2166,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2395","titel":"Die Dokumentation ist falsch","status":"Bestätigt","zuw":"Nicola Frieden","datum":"2020-04-16","alter_d":2222,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2396","titel":"JavaScript Fehler, wenn Startseite beim Ausloggen noch nicht geladen ist","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2020-04-16","alter_d":2222,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2393","titel":"Log: Crash beim Abbrechen Suchparameter","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2020-04-16","alter_d":2222,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2293","titel":"Organisationshauptkontakte aus gespeicherte Suche in Dossier öffnen","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-09-12","alter_d":2439,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2390","titel":"Schrift Eingabefelder in Chrome unschön","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-08-15","alter_d":2467,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2248","titel":"Deaktivierte Popups optisch erkennbar machen","status":"Zusatzinformationen angefordert","zuw":"Datenbank-Entwickler","datum":"2019-08-08","alter_d":2474,"haupt":"PING_PONG","tags":["ANCIENT"]},
+{"id":"2325","titel":"Zuweisung Interaktion","status":"Zusatzinformationen angefordert","zuw":"Datenbank-Entwickler","datum":"2019-08-06","alter_d":2476,"haupt":"PING_PONG","tags":["ANCIENT"]},
+{"id":"2374","titel":"Content Security Policy directive Fehler","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-07-31","alter_d":2482,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2386","titel":"Log: Crash in SO Bild/Text nach Auswahl Linkziel","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-07-31","alter_d":2482,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2375","titel":"JavaScript Fehler in Konsole","status":"Neu","zuw":"Datenbank-Entwickler","datum":"2019-07-26","alter_d":2487,"haupt":"TRIAGE","tags":["ANCIENT"]},
+{"id":"2101","titel":"64Bit Builds instabil","status":"Geprüft","zuw":"Datenbank-Entwickler","datum":"2019-07-01","alter_d":2512,"haupt":"AKTIV","tags":["ANCIENT"]},
+{"id":"2005","titel":"Links im Text auf (portalseitig) depublizierte Elemente werden nicht entfernt","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-05-23","alter_d":2551,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1137","titel":"Suche Datenbank","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-05-05","alter_d":2569,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"2310","titel":"Aktualisierung des Portals bei Änderung an Organisations-Logos","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-05-02","alter_d":2572,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1813","titel":"Textformatierung hoch/tief mobl. Element","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-04-18","alter_d":2586,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"2298","titel":"Pop-Up Im Namen von\" kann mit FireFox nicht geöffnet werden\"","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-04-18","alter_d":2586,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2288","titel":"Datenbank blockiert bei unbekannter Aktion","status":"Zusatzinformationen angefordert","zuw":"Datenbank-Entwickler","datum":"2019-03-15","alter_d":2620,"haupt":"PING_PONG","tags":["ANCIENT"]},
+{"id":"2117","titel":"Guidle API ruft keine Bilder ab","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-03-07","alter_d":2628,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2110","titel":"Guidle API meldet Fehler","status":"Bestätigt","zuw":"Marcel Falk","datum":"2019-03-07","alter_d":2628,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2130","titel":"Umleitungen und Vererbungen auf dem Web nicht angepasst","status":"Geprüft","zuw":"Datenbank-Entwickler","datum":"2019-01-31","alter_d":2663,"haupt":"AKTIV","tags":["ANCIENT"]},
+{"id":"1984","titel":"Teaser von Unterseiten werden nicht aktualisiert, wenn Teaser Bild/Text gelöscht wird","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-17","alter_d":2677,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"360","titel":"Newsbox/Gespeicherte Kriterien: Organisation löschen (Multipicker)","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-17","alter_d":2677,"haupt":"VERGESSEN","tags":["REPRO","KOSMETISCH","ANCIENT"]},
+{"id":"1910","titel":"Mobiles Element, Vollbild hinzufügen, 2 Personen gleichzeitig führt zu Application Crash","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-01-17","alter_d":2677,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2035","titel":"wo publiziert\" listet keine Abhängigkeiten über gespeicherte Suchen\"","status":"Geprüft","zuw":"Datenbank-Entwickler","datum":"2019-01-16","alter_d":2678,"haupt":"AKTIV","tags":["ANCIENT"]},
+{"id":"455","titel":"Assetvorschau in Pickern: horizontales Scrollen in Telefonbuchansicht","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","KOSMETISCH","ANCIENT"]},
+{"id":"1752","titel":"Speichern von inline aufgenommen Produkten trotz Abbruch der äusseren Aktion","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1108","titel":"Suche nach Datum: Enddatum wird nicht gesucht, wenn nur erstes Feld ausgefüllt wird","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1817","titel":"Fehlermeldung bei Verwendung von Richtext Editor","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","ANCIENT"]},
+{"id":"1478","titel":"Tabelle lässt manchmal keinen Leerschlag mehr zu","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["STÖREND","ANCIENT"]},
+{"id":"1042","titel":"Stringsuche im Bild-Texteditor findet Doppelleerschläge nicht","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"18","titel":"Suche français Organisation","status":"Umsetzung geplant","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"AKTIV","tags":["STÖREND","ANCIENT"]},
+{"id":"621","titel":"Einstellen der Tabellenbreite im Richtext-Editor","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"7","titel":"Recherche - gestion des accents","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1504","titel":"Aktuell\": wird z.B. eine Meldung entpubliziert, wird sie nicht mit einer älteren Meldung nachgefüllt\"","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":null,"alter_d":null,"haupt":"BESTAETIGT_WARTET","tags":["ANCIENT"]},
+{"id":"2245","titel":"Setzen des VIP Status prüft Umleitungen nicht","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1965","titel":"Nicht mehr zutreffende Einträge werden nicht aus Newsbox gelöscht","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2019-01-16","alter_d":2678,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2067","titel":"Teaserbild von Dokument wird bei Inline-Aufnahme nicht erstellt","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2019-01-15","alter_d":2679,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2253","titel":"Dossier Person / Organisation: Aktivitätsindikator dreht nach Vorerfassung weiter","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2018-12-14","alter_d":2711,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2257","titel":"JS-Fehler in Console bei Kalender","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2018-12-05","alter_d":2720,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2170","titel":"Mehrfachauswahl im Picker Portalseiten","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2018-05-09","alter_d":2930,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2153","titel":"Ungleiche Benennung mit Plural und Singular auf für identische Funktionalität","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2018-05-02","alter_d":2937,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"2111","titel":"Fehler im Postgres-Log durch ungültig Codierte Requests vom Proxy","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2018-03-13","alter_d":2987,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1764","titel":"Mobile Elemente: Constraint je Sprache Titel UND Lead zu haben nicht enforced","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-12-07","alter_d":3083,"haupt":"VERGESSEN","tags":["REPRO","KOSMETISCH","ANCIENT"]},
+{"id":"1611","titel":"Doppelte Transaktionen auf Session Ebene","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-08-10","alter_d":3202,"haupt":"VERGESSEN","tags":["KOSMETISCH","ANCIENT"]},
+{"id":"2021","titel":"Startseite: Bearbeitete vs. Neu erstelle Inhalte","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-04-20","alter_d":3314,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1627","titel":"Erfassen eines Links als Mediendatei: http:// automatisch hinzufügen falls nicht vorhanden","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-03-28","alter_d":3337,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1643","titel":"Fehlermeldung an Google, Koordinate wird nicht optimal gefunden","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-03-13","alter_d":3352,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1316","titel":"Shell-Calls sind nicht Thread freundlich","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2017-01-05","alter_d":3419,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1927","titel":"Links/Medien Einstiegsrolle gleich Ausstiegsrolle","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2016-10-13","alter_d":3503,"haupt":"VERGESSEN","tags":["ANCIENT"]},
+{"id":"1664","titel":"Beim Speichern von Medien-Dateien führen Fehler nicht zum Rollback","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2016-07-08","alter_d":3600,"haupt":"VERGESSEN","tags":["STÖREND","ANCIENT"]},
+{"id":"871","titel":"Bearbeitungs\"-Icon unterschiedlich in \"Datenbank\" und \"Portal\"","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2016-07-08","alter_d":3600,"haupt":"VERGESSEN","tags":["REPRO","KOSMETISCH","ANCIENT"]},
+{"id":"1455","titel":"Neuaufnahme\"-button für Medien-Dateien aus Dossiers\"","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2016-07-08","alter_d":3600,"haupt":"VERGESSEN","tags":["REPRO","STÖREND","ANCIENT"]},
+{"id":"1830","titel":"Suchtext / Metadatenextraktion liefert bei einigen Mediendateien deren Inhalt","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2016-07-08","alter_d":3600,"haupt":"VERGESSEN","tags":["STÖREND","ANCIENT"]},
+{"id":"3170","titel":"Anpassung Excel-Formular MO-Aktualisierung","status":"Bestätigt","zuw":"Anforderungs-Analysten","datum":"2026-05-13","alter_d":4,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3167","titel":"Mail 10a für Fall kein Fachwissen vorhanden an angenommene Nutzungsbedingungen knüpfen","status":"Geprüft","zuw":"Datenbank-Entwickler","datum":"2026-05-11","alter_d":6,"haupt":"AKTIV","tags":[]},
+{"id":"3152","titel":"Anpassung Loginseite Mein Konto","status":"Bestätigt","zuw":"Übersetzungen","datum":"2026-04-23","alter_d":24,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3165","titel":"Nachwuchsförderung Bezeichnung für Verlagsangebot ändern","status":"Bereit zum Testen","zuw":null,"datum":"2026-04-22","alter_d":25,"haupt":"TEST_NEU","tags":[]},
+{"id":"2933","titel":"Status gewählter Wissenschafter SCNAT nach Mandatsende zurücksetzen","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-04-16","alter_d":31,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3166","titel":"Passworte in die Stages bei Passwortänderung harmonisieren","status":"Neu","zuw":"Ticket Triage","datum":"2026-04-02","alter_d":45,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3069","titel":"Interpretation Mein Konto Mailings verbessern","status":"Bereit zum Testen","zuw":null,"datum":"2026-03-19","alter_d":59,"haupt":"TEST_NEU","tags":[]},
+{"id":"3161","titel":"Interesse Nachhaltigkeit zu Nachhaltige Entwicklung umbenennen","status":"Bereit zum Testen","zuw":null,"datum":"2026-03-18","alter_d":60,"haupt":"TEST_NEU","tags":[]},
+{"id":"3162","titel":"Logout von zu Hause wenn ich mit mit VPN verbunden in die Datenbank einlogge und danach das VPN beende","status":"Neu","zuw":"Ticket Triage","datum":"2026-03-12","alter_d":66,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2988","titel":"Reihen Kasten Weitere Ausgaben umbenennen","status":"Bereit zum Testen","zuw":null,"datum":"2026-02-19","alter_d":87,"haupt":"TEST_NEU","tags":[]},
+{"id":"3158","titel":"Mail Fachwissensbedarf verwirrt Nutzende wenn direkt Fachwissen im Mein Konto ausgefüllt wurde","status":"Neu","zuw":"Anforderungs-Analysten","datum":"2026-02-19","alter_d":87,"haupt":"TRIAGE","tags":[]},
+{"id":"3148","titel":"Mein Konto: Löschen eines Kontakts auch als Zwischenwert anzeigen","status":"Bereit zum Testen","zuw":null,"datum":"2026-02-17","alter_d":89,"haupt":"TEST_NEU","tags":[]},
+{"id":"2955","titel":"Haltung bezüglich AI crawler entwickeln und deklarieren","status":"Neu","zuw":"Anforderungs-Analysten","datum":"2026-02-17","alter_d":89,"haupt":"TRIAGE","tags":[]},
+{"id":"2665","titel":"Namensraum der Datenbank Naturwissenschaften Schweiz an das neue Selbstverständnis der SCNAT anpassen","status":"Wird getestet","zuw":null,"datum":"2026-02-12","alter_d":94,"haupt":"AKTIV","tags":[]},
+{"id":"2945","titel":"Erfassungsgründe überarbeiten","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-09","alter_d":97,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2936","titel":"Personendetailseite. Bei Organisation mit Portal doch besser direkt auf Portal springen statt Steckbrief dazwischen schalten ","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2927","titel":"SO Pers/Org Bevorzugten Kontakt hervorheben und ausgewählten Geschäftskontakt danach","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2915","titel":"Kompaktdarstellung Geschäftskontakt der ausgewählten Organisation hervorheben oder zuoberst","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2928","titel":"Link Details auch bei Personen im SO Pers/Org","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2942","titel":"Serie von Bilder mit gleichen Infos gleichzeitig aufnehmen","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2954","titel":"Unklare Herkunft\" bei Mediendateien löschen\"","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-04","alter_d":102,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2939","titel":"Reihenfolge Einzelausprägungen Reihen","status":"Neu","zuw":"Ticket Triage","datum":"2026-02-03","alter_d":103,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2696","titel":"Reihenfolge Einzelausprägungen Veranstaltungsreihe","status":"Bestätigt","zuw":"Webredaktion","datum":"2026-02-03","alter_d":103,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"1379","titel":"Fallweises, verwendungsabhängiges Überschreiben von Inhalten","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-03","alter_d":103,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2670","titel":"Übersicht Mitarbeitendende SCNAT und Übersicht aller Personen in den Gremien (MilizlerInnen)","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2026-02-03","alter_d":103,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"1516","titel":"Erfassung von Anwendungsbereichen in der Datenbank (Wizard und Dossier)","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-02-03","alter_d":103,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"651","titel":"Aufnahme von Medien-Dateien vom Typ Link verhindern, wenn diese auf eine Seite des Portals zeigen","status":"Wird bearbeitet","zuw":"Tobias Bussmann","datum":"2026-01-19","alter_d":118,"haupt":"AKTIV","tags":[]},
+{"id":"3141","titel":"Neue Akteursrolle Gönner:in","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-19","alter_d":118,"haupt":"TEST_NEU","tags":[]},
+{"id":"3115","titel":"Anzeigen von In Bearbeitung\" in Datenbank und auch suchbar machen\"","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-19","alter_d":118,"haupt":"TEST_NEU","tags":[]},
+{"id":"3089","titel":"Löschfenster für Nutzende die nicht direkt gelöscht werden - Ersten beide Sätze weglassen","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-16","alter_d":121,"haupt":"TEST_NEU","tags":[]},
+{"id":"2227","titel":"diverse Akteursrollen auf Organisationshauptkontakte beschränken","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2026-01-16","alter_d":121,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3140","titel":"Partner:innen","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-15","alter_d":122,"haupt":"TEST_NEU","tags":[]},
+{"id":"3088","titel":"Mein Konto Eröffnung: Bei erstem Schritt Erklärungsatz hinzufügen","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-15","alter_d":122,"haupt":"TEST_NEU","tags":[]},
+{"id":"2673","titel":"File-Size-Limit erhöhen","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2026-01-12","alter_d":125,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3078","titel":"Community Teaser für Webredaktion auswählbar","status":"Bereit zum Testen","zuw":null,"datum":"2026-01-06","alter_d":131,"haupt":"TEST_NEU","tags":[]},
+{"id":"3109","titel":"Kontakt Impressen automatisieren","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"2808","titel":"Teilmenge von Community suchen","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"3049","titel":"Suche-Übergänge für Mein Konto Release","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-19","alter_d":149,"haupt":"TEST_NEU","tags":[]},
+{"id":"3110","titel":"Anker in Top-Navigation unterstützen","status":"Zusatzinformationen angefordert","zuw":"Anforderungs-Analysten","datum":"2025-12-18","alter_d":150,"haupt":"PING_PONG","tags":[]},
+{"id":"3143","titel":"Nutzungsbedingungen akzeptieren ohne Datenschutzerklärung und Nutzungsrechte an Medien-Dateien","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-10","alter_d":158,"haupt":"TEST_NEU","tags":[]},
+{"id":"3108","titel":"Hinweistext in Editor SO Video","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3128","titel":"Übersetzunginkonsistenz italiensche Kontolöschung","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3137","titel":"Formulare für Newsletter-Anmeldung: Absender für Anfragen wird nicht an Endkunden durchgereicht","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-08","alter_d":160,"haupt":"TEST_NEU","tags":[]},
+{"id":"3138","titel":"Umgang mit Organisationsnamen anderer Sprachen - Feld Originalname","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-01","alter_d":167,"haupt":"TEST_NEU","tags":[]},
+{"id":"3080","titel":"Community Tab Mitglieder laden dauert lange","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2025-12-01","alter_d":167,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3046","titel":"Kennzeichnung von «Mein Konto» Kontakten im Dossier","status":"Bereit zum Testen","zuw":null,"datum":"2025-12-01","alter_d":167,"haupt":"TEST_NEU","tags":[]},
+{"id":"3043","titel":"Alle verfügbaren Abonnements umbenennen ","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-24","alter_d":174,"haupt":"TEST_NEU","tags":[]},
+{"id":"2187","titel":"Beweislast zu Vertraegen: Zeitstempel von Einwilligungen der ANB und zu den dann aktuellen ANB zwingend.","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-11-24","alter_d":174,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3116","titel":"Mein Konto bei neutraler Anrede leer statt Frau/Herr\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-20","alter_d":178,"haupt":"TEST_NEU","tags":[]},
+{"id":"3122","titel":"Publikationstyp Podcast\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-11-03","alter_d":195,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3120","titel":"Mailing Passwort geändert für Datenmanagement streichen","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-29","alter_d":200,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3121","titel":"Fenster Änderung Nutzungsbedingungen\" Text für Release 2025.1 anpassen\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-28","alter_d":201,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3059","titel":"Plural von Abonnement\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-28","alter_d":201,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3107","titel":"Änderung Grundsatz Link im Text nur SO Bild/Text: Erweitern auf So Akkordeon","status":"Bestätigt","zuw":"Datenbank-Entwickler","datum":"2025-10-22","alter_d":207,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"1785","titel":"Webseiten / Inhalte als Vorlage kopieren","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-10-21","alter_d":208,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3060","titel":"Mein Konto Grunddateneditor Satz hinzufügen","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-14","alter_d":215,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3050","titel":"Mein Konto Einladungsmail Anpassung Satz zu support@scnat.ch","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3090","titel":"Mail an Community Verwaltende anpassen, da Fachwissen Löschung noch nicht aktiv","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3079","titel":"Suchfeld auf Community Detailseite umbenennen","status":"Bereit zum Testen","zuw":null,"datum":"2025-10-03","alter_d":226,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3075","titel":"Formular für Anmelden Testnewsletter Mailman","status":"Wird getestet","zuw":null,"datum":"2025-09-26","alter_d":233,"haupt":"AKTIV","tags":[]},
+{"id":"3086","titel":"Mein Konto Abo Editor: Auf externes Abo in gleichem Layout hinweisen","status":"Bereit zum Testen","zuw":null,"datum":"2025-09-15","alter_d":244,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3081","titel":"Vorgabe 13 Zoll überdenken?","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-09-12","alter_d":247,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3077","titel":"I-Frame: Platzhalter vor Consent Banner wird nicht verstanden:","status":"Bereit zum Testen","zuw":null,"datum":"2025-09-10","alter_d":249,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3021","titel":"SO Personen/Organisationen: Anzeigen aller Einträge ermöglichen","status":"Wird getestet","zuw":null,"datum":"2025-09-08","alter_d":251,"haupt":"AKTIV","tags":[]},
+{"id":"3056","titel":"Flexible Gestaltung bei mobilen Elementen","status":"Neu","zuw":"Ticket Triage","datum":"2025-09-01","alter_d":258,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2987","titel":"Reihen: Geöffnetes Produkt bei weiteren Ausgaben nicht nochmals anzeigen","status":"Wird getestet","zuw":null,"datum":"2025-08-28","alter_d":262,"haupt":"AKTIV","tags":[]},
+{"id":"3040","titel":"Kategorien bei Organisationen entfernen können","status":"Bereit zum Testen","zuw":null,"datum":"2025-08-18","alter_d":272,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2979","titel":"Interaktionen-Export: Format angeben ","status":"Bereit zum Testen","zuw":null,"datum":"2025-08-18","alter_d":272,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3071","titel":"Editor und Mailing aus Mein Konto Änderungen/Ergänzungen melden\" altes und neues trennen\"","status":"Bereit zum Testen","zuw":null,"datum":"2025-08-15","alter_d":275,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3001","titel":"Mengenoperation um Einladungsmail an mehrere Personen gleichzeitig zu schicken","status":"Bereit zum Testen","zuw":null,"datum":"2025-08-12","alter_d":278,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2686","titel":"preview Hosts für Editor-Login entfernen","status":"Bereit zum Testen","zuw":null,"datum":"2025-07-29","alter_d":292,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3048","titel":"Interessenliste als eigenständige Themenliste, getrennt von der Kategorienwolke","status":"Bereit zum Testen","zuw":null,"datum":"2025-07-15","alter_d":306,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2934","titel":"Steckbrief von Arbeitsgruppen um Plattformbezug ergänzen","status":"Neu","zuw":"Webredaktion","datum":"2025-07-07","alter_d":314,"haupt":"TRIAGE","tags":[]},
+{"id":"3066","titel":"Mein Konto Editor Nachwuchsförderung Design graue Felder hinzufügen","status":"Bereit zum Testen","zuw":null,"datum":"2025-06-19","alter_d":332,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3047","titel":"Mein Konto Symbol ein und ausblenden und mit externem Link hinterlegbar","status":"Bereit zum Testen","zuw":null,"datum":"2025-06-12","alter_d":339,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2468","titel":"Logos schützen","status":"Wird getestet","zuw":null,"datum":"2025-05-05","alter_d":377,"haupt":"AKTIV","tags":[]},
+{"id":"2719","titel":"Schutzbereich Portaitbilder","status":"Wird getestet","zuw":null,"datum":"2025-05-05","alter_d":377,"haupt":"AKTIV","tags":[]},
+{"id":"2720","titel":"Zugriffsrechte Portraitbilder","status":"Bereit zum Testen","zuw":null,"datum":"2025-05-05","alter_d":377,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3029","titel":"Interaktionen von anderen Kontakten","status":"Bereit zum Testen","zuw":null,"datum":"2025-04-25","alter_d":387,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2890","titel":"Bei Personen in Strategischen Gremien ohne Link, das operative Gremium verlinken","status":"Neu","zuw":"Ticket Triage","datum":"2025-04-25","alter_d":387,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2897","titel":"Detailseite Person bei Klick auf Org direkt auf Seite gehen, wo Org mit einen SO Pers/Org platziert ist","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2025-04-25","alter_d":387,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"3052","titel":"Kontaktangaben-Typ Skype entfernen","status":"Bereit zum Testen","zuw":null,"datum":"2025-04-24","alter_d":388,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2935","titel":"Button Löschen Mediendatei, welches den Datensatz kennzeichnet","status":"Neu","zuw":"PPO-Leiter","datum":"2025-04-24","alter_d":388,"haupt":"TRIAGE","tags":[]},
+{"id":"3039","titel":"Diskrepanz bei den Zugriffsrechten auf Organisationskurzbeschrieb","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-04-14","alter_d":398,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2358","titel":"Portal 2, Footer: Ergänzen mit Angaben zu Standort","status":"Bestätigt","zuw":"Webredaktion","datum":"2025-04-08","alter_d":404,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2833","titel":"Freifeld für AutorInnen bei Publikation","status":"Bestätigt","zuw":"PPO-Leiter","datum":"2025-03-27","alter_d":416,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2898","titel":"Bei Formularen: Datumsangaben ermöglichen mit Validierung","status":"Neu","zuw":"Web-Entwickler","datum":"2025-03-25","alter_d":418,"haupt":"TRIAGE","tags":[]},
+{"id":"2779","titel":"In Dossier Organisation anzeigen, ob Fachwissen vollständig ist","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-18","alter_d":425,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3037","titel":"Hotfix Aktivierung Community Funktionen","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-17","alter_d":426,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2946","titel":"Ein Wunsch für Formulare der Zukunft","status":"Neu","zuw":"Ticket Triage","datum":"2025-03-12","alter_d":431,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3034","titel":"Neue Kategorie Polarforschung","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-10","alter_d":433,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3033","titel":"Umbenennung Kategorie Naturpärke zu Pärke","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-10","alter_d":433,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3035","titel":"Umbenennung Kategorie Nord-Süd zu Globale Forschung","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-10","alter_d":433,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"1523","titel":"Logische Operatoren in der Newsbox einsetzen","status":"Bestätigt","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-03-07","alter_d":436,"haupt":"BESTAETIGT_WARTET","tags":[]},
+{"id":"2654","titel":"Mein Konto: Terminologie?","status":"Bereit zum Testen","zuw":null,"datum":"2025-03-04","alter_d":439,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3026","titel":"Korrespondenzsprache für vom System generierten Links ins MeinKonto verwenden","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-02-25","alter_d":446,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3019","titel":"Ausschluss von 'direkt' in Grafik Herkunft/Ursprung\" auf Startseite\"","status":"Neu","zuw":"Parkplatz / nicht zugewiesen","datum":"2025-02-12","alter_d":459,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"2349","titel":"Geschlechter der heutigen Zeit Anpassen","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-27","alter_d":475,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2978","titel":"Italienische Übersetzungen verbessern","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-27","alter_d":475,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"2804","titel":"Vorerfassung umbenennen","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-24","alter_d":478,"haupt":"TEST_BOTTLENECK","tags":[]},
+{"id":"3016","titel":"Test-Proxy und Deployment auf Proxy automatisieren","status":"Neu","zuw":"Ticket Triage","datum":"2025-01-24","alter_d":478,"haupt":"NIE_BEARBEITET","tags":[]},
+{"id":"3007","titel":"Ausstehende Text-Reviews MeinKonto","status":"Bereit zum Testen","zuw":null,"datum":"2025-01-13","alter_d":489,"haupt":"TEST_BOTTLENECK","tags":[]},
+];
+window.BUGTRACKER_STATS = {"total": 500, "median_d": 1017, "avg_d": 1115, "max_d": 3600, "over1y": 360, "over3y": 240, "over5y": 125, "repro": 19, "blocker": 1, "stoerend": 17, "buckets": {"< 30 T": 7, "30-90 T": 16, "90-180 T": 65, "180-365 T": 51, "1-2 J": 70, "2-3 J": 50, "3-5 J": 115, "> 5 J": 125}, "status": {"Bereit zum Testen": 169, "Bestätigt": 219, "Neu": 60, "Geprüft": 6, "Zusatzinformationen angefordert": 28, "Wird getestet": 12, "Wird bearbeitet": 3, "In Überarbeitung": 1, "Umsetzung geplant": 1, "Parkplatz / nicht zugewiesen": 1}, "jahre": {"2016": 5, "2017": 6, "2018": 5, "2019": 45, "2020": 48, "2021": 26, "2022": 79, "2023": 45, "2024": 60, "2025": 118, "2026": 62}, "zuw": {"(keine)": 182, "Parkplatz / nicht zugewiesen": 88, "PPO-Leiter": 68, "Datenbank-Entwickler": 57, "Webredaktion": 43, "Ticket Triage": 29, "Web-Entwickler": 15, "Anforderungs-Analysten": 7, "Marcel Falk": 4, "Tobias Bussmann": 3, "Nicola Frieden": 1, "Übersetzungen": 1, "Tester": 1}};
+</script>
+<script src="/files/bugtracker-app.js"></script>
+
+</body>
+</html>

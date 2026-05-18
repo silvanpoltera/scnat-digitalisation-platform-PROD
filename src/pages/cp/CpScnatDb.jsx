@@ -265,6 +265,53 @@ function ZielarchitekturView() {
   );
 }
 
+function BugTrackerView() {
+  const [expanded, setExpanded] = useState(false);
+  const src = '/files/bugtracker.html';
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape' && expanded) setExpanded(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [expanded]);
+
+  if (expanded) {
+    return (
+      <div className="fixed inset-0 z-50 bg-bg-base flex flex-col">
+        <div className="flex items-center gap-2 px-4 h-10 bg-bg-surface border-b border-bd-faint shrink-0">
+          <span className="text-sm font-heading font-semibold text-txt-primary">BugTracker · Portal/DB</span>
+          <div className="flex-1" />
+          <a href={src} target="_blank" rel="noopener noreferrer" className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated rounded-sm transition-colors" title="In neuem Tab öffnen">
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <button onClick={() => setExpanded(false)} className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-elevated rounded-sm transition-colors" title="Verkleinern (Esc)">
+            <Minimize2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <iframe src={src} title="BugTracker" className="flex-1 w-full border-0 bg-bg-base" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+      <div className="flex items-center gap-2 px-4 h-10 bg-bg-elevated border-b border-bd-faint">
+        <Database className="w-3.5 h-3.5 text-scnat-red shrink-0" />
+        <span className="text-xs font-heading font-semibold text-txt-primary">BugTracker Dashboard</span>
+        <span className="text-[10px] font-mono text-txt-tertiary hidden sm:inline">· Status ändern · Tickets schliessen · Bulk Actions</span>
+        <div className="flex-1" />
+        <a href={src} target="_blank" rel="noopener noreferrer" className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-surface rounded-sm transition-colors" title="In neuem Tab öffnen">
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+        <button onClick={() => setExpanded(true)} className="p-1.5 text-txt-tertiary hover:text-txt-primary hover:bg-bg-surface rounded-sm transition-colors" title="Vollbild">
+          <Maximize2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      <iframe src={src} title="BugTracker" className="w-full border-0 bg-bg-base" style={{ height: 'calc(100dvh - 220px)', minHeight: '680px' }} sandbox="allow-scripts allow-same-origin allow-popups allow-forms" />
+    </div>
+  );
+}
+
 /* ── Main Component ── */
 const TABS = [
   { id: 'uebersicht', label: 'Architektur' },
@@ -272,7 +319,7 @@ const TABS = [
   { id: 'funktionen', label: 'Funktionen' },
   { id: 'strategie', label: 'Strategische Optionen' },
   { id: 'entscheide', label: 'Grundsatzentscheide' },
-  { id: 'backlog', label: 'Backlog' },
+  { id: 'backlog', label: 'Bug-Tracker' },
   { id: 'status', label: 'Status verwalten' },
 ];
 
@@ -364,13 +411,7 @@ export default function CpScnatDb() {
       )}
 
       {tab === 'backlog' && (
-        <BacklogView
-          backlog={data.backlog || []}
-          onAdd={addBacklog}
-          onDelete={deleteBacklog}
-          newBacklog={newBacklog}
-          setNewBacklog={setNewBacklog}
-        />
+        <BugTrackerView />
       )}
 
       {tab === 'status' && (

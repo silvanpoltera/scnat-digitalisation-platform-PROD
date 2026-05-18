@@ -231,7 +231,7 @@ export default function ScnatDb() {
     { id: 'funktionen', label: `Funktionen (${data.funktionsbereiche?.length || 0})` },
     { id: 'strategie', label: 'Strategische Optionen' },
     { id: 'entscheide', label: `Grundsatzentscheide (${data.entscheide?.length || 0})` },
-    { id: 'backlog', label: `Backlog (${data.backlog?.length || 0})` },
+    { id: 'backlog', label: 'Bug-Tracker' },
   ];
 
   return (
@@ -264,7 +264,17 @@ export default function ScnatDb() {
       {tab === 'funktionen' && <FunktionenUebersicht bereiche={data.funktionsbereiche || []} />}
       {tab === 'strategie' && <StrategischeOptionen data={data.strategische_optionen} />}
       {tab === 'entscheide' && <EntscheideView entscheide={data.entscheide || []} />}
-      {tab === 'backlog' && <BacklogView backlog={data.backlog || []} />}
+      {tab === 'backlog' && (
+        <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
+          <iframe
+            src="/files/bugtracker.html"
+            title="BugTracker"
+            className="w-full border-0 bg-bg-base"
+            style={{ height: 'calc(100dvh - 220px)', minHeight: '680px' }}
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          />
+        </div>
+      )}
     </div>
     </div>
   );

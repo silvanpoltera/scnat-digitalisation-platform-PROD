@@ -25,6 +25,7 @@ import inboxRoutes from './routes/inbox.js';
 import visibilityRoutes from './routes/visibility.js';
 import sprintsRoutes from './routes/sprints.js';
 import pushRoutes from './routes/push.js';
+import bugtrackerRoutes from './routes/bugtracker.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -111,6 +112,7 @@ app.use('/api/inbox', inboxRoutes);
 app.use('/api/visibility', visibilityRoutes);
 app.use('/api/sprints', sprintsRoutes);
 app.use('/api/push', pushRoutes);
+app.use('/api/bugtracker', bugtrackerRoutes);
 
 // ── 404 catch-all for unknown API routes ────────────────────────────
 app.use((req, res, next) => {
