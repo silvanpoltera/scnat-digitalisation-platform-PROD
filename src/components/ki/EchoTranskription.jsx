@@ -602,6 +602,17 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
 
         <div className="bg-bg-elevated border border-bd-faint rounded-sm p-4 mb-4">
           <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+            Was ist SCNAT Echo?
+          </p>
+          <p className="text-sm text-txt-secondary leading-relaxed">
+            SCNAT Echo wurde von Arber aus der IT für die SCNAT gebaut, damit Transkriptionen lokal auf dem Mac
+            laufen und keine externen Cloud-Dienste benötigt werden. So bleiben Sicherheits- und
+            Souveränitätsanforderungen der SCNAT gewahrt.
+          </p>
+        </div>
+
+        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-4 mb-4">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
             Empfohlener Modus
           </p>
           <p className="text-sm text-txt-secondary leading-relaxed">
