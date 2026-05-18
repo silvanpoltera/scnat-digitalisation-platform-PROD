@@ -44,6 +44,36 @@ const state = {
   activeNotizId: null,
 };
 
+function applyThemeFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const theme = params.get('theme');
+  const root = document.documentElement;
+
+  if (theme === 'light') {
+    const lightVars = {
+      '--bg': '#F4F6F8',
+      '--surface': '#FFFFFF',
+      '--elevated': '#F8FAFC',
+      '--subtle': '#E9EDF2',
+      '--b-faint': '#E5EAF0',
+      '--b-def': '#D6DEE8',
+      '--b-strong': '#9AA8B8',
+      '--text': '#1B2530',
+      '--text2': '#4D5D6E',
+      '--text3': '#7A8998',
+      '--red': '#D64550',
+      '--red-dim': 'rgba(214,69,80,0.12)',
+      '--red-mid': 'rgba(214,69,80,0.28)',
+      '--ok': '#2A8B5F',
+      '--warn': '#B26E17',
+      '--info': '#2E74C2',
+      '--purple': '#6A4BB0',
+      '--anth': '#8A97A8',
+    };
+    Object.entries(lightVars).forEach(([k, v]) => root.style.setProperty(k, v));
+  }
+}
+
 function showToast(msg, isError = false) {
   toastEl.textContent = msg;
   toastEl.className = `toast ${isError ? 'error' : ''} show`;
@@ -504,4 +534,5 @@ notizConfirm.addEventListener('click', async () => {
   await saveNotiz();
 });
 
+applyThemeFromQuery();
 load().catch(e => showToast(e.message || 'Laden fehlgeschlagen', true));

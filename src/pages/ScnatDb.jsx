@@ -3,6 +3,7 @@ import { Database, AlertTriangle, Filter, Shield, Zap, GitBranch, CheckCircle2, 
 import PageHeader from '../components/PageHeader';
 import ArchitekturDiagramm from '../components/systemlandschaft/ArchitekturDiagramm';
 import FunktionenUebersicht from '../components/systemlandschaft/FunktionenUebersicht';
+import { useTheme } from '../contexts/ThemeContext';
 
 const OPTION_ICONS = { shield: Shield, zap: Zap, 'git-branch': GitBranch };
 const OPTION_COLORS = {
@@ -212,8 +213,10 @@ function BacklogView({ backlog }) {
 }
 
 export default function ScnatDb() {
+  const { theme } = useTheme();
   const [data, setData] = useState(null);
   const [tab, setTab] = useState('uebersicht');
+  const iframeTheme = theme === 'bright' ? 'light' : 'dark';
 
   useEffect(() => {
     fetch('/api/scnat-infra', { credentials: 'include' })
@@ -267,7 +270,7 @@ export default function ScnatDb() {
       {tab === 'backlog' && (
         <div className="bg-bg-surface border border-bd-faint rounded-sm overflow-hidden">
           <iframe
-            src="/files/bugtracker.html"
+            src={`/files/bugtracker.html?theme=${iframeTheme}`}
             title="BugTracker"
             className="w-full border-0 bg-bg-base"
             style={{ height: 'calc(100dvh - 220px)', minHeight: '680px' }}

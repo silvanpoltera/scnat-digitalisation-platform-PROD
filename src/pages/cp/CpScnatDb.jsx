@@ -266,8 +266,10 @@ function ZielarchitekturView() {
 }
 
 function BugTrackerView() {
+  const { theme } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const src = '/files/bugtracker.html';
+  const iframeTheme = theme === 'bright' ? 'light' : 'dark';
+  const src = `/files/bugtracker.html?theme=${iframeTheme}`;
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape' && expanded) setExpanded(false); };
@@ -325,6 +327,7 @@ const TABS = [
 
 export default function CpScnatDb() {
   const [data, setData] = useState(null);
+  const [bugCount, setBugCount] = useState(0);
   const [tab, setTab] = useState('uebersicht');
   const [saving, setSaving] = useState(false);
   const [newBacklog, setNewBacklog] = useState({ titel: '', beschreibung: '', bereich: '', seit: '2026', prioritaet: 'mittel' });
@@ -333,7 +336,17 @@ export default function CpScnatDb() {
     fetch('/api/scnat-infra', { credentials: 'include' }).then(r => r.json()).then(setData).catch(() => {});
   };
 
-  useEffect(() => { load(); }, []);
+  const loadBugCount = () => {
+    fetch('/api/bugtracker', { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => {
+        const open = (d?.tickets || []).filter(t => !(t?.geschlossen || t?.status === 'Geschlossen' || t?.status === "Won't fix")).length;
+        setBugCount(open);
+      })
+      .catch(() => setBugCount(0));
+  };
+
+  useEffect(() => { load(); loadBugCount(); }, []);
 
   const saveStatus = async () => {
     setSaving(true);
@@ -376,7 +389,6 @@ export default function CpScnatDb() {
   if (!data) return <div className="w-6 h-6 border-2 border-scnat-red border-t-transparent rounded-full animate-spin" />;
 
   const entscheideCount = data.entscheide?.length || 0;
-  const backlogCount = data.backlog?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -393,7 +405,7 @@ export default function CpScnatDb() {
           >
             {t.label}
             {t.id === 'entscheide' && ` (${entscheideCount})`}
-            {t.id === 'backlog' && ` (${backlogCount})`}
+            {t.id === 'backlog' && ` (${bugCount})`}
           </button>
         ))}
       </div>
