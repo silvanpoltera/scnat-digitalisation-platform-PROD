@@ -39,9 +39,9 @@ function formatBytes(b) {
 
 export default function EchoTranskription() {
   const {
-    health, jobs, isRunning, isAvailable, baseUrl, isStartingEcho,
+    health, jobs, isRunning, isAvailable, baseUrl, isStartingEcho, lastError,
     uploadFile, startJob, stopJob, removeJob, clearQueue, downloadResult,
-    refreshHealth, attemptStartEcho,
+    refreshHealth, attemptStartEcho, setManualBaseUrl,
   } = useEchoEngine();
 
   const [files, setFiles] = useState([]);
@@ -94,8 +94,10 @@ export default function EchoTranskription() {
       <NotAvailableView
         health={health}
         isStartingEcho={isStartingEcho}
+        lastError={lastError}
         onRetry={refreshHealth}
         onStartEcho={attemptStartEcho}
+        onSetManualBaseUrl={setManualBaseUrl}
       />
     );
   }
@@ -528,9 +530,11 @@ function Footer({ baseUrl }) {
   );
 }
 
-function NotAvailableView({ health, isStartingEcho, onRetry, onStartEcho }) {
+function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartEcho, onSetManualBaseUrl }) {
   const status = health?.compat_status;
   const msg = health?.user_message;
+  const [manualHost, setManualHost] = useState('http://127.0.0.1:3017');
+  const [manualStatus, setManualStatus] = useState('');
 
   const isInstalling = status === 'installing' || health?.engine === 'installing';
 
@@ -584,6 +588,43 @@ function NotAvailableView({ health, isStartingEcho, onRetry, onStartEcho }) {
           >
             Erneut prüfen
           </button>
+        </div>
+
+        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3 mb-4">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+            Lokaler Endpoint (Fallback)
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              value={manualHost}
+              onChange={(e) => setManualHost(e.target.value)}
+              placeholder="http://127.0.0.1:3017"
+              className="flex-1 px-3 py-2 text-xs font-mono rounded-sm
+                         bg-bg-surface border border-bd-default text-txt-primary
+                         focus:border-scnat-red outline-none"
+            />
+            <button
+              onClick={async () => {
+                setManualStatus('');
+                try {
+                  await onSetManualBaseUrl(manualHost);
+                  setManualStatus('Verbunden');
+                } catch (err) {
+                  setManualStatus(err?.message || 'Verbindung fehlgeschlagen');
+                }
+              }}
+              className="px-4 py-2 rounded-sm text-xs font-medium
+                         bg-bg-surface border border-bd-default text-txt-primary
+                         hover:bg-bd-faint transition-colors"
+            >
+              Host verbinden
+            </button>
+          </div>
+          {(manualStatus || lastError) && (
+            <p className="text-[11px] mt-2 text-txt-secondary">
+              {manualStatus || lastError}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
