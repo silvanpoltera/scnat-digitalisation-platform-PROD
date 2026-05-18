@@ -184,6 +184,25 @@ function IntroBanner({ health }) {
         dein Gerät nie — keine Cloud, kein Upload zu externen Servern, kein Datenschutz-Risiko.
       </p>
 
+      <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3 mb-3">
+        <p className="text-xs text-txt-secondary leading-relaxed">
+          <strong className="text-txt-primary">SCNAT Echo wurde von Arber aus der IT für die SCNAT aufgebaut</strong>,
+          damit wir bei Transkriptionen keine Sicherheits- oder Souveränitätsprobleme mit externen Cloud-Diensten
+          bekommen. Alles läuft lokal auf dem jeweiligen MacBook.
+        </p>
+      </div>
+
+      <div className="bg-status-yellow/5 border border-status-yellow/20 rounded-sm p-3 mb-3">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-status-yellow mb-1">
+          Sicherheits-Hinweis
+        </p>
+        <p className="text-xs text-txt-secondary leading-relaxed">
+          Bitte achte darauf, dass die Audio-Dateien während Aufnahme und Verarbeitung nicht in private Cloud-Ordner
+          (z. B. iCloud Drive, Dropbox, Google Drive, OneDrive) synchronisiert werden. Eine solche Synchronisation
+          würde die Datensicherheitsvorgaben der SCNAT grundsätzlich verletzen.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <InfoTile
           icon={ShieldCheck}
