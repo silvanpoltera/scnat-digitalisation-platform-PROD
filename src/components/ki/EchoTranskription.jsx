@@ -632,6 +632,15 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
             {isStartingEcho ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
             {isStartingEcho ? 'Echo wird im Hintergrund geöffnet…' : 'Echo im Hintergrund öffnen'}
           </button>
+          <a
+            href="/echo/install-scnat-echo-bridge.command"
+            download
+            className="px-4 py-2 rounded-sm text-xs font-medium
+                       bg-bg-elevated border border-bd-default text-txt-primary
+                       hover:bg-bd-faint transition-colors"
+          >
+            Bridge installieren (ohne Admin)
+          </a>
           <button
             onClick={onRetry}
             className="px-4 py-2 rounded-sm text-xs font-medium
@@ -647,6 +656,11 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
             Erweiterte Verbindung & Diagnose
           </summary>
           <div className="mt-3">
+            <p className="text-xs text-txt-secondary mb-2">
+              Falls der Start-Button nicht reagiert: Bridge-Datei herunterladen, lokal per Doppelklick bzw.
+              <span className="font-mono"> bash </span>
+              ausführen und danach erneut prüfen.
+            </p>
             <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
               Lokaler Endpoint (Fallback)
             </p>

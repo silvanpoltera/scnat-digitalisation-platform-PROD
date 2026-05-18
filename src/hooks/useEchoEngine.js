@@ -8,6 +8,7 @@ const TERMINAL_STATES = new Set(['completed', 'error', 'cancelled']);
 const AUTOSTART_POLL_ATTEMPTS = 14;
 const AUTOSTART_POLL_MS = 1_200;
 const STORAGE_URL_KEY = 'scnat_echo_url';
+const START_TIMEOUT_MS = 2_500;
 
 function withTimeout(ms) {
   const controller = new AbortController();
@@ -35,6 +36,22 @@ async function safeJson(response) {
   } catch {
     return {};
   }
+}
+
+function normalizeHealth(data) {
+  if (data?.engine === 'bridge_only') {
+    return {
+      ...data,
+      status: 'ok',
+      compat_status: 'bridge_only',
+      user_message: {
+        title: 'SCNAT Echo ist vorbereitet',
+        body: 'Der lokale Bridge-Dienst läuft. Öffne Echo im Hintergrund, danach ist die Transkription verfügbar.',
+        emoji: '🧩',
+      },
+    };
+  }
+  return data;
 }
 
 function sleep(ms) {
@@ -74,7 +91,7 @@ export function useEchoEngine() {
       try {
         const r = await fetch(`${candidate}/health`, { signal: timeout.signal });
         if (!r.ok) continue;
-        const data = await r.json();
+        const data = normalizeHealth(await r.json());
         return { base: candidate, data };
       } catch {
         // Probe next candidate.
@@ -173,6 +190,27 @@ export function useEchoEngine() {
     setIsStartingEcho(true);
     setLastError('');
     try {
+      const candidates = buildBaseCandidates();
+      for (const candidate of candidates) {
+        const timeout = withTimeout(START_TIMEOUT_MS);
+        try {
+          const res = await fetch(`${candidate}/start`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: timeout.signal,
+          });
+          if (res.ok) {
+            setBaseUrl(candidate);
+            persistBaseUrl(candidate);
+            break;
+          }
+        } catch {
+          // Continue with next candidate or deep-link fallback.
+        } finally {
+          timeout.clear();
+        }
+      }
+
       const links = ['echo://start-agent', 'echo://start', 'echo://open', 'echo://'];
       for (const link of links) {
         triggerDeepLink(link);
