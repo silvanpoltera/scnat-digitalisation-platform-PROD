@@ -5,6 +5,8 @@ const JOB_POLL_MS = 1_500;
 const HEALTH_TIMEOUT_MS = 2_500;
 const REQUEST_TIMEOUT_MS = 20_000;
 const TERMINAL_STATES = new Set(['completed', 'error', 'cancelled']);
+const AUTOSTART_POLL_ATTEMPTS = 14;
+const AUTOSTART_POLL_MS = 1_200;
 
 function withTimeout(ms) {
   const controller = new AbortController();
@@ -34,10 +36,23 @@ async function safeJson(response) {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function triggerDeepLink(url) {
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  setTimeout(() => iframe.remove(), 1500);
+}
+
 export function useEchoEngine() {
   const [health, setHealth] = useState({ status: 'unknown' });
   const [jobs, setJobs] = useState([]);
   const [baseUrl, setBaseUrl] = useState(null);
+  const [isStartingEcho, setIsStartingEcho] = useState(false);
   const pollersRef = useRef({});
 
   const probeHealth = useCallback(async () => {
@@ -57,6 +72,27 @@ export function useEchoEngine() {
     }
     return null;
   }, []);
+
+  const refreshHealth = useCallback(async () => {
+    const result = await probeHealth();
+    if (result) {
+      setBaseUrl(result.base);
+      setHealth(result.data);
+      return true;
+    }
+    setBaseUrl(null);
+    setHealth({
+      status: 'ok',
+      engine: 'unavailable',
+      compat_status: 'sidecar_not_running',
+      user_message: {
+        title: 'SCNAT Echo Engine läuft nicht',
+        body: 'Bitte starte Echo lokal auf deinem Mac, damit die Transkription im Portal verfügbar ist.',
+        emoji: '🔌',
+      },
+    });
+    return false;
+  }, [probeHealth]);
 
   useEffect(() => {
     let cancelled = false;
@@ -102,11 +138,34 @@ export function useEchoEngine() {
       if (err?.name === 'AbortError') {
         throw new Error('Echo-Anfrage hat das Zeitlimit überschritten.');
       }
+      if (err instanceof TypeError) {
+        throw new Error('Lokaler Echo-Host ist nicht erreichbar oder wird durch CORS blockiert.');
+      }
       throw err;
     } finally {
       timeout.clear();
     }
   }, [baseUrl]);
+
+  const attemptStartEcho = useCallback(async () => {
+    setIsStartingEcho(true);
+    try {
+      const links = ['echo://start-agent', 'echo://start', 'echo://open', 'echo://'];
+      for (const link of links) {
+        triggerDeepLink(link);
+        await sleep(350);
+      }
+
+      for (let i = 0; i < AUTOSTART_POLL_ATTEMPTS; i += 1) {
+        const ok = await refreshHealth();
+        if (ok) return true;
+        await sleep(AUTOSTART_POLL_MS);
+      }
+      return false;
+    } finally {
+      setIsStartingEcho(false);
+    }
+  }, [refreshHealth]);
 
   const uploadFile = useCallback(async (file) => {
     const fd = new FormData();
@@ -185,7 +244,8 @@ export function useEchoEngine() {
   const isAvailable = health.status === 'ok' && health.engine === 'ready';
 
   return {
-    health, jobs, currentJob, isRunning, isAvailable, baseUrl,
+    health, jobs, currentJob, isRunning, isAvailable, baseUrl, isStartingEcho,
     uploadFile, startJob, pauseJob, stopJob, removeJob, clearQueue, downloadResult,
+    refreshHealth, attemptStartEcho,
   };
 }

@@ -39,8 +39,9 @@ function formatBytes(b) {
 
 export default function EchoTranskription() {
   const {
-    health, jobs, isRunning, isAvailable, baseUrl,
+    health, jobs, isRunning, isAvailable, baseUrl, isStartingEcho,
     uploadFile, startJob, stopJob, removeJob, clearQueue, downloadResult,
+    refreshHealth, attemptStartEcho,
   } = useEchoEngine();
 
   const [files, setFiles] = useState([]);
@@ -89,7 +90,14 @@ export default function EchoTranskription() {
   }
 
   if (!isAvailable) {
-    return <NotAvailableView health={health} />;
+    return (
+      <NotAvailableView
+        health={health}
+        isStartingEcho={isStartingEcho}
+        onRetry={refreshHealth}
+        onStartEcho={attemptStartEcho}
+      />
+    );
   }
 
   return (
@@ -520,7 +528,7 @@ function Footer({ baseUrl }) {
   );
 }
 
-function NotAvailableView({ health }) {
+function NotAvailableView({ health, isStartingEcho, onRetry, onStartEcho }) {
   const status = health?.compat_status;
   const msg = health?.user_message;
 
@@ -542,35 +550,74 @@ function NotAvailableView({ health }) {
 
   return (
     <div className="bg-bg-surface border border-bd-faint rounded-sm p-8 text-txt-primary">
-      <div className="text-center mb-5">
-        <div className="text-4xl mb-3">{msg?.emoji || '🔌'}</div>
-        <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">
-          {msg?.title || 'SCNAT Echo Engine läuft nicht'}
-        </h3>
-        <p className="text-xs text-txt-secondary leading-relaxed max-w-md mx-auto">
-          {msg?.body || 'Die lokale Engine ist nicht erreichbar. Starte das Portal über ./start.sh, dann läuft sie automatisch mit.'}
-        </p>
-        {msg?.hint && (
-          <p className="text-[11px] text-txt-tertiary italic mt-2">{msg.hint}</p>
-        )}
-      </div>
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-4">{msg?.emoji || '🔌'}</div>
+          <h3 className="text-xl font-heading font-bold text-txt-primary mb-2">
+            {msg?.title || 'SCNAT Echo Engine läuft nicht'}
+          </h3>
+          <p className="text-sm text-txt-secondary leading-relaxed max-w-xl mx-auto">
+            {msg?.body || 'Die lokale Engine ist nicht erreichbar. Starte das Portal über ./start.sh, dann läuft sie automatisch mit.'}
+          </p>
+          {msg?.hint && (
+            <p className="text-xs text-txt-tertiary italic mt-2">{msg.hint}</p>
+          )}
+        </div>
 
-      <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
-        <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
-          System-Diagnose
-        </p>
-        <pre className="text-[10px] font-mono text-txt-secondary overflow-x-auto">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <button
+            onClick={onStartEcho}
+            disabled={isStartingEcho}
+            className="flex items-center gap-2 px-4 py-2 rounded-sm
+                       bg-scnat-red text-white text-xs font-semibold
+                       hover:bg-scnat-darkred disabled:bg-bd-default disabled:text-txt-tertiary
+                       transition-colors"
+          >
+            {isStartingEcho ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+            {isStartingEcho ? 'Echo wird gestartet…' : 'Echo jetzt starten'}
+          </button>
+          <button
+            onClick={onRetry}
+            className="px-4 py-2 rounded-sm text-xs font-medium
+                       bg-bg-elevated border border-bd-default text-txt-primary
+                       hover:bg-bd-faint transition-colors"
+          >
+            Erneut prüfen
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 1</p>
+            <p className="text-xs text-txt-secondary">Echo lokal öffnen (kein Admin nötig).</p>
+          </div>
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 2</p>
+            <p className="text-xs text-txt-secondary">Engine startet im Hintergrund auf deinem Mac.</p>
+          </div>
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 3</p>
+            <p className="text-xs text-txt-secondary">Zurück im Portal transkribieren und `.md` laden.</p>
+          </div>
+        </div>
+
+        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+            System-Diagnose
+          </p>
+          <pre className="text-[10px] font-mono text-txt-secondary overflow-x-auto">
 {JSON.stringify({
   status,
   hardware: health?.hardware,
   echo_app_detected: health?.echo_app_detected,
 }, null, 2)}
-        </pre>
-      </div>
+          </pre>
+        </div>
 
-      <p className="mt-4 text-center text-[10px] font-mono text-txt-tertiary">
-        SCNAT Echo · by Arber Aziri
-      </p>
+        <p className="mt-4 text-center text-[10px] font-mono text-txt-tertiary">
+          SCNAT Echo · by Arber Aziri
+        </p>
+      </div>
     </div>
   );
 }
