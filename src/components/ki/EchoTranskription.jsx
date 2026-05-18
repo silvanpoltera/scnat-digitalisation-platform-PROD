@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   AudioLines, Play, Square, Trash2, Upload, FileText, Sparkles,
   ShieldCheck, Cpu, HardDrive, Loader2,
@@ -554,8 +554,21 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
   const msg = health?.user_message;
   const [manualHost, setManualHost] = useState('http://127.0.0.1:3017');
   const [manualStatus, setManualStatus] = useState('');
+  const [isStandalone, setIsStandalone] = useState(false);
 
   const isInstalling = status === 'installing' || health?.engine === 'installing';
+
+  useEffect(() => {
+    const checkStandalone = () => {
+      const displayStandalone = window.matchMedia?.('(display-mode: standalone)')?.matches;
+      const iosStandalone = window.navigator?.standalone === true;
+      setIsStandalone(Boolean(displayStandalone || iosStandalone));
+    };
+    checkStandalone();
+    const mq = window.matchMedia?.('(display-mode: standalone)');
+    mq?.addEventListener?.('change', checkStandalone);
+    return () => mq?.removeEventListener?.('change', checkStandalone);
+  }, []);
 
   if (isInstalling) {
     return (
@@ -587,6 +600,26 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
           )}
         </div>
 
+        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-4 mb-4">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+            Empfohlener Modus
+          </p>
+          <p className="text-sm text-txt-secondary leading-relaxed">
+            Die sauberste Nutzung von SCNAT Echo ist über das installierte Portal als App auf deinem Gerät.
+            Dann kann Echo per Knopfdruck im Hintergrund geöffnet werden, ohne störenden Browser-Flow.
+          </p>
+          {!isStandalone && (
+            <p className="text-xs text-status-amber mt-2">
+              Du nutzt das Portal aktuell im Browser-Tab. Bitte öffne/installiere die Portal-App für den besten Echo-Start.
+            </p>
+          )}
+          {isStandalone && (
+            <p className="text-xs text-status-green mt-2">
+              Portal-App erkannt - Echo-Start per Button ist aktiviert.
+            </p>
+          )}
+        </div>
+
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           <button
             onClick={onStartEcho}
@@ -597,7 +630,7 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
                        transition-colors"
           >
             {isStartingEcho ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-            {isStartingEcho ? 'Echo wird gestartet…' : 'Echo jetzt starten'}
+            {isStartingEcho ? 'Echo wird im Hintergrund geöffnet…' : 'Echo im Hintergrund öffnen'}
           </button>
           <button
             onClick={onRetry}
@@ -609,69 +642,74 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
           </button>
         </div>
 
-        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3 mb-4">
-          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
-            Lokaler Endpoint (Fallback)
-          </p>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              value={manualHost}
-              onChange={(e) => setManualHost(e.target.value)}
-              placeholder="http://127.0.0.1:3017"
-              className="flex-1 px-3 py-2 text-xs font-mono rounded-sm
-                         bg-bg-surface border border-bd-default text-txt-primary
-                         focus:border-scnat-red outline-none"
-            />
-            <button
-              onClick={async () => {
-                setManualStatus('');
-                try {
-                  await onSetManualBaseUrl(manualHost);
-                  setManualStatus('Verbunden');
-                } catch (err) {
-                  setManualStatus(err?.message || 'Verbindung fehlgeschlagen');
-                }
-              }}
-              className="px-4 py-2 rounded-sm text-xs font-medium
-                         bg-bg-surface border border-bd-default text-txt-primary
-                         hover:bg-bd-faint transition-colors"
-            >
-              Host verbinden
-            </button>
-          </div>
-          {(manualStatus || lastError) && (
-            <p className="text-[11px] mt-2 text-txt-secondary">
-              {manualStatus || lastError}
+        <details className="bg-bg-elevated border border-bd-faint rounded-sm p-3 mb-4">
+          <summary className="cursor-pointer text-[11px] font-mono uppercase tracking-wider text-txt-tertiary">
+            Erweiterte Verbindung & Diagnose
+          </summary>
+          <div className="mt-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+              Lokaler Endpoint (Fallback)
             </p>
-          )}
-        </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                value={manualHost}
+                onChange={(e) => setManualHost(e.target.value)}
+                placeholder="http://127.0.0.1:3017"
+                className="flex-1 px-3 py-2 text-xs font-mono rounded-sm
+                           bg-bg-surface border border-bd-default text-txt-primary
+                           focus:border-scnat-red outline-none"
+              />
+              <button
+                onClick={async () => {
+                  setManualStatus('');
+                  try {
+                    await onSetManualBaseUrl(manualHost);
+                    setManualStatus('Verbunden');
+                  } catch (err) {
+                    setManualStatus(err?.message || 'Verbindung fehlgeschlagen');
+                  }
+                }}
+                className="px-4 py-2 rounded-sm text-xs font-medium
+                           bg-bg-surface border border-bd-default text-txt-primary
+                           hover:bg-bd-faint transition-colors"
+              >
+                Host verbinden
+              </button>
+            </div>
+            {(manualStatus || lastError) && (
+              <p className="text-[11px] mt-2 text-txt-secondary">
+                {manualStatus || lastError}
+              </p>
+            )}
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 1</p>
-            <p className="text-xs text-txt-secondary">Echo lokal öffnen (kein Admin nötig).</p>
-          </div>
-          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 2</p>
-            <p className="text-xs text-txt-secondary">Engine startet im Hintergrund auf deinem Mac.</p>
-          </div>
-          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 3</p>
-            <p className="text-xs text-txt-secondary">Zurück im Portal transkribieren und `.md` laden.</p>
-          </div>
-        </div>
-
-        <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
-          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
-            System-Diagnose
-          </p>
-          <pre className="text-[10px] font-mono text-txt-secondary overflow-x-auto">
+          <div className="bg-bg-surface border border-bd-faint rounded-sm p-3 mt-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+              System-Diagnose
+            </p>
+            <pre className="text-[10px] font-mono text-txt-secondary overflow-x-auto">
 {JSON.stringify({
   status,
   hardware: health?.hardware,
   echo_app_detected: health?.echo_app_detected,
 }, null, 2)}
-          </pre>
+            </pre>
+          </div>
+        </details>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 1</p>
+            <p className="text-xs text-txt-secondary">Portal als App öffnen (empfohlen) und auf Start klicken.</p>
+          </div>
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 2</p>
+            <p className="text-xs text-txt-secondary">Echo startet im Hintergrund lokal auf deinem Mac.</p>
+          </div>
+          <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-1">Schritt 3</p>
+            <p className="text-xs text-txt-secondary">Zurück im Portal transkribieren und `.md` laden.</p>
+          </div>
         </div>
 
         <p className="mt-4 text-center text-[10px] font-mono text-txt-tertiary">
