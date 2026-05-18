@@ -250,10 +250,25 @@ export function useEchoEngine() {
   }, [persistBaseUrl]);
 
   const uploadFile = useCallback(async (file) => {
-    const fd = new FormData();
-    fd.append('file', file);
-    const data = await requestJson('/upload', { method: 'POST', body: fd });
-    return { id: data.file_id, name: file.name, size: file.size, path: data.path };
+    // Prefer multipart, but fall back to raw binary upload for local companion daemons
+    // that intentionally avoid external parser dependencies.
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const data = await requestJson('/upload', { method: 'POST', body: fd });
+      return { id: data.file_id, name: file.name, size: file.size, path: data.path };
+    } catch {
+      const encodedName = encodeURIComponent(file.name || 'upload.bin');
+      const data = await requestJson(`/upload?filename=${encodedName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream',
+          'X-SCNAT-Upload-Mode': 'raw',
+        },
+        body: file,
+      });
+      return { id: data.file_id, name: file.name, size: file.size, path: data.path };
+    }
   }, [requestJson]);
 
   const startPolling = useCallback((jobId) => {
