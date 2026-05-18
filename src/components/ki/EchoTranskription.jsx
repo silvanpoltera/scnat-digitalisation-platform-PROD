@@ -93,7 +93,7 @@ export default function EchoTranskription() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-txt-primary">
       <IntroBanner health={health} />
 
       <ActionBar
@@ -541,7 +541,7 @@ function NotAvailableView({ health }) {
   }
 
   return (
-    <div className="bg-bg-surface border border-bd-faint rounded-sm p-8">
+    <div className="bg-bg-surface border border-bd-faint rounded-sm p-8 text-txt-primary">
       <div className="text-center mb-5">
         <div className="text-4xl mb-3">{msg?.emoji || '🔌'}</div>
         <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">

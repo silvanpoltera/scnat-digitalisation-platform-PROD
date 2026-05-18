@@ -1187,24 +1187,6 @@ export default function KiHub() {
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-      {/* Persistent GL guideline banner across all tabs */}
-      {tab !== 'tools' && (
-        <div className="mb-6 bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-4 py-3 flex items-start gap-3">
-          <Shield className="w-4 h-4 text-scnat-red shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-xs text-txt-primary leading-relaxed">
-              <strong>GL-Beschluss März 2025:</strong> Die Nutzung von KI bei der SCNAT unterliegt verbindlichen Richtlinien. Keine vertraulichen oder personenbezogenen Daten in KI-Tools eingeben. Nur freigegebene Tools verwenden. Alle Ergebnisse prüfen.
-            </p>
-            <button
-              onClick={() => setTab('tools')}
-              className="text-[11px] text-scnat-red hover:underline mt-1 font-medium"
-            >
-              → Vollständige Richtlinien ansehen
-            </button>
-          </div>
-        </div>
-      )}
-
       <div className="flex items-center gap-1 mb-6 bg-bg-surface border border-bd-faint rounded-sm p-1 w-full sm:w-fit overflow-x-auto">
         {TABS.map(t => {
           const Icon = t.icon;
@@ -1222,6 +1204,24 @@ export default function KiHub() {
           );
         })}
       </div>
+
+      {/* GL guideline banner under tabs to avoid tab-row jumping */}
+      {tab !== 'tools' && (
+        <div className="mb-6 bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-4 py-3 flex items-start gap-3">
+          <Shield className="w-4 h-4 text-scnat-red shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-xs text-txt-primary leading-relaxed">
+              <strong>GL-Beschluss März 2025:</strong> Die Nutzung von KI bei der SCNAT unterliegt verbindlichen Richtlinien. Keine vertraulichen oder personenbezogenen Daten in KI-Tools eingeben. Nur freigegebene Tools verwenden. Alle Ergebnisse prüfen.
+            </p>
+            <button
+              onClick={() => setTab('tools')}
+              className="text-[11px] text-scnat-red hover:underline mt-1 font-medium"
+            >
+              → Vollständige Richtlinien ansehen
+            </button>
+          </div>
+        </div>
+      )}
 
       {tab === 'denken' && content && (
         <ProfisTab
