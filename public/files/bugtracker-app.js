@@ -46,10 +46,19 @@ const state = {
 
 function applyThemeFromQuery() {
   const params = new URLSearchParams(window.location.search);
-  const theme = params.get('theme');
+  let theme = params.get('theme');
+
+  // Fallback: derive theme from parent document class
+  try {
+    const parentRoot = window.parent?.document?.documentElement;
+    if (parentRoot?.classList?.contains('theme-bright')) theme = 'light';
+    if (parentRoot?.classList?.contains('theme-dark')) theme = 'dark';
+  } catch {
+    // ignore cross-context access errors
+  }
   const root = document.documentElement;
 
-  if (theme === 'light') {
+  if (theme === 'light' || theme === 'bright') {
     const lightVars = {
       '--bg': '#F4F6F8',
       '--surface': '#FFFFFF',
