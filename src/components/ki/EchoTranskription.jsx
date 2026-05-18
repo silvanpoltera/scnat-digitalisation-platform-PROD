@@ -1,0 +1,576 @@
+import { useState, useRef, useCallback } from 'react';
+import {
+  AudioLines, Play, Square, Trash2, Upload, FileText, Sparkles,
+  ShieldCheck, Cpu, HardDrive, Loader2,
+} from 'lucide-react';
+import { useEchoEngine } from '../../hooks/useEchoEngine';
+
+const WHISPER_MODELS = [
+  { id: 'turbo',        label: 'Turbo',        size: '~3 GB',   desc: 'Sehr schnell, hohe Qualität (empfohlen)' },
+  { id: 'large-v3',     label: 'Large V3',     size: '~6 GB',   desc: 'Beste Genauigkeit, etwas langsamer' },
+  { id: 'swiss-german', label: 'Swiss German', size: '~1.5 GB', desc: 'Spezial-Modell für CH-Dialekte → Hochdeutsch' },
+];
+const LANGUAGES = [
+  { id: 'auto', label: 'Automatisch (verwendet Large V3)' },
+  { id: 'de',   label: 'Deutsch' },
+  { id: 'en',   label: 'English' },
+  { id: 'fr',   label: 'Français' },
+  { id: 'it',   label: 'Italiano' },
+];
+
+const STAGE_LABELS = {
+  queued:           'In Warteschlange',
+  extracting_audio: 'Audio wird extrahiert',
+  loading_model:    'Modell wird geladen',
+  transcribing:     'Transkribiert',
+  diarizing:        'Sprecher werden erkannt',
+  polishing:        'Text wird verfeinert',
+  exporting:        'Wird exportiert',
+  done:             'Fertig',
+  cancelled:        'Abgebrochen',
+};
+
+function formatBytes(b) {
+  if (!b) return '–';
+  const u = ['B','KB','MB','GB']; let i = 0;
+  while (b >= 1024 && i < u.length - 1) { b /= 1024; i++; }
+  return `${b.toFixed(1)} ${u[i]}`;
+}
+
+export default function EchoTranskription() {
+  const {
+    health, jobs, isRunning, isAvailable, baseUrl,
+    uploadFile, startJob, stopJob, removeJob, clearQueue, downloadResult,
+  } = useEchoEngine();
+
+  const [files, setFiles] = useState([]);
+  const [settings, setSettings] = useState({
+    model: 'turbo',
+    language: 'auto',
+    enableDiarization: true,
+  });
+  const [dragActive, setDragActive] = useState(false);
+  const [uiError, setUiError] = useState('');
+  const inputRef = useRef(null);
+
+  const handleDrop = useCallback(async (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    setUiError('');
+    for (const file of Array.from(e.dataTransfer.files || [])) {
+      try {
+        const uploaded = await uploadFile(file);
+        setFiles(prev => [...prev, uploaded]);
+      } catch (err) {
+        setUiError(err?.message || 'Upload fehlgeschlagen.');
+      }
+    }
+  }, [uploadFile]);
+
+  const handleStart = useCallback(async () => {
+    setUiError('');
+    for (const file of files) {
+      try {
+        await startJob({ ...file, settings });
+      } catch (err) {
+        setUiError(err?.message || `Job konnte nicht gestartet werden (${file.name}).`);
+      }
+    }
+    setFiles([]);
+  }, [files, settings, startJob]);
+
+  if (health.status === 'unknown') {
+    return (
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-8 flex items-center justify-center gap-3">
+        <Loader2 className="w-4 h-4 text-txt-tertiary animate-spin" />
+        <span className="text-xs text-txt-secondary">Engine-Status wird geprüft...</span>
+      </div>
+    );
+  }
+
+  if (!isAvailable) {
+    return <NotAvailableView health={health} />;
+  }
+
+  return (
+    <div className="space-y-6">
+      <IntroBanner health={health} />
+
+      <ActionBar
+        canStart={files.length > 0 && !isRunning}
+        canStop={isRunning}
+        canClear={jobs.length > 0}
+        onStart={handleStart}
+        onStop={stopJob}
+        onClear={clearQueue}
+      />
+
+      {uiError && (
+        <div className="bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2">
+          <p className="text-xs text-scnat-red">{uiError}</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+        <div className="space-y-6 min-w-0">
+          <DropZone
+            dragActive={dragActive}
+            onDrop={handleDrop}
+            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+            onDragLeave={() => setDragActive(false)}
+            onClick={() => inputRef.current?.click()}
+            inputRef={inputRef}
+            onChange={async (e) => {
+              setUiError('');
+              for (const f of Array.from(e.target.files)) {
+                try {
+                  const up = await uploadFile(f);
+                  setFiles(prev => [...prev, up]);
+                } catch (err) {
+                  setUiError(err?.message || 'Upload fehlgeschlagen.');
+                }
+              }
+              e.target.value = '';
+            }}
+            files={files}
+          />
+
+          <JobQueue
+            jobs={jobs}
+            onRemove={removeJob}
+            onDownload={downloadResult}
+          />
+        </div>
+
+        <SettingsPanel settings={settings} onChange={setSettings} />
+      </div>
+
+      <Footer baseUrl={baseUrl} />
+    </div>
+  );
+}
+
+function IntroBanner({ health }) {
+  return (
+    <div className="bg-bg-surface border border-bd-faint rounded-sm p-5">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="p-2 rounded-sm bg-scnat-red/10">
+          <AudioLines className="w-5 h-5 text-scnat-red" strokeWidth={1.5} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-heading font-semibold text-txt-primary">SCNAT Echo</h3>
+          <p className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider mt-0.5">
+            by Arber Aziri · On-device Transkription
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-status-green/10 border border-status-green/20">
+          <div className="w-1.5 h-1.5 rounded-full bg-status-green" />
+          <span className="text-[10px] font-mono text-status-green">Engine bereit</span>
+        </div>
+      </div>
+
+      <p className="text-xs text-txt-secondary leading-relaxed mb-3">
+        Audio- oder Video-Dateien werden direkt auf deinem Mac transkribiert. Die Audio-Daten verlassen
+        dein Gerät nie — keine Cloud, kein Upload zu externen Servern, kein Datenschutz-Risiko.
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <InfoTile
+          icon={ShieldCheck}
+          label="Datenschutz"
+          value="100 % lokal"
+          tone="green"
+        />
+        <InfoTile
+          icon={Cpu}
+          label="Hardware"
+          value={`Apple Silicon · MLX ${health?.hardware?.mlx_version || '–'}`}
+          tone="blue"
+        />
+        <InfoTile
+          icon={HardDrive}
+          label="Modelle"
+          value={health?.echo_app_detected ? 'Echo.app erkannt' : 'Lokaler Cache'}
+          tone="amber"
+        />
+      </div>
+    </div>
+  );
+}
+
+function InfoTile({ icon: Icon, label, value, tone }) {
+  const toneClass = {
+    green: 'text-status-green',
+    blue:  'text-status-blue',
+    amber: 'text-status-amber',
+  }[tone] || 'text-txt-secondary';
+  return (
+    <div className="bg-bg-elevated border border-bd-faint rounded-sm px-3 py-2">
+      <div className="flex items-center gap-1.5 mb-0.5">
+        <Icon className={`w-3 h-3 ${toneClass}`} />
+        <p className="text-[10px] font-mono text-txt-tertiary uppercase tracking-wider">{label}</p>
+      </div>
+      <p className="text-xs text-txt-primary truncate">{value}</p>
+    </div>
+  );
+}
+
+function ActionBar({ canStart, canStop, canClear, onStart, onStop, onClear }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2 p-3 rounded-sm bg-bg-surface border border-bd-faint">
+      <button
+        onClick={onStart}
+        disabled={!canStart}
+        className="flex items-center gap-2 px-4 py-2 rounded-sm
+                   bg-scnat-red text-white text-xs font-medium
+                   hover:bg-scnat-darkred disabled:bg-bd-default disabled:text-txt-tertiary
+                   transition-colors"
+      >
+        <Play className="w-3.5 h-3.5" strokeWidth={2.5} />
+        Start Transkription
+      </button>
+      <button
+        onClick={onStop}
+        disabled={!canStop}
+        className="flex items-center justify-center w-9 h-9 rounded-sm
+                   bg-bg-elevated border border-bd-default text-txt-primary
+                   hover:bg-bd-faint disabled:text-txt-tertiary disabled:hover:bg-bg-elevated
+                   transition-colors"
+        title="Aktuellen Job stoppen"
+      >
+        <Square className="w-3.5 h-3.5" />
+      </button>
+      <div className="flex-1" />
+      <button
+        onClick={onClear}
+        disabled={!canClear}
+        className="flex items-center justify-center w-9 h-9 rounded-sm
+                   bg-bg-elevated border border-bd-default text-txt-secondary
+                   hover:bg-bd-faint disabled:text-txt-tertiary disabled:hover:bg-bg-elevated
+                   transition-colors"
+        title="Warteschlange leeren"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function DropZone({ dragActive, onDrop, onDragOver, onDragLeave, onClick, inputRef, onChange, files }) {
+  return (
+    <div>
+      <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+        Dateien
+      </p>
+      <div
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onClick={onClick}
+        className={`relative rounded-sm p-8 cursor-pointer
+                    border-2 border-dashed transition-all duration-150
+                    ${dragActive
+                      ? 'border-scnat-red bg-scnat-red/5'
+                      : 'border-bd-default bg-bg-surface hover:bg-bg-elevated'}`}
+      >
+        <input
+          ref={inputRef}
+          type="file" multiple accept="audio/*,video/*"
+          className="hidden"
+          onChange={onChange}
+        />
+        <div className="flex flex-col items-center text-center gap-2">
+          <Upload className={`w-8 h-8 ${dragActive ? 'text-scnat-red' : 'text-txt-tertiary'}`}
+                  strokeWidth={1.2} />
+          <p className="text-xs text-txt-primary font-medium">
+            Dateien hierher ziehen oder klicken
+          </p>
+          <p className="text-[10px] font-mono text-txt-tertiary">
+            mp3 · wav · m4a · flac · ogg · mp4 · mov · mkv
+          </p>
+        </div>
+      </div>
+      {files.length > 0 && (
+        <div className="mt-2 space-y-1">
+          {files.map(f => (
+            <div key={f.id} className="flex items-center gap-2 px-3 py-2 rounded-sm
+                                        bg-bg-surface border border-bd-faint">
+              <FileText className="w-3.5 h-3.5 text-txt-secondary shrink-0" />
+              <span className="flex-1 text-xs text-txt-primary truncate">{f.name}</span>
+              <span className="text-[10px] font-mono text-txt-tertiary">{formatBytes(f.size)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function JobQueue({ jobs, onRemove, onDownload }) {
+  const completed = jobs.filter(j => j.status === 'completed').length;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary">
+          Warteschlange
+        </p>
+        <span className="text-[10px] font-mono text-txt-tertiary">
+          {completed} / {jobs.length}
+        </span>
+      </div>
+      {jobs.length === 0 ? (
+        <div className="text-center py-8 bg-bg-surface border border-bd-faint border-dashed rounded-sm">
+          <p className="text-xs text-txt-tertiary">Keine Jobs in der Warteschlange</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {jobs.map(job => (
+            <JobCard
+              key={job.id}
+              job={job}
+              onRemove={() => onRemove(job.id)}
+              onDownload={(format) => onDownload(job.id, format)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function JobCard({ job, onRemove, onDownload }) {
+  const statusBgClass = {
+    queued:     'bg-status-amber',
+    pending:    'bg-status-amber',
+    processing: 'bg-status-blue',
+    completed:  'bg-status-green',
+    error:      'bg-scnat-red',
+    cancelled:  'bg-txt-tertiary',
+  }[job.status] || 'bg-txt-tertiary';
+  const isActive = job.status === 'processing';
+  const stageLabel = STAGE_LABELS[job.stage] || job.stage;
+
+  return (
+    <div className={`rounded-sm border p-3 transition-colors
+                     ${isActive
+                       ? 'bg-bg-elevated border-l-2 border-l-scnat-red border-bd-faint'
+                       : 'bg-bg-surface border-bd-faint'}`}>
+      <div className="flex items-center gap-2 mb-1">
+        <div className={`w-1.5 h-1.5 rounded-full ${statusBgClass} shrink-0`} />
+        <span className="flex-1 text-xs font-medium text-txt-primary truncate">{job.filename}</span>
+        <span className="text-[10px] font-mono text-txt-tertiary shrink-0">{formatBytes(job.size)}</span>
+        <button
+          onClick={onRemove}
+          className="text-txt-tertiary hover:text-scnat-red transition-colors p-0.5"
+          title="Entfernen"
+        >
+          <Trash2 className="w-3 h-3" />
+        </button>
+      </div>
+
+      {(job.status === 'processing' || job.status === 'queued') && (
+        <>
+          <div className="h-1 bg-bd-faint rounded-full overflow-hidden mb-1.5">
+            <div className="h-full bg-scnat-red transition-all duration-300"
+                 style={{ width: `${(job.progress || 0) * 100}%` }} />
+          </div>
+          <p className="text-[10px] font-mono text-txt-secondary">
+            {stageLabel} · {Math.round((job.progress || 0) * 100)}%
+          </p>
+        </>
+      )}
+
+      {job.status === 'completed' && (
+        <div className="flex items-center gap-1.5 mt-1.5">
+          <span className="text-[10px] font-mono text-status-green mr-1">Fertig — Download:</span>
+          {['md','srt','txt','json'].map(fmt => (
+            <button
+              key={fmt}
+              onClick={() => onDownload(fmt)}
+              className="px-1.5 py-0.5 text-[10px] font-mono rounded-sm
+                         bg-bg-elevated border border-bd-default text-txt-primary
+                         hover:border-scnat-red transition-colors"
+            >
+              .{fmt}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {job.status === 'cancelled' && (
+        <p className="text-[10px] font-mono text-txt-tertiary mt-1">Abgebrochen</p>
+      )}
+
+      {job.status === 'error' && (
+        <p className="text-[10px] font-mono text-scnat-red mt-1">{job.error || 'Unbekannter Fehler'}</p>
+      )}
+    </div>
+  );
+}
+
+function SettingsPanel({ settings, onChange }) {
+  return (
+    <aside className="space-y-5">
+      <SettingsSection label="Whisper Modell">
+        <Select
+          value={settings.model}
+          options={WHISPER_MODELS}
+          onChange={(model) => onChange({ ...settings, model })}
+        />
+      </SettingsSection>
+
+      <SettingsSection label="Sprache der Aufnahme">
+        <Select
+          value={settings.language}
+          options={LANGUAGES}
+          onChange={(language) => onChange({ ...settings, language })}
+        />
+      </SettingsSection>
+
+      <SettingsSection label="Modus">
+        <label className="flex items-start gap-2 cursor-pointer mb-1.5">
+          <input
+            type="radio"
+            checked={!settings.enableDiarization}
+            onChange={() => onChange({ ...settings, enableDiarization: false })}
+            className="accent-scnat-red mt-0.5"
+          />
+          <div>
+            <span className="text-xs text-txt-primary block">Schnell</span>
+            <span className="text-[10px] text-txt-tertiary">Nur Transkription</span>
+          </div>
+        </label>
+        <label className="flex items-start gap-2 cursor-pointer">
+          <input
+            type="radio"
+            checked={settings.enableDiarization}
+            onChange={() => onChange({ ...settings, enableDiarization: true })}
+            className="accent-scnat-red mt-0.5"
+          />
+          <div>
+            <span className="text-xs text-txt-primary block">Vollständig</span>
+            <span className="text-[10px] text-txt-tertiary">Mit Sprechererkennung</span>
+          </div>
+        </label>
+      </SettingsSection>
+
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-3">
+        <div className="flex items-start gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-scnat-red shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-wider text-scnat-red mb-1">
+              Demnächst
+            </p>
+            <p className="text-[11px] text-txt-secondary leading-relaxed">
+              LLM-Polish, mehrere Output-Formate (SRT, VTT) und Min/Max-Sprecher-Hints kommen in v1.1.
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function SettingsSection({ label, children }) {
+  return (
+    <div>
+      <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function Select({ value, options, onChange }) {
+  const selected = options.find(o => o.id === value);
+  return (
+    <div className="space-y-1">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-2.5 py-1.5 rounded-sm
+                   bg-bg-surface border border-bd-default text-txt-primary text-xs
+                   focus:border-scnat-red outline-none cursor-pointer"
+      >
+        {options.map(o => (
+          <option key={o.id} value={o.id}>
+            {o.label}{o.size ? ` · ${o.size}` : ''}
+          </option>
+        ))}
+      </select>
+      {selected?.desc && (
+        <p className="text-[10px] text-txt-tertiary px-0.5 leading-relaxed">{selected.desc}</p>
+      )}
+    </div>
+  );
+}
+
+function Footer({ baseUrl }) {
+  return (
+    <div className="pt-3 border-t border-bd-faint text-center space-y-1">
+      <p className="text-[10px] font-mono text-txt-tertiary">
+        {baseUrl ? `Verbunden mit lokaler Engine: ${baseUrl}` : 'Lokale Engine nicht verbunden'}
+      </p>
+      <p className="text-[10px] font-mono text-txt-tertiary">
+        SCNAT Echo · v1.0 · powered by mlx-whisper &amp; pyannote · by Arber Aziri
+      </p>
+    </div>
+  );
+}
+
+function NotAvailableView({ health }) {
+  const status = health?.compat_status;
+  const msg = health?.user_message;
+
+  const isInstalling = status === 'installing' || health?.engine === 'installing';
+
+  if (isInstalling) {
+    return (
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-8 text-center">
+        <Loader2 className="w-8 h-8 text-scnat-red animate-spin mx-auto mb-3" />
+        <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">
+          Engine wird im Hintergrund installiert…
+        </h3>
+        <p className="text-xs text-txt-secondary">
+          Das passiert nur beim ersten Mal. In ein paar Minuten ist alles bereit.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-bg-surface border border-bd-faint rounded-sm p-8">
+      <div className="text-center mb-5">
+        <div className="text-4xl mb-3">{msg?.emoji || '🔌'}</div>
+        <h3 className="text-sm font-heading font-semibold text-txt-primary mb-1">
+          {msg?.title || 'SCNAT Echo Engine läuft nicht'}
+        </h3>
+        <p className="text-xs text-txt-secondary leading-relaxed max-w-md mx-auto">
+          {msg?.body || 'Die lokale Engine ist nicht erreichbar. Starte das Portal über ./start.sh, dann läuft sie automatisch mit.'}
+        </p>
+        {msg?.hint && (
+          <p className="text-[11px] text-txt-tertiary italic mt-2">{msg.hint}</p>
+        )}
+      </div>
+
+      <div className="bg-bg-elevated border border-bd-faint rounded-sm p-3">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+          System-Diagnose
+        </p>
+        <pre className="text-[10px] font-mono text-txt-secondary overflow-x-auto">
+{JSON.stringify({
+  status,
+  hardware: health?.hardware,
+  echo_app_detected: health?.echo_app_detected,
+}, null, 2)}
+        </pre>
+      </div>
+
+      <p className="mt-4 text-center text-[10px] font-mono text-txt-tertiary">
+        SCNAT Echo · by Arber Aziri
+      </p>
+    </div>
+  );
+}

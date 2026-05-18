@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Brain, MessageSquare, Wrench, ChevronDown, Shield, AlertTriangle, Lock, FileText, Layers, Cpu, Keyboard, Sparkles, Settings, FolderOpen, Bot, Upload, PenTool, Zap, Database, GitBranch, Workflow, Eye, Scale, Compass, BookOpen } from 'lucide-react';
+import { Brain, MessageSquare, Wrench, ChevronDown, Shield, AlertTriangle, Lock, FileText, Layers, Cpu, Keyboard, Sparkles, Settings, FolderOpen, Bot, Upload, PenTool, Zap, Database, GitBranch, Workflow, Eye, Scale, Compass, BookOpen, AudioLines } from 'lucide-react';
 import KiFramework from '../components/ki/KiFramework';
 import LlmComparison from '../components/ki/LlmComparison';
 import OllamaSection from '../components/ki/OllamaSection';
 import PromptTips from '../components/ki/PromptTips';
+import EchoTranskription from '../components/ki/EchoTranskription';
 import PageHeader from '../components/PageHeader';
 
 const TABS = [
   { id: 'tools', label: 'Tools & Richtlinien', icon: Wrench },
   { id: 'chatgpt', label: 'ChatGPT nutzen', icon: MessageSquare },
   { id: 'denken', label: 'KI für Profis', icon: Brain },
+  { id: 'echo', label: 'SCNAT Echo', icon: AudioLines },
 ];
 
 function CotVisualization({ szenarien }) {
@@ -1244,6 +1246,8 @@ export default function KiHub() {
           <PromptTips />
         </div>
       )}
+
+      {tab === 'echo' && <EchoTranskription />}
     </div>
     </div>
   );
