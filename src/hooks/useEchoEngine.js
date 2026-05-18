@@ -50,6 +50,15 @@ function triggerDeepLink(url) {
   setTimeout(() => iframe.remove(), 1500);
 }
 
+function reclaimPortalFocus() {
+  const tryFocus = () => {
+    try { window.focus(); } catch {}
+  };
+  tryFocus();
+  setTimeout(tryFocus, 180);
+  setTimeout(tryFocus, 500);
+}
+
 export function useEchoEngine() {
   const [health, setHealth] = useState({ status: 'unknown' });
   const [jobs, setJobs] = useState([]);
@@ -181,11 +190,13 @@ export function useEchoEngine() {
           const res = await fetch(`${candidate}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ background: true, prefer_portal_focus: true }),
             signal: timeout.signal,
           });
           if (res.ok) {
             setBaseUrl(candidate);
             persistBaseUrl(candidate);
+            reclaimPortalFocus();
             break;
           }
         } catch {
@@ -199,6 +210,7 @@ export function useEchoEngine() {
       for (const link of links) {
         triggerDeepLink(link);
         await sleep(350);
+        reclaimPortalFocus();
       }
 
       for (let i = 0; i < AUTOSTART_POLL_ATTEMPTS; i += 1) {
