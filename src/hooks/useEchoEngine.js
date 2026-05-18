@@ -38,22 +38,6 @@ async function safeJson(response) {
   }
 }
 
-function normalizeHealth(data) {
-  if (data?.engine === 'bridge_only') {
-    return {
-      ...data,
-      status: 'ok',
-      compat_status: 'bridge_only',
-      user_message: {
-        title: 'SCNAT Echo ist vorbereitet',
-        body: 'Der lokale Bridge-Dienst läuft. Öffne Echo im Hintergrund, danach ist die Transkription verfügbar.',
-        emoji: '🧩',
-      },
-    };
-  }
-  return data;
-}
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -91,7 +75,7 @@ export function useEchoEngine() {
       try {
         const r = await fetch(`${candidate}/health`, { signal: timeout.signal });
         if (!r.ok) continue;
-        const data = normalizeHealth(await r.json());
+        const data = await r.json();
         return { base: candidate, data };
       } catch {
         // Probe next candidate.
@@ -119,7 +103,7 @@ export function useEchoEngine() {
       compat_status: 'sidecar_not_running',
       user_message: {
         title: 'SCNAT Echo Engine läuft nicht',
-        body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host oder die CORS-Freigabe für platform.poltis.ch.',
+        body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host und versuche es erneut.',
         emoji: '🔌',
       },
     });
@@ -145,7 +129,7 @@ export function useEchoEngine() {
           compat_status: 'sidecar_not_running',
           user_message: {
             title: 'SCNAT Echo Engine läuft nicht',
-            body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host oder die CORS-Freigabe für platform.poltis.ch.',
+            body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host und versuche es erneut.',
             emoji: '🔌',
           },
         });
