@@ -446,17 +446,23 @@ function PendingFileRow({ file, baseUrl }) {
             className="hidden"
           />
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (!audioRef.current) return;
+              if (!audioRef.current.paused) {
+                audioRef.current.pause();
+                return;
+              }
               audioRef.current.play().catch(() => {});
             }}
             className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-            title="Audio-Vorschau starten"
+            title={playing ? 'Audio-Vorschau pausieren' : 'Audio-Vorschau starten'}
           >
-            <Play className="w-3 h-3" />
+            <Play className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
           </button>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (!audioRef.current) return;
               audioRef.current.pause();
               audioRef.current.currentTime = 0;
@@ -560,12 +566,16 @@ function JobCard({ job, baseUrl, onRemove, onDownload }) {
                 <button
                   onClick={() => {
                     if (!audioRef.current) return;
+                    if (!audioRef.current.paused) {
+                      audioRef.current.pause();
+                      return;
+                    }
                     audioRef.current.play().catch(() => {});
                   }}
                   className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-                  title="Audio-Vorschau starten"
+                  title={playing ? 'Audio-Vorschau pausieren' : 'Audio-Vorschau starten'}
                 >
-                  <Play className="w-3 h-3" />
+                  <Play className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
                 </button>
                 <button
                   onClick={() => {
