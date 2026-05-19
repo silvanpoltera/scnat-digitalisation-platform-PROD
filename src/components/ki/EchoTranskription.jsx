@@ -36,6 +36,15 @@ const DEFAULT_ECHO_ADDONS = {
       it: '',
     },
   },
+  document_template: {
+    title: 'Meeting-Transkript',
+    dateLabel: 'Datum',
+    participantsLabel: 'Teilnehmer',
+    unknownParticipants: 'Nicht eindeutig erkennbar',
+    summaryLabel: 'Management Summary',
+    bulletLabel: 'Besprochene Punkte',
+    transcriptLabel: 'Transkription',
+  },
 };
 
 const STAGE_LABELS = {
@@ -94,6 +103,10 @@ export default function EchoTranskription() {
               ...(data?.polish?.prompts || {}),
             },
           },
+          document_template: {
+            ...DEFAULT_ECHO_ADDONS.document_template,
+            ...(data?.document_template || {}),
+          },
         });
       })
       .catch(() => setEchoAddOns(DEFAULT_ECHO_ADDONS));
@@ -122,6 +135,7 @@ export default function EchoTranskription() {
       enablePromptPolish: settings.enablePromptPolish && echoAddOns?.polish?.enabled_default !== false,
       polishPrompt: selectedPrompt,
       polishSystemPrompt: echoAddOns?.polish?.system_prompt || '',
+      documentTemplate: echoAddOns?.document_template || DEFAULT_ECHO_ADDONS.document_template,
     };
     for (let i = 0; i < files.length; i += maxParallel) {
       const batch = files.slice(i, i + maxParallel);
@@ -575,7 +589,12 @@ function SettingsPanel({ settings, onChange }) {
           </div>
         </label>
         <div>
-          <p className="text-[10px] font-mono text-txt-tertiary mb-1">Parallelität</p>
+          <p
+            className="text-[10px] font-mono text-txt-tertiary mb-1 cursor-help"
+            title="Wie viele Dateien gleichzeitig gestartet werden. Mehr Parallelität ist schneller, belastet aber den Mac stärker."
+          >
+            Parallelität
+          </p>
           <Select
             value={String(settings.parallelJobs)}
             options={[

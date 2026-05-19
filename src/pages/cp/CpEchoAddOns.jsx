@@ -16,6 +16,15 @@ const DEFAULTS = {
       it: 'Riformula tutto il testo in italiano chiaro. Correggi parole di riempimento e punteggiatura.',
     },
   },
+  document_template: {
+    title: 'Meeting-Transkript',
+    dateLabel: 'Datum',
+    participantsLabel: 'Teilnehmer',
+    unknownParticipants: 'Nicht eindeutig erkennbar',
+    summaryLabel: 'Management Summary',
+    bulletLabel: 'Besprochene Punkte',
+    transcriptLabel: 'Transkription',
+  },
 };
 
 function mergeWithDefaults(raw) {
@@ -29,6 +38,10 @@ function mergeWithDefaults(raw) {
         ...DEFAULTS.polish.prompts,
         ...(raw?.polish?.prompts || {}),
       },
+    },
+    document_template: {
+      ...DEFAULTS.document_template,
+      ...(raw?.document_template || {}),
     },
   };
 }
@@ -50,13 +63,21 @@ export default function CpEchoAddOns() {
 
   const update = (path, value) => {
     setConfig((prev) => {
-      const next = { ...prev, polish: { ...prev.polish, prompts: { ...prev.polish.prompts } } };
+      const next = {
+        ...prev,
+        polish: { ...prev.polish, prompts: { ...prev.polish.prompts } },
+        document_template: { ...prev.document_template },
+      };
       if (path === 'beta_note') next.beta_note = value;
       if (path === 'polish.enabled_default') next.polish.enabled_default = value;
       if (path === 'polish.system_prompt') next.polish.system_prompt = value;
       if (path.startsWith('polish.prompts.')) {
         const key = path.split('.').at(-1);
         next.polish.prompts[key] = value;
+      }
+      if (path.startsWith('document_template.')) {
+        const key = path.split('.').at(-1);
+        next.document_template[key] = value;
       }
       return next;
     });
@@ -169,6 +190,29 @@ export default function CpEchoAddOns() {
               rows={4}
               value={config.polish?.prompts?.[item.key] || ''}
               onChange={(e) => update(`polish.prompts.${item.key}`, e.target.value)}
+              className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-bg-surface border border-bd-faint rounded-sm p-4 space-y-3">
+        <p className="text-xs font-medium text-txt-secondary">Output-Struktur fuer das Markdown</p>
+        {[
+          { key: 'title', label: 'Titel' },
+          { key: 'dateLabel', label: 'Label fuer Datum' },
+          { key: 'participantsLabel', label: 'Label fuer Teilnehmer' },
+          { key: 'unknownParticipants', label: 'Fallback wenn Teilnehmer unbekannt' },
+          { key: 'summaryLabel', label: 'Label fuer Management Summary' },
+          { key: 'bulletLabel', label: 'Label fuer Stichpunkte' },
+          { key: 'transcriptLabel', label: 'Label fuer Transkription' },
+        ].map((item) => (
+          <div key={item.key}>
+            <label className="text-xs text-txt-secondary block mb-1">{item.label}</label>
+            <input
+              type="text"
+              value={config.document_template?.[item.key] || ''}
+              onChange={(e) => update(`document_template.${item.key}`, e.target.value)}
               className="w-full bg-bg-elevated border border-bd-faint text-txt-primary text-sm px-3 py-2 rounded-sm focus:border-scnat-red focus:outline-none"
             />
           </div>

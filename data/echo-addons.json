@@ -12,5 +12,14 @@
       "fr": "Formule tout le texte en francais clair. Corrige les mots de remplissage et la ponctuation.",
       "it": "Riformula tutto il testo in italiano chiaro. Correggi parole di riempimento e punteggiatura."
     }
+  },
+  "document_template": {
+    "title": "Meeting-Transkript",
+    "dateLabel": "Datum",
+    "participantsLabel": "Teilnehmer",
+    "unknownParticipants": "Nicht eindeutig erkennbar",
+    "summaryLabel": "Management Summary",
+    "bulletLabel": "Besprochene Punkte",
+    "transcriptLabel": "Transkription"
   }
 }
