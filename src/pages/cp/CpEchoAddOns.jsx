@@ -123,7 +123,7 @@ export default function CpEchoAddOns() {
         <div>
           <h2 className="text-xl font-heading font-semibold text-txt-primary">Echo Add-Ons</h2>
           <p className="text-xs text-txt-secondary mt-1">
-            Diese Prompts gelten global fuer alle User auf Live und werden bei jedem Echo-Job geladen.
+            Diese Prompts gelten global für alle User auf Live und werden bei jedem Echo-Job geladen.
           </p>
         </div>
         <button
@@ -162,7 +162,7 @@ export default function CpEchoAddOns() {
             onChange={(e) => update('polish.enabled_default', e.target.checked)}
           />
           <label htmlFor="echo-polish-default" className="text-xs text-txt-secondary">
-            Prompt-Polish standardmaessig aktiviert
+            Prompt-Polish standardmässig aktiviert
           </label>
         </div>
 
@@ -181,7 +181,7 @@ export default function CpEchoAddOns() {
         {[
           { key: 'multi', label: 'Prompt Multi-Sprache' },
           { key: 'de', label: 'Prompt Alles auf Deutsch' },
-          { key: 'fr', label: 'Prompt Alles auf Franzoesisch' },
+          { key: 'fr', label: 'Prompt Alles auf Französisch' },
           { key: 'it', label: 'Prompt Alles auf Italienisch' },
         ].map((item) => (
           <div key={item.key} className="bg-bg-surface border border-bd-faint rounded-sm p-4">
@@ -197,15 +197,15 @@ export default function CpEchoAddOns() {
       </div>
 
       <div className="bg-bg-surface border border-bd-faint rounded-sm p-4 space-y-3">
-        <p className="text-xs font-medium text-txt-secondary">Output-Struktur fuer das Markdown</p>
+        <p className="text-xs font-medium text-txt-secondary">Output-Struktur für das Markdown</p>
         {[
           { key: 'title', label: 'Titel' },
-          { key: 'dateLabel', label: 'Label fuer Datum' },
-          { key: 'participantsLabel', label: 'Label fuer Teilnehmer' },
+          { key: 'dateLabel', label: 'Label für Datum' },
+          { key: 'participantsLabel', label: 'Label für Teilnehmer' },
           { key: 'unknownParticipants', label: 'Fallback wenn Teilnehmer unbekannt' },
-          { key: 'summaryLabel', label: 'Label fuer Management Summary' },
-          { key: 'bulletLabel', label: 'Label fuer Stichpunkte' },
-          { key: 'transcriptLabel', label: 'Label fuer Transkription' },
+          { key: 'summaryLabel', label: 'Label für Management Summary' },
+          { key: 'bulletLabel', label: 'Label für Stichpunkte' },
+          { key: 'transcriptLabel', label: 'Label für Transkription' },
         ].map((item) => (
           <div key={item.key}>
             <label className="text-xs text-txt-secondary block mb-1">{item.label}</label>
@@ -223,7 +223,7 @@ export default function CpEchoAddOns() {
         <Sparkles className="w-4 h-4 text-status-blue shrink-0 mt-0.5" />
         <p className="text-xs text-txt-secondary leading-relaxed">
           Hinweis: Diese Add-Ons steuern den globalen Echo-Polish-Flow.
-          Nach dem Speichern sind sie fuer alle Nutzer sichtbar, sobald diese den Echo-Bereich neu laden.
+          Nach dem Speichern sind sie für alle Nutzer sichtbar, sobald diese den Echo-Bereich neu laden.
         </p>
       </div>
     </div>
