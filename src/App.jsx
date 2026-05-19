@@ -27,6 +27,7 @@ import MeineUebersicht from './pages/MeineUebersicht';
 
 import CpDashboard from './pages/cp/CpDashboard';
 import CpContent from './pages/cp/CpContent';
+import CpEchoAddOns from './pages/cp/CpEchoAddOns';
 import CpEvents from './pages/cp/CpEvents';
 import CpAntraege from './pages/cp/CpAntraege';
 import CpUsers from './pages/cp/CpUsers';
@@ -86,6 +87,7 @@ function App() {
           <Route element={<AdminRoute><CpLayout /></AdminRoute>}>
             <Route path="/cp" element={<CpDashboard />} />
             <Route path="/cp/content" element={<CpContent />} />
+            <Route path="/cp/echo-addons" element={<CpEchoAddOns />} />
             <Route path="/cp/events" element={<CpEvents />} />
             <Route path="/cp/antraege" element={<CpAntraege />} />
             <Route path="/cp/users" element={<CpUsers />} />

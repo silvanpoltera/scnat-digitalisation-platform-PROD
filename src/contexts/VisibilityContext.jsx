@@ -16,7 +16,7 @@ const DEFAULT_PORTAL_KEYS = [
 
 const DEFAULT_CP_KEYS = [
   'cp-dashboard', 'cp-live-infos', 'cp-news', 'cp-nachrichten',
-  'cp-content', 'cp-events', 'cp-antraege', 'cp-users', 'cp-changes',
+  'cp-content', 'cp-echo-addons', 'cp-events', 'cp-antraege', 'cp-users', 'cp-changes',
   'cp-massnahmen', 'cp-sprints', 'cp-themen', 'cp-scnat-db',
   'cp-sichtbarkeit', 'cp-admin-stuff',
 ];

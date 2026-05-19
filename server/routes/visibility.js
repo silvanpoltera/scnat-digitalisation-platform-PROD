@@ -13,7 +13,7 @@ const DEFAULT_PORTAL = [
 
 const DEFAULT_CP = [
   'cp-dashboard', 'cp-live-infos', 'cp-news', 'cp-nachrichten',
-  'cp-content', 'cp-events', 'cp-antraege', 'cp-users', 'cp-changes',
+  'cp-content', 'cp-echo-addons', 'cp-events', 'cp-antraege', 'cp-users', 'cp-changes',
   'cp-massnahmen', 'cp-sprints', 'cp-themen', 'cp-scnat-db',
   'cp-sichtbarkeit', 'cp-admin-stuff', 'cp-admin-details',
 ];

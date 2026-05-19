@@ -4,7 +4,7 @@ import {
   CalendarRange,
   LayoutDashboard, FileText, Calendar, Inbox, GitPullRequest,
   MessageSquare, Radio, Newspaper, Megaphone, FolderOpen, Eye,
-  ClipboardList,
+  ClipboardList, Sparkles,
 } from 'lucide-react';
 
 const ALL_SECTIONS = {
@@ -27,6 +27,7 @@ const ALL_SECTIONS = {
   'cp-news':           { label: 'News',               icon: Newspaper,       path: '/cp/news' },
   'cp-nachrichten':    { label: 'Nachrichten',        icon: Megaphone,       path: '/cp/nachrichten' },
   'cp-content':        { label: 'Content',            icon: FileText,        path: '/cp/content' },
+  'cp-echo-addons':    { label: 'Echo Add-Ons',      icon: Sparkles,        path: '/cp/echo-addons' },
   'cp-events':         { label: 'Events',             icon: Calendar,        path: '/cp/events' },
   'cp-antraege':       { label: 'Software Anträge',   icon: Inbox,           path: '/cp/antraege' },
   'cp-users':          { label: 'Users',              icon: Users,           path: '/cp/users' },

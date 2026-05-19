@@ -25,6 +25,19 @@ const OUTPUT_LANGUAGE_MODES = [
   { id: 'it', label: 'Alles auf Italienisch' },
 ];
 
+const DEFAULT_ECHO_ADDONS = {
+  polish: {
+    enabled_default: true,
+    system_prompt: '',
+    prompts: {
+      multi: '',
+      de: '',
+      fr: '',
+      it: '',
+    },
+  },
+};
+
 const STAGE_LABELS = {
   queued:           'In Warteschlange',
   extracting_audio: 'Audio wird extrahiert',
@@ -63,7 +76,28 @@ export default function EchoTranskription() {
   });
   const [dragActive, setDragActive] = useState(false);
   const [uiError, setUiError] = useState('');
+  const [echoAddOns, setEchoAddOns] = useState(DEFAULT_ECHO_ADDONS);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    fetch('/api/echo-addons', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((data) => {
+        setEchoAddOns({
+          ...DEFAULT_ECHO_ADDONS,
+          ...(data || {}),
+          polish: {
+            ...DEFAULT_ECHO_ADDONS.polish,
+            ...(data?.polish || {}),
+            prompts: {
+              ...DEFAULT_ECHO_ADDONS.polish.prompts,
+              ...(data?.polish?.prompts || {}),
+            },
+          },
+        });
+      })
+      .catch(() => setEchoAddOns(DEFAULT_ECHO_ADDONS));
+  }, []);
 
   const handleDrop = useCallback(async (e) => {
     e.preventDefault();
@@ -82,10 +116,17 @@ export default function EchoTranskription() {
   const handleStart = useCallback(async () => {
     setUiError('');
     const maxParallel = Math.max(1, Number(settings.parallelJobs || 1));
+    const selectedPrompt = echoAddOns?.polish?.prompts?.[settings.outputLanguageMode] || '';
+    const runtimeSettings = {
+      ...settings,
+      enablePromptPolish: settings.enablePromptPolish && echoAddOns?.polish?.enabled_default !== false,
+      polishPrompt: selectedPrompt,
+      polishSystemPrompt: echoAddOns?.polish?.system_prompt || '',
+    };
     for (let i = 0; i < files.length; i += maxParallel) {
       const batch = files.slice(i, i + maxParallel);
       const results = await Promise.allSettled(
-        batch.map((file) => startJob({ ...file, settings })),
+        batch.map((file) => startJob({ ...file, settings: runtimeSettings })),
       );
       const failed = results.find((result) => result.status === 'rejected');
       if (failed?.reason) {
@@ -93,7 +134,7 @@ export default function EchoTranskription() {
       }
     }
     setFiles([]);
-  }, [files, settings, startJob]);
+  }, [echoAddOns, files, settings, startJob]);
 
   if (isMobile) {
     return <MobileOnlyEchoInfo />;
@@ -545,6 +586,9 @@ function SettingsPanel({ settings, onChange }) {
             onChange={(parallelJobs) => onChange({ ...settings, parallelJobs: Number(parallelJobs) })}
           />
         </div>
+        <p className="text-[10px] text-txt-tertiary mt-2">
+          Polish-Prompts werden global aus dem Control Panel (Echo Add-Ons) geladen.
+        </p>
       </SettingsSection>
 
       <div className="bg-bg-surface border border-bd-faint rounded-sm p-3">
