@@ -438,7 +438,7 @@ function DropZone({ baseUrl, dragActive, onDrop, onDragOver, onDragLeave, onClic
 function PendingFileRow({ file, baseUrl }) {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
-  const previewUrl = file.previewUrl || (baseUrl && file.id ? `${baseUrl}/files/${file.id}` : null);
+  const previewUrl = (baseUrl && file.id ? `${baseUrl}/files/${file.id}/preview.mp3` : file.previewUrl) || null;
 
   return (
     <div className="flex items-center gap-2 px-3 py-2 rounded-sm bg-bg-surface border border-bd-faint">
@@ -536,7 +536,7 @@ function JobCard({ job, baseUrl, onRemove, onDownload }) {
   const stageLabel = STAGE_LABELS[job.stage] || job.stage;
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
-  const previewUrl = baseUrl && job.file_id ? `${baseUrl}/files/${job.file_id}` : null;
+  const previewUrl = baseUrl && job.file_id ? `${baseUrl}/files/${job.file_id}/preview.mp3` : null;
 
   return (
     <div className={`rounded-sm border p-3 transition-colors
