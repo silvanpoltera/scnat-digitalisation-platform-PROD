@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { readJSON, writeJSON } from '../utils.js';
+import { readJSONAsync, writeJSONAtomic, withDataLock } from '../utils.js';
 import { requireAuth } from '../auth.js';
 
 const router = Router();
 const FILE = 'software-votes.json';
 
-router.get('/', requireAuth, (req, res) => {
-  const votes = readJSON(FILE);
+router.get('/', requireAuth, async (req, res) => {
+  const votes = await readJSONAsync(FILE);
   const safe = votes.map(({ userId, ...v }) => ({
     ...v,
     isOwn: userId === req.user.id,
@@ -14,8 +14,8 @@ router.get('/', requireAuth, (req, res) => {
   res.json(safe);
 });
 
-router.get('/ranking', requireAuth, (_req, res) => {
-  const votes = readJSON(FILE);
+router.get('/ranking', requireAuth, async (_req, res) => {
+  const votes = await readJSONAsync(FILE);
   const grouped = {};
 
   votes.forEach(v => {
@@ -34,32 +34,36 @@ router.get('/ranking', requireAuth, (_req, res) => {
   res.json(ranking);
 });
 
-router.post('/', requireAuth, (req, res) => {
+router.post('/', requireAuth, async (req, res) => {
   const { softwareId, type } = req.body;
   if (!softwareId || !['up', 'down', 'interest'].includes(type)) {
     return res.status(400).json({ error: 'softwareId und type (up/down/interest) erforderlich' });
   }
 
-  const data = readJSON(FILE);
-  const existingIdx = data.findIndex(v => v.softwareId === softwareId && v.userId === req.user.id);
+  await withDataLock(async () => {
+    const data = await readJSONAsync(FILE);
+    const existingIdx = data.findIndex(v => v.softwareId === softwareId && v.userId === req.user.id);
 
-  if (existingIdx >= 0) {
-    data[existingIdx].type = type;
-    data[existingIdx].timestamp = new Date().toISOString();
-  } else {
-    data.push({ softwareId, userId: req.user.id, type, timestamp: new Date().toISOString() });
-  }
+    if (existingIdx >= 0) {
+      data[existingIdx].type = type;
+      data[existingIdx].timestamp = new Date().toISOString();
+    } else {
+      data.push({ softwareId, userId: req.user.id, type, timestamp: new Date().toISOString() });
+    }
 
-  writeJSON(FILE, data);
+    await writeJSONAtomic(FILE, data);
+  });
   res.json({ ok: true });
 });
 
-router.delete('/', requireAuth, (req, res) => {
+router.delete('/', requireAuth, async (req, res) => {
   const { softwareId } = req.body;
   if (!softwareId) return res.status(400).json({ error: 'softwareId erforderlich' });
-  let data = readJSON(FILE);
-  data = data.filter(v => !(v.softwareId === softwareId && v.userId === req.user.id));
-  writeJSON(FILE, data);
+  await withDataLock(async () => {
+    let data = await readJSONAsync(FILE);
+    data = data.filter(v => !(v.softwareId === softwareId && v.userId === req.user.id));
+    await writeJSONAtomic(FILE, data);
+  });
   res.json({ ok: true });
 });
 

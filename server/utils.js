@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { writeFile, readFile, access, rename } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,6 +15,34 @@ export function readJSON(filename) {
 export function writeJSON(filename, data) {
   const filePath = path.join(DATA_DIR, filename);
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
+
+export async function readJSONAsync(filename) {
+  const filePath = path.join(DATA_DIR, filename);
+  try {
+    await access(filePath, fs.constants.F_OK);
+  } catch {
+    return [];
+  }
+
+  const content = await readFile(filePath, 'utf-8');
+  return JSON.parse(content);
+}
+
+export async function writeJSONAtomic(filename, data) {
+  const filePath = path.join(DATA_DIR, filename);
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  const content = JSON.stringify(data, null, 2);
+  await writeFile(tmpPath, content, 'utf-8');
+  await rename(tmpPath, filePath);
+}
+
+let dataLockQueue = Promise.resolve();
+
+export async function withDataLock(task) {
+  const run = dataLockQueue.then(task);
+  dataLockQueue = run.catch(() => {});
+  return run;
 }
 
 export function generateId() {
