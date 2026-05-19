@@ -4,6 +4,7 @@ import {
   ShieldCheck, Cpu, HardDrive, Loader2,
 } from 'lucide-react';
 import { useEchoEngine } from '../../hooks/useEchoEngine';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 const WHISPER_MODELS = [
   { id: 'turbo',        label: 'Turbo',        size: '~3 GB',   desc: 'Sehr schnell, hohe Qualität (empfohlen)' },
@@ -16,6 +17,12 @@ const LANGUAGES = [
   { id: 'en',   label: 'English' },
   { id: 'fr',   label: 'Français' },
   { id: 'it',   label: 'Italiano' },
+];
+const OUTPUT_LANGUAGE_MODES = [
+  { id: 'multi', label: 'Mehrsprachig (Originalsprache behalten)' },
+  { id: 'de', label: 'Alles auf Deutsch' },
+  { id: 'fr', label: 'Alles auf Französisch' },
+  { id: 'it', label: 'Alles auf Italienisch' },
 ];
 
 const STAGE_LABELS = {
@@ -38,6 +45,7 @@ function formatBytes(b) {
 }
 
 export default function EchoTranskription() {
+  const isMobile = useIsMobile();
   const {
     health, jobs, isRunning, isAvailable, baseUrl, isStartingEcho, lastError,
     uploadFile, startJob, stopJob, removeJob, clearQueue, downloadResult,
@@ -49,6 +57,9 @@ export default function EchoTranskription() {
     model: 'turbo',
     language: 'auto',
     enableDiarization: true,
+    outputLanguageMode: 'multi',
+    enablePromptPolish: true,
+    parallelJobs: 2,
   });
   const [dragActive, setDragActive] = useState(false);
   const [uiError, setUiError] = useState('');
@@ -70,15 +81,23 @@ export default function EchoTranskription() {
 
   const handleStart = useCallback(async () => {
     setUiError('');
-    for (const file of files) {
-      try {
-        await startJob({ ...file, settings });
-      } catch (err) {
-        setUiError(err?.message || `Job konnte nicht gestartet werden (${file.name}).`);
+    const maxParallel = Math.max(1, Number(settings.parallelJobs || 1));
+    for (let i = 0; i < files.length; i += maxParallel) {
+      const batch = files.slice(i, i + maxParallel);
+      const results = await Promise.allSettled(
+        batch.map((file) => startJob({ ...file, settings })),
+      );
+      const failed = results.find((result) => result.status === 'rejected');
+      if (failed?.reason) {
+        setUiError(failed.reason?.message || 'Mindestens ein Job konnte nicht gestartet werden.');
       }
     }
     setFiles([]);
   }, [files, settings, startJob]);
+
+  if (isMobile) {
+    return <MobileOnlyEchoInfo />;
+  }
 
   if (health.status === 'unknown') {
     return (
@@ -173,6 +192,9 @@ function IntroBanner({ health }) {
             by Arber Aziri · On-device Transkription
           </p>
         </div>
+        <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-status-amber/10 border border-status-amber/20">
+          <span className="text-[10px] font-mono text-status-amber">Beta auf Anfrage</span>
+        </div>
         <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-status-green/10 border border-status-green/20">
           <div className="w-1.5 h-1.5 rounded-full bg-status-green" />
           <span className="text-[10px] font-mono text-status-green">Engine bereit</span>
@@ -189,6 +211,12 @@ function IntroBanner({ health }) {
           <strong className="text-txt-primary">SCNAT Echo wurde von Arber aus der IT für die SCNAT aufgebaut</strong>,
           damit wir bei Transkriptionen keine Sicherheits- oder Souveränitätsprobleme mit externen Cloud-Diensten
           bekommen. Alles läuft lokal auf dem jeweiligen MacBook.
+        </p>
+      </div>
+      <div className="bg-status-blue/5 border border-status-blue/20 rounded-sm p-3 mb-3">
+        <p className="text-xs text-txt-secondary leading-relaxed">
+          Voraussetzung ist eine installierte <strong className="text-txt-primary">Echo.app</strong> auf dem Notebook.
+          Falls Echo fehlt oder nicht funktioniert, bitte hier melden oder direkt den IT Support kontaktieren.
         </p>
       </div>
 
@@ -457,6 +485,14 @@ function SettingsPanel({ settings, onChange }) {
         />
       </SettingsSection>
 
+      <SettingsSection label="Ausgabe-Sprache">
+        <Select
+          value={settings.outputLanguageMode}
+          options={OUTPUT_LANGUAGE_MODES}
+          onChange={(outputLanguageMode) => onChange({ ...settings, outputLanguageMode })}
+        />
+      </SettingsSection>
+
       <SettingsSection label="Modus">
         <label className="flex items-start gap-2 cursor-pointer mb-1.5">
           <input
@@ -482,6 +518,33 @@ function SettingsPanel({ settings, onChange }) {
             <span className="text-[10px] text-txt-tertiary">Mit Sprechererkennung</span>
           </div>
         </label>
+      </SettingsSection>
+
+      <SettingsSection label="Verarbeitung im Hintergrund">
+        <label className="flex items-start gap-2 cursor-pointer mb-2">
+          <input
+            type="checkbox"
+            checked={settings.enablePromptPolish}
+            onChange={() => onChange({ ...settings, enablePromptPolish: !settings.enablePromptPolish })}
+            className="accent-scnat-red mt-0.5"
+          />
+          <div>
+            <span className="text-xs text-txt-primary block">Prompt-Polish aktivieren</span>
+            <span className="text-[10px] text-txt-tertiary">Text wird nach Transkription automatisch geglättet</span>
+          </div>
+        </label>
+        <div>
+          <p className="text-[10px] font-mono text-txt-tertiary mb-1">Parallelität</p>
+          <Select
+            value={String(settings.parallelJobs)}
+            options={[
+              { id: '1', label: '1 Job gleichzeitig (stabil)' },
+              { id: '2', label: '2 Jobs gleichzeitig (empfohlen)' },
+              { id: '3', label: '3 Jobs gleichzeitig (hohe Last)' },
+            ]}
+            onChange={(parallelJobs) => onChange({ ...settings, parallelJobs: Number(parallelJobs) })}
+          />
+        </div>
       </SettingsSection>
 
       <div className="bg-bg-surface border border-bd-faint rounded-sm p-3">
@@ -543,7 +606,26 @@ function Footer({ baseUrl }) {
         {baseUrl ? `Verbunden mit lokaler Engine: ${baseUrl}` : 'Lokale Engine nicht verbunden'}
       </p>
       <p className="text-[10px] font-mono text-txt-tertiary">
-        SCNAT Echo · v1.0 · powered by mlx-whisper &amp; pyannote · by Arber Aziri
+        SCNAT Echo · v1.1 beta · powered by mlx-whisper &amp; pyannote · by Arber Aziri
+      </p>
+    </div>
+  );
+}
+
+function MobileOnlyEchoInfo() {
+  return (
+    <div className="bg-bg-surface border border-bd-faint rounded-sm p-6 text-txt-primary">
+      <h3 className="text-sm font-heading font-semibold mb-2">SCNAT Echo ist aktuell nur für Desktop verfügbar</h3>
+      <p className="text-xs text-txt-secondary leading-relaxed mb-3">
+        Echo nutzt lokale Apple-Silicon-Beschleunigung (GPU/MLX) und die installierte Echo.app.
+        Auf Mobile-Geräten steht diese Runtime nicht stabil zur Verfügung.
+      </p>
+      <p className="text-xs text-txt-secondary leading-relaxed mb-3">
+        Für die Nutzung bitte das Portal auf einem MacBook/Desktop öffnen.
+        Echo ist derzeit in der Beta-Testphase und nur auf Anfrage freigeschaltet.
+      </p>
+      <p className="text-xs text-txt-tertiary">
+        Falls Echo.app fehlt oder nicht startet: bitte direkt IT Support kontaktieren.
       </p>
     </div>
   );
@@ -608,6 +690,19 @@ function NotAvailableView({ health, isStartingEcho, lastError, onRetry, onStartE
             SCNAT Echo wurde von Arber aus der IT für die SCNAT gebaut, damit Transkriptionen lokal auf dem Mac
             laufen und keine externen Cloud-Dienste benötigt werden. So bleiben Sicherheits- und
             Souveränitätsanforderungen der SCNAT gewahrt.
+          </p>
+          <p className="text-xs text-status-amber mt-2">
+            Aktuell Beta-Testphase · Nutzung nur auf Anfrage.
+          </p>
+        </div>
+
+        <div className="bg-status-blue/5 border border-status-blue/20 rounded-sm p-4 mb-4">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+            Voraussetzung
+          </p>
+          <p className="text-sm text-txt-secondary leading-relaxed">
+            Diese Funktion läuft nur mit installierter Echo.app auf dem Notebook. Falls Echo nicht installiert ist
+            oder nicht funktioniert, kann die Freischaltung hier oder direkt beim IT Support angefragt werden.
           </p>
         </div>
 

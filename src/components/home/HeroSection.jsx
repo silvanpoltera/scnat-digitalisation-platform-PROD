@@ -38,6 +38,7 @@ export default function HeroSection() {
             <p className="text-lg text-txt-secondary leading-relaxed mb-10 max-w-2xl">
               Das zentrale Informationsportal der SCNAT für die digitale Transformation.
               Strategien, Tools, Prozesse und KI-Richtlinien – alles an einem Ort.
+              SCNAT Echo ist aktuell in der Beta-Testphase und auf Anfrage verfügbar.
             </p>
 
             <div className="flex flex-wrap gap-3">

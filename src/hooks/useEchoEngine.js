@@ -112,7 +112,7 @@ export function useEchoEngine() {
       compat_status: 'sidecar_not_running',
       user_message: {
         title: 'SCNAT Echo Engine läuft nicht',
-        body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host und versuche es erneut.',
+        body: 'Diese Funktion läuft nur mit installierter Echo.app auf dem Notebook. Bitte Echo lokal starten. Falls das nicht geht, IT Support kontaktieren.',
         emoji: '🔌',
       },
     });
@@ -138,7 +138,7 @@ export function useEchoEngine() {
           compat_status: 'sidecar_not_running',
           user_message: {
             title: 'SCNAT Echo Engine läuft nicht',
-            body: 'Bitte starte Echo lokal auf deinem Mac. Falls die App bereits läuft, überprüfe den lokalen Host und versuche es erneut.',
+            body: 'Diese Funktion läuft nur mit installierter Echo.app auf dem Notebook. Bitte Echo lokal starten. Falls das nicht geht, IT Support kontaktieren.',
             emoji: '🔌',
           },
         });

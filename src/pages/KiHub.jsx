@@ -11,7 +11,7 @@ const TABS = [
   { id: 'tools', label: 'Tools & Richtlinien', icon: Wrench },
   { id: 'chatgpt', label: 'ChatGPT nutzen', icon: MessageSquare },
   { id: 'denken', label: 'KI für Profis', icon: Brain },
-  { id: 'echo', label: 'SCNAT Echo', icon: AudioLines },
+  { id: 'echo', label: 'SCNAT Echo (Beta)', icon: AudioLines },
 ];
 
 function CotVisualization({ szenarien }) {
@@ -1220,6 +1220,15 @@ export default function KiHub() {
               → Vollständige Richtlinien ansehen
             </button>
           </div>
+        </div>
+      )}
+
+      {tab === 'echo' && (
+        <div className="mb-6 bg-status-amber/10 border border-status-amber/20 rounded-sm px-4 py-3">
+          <p className="text-xs text-txt-primary leading-relaxed">
+            <strong>SCNAT Echo ist in der Beta-Testphase</strong> und aktuell nur auf Anfrage verfügbar.
+            Nutzung nur mit installierter Echo.app auf Desktop/MacBook.
+          </p>
         </div>
       )}
 

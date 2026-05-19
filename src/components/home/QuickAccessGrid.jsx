@@ -6,7 +6,7 @@ const items = [
   { icon: Target, title: "Strategie", desc: "Vision, Zielbild & Strategieprozess", path: "/strategie", color: "bg-scnat-red/10 text-scnat-red" },
   { icon: Lightbulb, title: "Handlungsfelder", desc: "6 strategische Transformationsfelder", path: "/handlungsfelder", color: "bg-scnat-orange/10 text-scnat-orange" },
   { icon: Monitor, title: "Software & Co", desc: "Alle Applikationen & Tools im Überblick", path: "/systemlandschaft", color: "bg-scnat-cyan/10 text-scnat-cyan" },
-  { icon: Brain, title: "KI-Hub", desc: "KI-Richtlinien, Tools & Best Practices", path: "/ki-hub", color: "bg-scnat-red/10 text-scnat-red" },
+  { icon: Brain, title: "KI-Hub", desc: "KI-Richtlinien, Tools & SCNAT Echo (Beta)", path: "/ki-hub", color: "bg-scnat-red/10 text-scnat-red" },
   { icon: CalendarRange, title: "Sprints", desc: "Laufende & geplante Sprint-Zyklen", path: "/sprints", color: "bg-scnat-orange/10 text-scnat-orange" },
   { icon: Workflow, title: "Prozesse", desc: "Software beschaffen & PM-Framework", path: "/prozesse", color: "bg-scnat-pink/10 text-scnat-pink" },
   { icon: Users, title: "Team", desc: "Task Force & Ansprechpersonen", path: "/team", color: "bg-scnat-anthrazit/10 text-scnat-anthrazit" },
