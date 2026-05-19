@@ -66,6 +66,38 @@ function formatBytes(b) {
   return `${b.toFixed(1)} ${u[i]}`;
 }
 
+function humanizeJobError(rawError) {
+  const raw = String(rawError || '').trim();
+  if (!raw) {
+    return {
+      userMessage: 'Uuups, da hat etwas nicht geklappt. Bitte Job erneut starten.',
+      technical: '',
+    };
+  }
+  const lowered = raw.toLowerCase();
+  if (
+    lowered.includes('401 client error')
+    || lowered.includes('repository not found')
+    || lowered.includes('invalid username or password')
+    || lowered.includes('huggingface.co')
+  ) {
+    return {
+      userMessage: 'Uuups, da hat etwas nicht geklappt. Das Modell konnte nicht geladen werden. Bitte anderes Modell wählen oder IT Support kontaktieren.',
+      technical: raw,
+    };
+  }
+  if (lowered.includes('timeout')) {
+    return {
+      userMessage: 'Uuups, da hat etwas nicht geklappt. Die Verarbeitung hat zu lange gedauert. Bitte erneut versuchen.',
+      technical: raw,
+    };
+  }
+  return {
+    userMessage: 'Uuups, da hat etwas nicht geklappt. Bitte erneut versuchen.',
+    technical: raw,
+  };
+}
+
 export default function EchoTranskription() {
   const isMobile = useIsMobile();
   const {
@@ -481,7 +513,6 @@ function JobQueue({ jobs, onRemove, onDownload }) {
             <JobCard
               key={job.id}
               job={job}
-              baseUrl={baseUrl}
               onRemove={() => onRemove(job.id)}
               onDownload={(format) => onDownload(job.id, format)}
             />
@@ -503,6 +534,7 @@ function JobCard({ job, onRemove, onDownload }) {
   }[job.status] || 'bg-txt-tertiary';
   const isActive = job.status === 'processing';
   const stageLabel = STAGE_LABELS[job.stage] || job.stage;
+  const { userMessage, technical } = humanizeJobError(job.error);
 
   return (
     <div className={`rounded-sm border p-3 transition-colors
@@ -556,7 +588,19 @@ function JobCard({ job, onRemove, onDownload }) {
       )}
 
       {job.status === 'error' && (
-        <p className="text-[10px] font-mono text-scnat-red mt-1">{job.error || 'Unbekannter Fehler'}</p>
+        <div className="mt-1.5 rounded-sm border border-scnat-red/25 bg-scnat-red/10 p-2">
+          <p className="text-xs text-scnat-red">{userMessage}</p>
+          {technical && (
+            <details className="mt-1">
+              <summary className="text-[10px] font-mono text-scnat-red/80 cursor-pointer">
+                Details anzeigen
+              </summary>
+              <p className="text-[10px] font-mono text-scnat-red/90 mt-1 break-words">
+                {technical}
+              </p>
+            </details>
+          )}
+        </div>
       )}
     </div>
   );
