@@ -50,6 +50,7 @@ const usageGroups = [
       { name: "ChatGPT", sub: "Business Team (GL-freigegeben)", logo: "openai.com", highlight: true },
       { name: "DeepL", sub: "Translate + Write (15 Lizenzen)", logo: "deepl.com", highlight: true },
       { name: "FLOWIT", sub: "KI-Lernplattform / MEG", logo: "flowit.ch" },
+      { name: "SCNAT Echo", sub: "Lokale Transkription (Beta, nur auf Anfrage)", logo: null, brandColor: "#00836f", highlight: true },
     ],
   },
   {
