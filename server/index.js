@@ -1,6 +1,9 @@
 import 'dotenv/config';
 import http from 'http';
 import express from 'express';
+import { access, writeFile, unlink } from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -31,6 +34,24 @@ import bugtrackerRoutes from './routes/bugtracker.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 const isProd = process.env.NODE_ENV === 'production';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const SHUTDOWN_GRACE_MS = Number(process.env.SHUTDOWN_GRACE_MS || 15000);
+
+let activeApiRequests = 0;
+let isShuttingDown = false;
+
+async function checkDataDirWritable() {
+  try {
+    await access(DATA_DIR);
+    const probePath = path.join(DATA_DIR, `.healthcheck-${process.pid}-${Date.now()}.tmp`);
+    await writeFile(probePath, 'ok', 'utf-8');
+    await unlink(probePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 // ── Trust proxy (required behind nginx / GCE load balancer) ─────────
 app.set('trust proxy', 1);
@@ -79,6 +100,25 @@ const loginLimiter = rateLimit({
 app.use('/api', globalLimiter);
 app.use('/api/auth/login', loginLimiter);
 
+// ── Request draining / in-flight tracking ────────────────────────────
+app.use('/api', (req, res, next) => {
+  if (isShuttingDown && req.path !== '/health') {
+    return res.status(503).json({ error: 'Server wird neu gestartet, bitte gleich erneut versuchen.' });
+  }
+
+  activeApiRequests += 1;
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    activeApiRequests = Math.max(0, activeApiRequests - 1);
+  };
+
+  res.on('finish', done);
+  res.on('close', done);
+  next();
+});
+
 // ── Request logging ──────────────────────────────────────────────────
 app.use('/api', (req, res, next) => {
   const start = Date.now();
@@ -89,8 +129,19 @@ app.use('/api', (req, res, next) => {
 });
 
 // ── Health check ────────────────────────────────────────────────────
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', async (_req, res) => {
+  const dataWritable = await checkDataDirWritable();
+  const health = {
+    status: dataWritable ? 'ok' : 'degraded',
+    timestamp: new Date().toISOString(),
+    uptimeSec: Math.round(process.uptime()),
+    activeApiRequests,
+    shuttingDown: isShuttingDown,
+    checks: {
+      dataWritable,
+    },
+  };
+  res.status(dataWritable ? 200 : 503).json(health);
 });
 
 // ── Routes ──────────────────────────────────────────────────────────
@@ -143,3 +194,24 @@ const HOST = isProd ? '127.0.0.1' : '0.0.0.0';
 server.listen(PORT, HOST, () => {
   console.log(`SCNAT API server running on ${HOST}:${PORT} [${isProd ? 'production' : 'development'}]`);
 });
+
+function shutdown(signal) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.warn(`[shutdown] Received ${signal}. Stopping new requests and draining for ${SHUTDOWN_GRACE_MS}ms.`);
+
+  const forceExitTimer = setTimeout(() => {
+    console.error('[shutdown] Grace period reached. Forcing exit.');
+    process.exit(1);
+  }, SHUTDOWN_GRACE_MS);
+  forceExitTimer.unref();
+
+  server.close(() => {
+    clearTimeout(forceExitTimer);
+    console.log('[shutdown] HTTP server closed cleanly.');
+    process.exit(0);
+  });
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
