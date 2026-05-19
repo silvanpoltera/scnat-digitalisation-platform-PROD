@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, generateId, sanitize } from '../utils.js';
+import { readJSONAsync, writeJSONAtomic, withDataLock, generateId, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
 const FILE = 'sprints.json';
 
-function enrichMassnahmen(sprint) {
-  const allMassnahmen = readJSON('massnahmen.json');
+async function enrichMassnahmen(sprint) {
+  const allMassnahmen = await readJSONAsync('massnahmen.json');
   return {
     ...sprint,
     massnahmen: sprint.massnahmen.map(sm => {
@@ -22,12 +22,12 @@ function enrichMassnahmen(sprint) {
   };
 }
 
-router.get('/', requireAuth, (req, res) => {
-  let sprints = readJSON(FILE);
+router.get('/', requireAuth, async (req, res) => {
+  let sprints = await readJSONAsync(FILE);
   const showArchived = req.user?.role === 'admin' && req.query.includeArchived === 'true';
   if (!showArchived) sprints = sprints.filter(s => s.status !== 'archived');
   if (req.user?.role !== 'admin') sprints = sprints.filter(s => !s.isAdminSprint);
-  const allMassnahmen = readJSON('massnahmen.json');
+  const allMassnahmen = await readJSONAsync('massnahmen.json');
   const enriched = sprints.map(s => ({
     ...s,
     massnahmen: s.massnahmen.map(sm => {
@@ -38,52 +38,58 @@ router.get('/', requireAuth, (req, res) => {
   res.json(enriched);
 });
 
-router.get('/:id', requireAuth, (req, res) => {
-  const sprints = readJSON(FILE);
+router.get('/:id', requireAuth, async (req, res) => {
+  const sprints = await readJSONAsync(FILE);
   const sprint = sprints.find(s => s.id === req.params.id);
   if (!sprint) return res.status(404).json({ error: 'Sprint nicht gefunden' });
   if (sprint.isAdminSprint && req.user?.role !== 'admin') {
     return res.status(404).json({ error: 'Sprint nicht gefunden' });
   }
-  res.json(enrichMassnahmen(sprint));
+  res.json(await enrichMassnahmen(sprint));
 });
 
-router.post('/', requireAuth, requireAdmin, (req, res) => {
-  const sprints = readJSON(FILE);
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
   const safe = sanitize(req.body);
   if (!safe.name) return res.status(400).json({ error: 'Name erforderlich' });
 
-  const newSprint = {
-    id: 'sprint-' + generateId(),
-    name: safe.name,
-    cluster: safe.cluster || 'infrastruktur',
-    clusterColor: safe.clusterColor || '#0098DA',
-    description: safe.description || '',
-    startDate: safe.startDate || '',
-    endDate: safe.endDate || '',
-    status: safe.status || 'planned',
-    massnahmen: Array.isArray(safe.massnahmen) ? safe.massnahmen : [],
-    isAdminSprint: !!safe.isAdminSprint,
-  };
+  let newSprint;
+  await withDataLock(async () => {
+    const sprints = await readJSONAsync(FILE);
+    newSprint = {
+      id: 'sprint-' + generateId(),
+      name: safe.name,
+      cluster: safe.cluster || 'infrastruktur',
+      clusterColor: safe.clusterColor || '#0098DA',
+      description: safe.description || '',
+      startDate: safe.startDate || '',
+      endDate: safe.endDate || '',
+      status: safe.status || 'planned',
+      massnahmen: Array.isArray(safe.massnahmen) ? safe.massnahmen : [],
+      isAdminSprint: !!safe.isAdminSprint,
+    };
 
-  sprints.push(newSprint);
-  writeJSON(FILE, sprints);
+    sprints.push(newSprint);
+    await writeJSONAtomic(FILE, sprints);
+  });
   res.status(201).json(newSprint);
 });
 
-router.put('/:id', requireAuth, requireAdmin, (req, res) => {
-  const sprints = readJSON(FILE);
-  const idx = sprints.findIndex(s => s.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Sprint nicht gefunden' });
-
+router.put('/:id', requireAuth, requireAdmin, async (req, res) => {
   const safe = sanitize(req.body);
   const allowed = ['name', 'cluster', 'clusterColor', 'description', 'startDate', 'endDate', 'status', 'massnahmen', 'isAdminSprint'];
-  allowed.forEach(key => {
-    if (safe[key] !== undefined) sprints[idx][key] = safe[key];
+  let updated;
+  await withDataLock(async () => {
+    const sprints = await readJSONAsync(FILE);
+    const idx = sprints.findIndex(s => s.id === req.params.id);
+    if (idx === -1) return;
+    allowed.forEach(key => {
+      if (safe[key] !== undefined) sprints[idx][key] = safe[key];
+    });
+    updated = sprints[idx];
+    await writeJSONAtomic(FILE, sprints);
   });
-
-  writeJSON(FILE, sprints);
-  res.json(enrichMassnahmen(sprints[idx]));
+  if (!updated) return res.status(404).json({ error: 'Sprint nicht gefunden' });
+  res.json(await enrichMassnahmen(updated));
 });
 
 export default router;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON, sanitize } from '../utils.js';
+import { readJSONAsync, writeJSONAtomic, withDataLock, sanitize } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 import fs from 'fs';
 import path from 'path';
@@ -20,8 +20,8 @@ function readSeed() {
   }
 }
 
-function getData() {
-  const raw = readJSON(FILE);
+async function getData() {
+  const raw = await readJSONAsync(FILE);
   if (!raw || Array.isArray(raw)) {
     return { updated_at: new Date().toISOString(), tickets: readSeed() };
   }
@@ -30,107 +30,129 @@ function getData() {
   return raw;
 }
 
-function saveData(data) {
+async function saveData(data) {
   data.updated_at = new Date().toISOString();
-  writeJSON(FILE, data);
+  await writeJSONAtomic(FILE, data);
 }
 
-router.get('/', requireAuth, (_req, res) => {
-  res.json(getData());
+router.get('/', requireAuth, async (_req, res) => {
+  res.json(await getData());
 });
 
-router.post('/ticket/:id/status', requireAuth, requireAdmin, (req, res) => {
+router.post('/ticket/:id/status', requireAuth, requireAdmin, async (req, res) => {
   const { status } = sanitize(req.body);
   if (!status) return res.status(400).json({ error: 'Status erforderlich' });
-
-  const data = getData();
-  const t = data.tickets.find(x => String(x.id) === String(req.params.id));
-  if (!t) return res.status(404).json({ error: 'Ticket nicht gefunden' });
-
-  t.status = status;
-  t.geschlossen = false;
-  t.geschlossen_grund = null;
-  t.geschlossen_am = null;
-  saveData(data);
-  res.json(t);
+  let updated;
+  await withDataLock(async () => {
+    const data = await getData();
+    const t = data.tickets.find(x => String(x.id) === String(req.params.id));
+    if (!t) return;
+    t.status = status;
+    t.geschlossen = false;
+    t.geschlossen_grund = null;
+    t.geschlossen_am = null;
+    await saveData(data);
+    updated = t;
+  });
+  if (!updated) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  res.json(updated);
 });
 
-router.post('/ticket/:id/close', requireAuth, requireAdmin, (req, res) => {
+router.post('/ticket/:id/close', requireAuth, requireAdmin, async (req, res) => {
   const { grund } = sanitize(req.body);
-  const data = getData();
-  const t = data.tickets.find(x => String(x.id) === String(req.params.id));
-  if (!t) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  let updated;
+  await withDataLock(async () => {
+    const data = await getData();
+    const t = data.tickets.find(x => String(x.id) === String(req.params.id));
+    if (!t) return;
 
-  t.geschlossen = true;
-  t.status = 'Geschlossen';
-  t.geschlossen_grund = grund || null;
-  t.geschlossen_am = new Date().toISOString();
-  saveData(data);
-  res.json(t);
+    t.geschlossen = true;
+    t.status = 'Geschlossen';
+    t.geschlossen_grund = grund || null;
+    t.geschlossen_am = new Date().toISOString();
+    await saveData(data);
+    updated = t;
+  });
+  if (!updated) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  res.json(updated);
 });
 
-router.post('/ticket/:id/reopen', requireAuth, requireAdmin, (req, res) => {
+router.post('/ticket/:id/reopen', requireAuth, requireAdmin, async (req, res) => {
   const { status } = sanitize(req.body);
-  const data = getData();
-  const t = data.tickets.find(x => String(x.id) === String(req.params.id));
-  if (!t) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  let updated;
+  await withDataLock(async () => {
+    const data = await getData();
+    const t = data.tickets.find(x => String(x.id) === String(req.params.id));
+    if (!t) return;
 
-  t.geschlossen = false;
-  t.status = status || 'Neu';
-  t.geschlossen_grund = null;
-  t.geschlossen_am = null;
-  saveData(data);
-  res.json(t);
+    t.geschlossen = false;
+    t.status = status || 'Neu';
+    t.geschlossen_grund = null;
+    t.geschlossen_am = null;
+    await saveData(data);
+    updated = t;
+  });
+  if (!updated) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  res.json(updated);
 });
 
-router.post('/ticket/:id/notiz', requireAuth, requireAdmin, (req, res) => {
+router.post('/ticket/:id/notiz', requireAuth, requireAdmin, async (req, res) => {
   const { notiz } = sanitize(req.body);
-  const data = getData();
-  const t = data.tickets.find(x => String(x.id) === String(req.params.id));
-  if (!t) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  let updated;
+  await withDataLock(async () => {
+    const data = await getData();
+    const t = data.tickets.find(x => String(x.id) === String(req.params.id));
+    if (!t) return;
 
-  t.notiz = notiz || '';
-  saveData(data);
-  res.json(t);
+    t.notiz = notiz || '';
+    await saveData(data);
+    updated = t;
+  });
+  if (!updated) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+  res.json(updated);
 });
 
-router.post('/bulk/close', requireAuth, requireAdmin, (req, res) => {
+router.post('/bulk/close', requireAuth, requireAdmin, async (req, res) => {
   const body = sanitize(req.body);
   const ids = Array.isArray(body.ids) ? body.ids.map(String) : [];
   if (!ids.length) return res.status(400).json({ error: 'IDs erforderlich' });
   const grund = body.grund || null;
 
-  const data = getData();
   let changed = 0;
-  for (const t of data.tickets) {
-    if (!ids.includes(String(t.id))) continue;
-    t.geschlossen = true;
-    t.status = 'Geschlossen';
-    t.geschlossen_grund = grund;
-    t.geschlossen_am = new Date().toISOString();
-    changed += 1;
-  }
-  saveData(data);
+  await withDataLock(async () => {
+    const data = await getData();
+    for (const t of data.tickets) {
+      if (!ids.includes(String(t.id))) continue;
+      t.geschlossen = true;
+      t.status = 'Geschlossen';
+      t.geschlossen_grund = grund;
+      t.geschlossen_am = new Date().toISOString();
+      changed += 1;
+    }
+    await saveData(data);
+  });
   res.json({ ok: true, changed });
 });
 
-router.post('/bulk/reopen', requireAuth, requireAdmin, (req, res) => {
+router.post('/bulk/reopen', requireAuth, requireAdmin, async (req, res) => {
   const body = sanitize(req.body);
   const ids = Array.isArray(body.ids) ? body.ids.map(String) : [];
   if (!ids.length) return res.status(400).json({ error: 'IDs erforderlich' });
   const status = body.status || 'Neu';
 
-  const data = getData();
   let changed = 0;
-  for (const t of data.tickets) {
-    if (!ids.includes(String(t.id))) continue;
-    t.geschlossen = false;
-    t.status = status;
-    t.geschlossen_grund = null;
-    t.geschlossen_am = null;
-    changed += 1;
-  }
-  saveData(data);
+  await withDataLock(async () => {
+    const data = await getData();
+    for (const t of data.tickets) {
+      if (!ids.includes(String(t.id))) continue;
+      t.geschlossen = false;
+      t.status = status;
+      t.geschlossen_grund = null;
+      t.geschlossen_am = null;
+      changed += 1;
+    }
+    await saveData(data);
+  });
   res.json({ ok: true, changed });
 });
 

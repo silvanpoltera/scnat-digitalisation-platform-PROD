@@ -1,5 +1,5 @@
 import webpush from 'web-push';
-import { readJSON, writeJSON } from './utils.js';
+import { readJSONAsync, writeJSONAtomic, withDataLock } from './utils.js';
 
 const SUBS_FILE = 'push-subscriptions.json';
 
@@ -28,57 +28,62 @@ export function getPublicKey() {
   return VAPID_PUBLIC_KEY;
 }
 
-function readStore() {
-  const data = readJSON(SUBS_FILE);
+async function readStore() {
+  const data = await readJSONAsync(SUBS_FILE);
   if (data && typeof data === 'object' && !Array.isArray(data) && data.subscriptions) {
     return data;
   }
   return { subscriptions: {} };
 }
 
-function writeStore(store) {
-  writeJSON(SUBS_FILE, store);
+async function writeStore(store) {
+  await writeJSONAtomic(SUBS_FILE, store);
 }
 
-export function listSubscriptionsForUser(userId) {
-  const store = readStore();
+export async function listSubscriptionsForUser(userId) {
+  const store = await readStore();
   return store.subscriptions[userId] || [];
 }
 
-export function addSubscription(userId, subscription, userAgent = '') {
+export async function addSubscription(userId, subscription, userAgent = '') {
   if (!userId || !subscription?.endpoint) return false;
-  const store = readStore();
-  const list = store.subscriptions[userId] || [];
-  // Dedup by endpoint
-  const existing = list.findIndex(s => s.endpoint === subscription.endpoint);
-  const entry = {
-    endpoint: subscription.endpoint,
-    keys: subscription.keys,
-    userAgent: userAgent.slice(0, 200),
-    createdAt: new Date().toISOString(),
-  };
-  if (existing >= 0) list[existing] = entry;
-  else list.push(entry);
-  store.subscriptions[userId] = list;
-  writeStore(store);
+  await withDataLock(async () => {
+    const store = await readStore();
+    const list = store.subscriptions[userId] || [];
+    const existing = list.findIndex(s => s.endpoint === subscription.endpoint);
+    const entry = {
+      endpoint: subscription.endpoint,
+      keys: subscription.keys,
+      userAgent: userAgent.slice(0, 200),
+      createdAt: new Date().toISOString(),
+    };
+    if (existing >= 0) list[existing] = entry;
+    else list.push(entry);
+    store.subscriptions[userId] = list;
+    await writeStore(store);
+  });
   return true;
 }
 
-export function removeSubscription(userId, endpoint) {
+export async function removeSubscription(userId, endpoint) {
   if (!userId || !endpoint) return false;
-  const store = readStore();
-  const list = store.subscriptions[userId] || [];
-  const next = list.filter(s => s.endpoint !== endpoint);
-  if (next.length === list.length) return false;
-  if (next.length === 0) delete store.subscriptions[userId];
-  else store.subscriptions[userId] = next;
-  writeStore(store);
-  return true;
+  let removed = false;
+  await withDataLock(async () => {
+    const store = await readStore();
+    const list = store.subscriptions[userId] || [];
+    const next = list.filter(s => s.endpoint !== endpoint);
+    if (next.length === list.length) return;
+    if (next.length === 0) delete store.subscriptions[userId];
+    else store.subscriptions[userId] = next;
+    await writeStore(store);
+    removed = true;
+  });
+  return removed;
 }
 
-function pruneDeadEndpoints(deadEndpoints) {
+async function pruneDeadEndpoints(deadEndpoints) {
   if (!deadEndpoints.length) return;
-  const store = readStore();
+  const store = await readStore();
   let changed = false;
   for (const userId of Object.keys(store.subscriptions)) {
     const before = store.subscriptions[userId].length;
@@ -88,7 +93,7 @@ function pruneDeadEndpoints(deadEndpoints) {
     if (store.subscriptions[userId].length !== before) changed = true;
     if (store.subscriptions[userId].length === 0) delete store.subscriptions[userId];
   }
-  if (changed) writeStore(store);
+  if (changed) await writeStore(store);
 }
 
 async function sendOne(sub, payloadString) {
@@ -117,7 +122,7 @@ function buildPayload({ title, body, url = '/', tag, badgeCount }) {
 
 export async function sendToUsers(userIds, payload) {
   if (!pushReady || !userIds?.length) return;
-  const store = readStore();
+  const store = await readStore();
   const payloadString = buildPayload(payload);
   const dead = [];
   const tasks = [];
@@ -130,7 +135,7 @@ export async function sendToUsers(userIds, payload) {
     }
   }
   await Promise.allSettled(tasks);
-  pruneDeadEndpoints(dead);
+  await pruneDeadEndpoints(dead);
 }
 
 export async function sendToUser(userId, payload) {
@@ -139,7 +144,7 @@ export async function sendToUser(userId, payload) {
 
 export async function sendToAdmins(payload) {
   if (!pushReady) return;
-  const users = readJSON('users.json');
+  const users = await readJSONAsync('users.json');
   const adminIds = (Array.isArray(users) ? users : [])
     .filter(u => u.role === 'admin')
     .map(u => u.id);
@@ -148,7 +153,7 @@ export async function sendToAdmins(payload) {
 
 export async function sendToAll(payload) {
   if (!pushReady) return;
-  const store = readStore();
+  const store = await readStore();
   return sendToUsers(Object.keys(store.subscriptions), payload);
 }
 

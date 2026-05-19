@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON } from '../utils.js';
+import { readJSONAsync } from '../utils.js';
 import { comparePassword, signToken, verifyToken } from '../auth.js';
 
 const router = Router();
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
   }
 
   const emailNorm = email.toLowerCase().trim();
-  const users = readJSON('users.json');
+  const users = await readJSONAsync('users.json');
   const user = users.find(u => u.email.toLowerCase().trim() === emailNorm);
   if (!user) return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
 

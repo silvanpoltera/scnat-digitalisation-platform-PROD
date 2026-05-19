@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { readJSON, writeJSON } from '../utils.js';
+import { readJSONAsync, writeJSONAtomic, withDataLock } from '../utils.js';
 import { requireAuth, requireAdmin } from '../auth.js';
 
 const router = Router();
@@ -57,12 +57,12 @@ function ensureDefaults(data) {
   return data;
 }
 
-router.get('/', (_req, res) => {
-  const raw = readJSON(FILE);
+router.get('/', async (_req, res) => {
+  const raw = await readJSONAsync(FILE);
   res.json(ensureDefaults(migrate(raw)));
 });
 
-router.put('/', requireAuth, requireAdmin, (req, res) => {
+router.put('/', requireAuth, requireAdmin, async (req, res) => {
   const { portal, cp } = req.body || {};
 
   if (!Array.isArray(portal) || !Array.isArray(cp)) {
@@ -82,7 +82,9 @@ router.put('/', requireAuth, requireAdmin, (req, res) => {
     }
   }
 
-  writeJSON(FILE, sanitized);
+  await withDataLock(async () => {
+    await writeJSONAtomic(FILE, sanitized);
+  });
   res.json({ ok: true });
 });
 
