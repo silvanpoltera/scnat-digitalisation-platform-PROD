@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { useAuth } from './AuthContext';
 
 const NotificationContext = createContext({ count: 0, inboxCount: 0, adminCount: 0, refresh: () => {} });
+const POLL_MS = 60000;
 
 export function NotificationProvider({ children }) {
   const { user } = useAuth();
@@ -11,32 +12,25 @@ export function NotificationProvider({ children }) {
 
   const refresh = useCallback(() => {
     if (!user) return;
-    fetch('/api/notifications/count', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : { count: 0 })
-      .then(d => setCount(d.count || 0))
-      .catch(() => setCount(0));
-
-    fetch('/api/inbox/unread-count', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : { count: 0 })
-      .then(d => setInboxCount(d.count || 0))
-      .catch(() => setInboxCount(0));
-
-    if (user.role === 'admin') {
-      fetch('/api/notifications/admin', { credentials: 'include' })
-        .then(r => r.ok ? r.json() : {})
-        .then(d => {
-          const total = Object.values(d || {}).reduce((s, n) => s + (Number(n) || 0), 0);
-          setAdminCount(total);
-        })
-        .catch(() => setAdminCount(0));
-    } else {
-      setAdminCount(0);
-    }
+    fetch('/api/notifications/summary', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : { count: 0, inboxCount: 0, adminCount: 0 })
+      .then(d => {
+        setCount(d.count || 0);
+        setInboxCount(d.inboxCount || 0);
+        setAdminCount(user.role === 'admin' ? (d.adminCount || 0) : 0);
+      })
+      .catch(() => {
+        setCount(0);
+        setInboxCount(0);
+        setAdminCount(0);
+      });
   }, [user]);
 
   useEffect(() => {
     refresh();
-    const interval = setInterval(refresh, 30000);
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') refresh();
+    }, POLL_MS);
     return () => clearInterval(interval);
   }, [refresh]);
 
