@@ -198,15 +198,6 @@ export default function EchoTranskription() {
           </p>
         </div>
 
-        <ActionBar
-          canStart={files.length > 0 && !isRunning}
-          canStop={isRunning}
-          canClear={jobs.length > 0}
-          onStart={handleStart}
-          onStop={stopJob}
-          onClear={clearQueue}
-        />
-
         {uiError && (
           <div className="bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2 mt-3">
             <p className="text-xs text-scnat-red">{uiError}</p>
@@ -216,7 +207,6 @@ export default function EchoTranskription() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-4">
           <div className="space-y-6 min-w-0">
             <DropZone
-              baseUrl={baseUrl}
               dragActive={dragActive}
               onDrop={handleDrop}
               onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
@@ -236,12 +226,21 @@ export default function EchoTranskription() {
                 }
                 e.target.value = '';
               }}
-              files={files}
             />
+
+            <ActionBar
+              canStart={files.length > 0 && !isRunning}
+              canStop={isRunning}
+              canClear={jobs.length > 0}
+              onStart={handleStart}
+              onStop={stopJob}
+              onClear={clearQueue}
+            />
+
+            <UploadedFiles files={files} />
 
             <JobQueue
               jobs={jobs}
-              baseUrl={baseUrl}
               onRemove={removeJob}
               onDownload={downloadResult}
             />
@@ -390,7 +389,7 @@ function ActionBar({ canStart, canStop, canClear, onStart, onStop, onClear }) {
   );
 }
 
-function DropZone({ baseUrl, dragActive, onDrop, onDragOver, onDragLeave, onClick, inputRef, onChange, files }) {
+function DropZone({ dragActive, onDrop, onDragOver, onDragLeave, onClick, inputRef, onChange }) {
   return (
     <div>
       <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
@@ -424,10 +423,34 @@ function DropZone({ baseUrl, dragActive, onDrop, onDragOver, onDragLeave, onClic
           </p>
         </div>
       </div>
-      {files.length > 0 && (
-        <div className="mt-2 space-y-1">
-          {files.map(f => (
-            <PendingFileRow key={f.id} file={f} baseUrl={baseUrl} />
+    </div>
+  );
+}
+
+function PendingFileRow({ file }) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-2 rounded-sm bg-bg-surface border border-bd-faint">
+      <FileText className="w-3.5 h-3.5 text-txt-secondary shrink-0" />
+      <span className="flex-1 text-xs text-txt-primary truncate">{file.name}</span>
+      <span className="text-[10px] font-mono text-txt-tertiary">{formatBytes(file.size)}</span>
+    </div>
+  );
+}
+
+function UploadedFiles({ files }) {
+  return (
+    <div>
+      <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
+        Hochgeladene Dateien
+      </p>
+      {files.length === 0 ? (
+        <div className="text-center py-3 bg-bg-surface border border-bd-faint border-dashed rounded-sm">
+          <p className="text-xs text-txt-tertiary">Noch keine Datei hochgeladen</p>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          {files.map((f) => (
+            <PendingFileRow key={f.id} file={f} />
           ))}
         </div>
       )}
@@ -435,62 +458,7 @@ function DropZone({ baseUrl, dragActive, onDrop, onDragOver, onDragLeave, onClic
   );
 }
 
-function PendingFileRow({ file, baseUrl }) {
-  const audioRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
-  // Prefer browser-local blob preview first (most reliable), fallback to bridge preview.
-  const previewUrl = file.previewUrl || (baseUrl && file.id ? `${baseUrl}/files/${file.id}/preview.wav` : null);
-
-  return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-sm bg-bg-surface border border-bd-faint">
-      <FileText className="w-3.5 h-3.5 text-txt-secondary shrink-0" />
-      <span className="flex-1 text-xs text-txt-primary truncate">{file.name}</span>
-      <span className="text-[10px] font-mono text-txt-tertiary">{formatBytes(file.size)}</span>
-      {previewUrl && (
-        <>
-          <audio
-            ref={audioRef}
-            src={previewUrl}
-            preload="none"
-            onEnded={() => setPlaying(false)}
-            onPause={() => setPlaying(false)}
-            onPlay={() => setPlaying(true)}
-            className="hidden"
-          />
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!audioRef.current) return;
-              if (!audioRef.current.paused) {
-                audioRef.current.pause();
-                return;
-              }
-              audioRef.current.play().catch(() => {});
-            }}
-            className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-            title={playing ? 'Audio-Vorschau pausieren' : 'Audio-Vorschau starten'}
-          >
-            <Play className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!audioRef.current) return;
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-            }}
-            className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-            title="Audio-Vorschau stoppen"
-          >
-            <Square className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
-          </button>
-        </>
-      )}
-    </div>
-  );
-}
-
-function JobQueue({ jobs, baseUrl, onRemove, onDownload }) {
+function JobQueue({ jobs, onRemove, onDownload }) {
   const completed = jobs.filter(j => j.status === 'completed').length;
 
   return (
@@ -524,7 +492,7 @@ function JobQueue({ jobs, baseUrl, onRemove, onDownload }) {
   );
 }
 
-function JobCard({ job, baseUrl, onRemove, onDownload }) {
+function JobCard({ job, onRemove, onDownload }) {
   const statusBgClass = {
     queued:     'bg-status-amber',
     pending:    'bg-status-amber',
@@ -535,9 +503,6 @@ function JobCard({ job, baseUrl, onRemove, onDownload }) {
   }[job.status] || 'bg-txt-tertiary';
   const isActive = job.status === 'processing';
   const stageLabel = STAGE_LABELS[job.stage] || job.stage;
-  const audioRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
-  const previewUrl = baseUrl && job.file_id ? `${baseUrl}/files/${job.file_id}/preview.wav` : null;
 
   return (
     <div className={`rounded-sm border p-3 transition-colors
@@ -559,49 +524,9 @@ function JobCard({ job, baseUrl, onRemove, onDownload }) {
 
       {(job.status === 'processing' || job.status === 'queued') && (
         <>
-          <div className="flex items-center gap-2 mb-1.5">
-            <div className="h-1 bg-bd-faint rounded-full overflow-hidden flex-1">
-              <div className="h-full bg-scnat-red transition-all duration-300"
-                   style={{ width: `${(job.progress || 0) * 100}%` }} />
-            </div>
-            {previewUrl && (
-              <>
-                <audio
-                  ref={audioRef}
-                  src={previewUrl}
-                  preload="none"
-                  onEnded={() => setPlaying(false)}
-                  onPause={() => setPlaying(false)}
-                  onPlay={() => setPlaying(true)}
-                  className="hidden"
-                />
-                <button
-                  onClick={() => {
-                    if (!audioRef.current) return;
-                    if (!audioRef.current.paused) {
-                      audioRef.current.pause();
-                      return;
-                    }
-                    audioRef.current.play().catch(() => {});
-                  }}
-                  className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-                  title={playing ? 'Audio-Vorschau pausieren' : 'Audio-Vorschau starten'}
-                >
-                  <Play className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
-                </button>
-                <button
-                  onClick={() => {
-                    if (!audioRef.current) return;
-                    audioRef.current.pause();
-                    audioRef.current.currentTime = 0;
-                  }}
-                  className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
-                  title="Audio-Vorschau stoppen"
-                >
-                  <Square className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
-                </button>
-              </>
-            )}
+          <div className="h-1 bg-bd-faint rounded-full overflow-hidden mb-1.5">
+            <div className="h-full bg-scnat-red transition-all duration-300"
+                 style={{ width: `${(job.progress || 0) * 100}%` }} />
           </div>
           <p className="text-[10px] font-mono text-txt-secondary">
             {stageLabel} · {Math.round((job.progress || 0) * 100)}%
