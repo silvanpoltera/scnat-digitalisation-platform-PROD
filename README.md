@@ -38,7 +38,7 @@ Internes Portal der Akademie der Naturwissenschaften Schweiz (SCNAT) für die di
 │  JWT Auth · CORS · Cookie-Parser                     │
 │  18 Route-Module                                     │
 └───────────────────┬─────────────────────────────────┘
-                    │  fs.readFileSync / writeFileSync
+                    │  async read + atomic write + lock
                     ▼
 ┌─────────────────────────────────────────────────────┐
 │              /data/*.json  (File Storage)             │
@@ -80,6 +80,9 @@ npm run dev              # Nur Frontend
 npm run server           # Nur Backend
 npm run build            # Produktions-Build nach /dist
 npm run preview          # Built-Version lokal testen
+npm run test:smoke       # Health + Graceful-Shutdown Smoke-Test
+npm run verify:it        # IT-Preflight (Flat-File-Regeln)
+npm run verify:it:full   # Preflight + Smoke + Build
 ```
 
 ### Standard-Login
@@ -254,8 +257,9 @@ Express-Server (`server/index.js`) mit ESM-Modulen auf Port 3001.
 
 | Funktion              | Beschreibung                                    |
 |-----------------------|-------------------------------------------------|
-| `readJSON(filename)`  | Liest JSON aus `/data`, gibt `[]` bei fehlendem File |
-| `writeJSON(filename, data)` | Schreibt formatiertes JSON in `/data`    |
+| `readJSONAsync(filename)`  | Liest JSON asynchron aus `/data` |
+| `writeJSONAtomic(filename, data)` | Schreibt atomisch via temp+rename |
+| `withDataLock(task)` | Serialisiert konkurrierende Read-Modify-Write-Operationen |
 | `generateId()`        | Eindeutige ID (Timestamp + Random)              |
 | `sanitize(obj)`       | Entfernt HTML-Tags aus User-Input               |
 

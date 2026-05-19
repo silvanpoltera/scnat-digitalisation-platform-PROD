@@ -9,7 +9,9 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "vite build",
     "preview": "vite preview",
-    "test:smoke": "node scripts/smoke-health.mjs"
+    "test:smoke": "node scripts/smoke-health.mjs",
+    "verify:it": "node scripts/it-preflight.mjs",
+    "verify:it:full": "node scripts/it-preflight.mjs --full"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
