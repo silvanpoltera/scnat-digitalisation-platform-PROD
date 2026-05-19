@@ -180,54 +180,64 @@ export default function EchoTranskription() {
     <div className="space-y-6 text-txt-primary">
       <IntroBanner health={health} />
 
-      <ActionBar
-        canStart={files.length > 0 && !isRunning}
-        canStop={isRunning}
-        canClear={jobs.length > 0}
-        onStart={handleStart}
-        onStop={stopJob}
-        onClear={clearQueue}
-      />
-
-      {uiError && (
-        <div className="bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2">
-          <p className="text-xs text-scnat-red">{uiError}</p>
+      <div className="rounded-sm border-2 border-scnat-red/25 bg-scnat-red/5 p-3 sm:p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-2 h-2 rounded-full bg-scnat-red animate-pulse" />
+          <p className="text-[11px] font-mono uppercase tracking-wider text-scnat-red">
+            Echo Studio · Aktiver Arbeitsbereich
+          </p>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-        <div className="space-y-6 min-w-0">
-          <DropZone
-            dragActive={dragActive}
-            onDrop={handleDrop}
-            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-            onDragLeave={() => setDragActive(false)}
-            onClick={() => inputRef.current?.click()}
-            inputRef={inputRef}
-            onChange={async (e) => {
-              setUiError('');
-              for (const f of Array.from(e.target.files)) {
-                try {
-                  const up = await uploadFile(f);
-                  setFiles(prev => [...prev, up]);
-                } catch (err) {
-                  setUiError(err?.message || 'Upload fehlgeschlagen.');
+        <ActionBar
+          canStart={files.length > 0 && !isRunning}
+          canStop={isRunning}
+          canClear={jobs.length > 0}
+          onStart={handleStart}
+          onStop={stopJob}
+          onClear={clearQueue}
+        />
+
+        {uiError && (
+          <div className="bg-scnat-red/5 border border-scnat-red/20 rounded-sm px-3 py-2 mt-3">
+            <p className="text-xs text-scnat-red">{uiError}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-4">
+          <div className="space-y-6 min-w-0">
+            <DropZone
+              baseUrl={baseUrl}
+              dragActive={dragActive}
+              onDrop={handleDrop}
+              onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+              onDragLeave={() => setDragActive(false)}
+              onClick={() => inputRef.current?.click()}
+              inputRef={inputRef}
+              onChange={async (e) => {
+                setUiError('');
+                for (const f of Array.from(e.target.files)) {
+                  try {
+                    const up = await uploadFile(f);
+                    setFiles(prev => [...prev, up]);
+                  } catch (err) {
+                    setUiError(err?.message || 'Upload fehlgeschlagen.');
+                  }
                 }
-              }
-              e.target.value = '';
-            }}
-            files={files}
-          />
+                e.target.value = '';
+              }}
+              files={files}
+            />
 
-          <JobQueue
-            jobs={jobs}
-            baseUrl={baseUrl}
-            onRemove={removeJob}
-            onDownload={downloadResult}
-          />
+            <JobQueue
+              jobs={jobs}
+              baseUrl={baseUrl}
+              onRemove={removeJob}
+              onDownload={downloadResult}
+            />
+          </div>
+
+          <SettingsPanel settings={settings} onChange={setSettings} />
         </div>
-
-        <SettingsPanel settings={settings} onChange={setSettings} />
       </div>
 
       <Footer baseUrl={baseUrl} />
@@ -369,7 +379,7 @@ function ActionBar({ canStart, canStop, canClear, onStart, onStop, onClear }) {
   );
 }
 
-function DropZone({ dragActive, onDrop, onDragOver, onDragLeave, onClick, inputRef, onChange, files }) {
+function DropZone({ baseUrl, dragActive, onDrop, onDragOver, onDragLeave, onClick, inputRef, onChange, files }) {
   return (
     <div>
       <p className="text-[10px] font-mono uppercase tracking-wider text-txt-tertiary mb-2">
@@ -406,14 +416,57 @@ function DropZone({ dragActive, onDrop, onDragOver, onDragLeave, onClick, inputR
       {files.length > 0 && (
         <div className="mt-2 space-y-1">
           {files.map(f => (
-            <div key={f.id} className="flex items-center gap-2 px-3 py-2 rounded-sm
-                                        bg-bg-surface border border-bd-faint">
-              <FileText className="w-3.5 h-3.5 text-txt-secondary shrink-0" />
-              <span className="flex-1 text-xs text-txt-primary truncate">{f.name}</span>
-              <span className="text-[10px] font-mono text-txt-tertiary">{formatBytes(f.size)}</span>
-            </div>
+            <PendingFileRow key={f.id} file={f} baseUrl={baseUrl} />
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function PendingFileRow({ file, baseUrl }) {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const previewUrl = baseUrl && file.id ? `${baseUrl}/files/${file.id}` : null;
+
+  return (
+    <div className="flex items-center gap-2 px-3 py-2 rounded-sm bg-bg-surface border border-bd-faint">
+      <FileText className="w-3.5 h-3.5 text-txt-secondary shrink-0" />
+      <span className="flex-1 text-xs text-txt-primary truncate">{file.name}</span>
+      <span className="text-[10px] font-mono text-txt-tertiary">{formatBytes(file.size)}</span>
+      {previewUrl && (
+        <>
+          <audio
+            ref={audioRef}
+            src={previewUrl}
+            preload="none"
+            onEnded={() => setPlaying(false)}
+            onPause={() => setPlaying(false)}
+            onPlay={() => setPlaying(true)}
+            className="hidden"
+          />
+          <button
+            onClick={() => {
+              if (!audioRef.current) return;
+              audioRef.current.play().catch(() => {});
+            }}
+            className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
+            title="Audio-Vorschau starten"
+          >
+            <Play className="w-3 h-3" />
+          </button>
+          <button
+            onClick={() => {
+              if (!audioRef.current) return;
+              audioRef.current.pause();
+              audioRef.current.currentTime = 0;
+            }}
+            className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
+            title="Audio-Vorschau stoppen"
+          >
+            <Square className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
+          </button>
+        </>
       )}
     </div>
   );
