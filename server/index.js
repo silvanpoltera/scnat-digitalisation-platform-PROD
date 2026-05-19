@@ -65,7 +65,23 @@ app.use(helmet({
 // ── CORS ────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
   .split(',')
-  .map(o => o.trim());
+  .map(o => o.trim())
+  .filter(Boolean);
+const allowedOriginSet = new Set(allowedOrigins);
+const stateChangingMethods = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
+function getRequestSourceOrigin(req) {
+  const originHeader = req.get('origin');
+  if (originHeader) return originHeader;
+
+  const refererHeader = req.get('referer');
+  if (!refererHeader) return null;
+  try {
+    return new URL(refererHeader).origin;
+  } catch {
+    return null;
+  }
+}
 
 app.use(cors({
   origin(origin, cb) {
@@ -78,6 +94,18 @@ app.use(cors({
 // ── Body parsing with size limits ───────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
+
+// ── CSRF/Origin guard for cookie-authenticated write requests ───────
+app.use('/api', (req, res, next) => {
+  if (!stateChangingMethods.has(req.method)) return next();
+  if (!req.cookies?.token) return next();
+
+  const sourceOrigin = getRequestSourceOrigin(req);
+  if (!sourceOrigin || !allowedOriginSet.has(sourceOrigin)) {
+    return res.status(403).json({ error: 'Ungültige Anfrage-Quelle (Origin/Referer).' });
+  }
+  next();
+});
 
 // ── Rate limiting ───────────────────────────────────────────────────
 const globalLimiter = rateLimit({
