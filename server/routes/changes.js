@@ -6,6 +6,10 @@ import { sendToUser, sendToAdmins, fireAndForget } from '../push.js';
 const router = Router();
 const FILE = 'changes.json';
 
+function getTrimmedString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
 router.get('/', requireAuth, requireAdmin, (_req, res) => {
   res.json(readJSON(FILE));
 });
@@ -21,12 +25,16 @@ router.get('/mine', requireAuth, (req, res) => {
 });
 
 router.post('/', requireAuth, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const { titel, beschreibung, typ, system, kontakt, kontaktEmail } = sanitize(req.body);
-  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
+  const cleanTitle = getTrimmedString(titel);
+  if (!cleanTitle) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = readJSON(FILE);
   const newItem = {
     id: generateId(),
-    titel: titel || '',
+    titel: cleanTitle,
     beschreibung: beschreibung || '',
     typ: typ || 'allgemein',
     system: system || '',
@@ -56,6 +64,9 @@ router.post('/', requireAuth, (req, res) => {
 });
 
 router.post('/:id', requireAuth, requireAdmin, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const data = readJSON(FILE);
   const idx = data.findIndex(c => c.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
@@ -66,13 +77,13 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
   allowed.forEach(key => {
     if (clean[key] !== undefined) data[idx][key] = clean[key];
   });
-  if (req.body.status && req.body.status !== oldStatus) {
+  if (clean.status && clean.status !== oldStatus) {
     data[idx].statusUpdatedAt = new Date().toISOString();
   }
 
   writeJSON(FILE, data);
 
-  if (req.body.status && req.body.status !== oldStatus && data[idx].userId) {
+  if (clean.status && clean.status !== oldStatus && data[idx].userId) {
     fireAndForget(sendToUser(data[idx].userId, {
       title: 'Status deines Change-Vorschlags geändert',
       body: `${data[idx].titel || 'Change'} → ${data[idx].status}`,
@@ -85,11 +96,17 @@ router.post('/:id', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const data = readJSON(FILE);
   const idx = data.findIndex(c => c.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
 
   const { antwort } = sanitize(req.body);
+  if (antwort !== undefined && typeof antwort !== 'string') {
+    return res.status(400).json({ error: 'Antwort muss Text sein' });
+  }
   data[idx].antwort = antwort || '';
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);

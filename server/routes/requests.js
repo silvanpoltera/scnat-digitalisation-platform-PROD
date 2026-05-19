@@ -5,18 +5,27 @@ import { sendToUser, sendToAdmins, fireAndForget } from '../push.js';
 
 const router = Router();
 const FILE = 'requests.json';
+const ALLOWED_STATUS = new Set(['offen', 'in Prüfung', 'bewilligt', 'abgelehnt']);
+
+function getTrimmedString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
 
 router.get('/', requireAuth, requireAdmin, (_req, res) => {
   res.json(readJSON(FILE));
 });
 
 router.post('/', requireAuth, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const { titel, beschreibung, typ, kontakt, kontaktEmail } = sanitize(req.body);
-  if (!titel) return res.status(400).json({ error: 'Titel erforderlich' });
+  const cleanTitle = getTrimmedString(titel);
+  if (!cleanTitle) return res.status(400).json({ error: 'Titel erforderlich' });
   const data = readJSON(FILE);
   const newItem = {
     id: generateId(),
-    titel,
+    titel: cleanTitle,
     beschreibung: beschreibung || '',
     typ: typ || 'allgemein',
     kontakt: kontakt || req.user.name,
@@ -51,14 +60,21 @@ router.get('/mine', requireAuth, (req, res) => {
 });
 
 router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const { status, antwort } = sanitize(req.body);
-  if (!status) return res.status(400).json({ error: 'Status erforderlich' });
+  const cleanStatus = getTrimmedString(status);
+  if (!cleanStatus) return res.status(400).json({ error: 'Status erforderlich' });
+  if (!ALLOWED_STATUS.has(cleanStatus)) {
+    return res.status(400).json({ error: 'Ungültiger Statuswert' });
+  }
   const data = readJSON(FILE);
   const idx = data.findIndex(r => r.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
-  data[idx].status = status;
+  data[idx].status = cleanStatus;
   data[idx].statusUpdatedAt = new Date().toISOString();
-  if (antwort !== undefined) data[idx].antwort = antwort;
+  if (antwort !== undefined) data[idx].antwort = typeof antwort === 'string' ? antwort : '';
   writeJSON(FILE, data);
 
   if (data[idx].userId) {
@@ -74,11 +90,17 @@ router.post('/:id/status', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/:id/reply', requireAuth, requireAdmin, (req, res) => {
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
   const data = readJSON(FILE);
   const idx = data.findIndex(r => r.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Nicht gefunden' });
   const { antwort } = sanitize(req.body);
-  data[idx].antwort = antwort;
+  if (antwort !== undefined && typeof antwort !== 'string') {
+    return res.status(400).json({ error: 'Antwort muss Text sein' });
+  }
+  data[idx].antwort = antwort || '';
   data[idx].antwortTimestamp = new Date().toISOString();
   writeJSON(FILE, data);
 

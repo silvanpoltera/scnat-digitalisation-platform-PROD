@@ -12,8 +12,17 @@ const COOKIE_OPTIONS = {
   path: '/',
 };
 
+function getTrimmedString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Ungültiger Request-Body' });
+  }
+
+  const email = getTrimmedString(req.body.email);
+  const password = getTrimmedString(req.body.password);
   if (!email || !password) {
     return res.status(400).json({ error: 'E-Mail und Passwort erforderlich' });
   }
