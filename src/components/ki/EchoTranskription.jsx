@@ -43,7 +43,7 @@ const DEFAULT_ECHO_ADDONS = {
     unknownParticipants: 'Nicht eindeutig erkennbar',
     summaryLabel: 'Management Summary',
     bulletLabel: 'Besprochene Punkte',
-    transcriptLabel: 'Transkription',
+    transcriptLabel: 'Wörtliche Transkription (1:1)',
   },
 };
 
@@ -221,6 +221,7 @@ export default function EchoTranskription() {
 
           <JobQueue
             jobs={jobs}
+            baseUrl={baseUrl}
             onRemove={removeJob}
             onDownload={downloadResult}
           />
@@ -418,7 +419,7 @@ function DropZone({ dragActive, onDrop, onDragOver, onDragLeave, onClick, inputR
   );
 }
 
-function JobQueue({ jobs, onRemove, onDownload }) {
+function JobQueue({ jobs, baseUrl, onRemove, onDownload }) {
   const completed = jobs.filter(j => j.status === 'completed').length;
 
   return (
@@ -441,6 +442,7 @@ function JobQueue({ jobs, onRemove, onDownload }) {
             <JobCard
               key={job.id}
               job={job}
+              baseUrl={baseUrl}
               onRemove={() => onRemove(job.id)}
               onDownload={(format) => onDownload(job.id, format)}
             />
@@ -451,7 +453,7 @@ function JobQueue({ jobs, onRemove, onDownload }) {
   );
 }
 
-function JobCard({ job, onRemove, onDownload }) {
+function JobCard({ job, baseUrl, onRemove, onDownload }) {
   const statusBgClass = {
     queued:     'bg-status-amber',
     pending:    'bg-status-amber',
@@ -462,6 +464,9 @@ function JobCard({ job, onRemove, onDownload }) {
   }[job.status] || 'bg-txt-tertiary';
   const isActive = job.status === 'processing';
   const stageLabel = STAGE_LABELS[job.stage] || job.stage;
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const previewUrl = baseUrl && job.file_id ? `${baseUrl}/files/${job.file_id}` : null;
 
   return (
     <div className={`rounded-sm border p-3 transition-colors
@@ -483,9 +488,45 @@ function JobCard({ job, onRemove, onDownload }) {
 
       {(job.status === 'processing' || job.status === 'queued') && (
         <>
-          <div className="h-1 bg-bd-faint rounded-full overflow-hidden mb-1.5">
-            <div className="h-full bg-scnat-red transition-all duration-300"
-                 style={{ width: `${(job.progress || 0) * 100}%` }} />
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="h-1 bg-bd-faint rounded-full overflow-hidden flex-1">
+              <div className="h-full bg-scnat-red transition-all duration-300"
+                   style={{ width: `${(job.progress || 0) * 100}%` }} />
+            </div>
+            {previewUrl && (
+              <>
+                <audio
+                  ref={audioRef}
+                  src={previewUrl}
+                  preload="none"
+                  onEnded={() => setPlaying(false)}
+                  onPause={() => setPlaying(false)}
+                  onPlay={() => setPlaying(true)}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => {
+                    if (!audioRef.current) return;
+                    audioRef.current.play().catch(() => {});
+                  }}
+                  className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
+                  title="Audio-Vorschau starten"
+                >
+                  <Play className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => {
+                    if (!audioRef.current) return;
+                    audioRef.current.pause();
+                    audioRef.current.currentTime = 0;
+                  }}
+                  className="w-6 h-6 rounded-sm border border-bd-default bg-bg-elevated text-txt-primary hover:border-scnat-red transition-colors flex items-center justify-center"
+                  title="Audio-Vorschau stoppen"
+                >
+                  <Square className={`w-3 h-3 ${playing ? 'text-scnat-red' : ''}`} />
+                </button>
+              </>
+            )}
           </div>
           <p className="text-[10px] font-mono text-txt-secondary">
             {stageLabel} · {Math.round((job.progress || 0) * 100)}%
@@ -588,6 +629,9 @@ function SettingsPanel({ settings, onChange }) {
             <span className="text-[10px] text-txt-tertiary">Text wird nach Transkription automatisch geglättet</span>
           </div>
         </label>
+        <p className="text-[10px] text-txt-tertiary mb-2">
+          Die Sektion „Transkription“ im Export bleibt immer wörtlich (1:1) als Protokoll.
+        </p>
         <div>
           <p
             className="text-[10px] font-mono text-txt-tertiary mb-1 cursor-help"

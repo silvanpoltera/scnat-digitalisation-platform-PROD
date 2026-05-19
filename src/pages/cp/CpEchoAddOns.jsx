@@ -8,11 +8,11 @@ const DEFAULTS = {
   beta_note: 'Echo Add-Ons sind in der Beta und werden global aus dem Control Panel geladen.',
   polish: {
     enabled_default: true,
-    system_prompt: 'Du bist der SCNAT Echo Polish Assistent. Halte den Inhalt sachlich, knapp und gut lesbar.',
+    system_prompt: 'Du bist der SCNAT Echo Polish Assistent. Die Haupt-Transkription bleibt immer wörtlich (1:1) in Originalsprache, ohne Übersetzung. Kürze und glätte nur Summary und Stichpunkte.',
     prompts: {
-      multi: 'Behalte die Originalsprache je Abschnitt bei, korrigiere nur offensichtliche Transkriptionsfehler und Füllwörter.',
+      multi: 'Behalte die Originalsprache je Abschnitt bei. Keine Übersetzung. Vermeide Halluzinationen und unpassende Schriftzeichen. Korrigiere nur offensichtliche Transkriptionsfehler in Summary/Stichpunkten.',
       de: 'Formuliere den gesamten Text in klarem Hochdeutsch. Korrigiere Füllwörter und Interpunktion.',
-      fr: 'Formule tout le texte en francais clair. Corrige les mots de remplissage et la ponctuation.',
+      fr: 'Formule tout le texte en français clair. Corrige les mots de remplissage et la ponctuation.',
       it: 'Riformula tutto il testo in italiano chiaro. Correggi parole di riempimento e punteggiatura.',
     },
   },
@@ -23,7 +23,7 @@ const DEFAULTS = {
     unknownParticipants: 'Nicht eindeutig erkennbar',
     summaryLabel: 'Management Summary',
     bulletLabel: 'Besprochene Punkte',
-    transcriptLabel: 'Transkription',
+    transcriptLabel: 'Wörtliche Transkription (1:1)',
   },
 };
 
