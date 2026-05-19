@@ -41,6 +41,10 @@ const SHUTDOWN_GRACE_MS = Number(process.env.SHUTDOWN_GRACE_MS || 15000);
 let activeApiRequests = 0;
 let isShuttingDown = false;
 
+function generateRequestId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 async function checkDataDirWritable() {
   try {
     await access(DATA_DIR);
@@ -150,8 +154,20 @@ app.use('/api', (req, res, next) => {
 // ── Request logging ──────────────────────────────────────────────────
 app.use('/api', (req, res, next) => {
   const start = Date.now();
+  const requestId = req.get('x-request-id') || generateRequestId();
+  res.setHeader('x-request-id', requestId);
   res.on('finish', () => {
-    console.log(`[${req.method}] ${req.originalUrl} → ${res.statusCode} (${Date.now() - start}ms)`);
+    console.log(JSON.stringify({
+      type: 'api_request',
+      requestId,
+      method: req.method,
+      path: req.originalUrl,
+      status: res.statusCode,
+      durationMs: Date.now() - start,
+      ip: req.ip,
+      userAgent: req.get('user-agent') || '',
+      at: new Date().toISOString(),
+    }));
   });
   next();
 });
